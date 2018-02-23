@@ -16,8 +16,16 @@ $ docker run -it --rm -v $PATH:/data softleader/captain-kube GOOS=$GOOS GOARCH=$
 
 ### Example: 
 
+安裝在 Mac
+
 ```shell
 $ docker run -it --rm -v /usr/local/bin:/data softleader/captain-kube GOOS=macos
+```
+
+安裝在 Ubuntu
+
+```shell
+$ docker run -it --rm -v /usr/local/bin:/data softleader/captain-kube
 ```
 
 ### Tag

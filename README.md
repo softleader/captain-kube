@@ -41,6 +41,7 @@ $ go get github.com/softleader/captain-kube
 $ make -C $GOPATH/src/github.com/softleader/captain-kube BINARY=$BINARY GOOS=$GOOS GOARCH=$GOARCH
 ```
 
+- `$GOPATH` - 如果系統沒設定的話, 可以用 `$(go env GOPATH)` 代替, 或通常會裝在 `~/go` 這個目錄下
 - `$BINARY` - 安裝的目錄, 預設 `./build`
 - `$GOOS` - 預設為 `linux`, **(注意: 這邊不支援 `macos` 自動轉換為 `darwin`)**
 - `$GOARCH` - 預設為 `amd64`

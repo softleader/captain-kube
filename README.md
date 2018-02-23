@@ -50,3 +50,7 @@ $ make -C $GOPATH/src/github.com/softleader/captain-kube BINARY=$BINARY GOOS=$GO
 - `$GOARCH` - 預設為 `amd64`
 
 > You need Go, Git, Make installed
+
+## Usage
+
+> $ ck ...

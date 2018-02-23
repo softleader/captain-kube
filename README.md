@@ -12,7 +12,7 @@ $ docker run -it --rm -v $PATH:/data softleader/captain-kube GOOS=$GOOS GOARCH=$
 - `$GOOS` - 預設為 `linux`, 若輸入 `macos` 則自動轉換為 `darwin`
 - `$GOARCH` - 預設為 `amd64`
 
-> `$GOOS` 及 `$GOARCH` 可參考 [environment variables](https://golang.org/doc/install/source#environment) 變更
+> `$GOOS` 及 `$GOARCH` 能支援的參數可 [參考這篇](https://golang.org/doc/install/source#environment)
 
 ### Example: 
 

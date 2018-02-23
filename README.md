@@ -53,4 +53,4 @@ $ make -C $GOPATH/src/github.com/softleader/captain-kube BINARY=$BINARY GOOS=$GO
 
 ## Usage
 
-> $ ck ...
+[TBD]

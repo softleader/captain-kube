@@ -9,10 +9,10 @@
 ### By Docker
 
 ```shell
-$ docker run -it --rm -v $PATH:/data softleader/captain-kube GOOS=$GOOS GOARCH=$GOARCH
+$ docker run -it --rm -v $BINARY:/data softleader/captain-kube GOOS=$GOOS GOARCH=$GOARCH
 ```
 
-- `$PATH` - 安裝的目錄, 如 `/usr/local/bin`
+- `$BINARY` - 安裝的目錄, 如 `/usr/local/bin`
 - `$GOOS` - 預設為 `linux`, 若輸入 `macos` 則自動轉換為 `darwin`
 - `$GOARCH` - 預設為 `amd64`
 
@@ -42,6 +42,6 @@ $ docker run -it --rm -v /usr/local/bin:/data softleader/captain-kube
 $ make BINARY=$BINARY GOOS=$GOOS GOARCH=$GOARCH
 ```
 
-- `$BINARY` - 執行檔的目錄, 預設 `./build`
+- `$BINARY` - 安裝的目錄, 預設 `./build`
 - `$GOOS` - 預設為 `linux`, **(注意: 這邊不支援 `macos` 自動轉換為 `darwin`)**
 - `$GOARCH` - 預設為 `amd64`

@@ -19,3 +19,7 @@ $ docker run -it --rm -v $PATH:/data softleader/captain-kube GOOS=$GOOS GOARCH=$
 ```shell
 $ docker run -it --rm -v /usr/local/bin:/data softleader/captain-kube GOOS=macos
 ```
+
+### Tag
+
+- `softleader/captain-kube:latest` - 每次都以最新的 captain-kube 的 master branch 去安裝

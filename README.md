@@ -1,3 +1,3 @@
 # Captain Kube
 
-> A DevOps command line tool for SoftLeader client
+> A command line tool for Kubernetes hepls SoftLeader client deploying SoftLeader products

@@ -8,7 +8,6 @@
 
 ### By Docker
 
-> You need Docker installed
 
 ```shell
 $ docker run -it --rm -v $BINARY:/data softleader/captain-kube GOOS=$GOOS GOARCH=$GOARCH
@@ -17,6 +16,8 @@ $ docker run -it --rm -v $BINARY:/data softleader/captain-kube GOOS=$GOOS GOARCH
 - `$BINARY` - 安裝的目錄, 如 `/usr/local/bin`
 - `$GOOS` - 預設為 `linux`, 若輸入 `macos` 則自動轉換為 `darwin`
 - `$GOARCH` - 預設為 `amd64`
+
+> You need Docker installed
 
 #### Example: 
 
@@ -38,8 +39,6 @@ $ docker run -it --rm -v /usr/local/bin:/data softleader/captain-kube
 
 ### By Makefile
 
-> You need Go, Git, Make installed
-
 ```shell
 $ go get github.com/softleader/captain-kube
 $ make -C $GOPATH/src/github.com/softleader/captain-kube BINARY=$BINARY GOOS=$GOOS GOARCH=$GOARCH
@@ -49,3 +48,5 @@ $ make -C $GOPATH/src/github.com/softleader/captain-kube BINARY=$BINARY GOOS=$GO
 - `$BINARY` - 安裝的目錄, 預設 `./build`
 - `$GOOS` - 預設為 `linux`, **(注意: 這邊不支援 `macos` 自動轉換為 `darwin`)**
 - `$GOARCH` - 預設為 `amd64`
+
+> You need Go, Git, Make installed

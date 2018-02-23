@@ -8,6 +8,8 @@
 
 ### By Docker
 
+> You need Docker installed
+
 ```shell
 $ docker run -it --rm -v $BINARY:/data softleader/captain-kube GOOS=$GOOS GOARCH=$GOARCH
 ```
@@ -35,6 +37,8 @@ $ docker run -it --rm -v /usr/local/bin:/data softleader/captain-kube
 - `softleader/captain-kube:latest` - 每次都以最新的 captain-kube 的 master branch 去安裝
 
 ### By Makefile
+
+> You need Go, Git, Make installed
 
 ```shell
 $ go get github.com/softleader/captain-kube

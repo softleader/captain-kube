@@ -36,10 +36,9 @@ $ docker run -it --rm -v /usr/local/bin:/data softleader/captain-kube
 
 ### By Makefile
 
-在此專案目錄下
-
 ```shell
-$ make BINARY=$BINARY GOOS=$GOOS GOARCH=$GOARCH
+$ go get github.com/softleader/captain-kube
+$ make -C $GOPATH/src/github.com/softleader/captain-kube BINARY=$BINARY GOOS=$GOOS GOARCH=$GOARCH
 ```
 
 - `$BINARY` - 安裝的目錄, 預設 `./build`

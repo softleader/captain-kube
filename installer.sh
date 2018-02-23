@@ -5,11 +5,11 @@ GOARCH="$2"
 APP=ck
 
 if [[ -z $GOOS ]]; then
-    GOOS=linux && echo "You did not determine GOOS, use \'$GOOS\' as default"
+    GOOS=linux && echo "Use '$GOOS' as default GOOS"
 fi
 
 if [[ -z $GOARCH ]]; then
-    GOARCH=amd64 && echo "You did not determine GOARCH, use \'$GOARCH\' as default"
+    GOARCH=amd64 && echo "Use '$GOARCH' as default GOARCH"
 fi
 
 if [[ $GOOS == "macos" ]]; then
@@ -17,6 +17,6 @@ if [[ $GOOS == "macos" ]]; then
 fi
 
 go get github.com/softleader/captain-kube && \
-make -C $GOPATH/src/github.com/softleader/captain-kube GOOS=$GOOS $GOARCH=GOARCH BINARY=$(pwd)
+make -C $GOPATH/src/github.com/softleader/captain-kube GOOS=$GOOS $GOARCH=GOARCH APP=$APP BINARY=$(pwd)
 
 exit 0

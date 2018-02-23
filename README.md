@@ -34,7 +34,7 @@ $ docker run -it --rm -v /usr/local/bin:/data softleader/captain-kube
 
 - `softleader/captain-kube:latest` - 每次都以最新的 captain-kube 的 master branch 去安裝
 
-### By Make
+### By Makefile
 
 在此專案目錄下
 

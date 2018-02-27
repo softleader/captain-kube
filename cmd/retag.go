@@ -17,7 +17,7 @@ func Retag(path, oldTagDomain, newTagDomain string) *cobra.Command {
 		Args:  cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 
-			m := app.ParseYaml("./value.yaml")
+			m := app.ParseYaml(path)
 			p := &app.KeywordValues{}
 			app.FindKeywordFromMap(m, "repository", p)
 

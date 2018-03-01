@@ -8,9 +8,8 @@ import (
 )
 
 /** 用 ICP 的 bx 指令 install chart */
-func Install() (command *cobra.Command) {
-
-	command = &cobra.Command{
+func Install() (cmd *cobra.Command) {
+	cmd = &cobra.Command{
 		Use:   "icp [chart archive (.tgz)]",
 		Short: "Install Helm chart archive on ICP",
 		Long:  ``,
@@ -22,12 +21,13 @@ func Install() (command *cobra.Command) {
 			fmt.Printf("Finish install  %s\n", stdoutStderr)
 		},
 	}
+	return
 }
 
 /** 用 ICP 的 bx 指令 uninstall chart */
 func Uninstall(version string) (cmd *cobra.Command) {
 
-	 cmd = &cobra.Command{
+	cmd = &cobra.Command{
 		Use:   "icp [chart name]",
 		Short: "Uninstall Helm chart from ICP",
 		Long:  ``,

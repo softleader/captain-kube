@@ -1,6 +1,6 @@
 # Captain Kube
 
-> A command line tool for Kubernetes hepls SoftLeader client deploying SoftLeader products
+> A command line tool for Kubernetes helps SoftLeader client deploying SoftLeader products
 
 ## Install
 

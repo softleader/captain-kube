@@ -1,10 +1,9 @@
-package app
+package charts
 
 import (
 	"io/ioutil"
 	"gopkg.in/yaml.v2"
 )
-
 
 func check(e error) {
 	if e != nil {
@@ -15,7 +14,7 @@ func check(e error) {
 /**
 parse yaml 檔案放入 map 回傳
  */
-func ParseYaml(filename string) map[interface{}]interface{} {
+func Load(filename string) map[interface{}]interface{} {
 
 	dat, err := ioutil.ReadFile(filename)
 	check(err)
@@ -26,7 +25,6 @@ func ParseYaml(filename string) map[interface{}]interface{} {
 	return m
 
 }
-
 
 type KeywordValues struct {
 	MappingValues []string

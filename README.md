@@ -1,5 +1,3 @@
-Captain Kube is a command line tool for Kubernetes helps SoftLeader client deploying SoftLeader products
-
 ![](./doc/captainkube-01.svg)
 
 > A command line tool for Kubernetes helps SoftLeader client deploying SoftLeader products

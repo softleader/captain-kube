@@ -7,13 +7,15 @@ Uninstall charts from pure Kubernetes
 Uninstall charts from pure Kubernetes
 
 ```
-ckube uninstall helm <helm name> [flags]
+ckube uninstall helm <nickname> [flags]
 ```
 
 ### Options
 
 ```
-  -h, --help   help for helm
+  -h, --help             help for helm
+  -o, --options string   Passing more options to underlying command
+  -v, --verbose          Make the operation more talkative
 ```
 
 ### SEE ALSO

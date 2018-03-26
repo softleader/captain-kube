@@ -1,10 +1,9 @@
 package log
 
 import (
-	"log"
 	"fmt"
+	"log"
 )
-
 
 func Output(stdoutStderr []byte, err error) []byte {
 	if err != nil {
@@ -12,4 +11,8 @@ func Output(stdoutStderr []byte, err error) []byte {
 		log.Fatal(err)
 	}
 	return stdoutStderr
+}
+
+func Command(command string) {
+	fmt.Println(">", command)
 }

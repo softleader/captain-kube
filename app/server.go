@@ -11,26 +11,20 @@ import (
 const componentCaptainKube = "ckube"
 
 func NewCaptainKubeCommand() (cmd *cobra.Command) {
-
-	var name string
-	var version string
-	var path, oldTagDomain, newTagDomain string
-
 	cmd = &cobra.Command{Use: componentCaptainKube}
 	cmd.AddCommand(
 		/** 安裝 **/
-		install(name),
+		install(),
 		/** 反安裝 **/
-		uninstall(version),
+		uninstall(),
 		/** 解壓縮 */
 		tar.Extract(),
 		/** 重新 tag image 後 push */
-		image.Retag(path, oldTagDomain, newTagDomain))
-
+		image.Retag())
 	return
 }
 
-func install(name string) (cmd *cobra.Command) {
+func install() (cmd *cobra.Command) {
 	cmd = &cobra.Command{
 		Use:   "install <kind>",
 		Short: "Install Helm Charts to Kubernetes",
@@ -41,26 +35,25 @@ func install(name string) (cmd *cobra.Command) {
 	}
 	cmd.AddCommand(
 		/** 利用 helm 指令 uninstall */
-		helm.Install(name),
+		helm.Install(),
 		/** 利用 ICP 的 bx 指令 helm */
 		icp.Install())
 	return
 }
 
-func uninstall(version string) (cmd *cobra.Command) {
+func uninstall() (cmd *cobra.Command) {
 	cmd = &cobra.Command{
 		Use:   "uninstall <kind>",
 		Short: "Uninstall Helm Charts from Kubernetes",
 		Long:  ``,
 		Args:  cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
-
 		},
 	}
 	cmd.AddCommand(
 		/** 利用 helm 指令 uninstall */
 		helm.Uninstall(),
 		/** 利用 ICP 的 bx 指令 uninstall */
-		icp.Uninstall(version))
+		icp.Uninstall())
 	return
 }

@@ -13,8 +13,10 @@ ckube install helm <Chart directory> [flags]
 ### Options
 
 ```
-  -h, --help          help for helm
-  -n, --name string   helm charm nickname (required)
+  -h, --help             help for helm
+  -n, --name string      Helm charm Nickname (required)
+  -o, --options string   Passing more options to underlying command
+  -v, --verbose          Make the operation more talkative
 ```
 
 ### SEE ALSO

@@ -14,7 +14,9 @@ ckube uninstall icp <chart name> [flags]
 
 ```
   -h, --help             help for icp
-  -v, --version string   which version of chart you want to unload.
+  -o, --options string   Passing more options to underlying command
+  -v, --verbose          Make the operation more talkative
+      --version string   The Version of chart to unload.
 ```
 
 ### SEE ALSO

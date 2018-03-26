@@ -13,7 +13,9 @@ ckube install icp <Chart archive (.tgz)> [flags]
 ### Options
 
 ```
-  -h, --help   help for icp
+  -h, --help             help for icp
+  -o, --options string   Passing more options to underlying command
+  -v, --verbose          Make the operation more talkative
 ```
 
 ### SEE ALSO

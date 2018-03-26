@@ -15,7 +15,7 @@
 ### SEE ALSO
 
 * [ckube install](ckube_install.md)	 - Install Helm Charts to Kubernetes
-* [ckube retag](ckube_retag.md)	 - ReTag docker image
+* [ckube retag](ckube_retag.md)	 - ReTag docker image from origin
 * [ckube tar](ckube_tar.md)	 - Extract tar
 * [ckube uninstall](ckube_uninstall.md)	 - Uninstall Helm Charts from Kubernetes
 

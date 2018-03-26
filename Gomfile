@@ -1,4 +1,0 @@
-gom 'github.com/softleader/captain-kube', :commit => 'd1a7c0705d38bc8ff936d728d0e6dea4e05ecab9'
-gom 'github.com/spf13/cobra', :commit => '6644d46b81fa1831979c4cded0106e774e0ef0ab'
-gom 'github.com/spf13/pflag', :commit => 'ee5fd03fd6acfd43e44aea0b4135958546ed8e73'
-gom 'gopkg.in/yaml.v2', :commit => '287cf08546ab5e7e37d55a84f7ed3fd1db036de5'

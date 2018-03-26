@@ -4,7 +4,7 @@ import (
 	"github.com/spf13/cobra"
 	"os/exec"
 	"fmt"
-	"github.com/softleader/captain-kube/logs"
+	"github.com/softleader/captain-kube/log"
 )
 
 /** 用 ICP 的 bx 指令 install chart */

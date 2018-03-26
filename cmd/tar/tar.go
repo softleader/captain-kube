@@ -4,7 +4,7 @@ import (
 	"github.com/spf13/cobra"
 	"os/exec"
 	"fmt"
-	"github.com/softleader/captain-kube/logs"
+	"github.com/softleader/captain-kube/log"
 )
 
 func Extract() (cmd *cobra.Command) {

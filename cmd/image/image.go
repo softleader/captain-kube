@@ -5,7 +5,7 @@ import (
 	"strings"
 	"os/exec"
 	"fmt"
-	"github.com/softleader/captain-kube/logs"
+	"github.com/softleader/captain-kube/log"
 	"github.com/softleader/captain-kube/charts"
 )
 

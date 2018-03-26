@@ -6,9 +6,6 @@
 
 安裝的過程中, 必須要指定執行的系統 `$GOOS` 及 `$GOARCH`, 支援的參數可 [參考這篇](https://golang.org/doc/install/source#environment)
 
-### By Docker
-
-
 ```shell
 $ docker run -it --rm -v $BINARY:/data \
 	softleader/captain-kube \
@@ -21,7 +18,12 @@ $ docker run -it --rm -v $BINARY:/data \
 
 > You need Docker installed
 
-#### Example: 
+### Tag
+
+- `softleader/captain-kube` - 以最新 release 的程式安裝
+- `softleader/captain-kube:remote` - 每次都以 captain-kube 當前的 master branch 去安裝
+
+### Example: 
 
 安裝在 Mac 系統中的當前目錄
 
@@ -34,11 +36,6 @@ $ docker run -it --rm -v "$(pwd)":/data softleader/captain-kube GOOS=macos
 ```shell
 $ docker run -it --rm -v /usr/local/bin:/data softleader/captain-kube
 ```
-
-#### Tag
-
-- `softleader/captain-kube` - 以最新 release 的程式安裝
-- `softleader/captain-kube:remote` - 每次都以 captain-kube 當前的 master branch 去安裝
 
 ## Usage
 

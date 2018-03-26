@@ -13,7 +13,7 @@ func Retag(path, oldTagDomain, newTagDomain string) (cmd *cobra.Command) {
 
 	cmd = &cobra.Command{
 		Use:   "retag [remote/local]",
-		Short: "retag docker image",
+		Short: "ReTag docker image",
 		Long:  ``,
 		Args:  cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {

@@ -10,8 +10,8 @@ import (
 /** 用 helm 指令 install chart */
 func Install(name string) (cmd *cobra.Command) {
 	cmd = &cobra.Command{
-		Use:   "helm [chart file]",
-		Short: "Install Helm chart file on k8s",
+		Use:   "helm <Chart directory>",
+		Short: "Install charts to pure Kubernetes",
 		Long:  ``,
 		Args:  cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
@@ -30,8 +30,8 @@ func Install(name string) (cmd *cobra.Command) {
 /** 用 helm 指令移除 chart */
 func Uninstall() (cmd *cobra.Command) {
 	cmd = &cobra.Command{
-		Use:   "helm [helm name]",
-		Short: "Uninstall Helm chart on k8s",
+		Use:   "helm <helm name>",
+		Short: "Uninstall charts from pure Kubernetes",
 		Long:  ``,
 		Args:  cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {

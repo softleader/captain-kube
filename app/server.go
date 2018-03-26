@@ -32,8 +32,8 @@ func NewCaptainKubeCommand() (cmd *cobra.Command) {
 
 func install(name string) (cmd *cobra.Command) {
 	cmd = &cobra.Command{
-		Use:   "install [Helm/ICP/...]",
-		Short: "Install Helm/ICP/... chart on k8s",
+		Use:   "install <kind>",
+		Short: "Install Helm Charts to Kubernetes",
 		Long:  ``,
 		Args:  cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
@@ -49,8 +49,8 @@ func install(name string) (cmd *cobra.Command) {
 
 func uninstall(version string) (cmd *cobra.Command) {
 	cmd = &cobra.Command{
-		Use:   "uninstall [Helm/ICP/...]",
-		Short: "uninstall Helm/ICP/... chart on k8s",
+		Use:   "uninstall <kind>",
+		Short: "Uninstall Helm Charts from Kubernetes",
 		Long:  ``,
 		Args:  cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {

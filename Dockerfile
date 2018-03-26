@@ -1,14 +1,10 @@
 FROM golang:alpine
 MAINTAINER softleader.com.tw
 
-
-COPY . $GOPATH/src/github.com/softleader/captain-kube/
-
 RUN apk update && \
-	apk --no-cache add bash make && \
+	apk --no-cache add bash make git && \
 	rm -rf /var/cache/apk/* && \
-	cd $GOPATH/src/github.com/softleader/captain-kube/ && \
-	go install
+	go get github.com/softleader/captain-kube
 
 COPY installer.sh /installer.sh
 

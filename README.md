@@ -11,7 +11,8 @@
 
 ```shell
 $ docker run -it --rm -v $BINARY:/data \
-	softleader/captain-kube GOOS=$GOOS GOARCH=$GOARCH
+	softleader/captain-kube \
+	GOOS=$GOOS GOARCH=$GOARCH
 ```
 
 - `$BINARY` - 安裝的目錄, 如 `/usr/local/bin`
@@ -36,21 +37,8 @@ $ docker run -it --rm -v /usr/local/bin:/data softleader/captain-kube
 
 #### Tag
 
-- `softleader/captain-kube:latest` - 每次都以最新的 captain-kube 的 master branch 去安裝
-
-### By Makefile
-
-```shell
-$ go get github.com/softleader/captain-kube
-$ make -C $GOPATH/src/github.com/softleader/captain-kube BINARY=$BINARY GOOS=$GOOS GOARCH=$GOARCH
-```
-
-- `$GOPATH` - 如果系統沒設定的話, 可以用 `$(go env GOPATH)` 代替, 或通常會裝在 `~/go` 這個目錄下
-- `$BINARY` - 安裝的目錄, 預設 `./build`
-- `$GOOS` - 預設為 `linux`, **(注意: 這邊不支援 `macos` 自動轉換為 `darwin`)**
-- `$GOARCH` - 預設為 `amd64`
-
-> You need Go, Git, Make installed
+- `softleader/captain-kube` - 以最新 release 的程式安裝
+- `softleader/captain-kube:remote` - 每次都以 captain-kube 當前的 master branch 去安裝
 
 ## Usage
 

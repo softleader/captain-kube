@@ -1,5 +1,7 @@
 # Captain Kube
 
+![](./doc/captainkube-01.svg)
+
 > A command line tool for Kubernetes helps SoftLeader client deploying SoftLeader products
 
 ## Install
@@ -10,7 +12,8 @@
 
 
 ```shell
-$ docker run -it --rm -v $BINARY:/data softleader/captain-kube GOOS=$GOOS GOARCH=$GOARCH
+$ docker run -it --rm -v $BINARY:/data \
+	softleader/captain-kube GOOS=$GOOS GOARCH=$GOARCH
 ```
 
 - `$BINARY` - 安裝的目錄, 如 `/usr/local/bin`
@@ -53,4 +56,4 @@ $ make -C $GOPATH/src/github.com/softleader/captain-kube BINARY=$BINARY GOOS=$GO
 
 ## Usage
 
-[TBD]
+![](./doc/overview.svg)

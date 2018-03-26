@@ -25,12 +25,6 @@ $ docker run -it --rm -v $BINARY:/data \
 
 ### Example: 
 
-安裝在 Mac 系統中的當前目錄
-
-```shell
-$ docker run -it --rm -v "$(pwd)":/data softleader/captain-kube GOOS=macos
-```
-
 安裝在 Ubuntu
 
 ```shell

@@ -17,7 +17,7 @@ func Install(name string) (cmd *cobra.Command) {
 		Run: func(cmd *cobra.Command, args []string) {
 
 			execCmd := exec.Command("sh", "-c", "helm install "+args[0]+" -n "+name)
-			stdoutStderr := logs.Output(execCmd.CombinedOutput())
+			stdoutStderr := log.Output(execCmd.CombinedOutput())
 			fmt.Printf("Finish install  %s\n", stdoutStderr)
 
 		},
@@ -37,7 +37,7 @@ func Uninstall() (cmd *cobra.Command) {
 		Run: func(cmd *cobra.Command, args []string) {
 
 			execCmd := exec.Command("sh", "-c", "helm delete --purge "+args[0])
-			stdoutStderr := logs.Output(execCmd.CombinedOutput())
+			stdoutStderr := log.Output(execCmd.CombinedOutput())
 			fmt.Printf("Finish uninstall  %s\n", stdoutStderr)
 
 		},

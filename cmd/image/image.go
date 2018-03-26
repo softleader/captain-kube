@@ -28,10 +28,10 @@ func Retag(path, oldTagDomain, newTagDomain string) (cmd *cobra.Command) {
 					if strings.Contains(v, oldTagDomain) {
 						newTag := strings.Replace(v, oldTagDomain, newTagDomain, -1)
 						execPullAndRetagCmd := exec.Command("sh", "-c", "docker pull "+v+" && docker tag "+v+" "+newTag)
-						fmt.Printf("Finish retag \n %s", logs.Output(execPullAndRetagCmd.CombinedOutput()))
+						fmt.Printf("Finish retag \n %s", log.Output(execPullAndRetagCmd.CombinedOutput()))
 
 						execPushCmd := exec.Command("sh", "-c", "docker push "+newTag)
-						fmt.Printf("Finish push \n %s", logs.Output(execPushCmd.CombinedOutput()))
+						fmt.Printf("Finish push \n %s", log.Output(execPushCmd.CombinedOutput()))
 					}
 				}
 

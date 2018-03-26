@@ -11,13 +11,13 @@ import (
 func Install() (cmd *cobra.Command) {
 	cmd = &cobra.Command{
 		Use:   "icp <Chart archive (.tgz)>",
-		Short: "Install charts archive to IBM Private Cloud",
+		Short: "Install charts archive to IBM Cloud Private",
 		Long:  ``,
 		Args:  cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 
 			execCmd := exec.Command("sh", "-c", "bx pr load-helm-chart --archive "+args[0])
-			stdoutStderr := logs.Output(execCmd.CombinedOutput())
+			stdoutStderr := log.Output(execCmd.CombinedOutput())
 			fmt.Printf("Finish install  %s\n", stdoutStderr)
 		},
 	}
@@ -40,7 +40,7 @@ func Uninstall(version string) (cmd *cobra.Command) {
 			}
 			execCmd := exec.Command("sh", "-c", "bx pr delete-helm-chart --name "+args[0]+unloadVersion)
 
-			stdoutStderr := logs.Output(execCmd.CombinedOutput())
+			stdoutStderr := log.Output(execCmd.CombinedOutput())
 			fmt.Printf("Finish uninstall  %s\n", stdoutStderr)
 		},
 	}

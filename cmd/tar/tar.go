@@ -16,7 +16,7 @@ func Extract() (cmd *cobra.Command) {
 		Run: func(cmd *cobra.Command, args []string) {
 
 			execCmd := exec.Command("sh", "-c", "tar zxvf "+args[0])
-			stdoutStderr := logs.Output(execCmd.CombinedOutput())
+			stdoutStderr := log.Output(execCmd.CombinedOutput())
 			fmt.Printf("Finish extract  %s\n", stdoutStderr)
 		},
 	}

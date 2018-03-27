@@ -9,7 +9,7 @@ import (
 
 func Extract() (cmd *cobra.Command) {
 	cmd = &cobra.Command{
-		Use:   "tar <tar file>",
+		Use:   "tar [tar file]",
 		Short: "Extract tar",
 		Long:  ``,
 		Args:  cobra.ExactArgs(1),

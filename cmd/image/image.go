@@ -11,7 +11,7 @@ import (
 
 func Retag() (cmd *cobra.Command) {
 	cmd = &cobra.Command{
-		Use:   "retag <origin>",
+		Use:   "retag [origin]",
 		Short: "ReTag docker image from origin",
 		Long:  ``,
 		Args:  cobra.ExactArgs(1),
@@ -61,7 +61,7 @@ func remote() (cmd *cobra.Command) {
 	cmd.MarkFlagRequired("oldTagDomain")
 	cmd.MarkFlagRequired("newTagDomain")
 
-	cmd.Flags().StringVarP(&options, "options", "o", "", "Passing more options to underlying command")
+	cmd.Flags().StringVarP(&options, "args", "", "", "Passing more arguments to underlying command")
 	cmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "Make the operation more talkative")
 	return
 }
@@ -77,7 +77,7 @@ func local() (cmd *cobra.Command) {
 			// TODO
 		},
 	}
-	cmd.Flags().StringVarP(&options, "options", "o", "", "Passing more options to underlying command")
+	cmd.Flags().StringVarP(&options, "args", "", "", "Passing more arguments to underlying command")
 	cmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "Make the operation more talkative")
 	return
 }

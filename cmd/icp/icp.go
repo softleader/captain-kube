@@ -13,7 +13,7 @@ func Install() (cmd *cobra.Command) {
 	var verbose bool
 	var options string
 	cmd = &cobra.Command{
-		Use:   "icp <Chart archive (.tgz)>",
+		Use:   "icp [Chart archive (.tgz)]",
 		Short: "Install charts archive to IBM Cloud Private",
 		Long:  ``,
 		Args:  cobra.ExactArgs(1),
@@ -31,7 +31,7 @@ func Install() (cmd *cobra.Command) {
 			fmt.Printf("Installing %s, done.\n", args[0])
 		},
 	}
-	cmd.Flags().StringVarP(&options, "options", "o", "", "Passing more options to underlying command")
+	cmd.Flags().StringVarP(&options, "args", "", "", "Passing more arguments to underlying command")
 	cmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "Make the operation more talkative")
 	return
 }
@@ -41,7 +41,7 @@ func Uninstall() (cmd *cobra.Command) {
 	var verbose bool
 	var options, version string
 	cmd = &cobra.Command{
-		Use:   "icp <chart name>",
+		Use:   "icp [chart name]",
 		Short: "Uninstall charts archive to IBM Private Cloud",
 		Long:  ``,
 		Args:  cobra.ExactArgs(1),
@@ -63,7 +63,7 @@ func Uninstall() (cmd *cobra.Command) {
 		},
 	}
 	cmd.Flags().StringVarP(&version, "version", "", "", "The Version of chart to unload.")
-	cmd.Flags().StringVarP(&options, "options", "o", "", "Passing more options to underlying command")
+	cmd.Flags().StringVarP(&options, "args", "", "", "Passing more arguments to underlying command")
 	cmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "Make the operation more talkative")
 	return
 }

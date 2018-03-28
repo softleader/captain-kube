@@ -3,13 +3,13 @@ workspace:
   path: src/github.com/softleader/captain-kube
 
 pipeline:
-  # build:
-  #   image: softleader/goreleaser
-  #   commands:
-  #     - go get
-  #     - goreleaser --rm-dist
-  #   when:
-  #     event: tag
+  build:
+    image: softleader/goreleaser
+    commands:
+      - go get
+      - goreleaser --rm-dist
+    when:
+      event: tag
 
   publish:
     image: plugins/docker

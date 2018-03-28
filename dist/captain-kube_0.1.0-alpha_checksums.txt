@@ -1,4 +1,0 @@
-f7226dee047664ec1b8ad4d76f06d07ee8c870d17491bf732b5ee5fb82f8601c  captain-kube_0.1.0-alpha_linux_386.tar.gz
-d72baadd1023ff5d3ad2b1057a2d2f8487a47507f6597e189fc043bb0dad83cf  captain-kube_0.1.0-alpha_macOS_386.tar.gz
-6e35584ef1fc0bdca2b03126b0822d2dc3160ab09a2060d2e49c661180cafe48  captain-kube_0.1.0-alpha_linux_64-bit.tar.gz
-5b72e6b2d4b40d2f177479d34f8d656d655c3f817bbdc741ac42bdde5da28d99  captain-kube_0.1.0-alpha_macOS_64-bit.tar.gz

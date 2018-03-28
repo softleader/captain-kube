@@ -4,8 +4,9 @@ workspace:
 
 pipeline:
   build:
-    image: golang:alpine
+    image: alpine
     commands:
+      - apk update && apk --no-cache add go git && rm -rf /var/cache/apk/* 
       - go get github.com/goreleaser/goreleaser
       - go get
       - goreleaser --rm-dist

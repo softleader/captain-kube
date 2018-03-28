@@ -1,0 +1,27 @@
+pipeline:
+  build:
+    image: softleader/goreleaser
+    commands:
+      - goreleaser
+    when:
+      event: tag
+      local: false
+
+  publish:
+    image: plugins/docker
+    registry: hub.softleader.com.tw
+    insecure: true
+    dockerfile: Dockerfile.drone
+    repo: "hub.softleader.com.tw/${DRONE_REPO_NAME}"
+    tags: "${DRONE_TAG}"
+    when:
+      event: tag
+      local: false
+
+  slack:
+    image: plugins/slack
+    channel: rd
+    webhook: https://hooks.slack.com/services/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
+    when:
+      status: [ success, failure ]
+      local: false

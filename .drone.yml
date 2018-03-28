@@ -23,10 +23,10 @@ pipeline:
     when:
       event: tag
 
-  slack:
-    image: plugins/slack
-    channel: rd
-    webhook: https://hooks.slack.com/services/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
-    when:
-      status: [ success, failure ]
-      local: false
+  # slack:
+  #   image: plugins/slack
+  #   channel: rd
+  #   webhook: https://hooks.slack.com/services/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
+  #   when:
+  #     status: [ success, failure ]
+  #     local: false

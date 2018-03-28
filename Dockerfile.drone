@@ -7,6 +7,7 @@ RUN apk update && \
 	apk --no-cache add bash make && \
 	rm -rf /var/cache/apk/* && \
 	cd $GOPATH/src/github.com/softleader/captain-kube/ && \
+	go get && \
 	go install
 
 COPY installer.sh.drone /installer.sh

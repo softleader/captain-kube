@@ -8,6 +8,8 @@ pipeline:
     commands:
       - go get
       - goreleaser --rm-dist
+    volumes:
+      - /root/.config/goreleaser:/root/.config/goreleaser
     when:
       event: tag
 

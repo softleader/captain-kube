@@ -5,7 +5,6 @@ pipeline:
       - goreleaser
     when:
       event: tag
-      local: false
 
   publish:
     image: plugins/docker
@@ -16,7 +15,6 @@ pipeline:
     tags: "${DRONE_TAG}"
     when:
       event: tag
-      local: false
 
   slack:
     image: plugins/slack

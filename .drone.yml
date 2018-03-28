@@ -6,8 +6,8 @@ pipeline:
   build:
     image: golang:alpine
     commands:
-      - apk update && apk --no-cache add git && rm -rf /var/cache/apk/* 
       - echo "nameserver 8.8.8.8" >> /etc/resolv.conf
+      - apk update && apk --no-cache add git && rm -rf /var/cache/apk/* 
       - go get github.com/goreleaser/goreleaser
       - go get
       - goreleaser --rm-dist

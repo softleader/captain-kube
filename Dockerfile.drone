@@ -1,14 +1,15 @@
 FROM golang:alpine
 MAINTAINER softleader.com.tw
 
+VOLUME $GOPATH/src/github.com/softleader/captain-kube/
+
 COPY . $GOPATH/src/github.com/softleader/captain-kube/
 
 RUN apk update && \
 	apk --no-cache add bash make git && \
 	rm -rf /var/cache/apk/* && \
 	cd $GOPATH/src/github.com/softleader/captain-kube/ && \
-	go get && \
-	go install
+	go get
 
 COPY installer.sh.drone /installer.sh
 

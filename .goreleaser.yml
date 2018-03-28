@@ -1,3 +1,4 @@
+project_name: captain-kube
 builds:
   - main: main.go
   - binary: ckube

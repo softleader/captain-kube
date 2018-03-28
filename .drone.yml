@@ -4,7 +4,7 @@ workspace:
 
 pipeline:
   build:
-    image: softleader:goreleaser
+    image: softleader/goreleaser
     commands:
       - go get
       - goreleaser --rm-dist

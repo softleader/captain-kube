@@ -4,8 +4,10 @@ workspace:
 
 pipeline:
   build:
-    image: softleader/goreleaser
+    image: golang:alpine
     commands:
+      - go get github.com/goreleaser/goreleaser
+      - go get
       - goreleaser --rm-dist
     volumes:
       - /root/.config/goreleaser:/root/.config/goreleaser

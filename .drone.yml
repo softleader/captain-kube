@@ -6,9 +6,10 @@ pipeline:
   build:
     image: softleader/goreleaser
     commands:
-      - go get && goreleaser --rm-dist
-    volumes:
-      - /root/.config/goreleaser:/root/.config/goreleaser
+      - go get
+      - goreleaser --rm-dist
+    # volumes:
+    #   - /root/.config/goreleaser:/root/.config/goreleaser
     when:
       event: tag
 

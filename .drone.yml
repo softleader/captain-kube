@@ -4,11 +4,8 @@ workspace:
 
 pipeline:
   build:
-    image: golang:alpine
+    image: softleader:goreleaser
     commands:
-      - echo "nameserver 8.8.8.8" >> /etc/resolv.conf
-      - apk update && apk --no-cache add git && rm -rf /var/cache/apk/* 
-      - go get github.com/goreleaser/goreleaser
       - go get
       - goreleaser --rm-dist
     volumes:

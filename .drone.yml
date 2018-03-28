@@ -2,7 +2,7 @@ pipeline:
   build:
     image: softleader/goreleaser
     commands:
-      - goreleaser
+      - goreleaser --rm-dist
     when:
       event: tag
 

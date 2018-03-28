@@ -1,0 +1,17 @@
+builds:
+  - main: main.go
+  - binary: ckube
+    goos:
+      - windows
+      - darwin
+      - linux
+    goarch:
+      - amd64
+# Archive customization
+archive:
+  format: tar.gz
+  replacements:
+    amd64: 64-bit
+    darwin: macOS
+  files:
+    - drum-roll.licence.txt

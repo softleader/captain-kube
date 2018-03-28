@@ -3,8 +3,7 @@ MAINTAINER softleader.com.tw
 
 RUN apk update && \
 	apk --no-cache add bash make git && \
-	rm -rf /var/cache/apk/* && \
-	go get github.com/softleader/captain-kube
+	rm -rf /var/cache/apk/*
 
 COPY installer.sh /installer.sh
 

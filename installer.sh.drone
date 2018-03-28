@@ -20,6 +20,7 @@ then
     GOOS="GOOS=darwin"
 fi
 
-make -C $GOPATH/src/github.com/softleader/captain-kube $GOOS $GOARCH BINARY=$(pwd) OUTPUT=$OUTPUT
+go get
+make -C $GOPATH/src/github.com/softleader/captain-kube $GOOS $GOARCH BINARY=/data OUTPUT=$OUTPUT
 
 exit 0

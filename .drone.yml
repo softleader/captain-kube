@@ -3,13 +3,13 @@ workspace:
   path: src/github.com/softleader/captain-kube
 
 pipeline:
-  build:
-    image: softleader/goreleaser
-    commands:
-      - go get
-      - goreleaser --rm-dist
-    when:
-      event: tag
+  # build:
+  #   image: softleader/goreleaser
+  #   commands:
+  #     - go get
+  #     - goreleaser --rm-dist
+  #   when:
+  #     event: tag
 
   publish:
     image: plugins/docker
@@ -17,7 +17,7 @@ pipeline:
     insecure: true
     dockerfile: Dockerfile.drone
     repo: "hub.softleader.com.tw/${DRONE_REPO_NAME}"
-    tags: "${DRONE_TAG}"
+    tags: "${DRONE_TAG=latest}"
     when:
       event: tag
 

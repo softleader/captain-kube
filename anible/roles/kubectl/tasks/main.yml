@@ -1,0 +1,8 @@
+---
+- name: login to {{ server }}
+  shell: kubectl config set-cluster mycluster.icp --server={{ server }} --insecure-skip-tls-verify=true &&
+          kubectl config set-context mycluster.icp-context --cluster=mycluster.icp &&
+          kubectl config set-credentials {{ user }} --token={{ token }} &&
+          kubectl config set-context mycluster.icp-context --user={{ user }} --namespace=default &&
+          kubectl config use-context mycluster.icp-context
+

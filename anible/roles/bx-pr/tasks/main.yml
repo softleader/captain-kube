@@ -1,0 +1,6 @@
+---
+- name: login
+  shell: bx pr login -a https://{{ server }}:8443 --skip-ssl-validation -u {{ user }} -p {{ pass }} -c "ICP Account"
+
+- name: load helm chart
+  shell: echo "GOOD"

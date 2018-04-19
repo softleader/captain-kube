@@ -7,3 +7,16 @@ Documentation and Other Links:
 - [Setup Documentation](https://github.com/softleader/captain-kube/wiki/Installation)
 - [Usage Documentation](https://github.com/softleader/captain-kube/wiki/Getting-Started)
 - [Manual Documentation](./docs/man/ckube.md)
+
+
+## Set up the installation environment
+
+```
+$ docker run --rm -v "$(pwd)":/data ck sh /initial.sh
+```
+
+## staging
+
+```
+$ 18:28:19 ➜ anible docker run -it --rm -v "$(pwd)":/data ck ansible-playbook -i /data/hosts staging.yml
+```

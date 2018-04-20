@@ -4,4 +4,4 @@
 
   roles:
     - kubectl
-    - bx-pr
+    - charts

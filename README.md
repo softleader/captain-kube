@@ -12,7 +12,7 @@ Documentation and Other Links:
 ## Set up the installation environment
 
 ```
-$ docker run --rm -v "$(pwd)":/data ck sh /initial.sh
+$ docker run --rm -v "$(pwd)":/data hub.softleader.com.tw/captain-kube sh /initial.sh
 ```
 
 ## staging

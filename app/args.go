@@ -23,7 +23,10 @@ func NewArgs() *Args {
 	flag.IntVar(&a.Port, "port", 10080, "Determine application port")
 	flag.Parse()
 
-	marshaled, _ := json.MarshalIndent(a, "", " ")
+	marshaled, err := json.MarshalIndent(a, "", " ")
+	if err != nil {
+		panic(err)
+	}
 	fmt.Println("Parsed flags:", string(marshaled))
 
 	return &a

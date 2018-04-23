@@ -80,7 +80,7 @@
     </p>
 </div>
 
-<script src="/jquery-3.3.1.slim.min.js"></script>
+<script src="/jquery-3.3.1.min.js"></script>
 <script src="/bootstrap-4.1.0-dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
@@ -97,12 +97,9 @@
             var data = {
                 "namespace": $("#namespace").val(),
                 "version": $("#version").val(),
-                "tags": $("#tags").val().split(",").map(s = > s.trim()
-        ),
-            "verbose"
-        :
-            $("#verbose").is(":checked")
-        }
+                "tags": $("#tags").val().split(",").map(s => s.trim()),
+                "verbose": $("#verbose").is(":checked")
+            }
 
             var formData = new FormData();
             formData.append('file', $('#chart')[0].files[0]);

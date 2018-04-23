@@ -18,15 +18,16 @@ RUN apk update && \
 	cp /usr/share/zoneinfo/Asia/Taipei /etc/localtime && \
 	echo "Asia/Taipei" > /etc/timezone
 
-ENV ANSIBLE=/ansible-playbook
-ENV WORKSPACE=/data
+ENV CAPTAIN_KUBE=/captain-kube
+ENV PLAYBOOKS=${CAPTAIN_KUBE}/playbooks
 ENV HOST_WORKSPACE=""
 
-COPY ansible-playbook/* /ansible-playbook/
 COPY initial.sh /initial.sh
-COPY docker-compose.yml /docker-compose.yml
-COPY dist/main /main
+COPY docs/playbooks/* ${PLAYBOOKS}/
+COPY docker-compose.yml ${CAPTAIN_KUBE}/docker-compose.yml
+COPY dist/main ${CAPTAIN_KUBE}/main
+COPY templates/* ${CAPTAIN_KUBE}/templates/
 
-WORKDIR ${ANSIBLE}
+WORKDIR ${CAPTAIN_KUBE}
 
-CMD /main -ansible=${ANSIBLE} -workspace=${WORKSPACE} -host-workspace=${HOST_WORKSPACE}
+CMD ${CAPTAIN_KUBE}/main -playbooks=${PLAYBOOKS} -workspace=/data -host-workspace=${HOST_WORKSPACE}

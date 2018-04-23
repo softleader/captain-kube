@@ -6,11 +6,11 @@ import (
 	"strconv"
 	"mime/multipart"
 	"github.com/kataras/iris/context"
+	"github.com/softleader/captain-kube/ansible/playbook"
+	"path"
 	"github.com/softleader/captain-kube/sh"
 	"github.com/softleader/captain-kube/ansible"
-	"github.com/softleader/captain-kube/ansible/playbook"
 	"encoding/json"
-	"path"
 )
 
 func main() {
@@ -29,22 +29,33 @@ func main() {
 func newApp(args *app.Args) *iris.Application {
 	app := iris.New()
 
-	app.Post("/staging", func(ctx iris.Context) {
+	tmpl := iris.HTML("templates", ".html")
+	tmpl.Reload(true)
 
-		book := playbook.NewStaging()
-		ctx.UploadFormFiles(args.Workspace, func(context context.Context, file *multipart.FileHeader) {
-			book.Chart = path.Join(args.HostWorkspace, file.Filename)
+	app.RegisterView(tmpl)
+	staging := app.Party("/staging")
+	{
+		staging.Get("/", func(ctx context.Context) {
+			ctx.View("staging.html")
 		})
-		body := ctx.GetHeader("Captain-Kube")
-		json.Unmarshal([]byte(body), &book)
-		opts := sh.Options{
-			Ctx:     &ctx,
-			Pwd:     args.Ansible,
-			Verbose: book.V(),
-		}
-		book.Inventory = path.Join(args.Workspace, book.Inventory)
-		ansible.Play(&opts, *book)
-	})
+
+		staging.Post("/", func(ctx iris.Context) {
+
+			book := playbook.NewStaging()
+			ctx.UploadFormFiles(args.Workspace, func(context context.Context, file *multipart.FileHeader) {
+				book.Chart = path.Join(args.HostWorkspace, file.Filename)
+			})
+			body := ctx.GetHeader("Captain-Kube")
+			json.Unmarshal([]byte(body), &book)
+			opts := sh.Options{
+				Ctx:     &ctx,
+				Pwd:     args.Playbooks,
+				Verbose: book.V(),
+			}
+			book.Inventory = path.Join(args.Workspace, book.Inventory)
+			ansible.Play(&opts, *book)
+		})
+	}
 
 	return app
 }

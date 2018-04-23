@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Captain Kube</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
+          integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="https://github.com/softleader/captain-kube">
+        <img src="https://raw.githubusercontent.com/softleader/captain-kube/master/docs/captainkube-02.svg"
+             width="30" height="30" class="d-inline-block align-top" alt="">
+        Captain Kube
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="/staging">Staging</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container">
+    <p>
+    <form>
+
+        <div class="form-group">
+            <label for="namespace">Namespace</label>
+            <input type="text" class="form-control" id="namespace" required>
+        </div>
+
+        <div class="form-group disabled">
+            <label for="chart">Chart</label>
+            <input type="file" class="form-control" id="chart" required>
+        </div>
+
+        <div class="form-group disabled">
+            <label for="tags">Tags</label>
+            <input type="text" class="form-control" id="tags">
+        </div>
+
+        <div class="form-group">
+            <label for="version">Version</label>
+            <input type="text" class="form-control" id="version" required>
+        </div>
+
+        <div class="form-check">
+            <label class="form-check-label">
+                <input type="checkbox" id="verbose" class="form-check-input">
+                Verbose
+            </label>
+        </div>
+
+        <button id="staging" url="/staging" type="submit" class="btn btn-outline-primary"
+                onclick="$(this).parent().attr('action', $(this).attr('url'))">
+            <i class="fa fa-bomb" aria-hidden="true"></i> Fire in the hole
+        </button>
+    </form>
+    </p>
+    <hr>
+    <p>
+    <div class="alert alert-success" role="alert">
+        <h4 class="alert-heading"><i class="fa fa-terminal" aria-hidden="true"></i></h4>
+        <hr>
+        <pre id="output"></pre>
+    </div>
+    </p>
+</div>
+
+<script src="https://use.fontawesome.com/c4e1e41426.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"
+        integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"
+        integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm"
+        crossorigin="anonymous"></script>
+
+<script>
+
+    $(function () {
+        $("form").submit(function (event) {
+            event.preventDefault();
+
+            var $btns = $("button");
+            $btns.prop('disabled', true);
+
+            var $output = $("#output");
+            $output.empty().parent().removeClass().addClass("alert alert-success")
+            var data = {
+                "namespace": $("#namespace").val(),
+                "version": $("#version").val(),
+                "tags": $("#tags").val().split(",").map(s = > s.trim()
+        ),
+            "verbose"
+        :
+            $("#verbose").is(":checked")
+        }
+
+            var formData = new FormData();
+            formData.append('file', $('#chart')[0].files[0]);
+
+            $.ajax({
+                type: 'post',
+                url: event.target.action,
+                data: formData,
+                dataType: 'json',
+                processData: false,
+                contentType: false,
+                headers: {
+                    "Captain-Kube": JSON.stringify(data)
+                },
+                xhrFields: {
+                    onprogress: function (e) {
+                        $output.text(e.currentTarget.response);
+                    }
+                }
+            }).always(function () {
+                $btns.prop('disabled', false);
+            });
+        });
+
+
+        $(window).on('beforeunload', function () {
+            if ($('#deploy').is(':disabled')) {
+                return "Are you sure you want to leave this page while staging?";
+            }
+            return;
+        });
+    })
+</script>
+
+</body>
+</html>

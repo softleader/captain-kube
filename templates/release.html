@@ -22,10 +22,10 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" href="/staging">Staging</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item active">
                 <a class="nav-link" href="/release">Release</a>
             </li>
         </ul>
@@ -33,50 +33,7 @@
 </nav>
 
 <div class="container">
-    <p>
-    <form>
-
-        <div class="form-group">
-            <label for="namespace">Namespace</label>
-            <input type="text" class="form-control" id="namespace" required>
-        </div>
-
-        <div class="form-group disabled">
-            <label for="chart">Chart</label>
-            <input type="file" class="form-control" id="chart" required>
-        </div>
-
-        <div class="form-group disabled">
-            <label for="tags">Tags</label>
-            <input type="text" class="form-control" id="tags">
-        </div>
-
-        <div class="form-group">
-            <label for="version">Version</label>
-            <input type="text" class="form-control" id="version" required>
-        </div>
-
-        <div class="form-check">
-            <label class="form-check-label">
-                <input type="checkbox" id="verbose" class="form-check-input">
-                Verbose
-            </label>
-        </div>
-
-        <button id="staging" url="/staging" type="submit" class="btn btn-outline-primary"
-                onclick="$(this).parent().attr('action', $(this).attr('url'))">
-            <i class="fa fa-bomb" aria-hidden="true"></i> Fire in the hole
-        </button>
-    </form>
-    </p>
-    <hr>
-    <p>
-    <div class="alert alert-success" role="alert">
-        <h4 class="alert-heading"><i class="fa fa-terminal" aria-hidden="true"></i></h4>
-        <hr>
-        <pre id="output"></pre>
-    </div>
-    </p>
+    Coming Soon...
 </div>
 
 <script src="fontawesome.js"></script>

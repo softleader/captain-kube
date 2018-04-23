@@ -22,12 +22,13 @@ ENV CAPTAIN_KUBE=/captain-kube
 ENV PLAYBOOKS=${CAPTAIN_KUBE}/playbooks
 ENV HOST_WORKSPACE=""
 
-COPY initial.sh /initial.sh
+COPY docs/initial.sh /initial.sh
 COPY docs/playbooks/* ${PLAYBOOKS}/
-COPY docker-compose.yml ${CAPTAIN_KUBE}/docker-compose.yml
 COPY dist/main ${CAPTAIN_KUBE}/main
 COPY templates/* ${CAPTAIN_KUBE}/templates/
 COPY static/* ${CAPTAIN_KUBE}/static/
+COPY docs/docker-compose.yml ${CAPTAIN_KUBE}/docker-compose.yml
+COPY docs/docker-compose /docker-compose
 
 WORKDIR ${CAPTAIN_KUBE}
 

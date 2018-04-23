@@ -1,6 +1,6 @@
 ---
 - name: bx pr login
-  shell: bx pr login -a https://{{ inventory_hostname }}:8443 --skip-ssl-validation -u {{ user }} -p {{ pass }} -c "ICP Account"
+  shell: bx pr login -a https://{{ inventory_hostname }}:8443 --skip-ssl-validation -u {{ user }} -p {{ pass }} -c '{{ account }}'
   tags:
     - icp
 

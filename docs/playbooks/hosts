@@ -7,6 +7,7 @@ ansible_ssh_user=<ssh-username>
 ansible_ssh_pass=<ssh-password>
 user=<icp-username>
 pass=<icp-password>
+account=<icp-account>
 token=<icp-token>
 
 [prod]
@@ -18,6 +19,7 @@ ansible_ssh_user=<ssh-username>
 ansible_ssh_pass=<ssh-password>
 user=<icp-username>
 pass=<icp-password>
+account=<icp-account>
 token=<icp-token>
 
 [registry]

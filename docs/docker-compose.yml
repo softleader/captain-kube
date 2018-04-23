@@ -6,7 +6,7 @@ services:
     ports:
       - 10080:10080
     volumes:
-      - <path>:/data/
+      - <installation_directory>:/data/
     restart: always
     environment:
-      - HOST_WORKSPACE=<same-as-volumes-on-host>
+      - HOST_WORKSPACE=<installation_directory>

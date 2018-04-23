@@ -15,3 +15,5 @@ main
 
 dist/
 .DS_Store
+
+.retry

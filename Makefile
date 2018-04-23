@@ -4,4 +4,4 @@ BINARY?=dist
 OUTPUT?=main
 
 install:
-	GOOS=${GOOS} GOARCH=${GOARCH} go build -o ${BINARY}/${OUTPUT}_${GOOS}_${GOARCH} .
+	GOOS=${GOOS} GOARCH=${GOARCH} go build -o ${BINARY}/${OUTPUT} .

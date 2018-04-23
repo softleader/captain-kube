@@ -6,4 +6,3 @@ Documentation and Other Links:
 
 - [Setup Documentation](https://github.com/softleader/captain-kube/wiki/Installation)
 - [Usage Documentation](https://github.com/softleader/captain-kube/wiki/Getting-Started)
-- [Manual Documentation](./docs/man/ckube.md)

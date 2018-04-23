@@ -1,0 +1,15 @@
+---
+- name: bx pr login
+  shell: bx pr login -a https://{{ inventory_hostname }}:8443 --skip-ssl-validation -u {{ user }} -p {{ pass }} -c '{{ account }}'
+  tags:
+    - icp
+
+- name: bx pr load charts
+  shell: bx pr load-helm-chart --archive {{ chart }}
+  tags:
+    - icp
+
+- name: install charts
+  shell: helm install {{ chart }} -n {{ namespace }}
+  tags:
+    - helm

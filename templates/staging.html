@@ -59,6 +59,13 @@
 
         <div class="form-check">
             <label class="form-check-label">
+                <input type="checkbox" id="pull-image" class="form-check-input">
+                Pull Image before deploying to Kubernetes
+            </label>
+        </div>
+
+        <div class="form-check">
+            <label class="form-check-label">
                 <input type="checkbox" id="verbose" class="form-check-input">
                 Verbose
             </label>
@@ -98,6 +105,7 @@
                 "namespace": $("#namespace").val(),
                 "version": $("#version").val(),
                 "tags": $("#tags").val().split(",").map(s => s.trim()),
+                "pull-image": $("#pull-image").is(":checked"),
                 "verbose": $("#verbose").is(":checked")
             }
 

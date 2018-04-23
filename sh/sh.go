@@ -29,8 +29,12 @@ func C(opts *Options, commands ...string) (arg string, out string, err error) {
 		cmd.Dir = opts.Pwd
 	}
 
-	if opts.Ctx != nil && opts.Verbose {
-		(*opts.Ctx).StreamWriter(pipe.Printf("$ %v\n", arg))
+	if opts.Verbose {
+		if opts.Ctx != nil {
+			(*opts.Ctx).StreamWriter(pipe.Printf("$ %v\n", arg))
+		} else {
+			fmt.Printf("$ %v\n", arg)
+		}
 	}
 
 	stdout := output{ctx: opts.Ctx, Verbose: opts.Verbose}

@@ -7,6 +7,7 @@ type Staging struct {
 	Version   string   `json:"version,omitempty"`
 	Chart     string   `json:"chart,omitempty"`
 	Verbose   bool     `json:"verbose"`
+	PullImage bool     `json:"pull-image"`
 }
 
 func NewStaging() *Staging {

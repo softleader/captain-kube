@@ -12,15 +12,19 @@ RUN apk update && \
 		ansible \
 		python \
 		openssh \
+		openssl \
 		sshpass \
 	&& rm -rf /var/cache/apk/* && \
 	ls /usr/share/zoneinfo && \
 	cp /usr/share/zoneinfo/Asia/Taipei /etc/localtime && \
-	echo "Asia/Taipei" > /etc/timezone
+	echo "Asia/Taipei" > /etc/timezone && \
+	curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | bash
 
 ENV CAPTAIN_KUBE=/captain-kube
 ENV PLAYBOOKS=${CAPTAIN_KUBE}/playbooks
 ENV HOST_WORKSPACE=""
+
+VOLUME /tmp
 
 COPY docs/initial.sh /initial.sh
 COPY docs/playbooks/* ${PLAYBOOKS}/

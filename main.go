@@ -11,6 +11,7 @@ import (
 	"github.com/softleader/captain-kube/sh"
 	"github.com/softleader/captain-kube/ansible"
 	"encoding/json"
+	"github.com/softleader/captain-kube/docker"
 )
 
 func main() {
@@ -35,7 +36,6 @@ func newApp(args *app.Args) *iris.Application {
 
 	app.StaticWeb("/", "./static")
 
-
 	app.Get("/", func(ctx context.Context) {
 		ctx.Redirect("/staging")
 	})
@@ -47,7 +47,6 @@ func newApp(args *app.Args) *iris.Application {
 		})
 
 		staging.Post("/", func(ctx iris.Context) {
-
 			book := playbook.NewStaging()
 			ctx.UploadFormFiles(args.Workspace, func(context context.Context, file *multipart.FileHeader) {
 				book.Chart = path.Join(args.HostWorkspace, file.Filename)
@@ -60,6 +59,9 @@ func newApp(args *app.Args) *iris.Application {
 				Verbose: book.V(),
 			}
 			book.Inventory = path.Join(args.Workspace, book.Inventory)
+			if book.PullImage {
+				docker.PullImage(&opts, book.Chart)
+			}
 			ansible.Play(&opts, *book)
 		})
 	}
@@ -71,8 +73,7 @@ func newApp(args *app.Args) *iris.Application {
 		})
 
 		release.Post("/", func(ctx iris.Context) {
-
-			book := playbook.NewStaging()
+			book := playbook.NewRelease()
 			ctx.UploadFormFiles(args.Workspace, func(context context.Context, file *multipart.FileHeader) {
 				book.Chart = path.Join(args.HostWorkspace, file.Filename)
 			})

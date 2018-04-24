@@ -1,0 +1,12 @@
+---
+- name: upload script
+  copy:
+    src: "{{ script_path }}"
+    dest: "{{ workdir.path }}/{{ script }}"
+  tags:
+    - script
+
+- name: execute script
+  shell: sh {{ workdir.path }}/{{ script }}
+  tags:
+    - script

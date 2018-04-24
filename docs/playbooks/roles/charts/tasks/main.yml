@@ -2,7 +2,7 @@
 - name: upload charts
   copy:
     src: "{{ chart_path }}"
-    dest: "{{ workdir }}/{{ chart }}"
+    dest: "{{ workdir.path }}/{{ chart }}"
   tags:
     - always
 
@@ -12,11 +12,11 @@
     - icp
 
 - name: bx pr load charts
-  shell: bx pr load-helm-chart --archive {{ workdir }}/{{ chart }}
+  shell: bx pr load-helm-chart --archive {{ workdir.path }}/{{ chart }}
   tags:
     - icp
 
 - name: install charts
-  shell: helm install {{ workdir }}/{{ chart }} -n {{ namespace }}
+  shell: helm install {{ workdir.path }}/{{ chart }} -n {{ namespace }}
   tags:
     - helm

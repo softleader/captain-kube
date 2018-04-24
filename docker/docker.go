@@ -8,17 +8,34 @@ import (
 	"os"
 	"gopkg.in/yaml.v2"
 	"github.com/softleader/captain-kube/chart"
+	"path"
+	"html/template"
+	"bytes"
 )
 
-func PullImage(opts *sh.Options, chart string) error {
-	dir, err := ioutil.TempDir("/tmp", "extract-tgz-")
-	if err != nil {
-		return err
-	}
-	defer os.RemoveAll(dir) // clean up
+type PullScript struct {
+	Images []string
+}
 
+const dockerPullScript = `
+#!/usr/bin/env bash
+{{ range $key, $value := .Images }}
+docker pull {{ $value }}
+{{ end }}
+exit 0
+`
+
+func (s PullScript) String() string {
+	t := template.Must(template.New("docker-pull").Parse(dockerPullScript))
+	var buf bytes.Buffer
+	t.Execute(&buf, s)
+	return buf.String()
+}
+
+func PullImage(opts *sh.Options, dir string, chart string) (string, string, error) {
 	// untar
-	_, _, err = sh.C(opts, "tar zxvf", chart, "-C", dir, "--strip 1")
+	_, _, err := sh.C(opts, "tar zxvf", chart, "-C", dir, "--strip 1")
+	// 不確定為啥 tar 的輸出都在 err 中..
 	//if err != nil {
 	//	fmt.Println(err)
 	//	return err
@@ -29,21 +46,31 @@ func PullImage(opts *sh.Options, chart string) error {
 	_, _, err = sh.C(opts, "mkdir -p", rendered, "&& helm template --output-dir", rendered, dir)
 	if err != nil {
 		fmt.Println(err)
-		return err
+		return "", "", err
 	}
 
+	s := PullScript{}
+
 	err = filepath.Walk(rendered, func(path string, info os.FileInfo, err error) error {
-		return pull(opts, path, info, err)
+		return pull(&s, path, info, err)
 	})
 	if err != nil {
 		fmt.Println(err)
-		return err
+		return "", "", err
 	}
 
-	return nil
+	script := "docker-pull.sh"
+	scriptPath := path.Join(dir, script)
+	err = ioutil.WriteFile(scriptPath, []byte(s.String()), os.ModePerm)
+	if err != nil {
+		fmt.Println(err)
+		return "", "", err
+	}
+
+	return script, scriptPath, nil
 }
 
-func pull(opts *sh.Options, path string, f os.FileInfo, err error) error {
+func pull(script *PullScript, path string, f os.FileInfo, err error) error {
 	if !f.IsDir() && filepath.Ext(path) == ".yaml" {
 		fmt.Printf("pull: %s\n", path)
 		in, err := ioutil.ReadFile(path)
@@ -54,7 +81,7 @@ func pull(opts *sh.Options, path string, f os.FileInfo, err error) error {
 		t := chart.Template{}
 		yaml.Unmarshal(in, &t)
 		for _, c := range t.Spec.Template.Spec.Containers {
-			sh.C(opts, "docker pull", c.Image)
+			script.Images = append(script.Images, c.Image)
 		}
 	}
 	return nil

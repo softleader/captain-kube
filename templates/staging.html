@@ -49,7 +49,26 @@
 
         <div class="form-group disabled">
             <label for="tags">Tags</label>
-            <input type="text" class="form-control" id="tags">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="icp" id="tags-helm">
+                <label class="form-check-label" for="tags-helm">
+                    Helm
+                </label>
+            </div>
+
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="icp" id="tags-icp">
+                <label class="form-check-label" for="tags-icp">
+                    ICP
+                </label>
+            </div>
+
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="openshift" id="tags-openshift" disabled>
+                <label class="form-check-label" for="tags-openshift">
+                    OpenShift
+                </label>
+            </div>
         </div>
 
         <div class="form-group">
@@ -59,8 +78,8 @@
 
         <div class="form-check">
             <label class="form-check-label">
-                <input type="checkbox" id="pull-image" class="form-check-input">
-                Pull Image before deploying to Kubernetes
+                <input type="checkbox" id="docker-pull" class="form-check-input" disabled>
+                Docker pull before deploying to Kubernetes
             </label>
         </div>
 
@@ -104,10 +123,12 @@
             var data = {
                 "namespace": $("#namespace").val(),
                 "version": $("#version").val(),
-                "tags": $("#tags").val().split(",").map(s => s.trim()),
-                "pull-image": $("#pull-image").is(":checked"),
-                "verbose": $("#verbose").is(":checked")
+                "tags": [],
+                "verbose": $("#verbose").is(":checked"),
+                "dockerPull": $("#docker-pull").is(":checked")
             }
+
+            $("input:checkbox[id^='tags-']:checked").each((i, e) => data.tags.push(e.value));
 
             var formData = new FormData();
             formData.append('file', $('#chart')[0].files[0]);
@@ -134,7 +155,7 @@
 
 
         $(window).on('beforeunload', function () {
-            if ($('#deploy').is(':disabled')) {
+            if ($('#staging').is(':disabled')) {
                 return "Are you sure you want to leave this page while staging?";
             }
             return;

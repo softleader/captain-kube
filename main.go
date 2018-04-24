@@ -12,6 +12,9 @@ import (
 	"github.com/softleader/captain-kube/ansible"
 	"encoding/json"
 	"github.com/softleader/captain-kube/docker"
+	"github.com/softleader/captain-kube/pipe"
+	"io/ioutil"
+	"os"
 )
 
 func main() {
@@ -53,17 +56,36 @@ func newApp(args *app.Args) *iris.Application {
 				book.ChartPath = path.Join(args.Workdir, file.Filename)
 			})
 			body := ctx.GetHeader("Captain-Kube")
-			json.Unmarshal([]byte(body), &book)
+			err := json.Unmarshal([]byte(body), &book)
+			if err != nil {
+				ctx.StreamWriter(pipe.Println(err.Error()))
+				return
+			}
 			opts := sh.Options{
 				Ctx:     &ctx,
 				Pwd:     args.Playbooks,
 				Verbose: book.V(),
 			}
 			book.Inventory = path.Join(args.Workdir, book.Inventory)
-			if book.PullImage {
-				docker.PullImage(&opts, path.Join(args.Workdir, book.Chart))
+			if book.DockerPull {
+				tmp, err := ioutil.TempDir("/tmp", "")
+				if err != nil {
+					ctx.StreamWriter(pipe.Println(err.Error()))
+					return
+				}
+				defer os.RemoveAll(tmp) // clean up
+				book.Script, book.ScriptPath, err = docker.PullImage(&opts, tmp, path.Join(args.Workdir, book.Chart))
+				if err != nil {
+					ctx.StreamWriter(pipe.Println(err.Error()))
+					return
+				}
+				book.Tags = append(book.Tags, "script")
 			}
-			ansible.Play(&opts, *book)
+			_, _, err = ansible.Play(&opts, *book)
+			if err != nil {
+				ctx.StreamWriter(pipe.Println(err.Error()))
+				return
+			}
 		})
 	}
 

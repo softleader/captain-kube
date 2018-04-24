@@ -3,5 +3,7 @@
   hosts: uat
 
   roles:
+    - workdir
+    - script
     - kubectl
     - charts

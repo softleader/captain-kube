@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"fmt"
 	"os"
-	"github.com/softleader/captain-kube/helm"
 	"gopkg.in/yaml.v2"
+	"github.com/softleader/captain-kube/chart"
 )
 
 func PullImage(opts *sh.Options, chart string) error {
@@ -51,7 +51,7 @@ func pull(opts *sh.Options, path string, f os.FileInfo, err error) error {
 			return err
 		}
 		fmt.Println(string(in))
-		t := helm.Template{}
+		t := chart.Template{}
 		yaml.Unmarshal(in, &t)
 		for _, c := range t.Spec.Template.Spec.Containers {
 			sh.C(opts, "docker pull", c.Image)

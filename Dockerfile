@@ -27,10 +27,11 @@ ENV HOST_WORKSPACE=""
 VOLUME /tmp
 
 COPY docs/initial.sh /initial.sh
-COPY docs/playbooks/* ${PLAYBOOKS}/
+COPY docs/upgrade.sh /upgrade.sh
+COPY docs/playbooks/ ${PLAYBOOKS}/
 COPY dist/main ${CAPTAIN_KUBE}/main
-COPY templates/* ${CAPTAIN_KUBE}/templates/
-COPY static/* ${CAPTAIN_KUBE}/static/
+COPY templates/ ${CAPTAIN_KUBE}/templates/
+COPY static/ ${CAPTAIN_KUBE}/static/
 COPY docs/docker-compose.yml ${CAPTAIN_KUBE}/docker-compose.yml
 COPY docs/docker-compose /docker-compose
 

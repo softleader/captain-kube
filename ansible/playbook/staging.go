@@ -6,6 +6,7 @@ type Staging struct {
 	Namespace string   `json:"namespace"`
 	Version   string   `json:"version,omitempty"`
 	Chart     string   `json:"chart,omitempty"`
+	ChartPath string   `json:"-"`
 	Verbose   bool     `json:"verbose"`
 	PullImage bool     `json:"pull-image"`
 }
@@ -30,7 +31,7 @@ func (b Staging) T() []string {
 }
 
 func (b Staging) E() []string {
-	return []string{"version=" + b.Version, "chart=" + b.Chart, "namespace=" + b.Namespace}
+	return []string{"version=" + b.Version, "chart=" + b.Chart, "chart_path=" + b.ChartPath, "namespace=" + b.Namespace}
 }
 
 func (b Staging) V() bool {

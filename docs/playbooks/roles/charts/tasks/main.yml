@@ -1,15 +1,22 @@
 ---
+- name: upload charts
+  copy:
+    src: "{{ chart_path }}"
+    dest: "{{ workdir }}/{{ chart }}"
+  tags:
+    - always
+
 - name: bx pr login
   shell: bx pr login -a https://{{ inventory_hostname }}:8443 --skip-ssl-validation -u {{ user }} -p {{ pass }} -c '{{ account }}'
   tags:
     - icp
 
 - name: bx pr load charts
-  shell: bx pr load-helm-chart --archive {{ chart }}
+  shell: bx pr load-helm-chart --archive {{ workdir }}/{{ chart }}
   tags:
     - icp
 
 - name: install charts
-  shell: helm install {{ chart }} -n {{ namespace }}
+  shell: helm install {{ workdir }}/{{ chart }} -n {{ namespace }}
   tags:
     - helm

@@ -8,5 +8,3 @@ services:
     volumes:
       - <installation_directory>:/data/
     restart: always
-    environment:
-      - HOST_WORKSPACE=<installation_directory>

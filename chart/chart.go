@@ -1,4 +1,4 @@
-package helm
+package chart
 
 type Template struct {
 	Spec struct {

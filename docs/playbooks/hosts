@@ -9,6 +9,7 @@ user=<icp-username>
 pass=<icp-password>
 account=<icp-account>
 token=<icp-token>
+workdir=<workdir-on-host>
 
 [prod]
 2.2.2.2
@@ -21,6 +22,7 @@ user=<icp-username>
 pass=<icp-password>
 account=<icp-account>
 token=<icp-token>
+workdir=<workdir-on-host>
 
 [registry]
 3.3.3.3

@@ -48,8 +48,9 @@ func newApp(args *app.Args) *iris.Application {
 
 		staging.Post("/", func(ctx iris.Context) {
 			book := playbook.NewStaging()
-			ctx.UploadFormFiles(args.Workspace, func(context context.Context, file *multipart.FileHeader) {
-				book.Chart = path.Join(args.HostWorkspace, file.Filename)
+			ctx.UploadFormFiles(args.Workdir, func(context context.Context, file *multipart.FileHeader) {
+				book.Chart = file.Filename
+				book.ChartPath = path.Join(args.Workdir, file.Filename)
 			})
 			body := ctx.GetHeader("Captain-Kube")
 			json.Unmarshal([]byte(body), &book)
@@ -58,9 +59,9 @@ func newApp(args *app.Args) *iris.Application {
 				Pwd:     args.Playbooks,
 				Verbose: book.V(),
 			}
-			book.Inventory = path.Join(args.Workspace, book.Inventory)
+			book.Inventory = path.Join(args.Workdir, book.Inventory)
 			if book.PullImage {
-				docker.PullImage(&opts, book.Chart)
+				docker.PullImage(&opts, path.Join(args.Workdir, book.Chart))
 			}
 			ansible.Play(&opts, *book)
 		})
@@ -74,8 +75,8 @@ func newApp(args *app.Args) *iris.Application {
 
 		release.Post("/", func(ctx iris.Context) {
 			book := playbook.NewRelease()
-			ctx.UploadFormFiles(args.Workspace, func(context context.Context, file *multipart.FileHeader) {
-				book.Chart = path.Join(args.HostWorkspace, file.Filename)
+			ctx.UploadFormFiles(args.Workdir, func(context context.Context, file *multipart.FileHeader) {
+				book.Chart = file.Filename
 			})
 			body := ctx.GetHeader("Captain-Kube")
 			json.Unmarshal([]byte(body), &book)
@@ -84,7 +85,7 @@ func newApp(args *app.Args) *iris.Application {
 				Pwd:     args.Playbooks,
 				Verbose: book.V(),
 			}
-			book.Inventory = path.Join(args.Workspace, book.Inventory)
+			book.Inventory = path.Join(args.Workdir, book.Inventory)
 			ansible.Play(&opts, *book)
 		})
 	}

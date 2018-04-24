@@ -68,13 +68,13 @@ func newApp(args *app.Args) *iris.Application {
 			}
 			book.Inventory = path.Join(args.Workdir, book.Inventory)
 			if book.DockerPull {
-				tmp, err := ioutil.TempDir("/tmp", "")
+				tmp, err := ioutil.TempDir("/tmp", ".staging")
 				if err != nil {
 					ctx.StreamWriter(pipe.Println(err.Error()))
 					return
 				}
 				defer os.RemoveAll(tmp) // clean up
-				book.Script, book.ScriptPath, err = docker.PullImage(&opts, tmp, path.Join(args.Workdir, book.Chart))
+				book.Script, book.ScriptPath, err = docker.Pull(&opts, path.Join(args.Workdir, book.Chart), tmp)
 				if err != nil {
 					ctx.StreamWriter(pipe.Println(err.Error()))
 					return
@@ -99,16 +99,39 @@ func newApp(args *app.Args) *iris.Application {
 			book := playbook.NewRelease()
 			ctx.UploadFormFiles(args.Workdir, func(context context.Context, file *multipart.FileHeader) {
 				book.Chart = file.Filename
+				book.ChartPath = path.Join(args.Workdir, file.Filename)
 			})
 			body := ctx.GetHeader("Captain-Kube")
-			json.Unmarshal([]byte(body), &book)
+			err := json.Unmarshal([]byte(body), &book)
+			if err != nil {
+				ctx.StreamWriter(pipe.Println(err.Error()))
+				return
+			}
 			opts := sh.Options{
 				Ctx:     &ctx,
 				Pwd:     args.Playbooks,
 				Verbose: book.V(),
 			}
 			book.Inventory = path.Join(args.Workdir, book.Inventory)
-			ansible.Play(&opts, *book)
+
+			tmp, err := ioutil.TempDir("/tmp", ".release")
+			if err != nil {
+				ctx.StreamWriter(pipe.Println(err.Error()))
+				return
+			}
+			defer os.RemoveAll(tmp) // clean up
+			book.Script, book.ScriptPath, err = docker.RetagAndPush(&opts, path.Join(args.Workdir, book.Chart), book.Registry, tmp)
+			if err != nil {
+				ctx.StreamWriter(pipe.Println(err.Error()))
+				return
+			}
+			book.Tags = append(book.Tags, "script")
+
+			_, _, err = ansible.Play(&opts, *book)
+			if err != nil {
+				ctx.StreamWriter(pipe.Println(err.Error()))
+				return
+			}
 		})
 	}
 

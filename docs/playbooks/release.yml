@@ -1,0 +1,15 @@
+---
+- name: Retag and push images
+  hosts: uat
+
+  roles:
+    - workdir
+    - script
+
+- name: Draft a release
+  hosts: prod
+
+  roles:
+    - workdir
+    - kubectl
+    - charts

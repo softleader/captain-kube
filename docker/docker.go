@@ -2,39 +2,33 @@ package docker
 
 import (
 	"github.com/softleader/captain-kube/sh"
-	"io/ioutil"
-	"path/filepath"
 	"fmt"
-	"os"
-	"gopkg.in/yaml.v2"
-	"github.com/softleader/captain-kube/chart"
 	"path"
-	"html/template"
-	"bytes"
+	"github.com/softleader/captain-kube/tgz"
+	"github.com/softleader/captain-kube/helm"
+	"github.com/softleader/captain-kube/tmpl"
+	"github.com/softleader/captain-kube/chart"
 )
-
-type PullScript struct {
-	Images []string
-}
 
 const dockerPullScript = `
 #!/usr/bin/env bash
-{{ range $key, $value := .Images }}
-docker pull {{ $value }}
+{{ range $key, $value := . }}
+docker pull {{ $value.Name }}
 {{ end }}
 exit 0
 `
 
-func (s PullScript) String() string {
-	t := template.Must(template.New("docker-pull").Parse(dockerPullScript))
-	var buf bytes.Buffer
-	t.Execute(&buf, s)
-	return buf.String()
-}
+const retagAndPushScript = `
+#!/usr/bin/env bash
+{{ $registry := .Registry }}
+{{ range $key, $value := .Images }}
+docker tag {{ $value.Name }} {{ $registry }}/{{ $value.RemoteName }} && docker push {{ $registry }}/{{ $value.RemoteName }}
+{{ end }}
+exit 0
+`
 
-func PullImage(opts *sh.Options, dir string, chart string) (string, string, error) {
-	// untar
-	_, _, err := sh.C(opts, "tar zxvf", chart, "-C", dir, "--strip 1")
+func Pull(opts *sh.Options, tar, tmp string) (string, string, error) {
+	err := tgz.Extract(opts, tar, tmp)
 	// 不確定為啥 tar 的輸出都在 err 中..
 	//if err != nil {
 	//	fmt.Println(err)
@@ -42,26 +36,21 @@ func PullImage(opts *sh.Options, dir string, chart string) (string, string, erro
 	//}
 
 	// Render chart templates locally
-	rendered := filepath.Join(dir, "rendered")
-	_, _, err = sh.C(opts, "mkdir -p", rendered, "&& helm template --output-dir", rendered, dir)
+	rendered, err := helm.Template(opts, tmp)
 	if err != nil {
 		fmt.Println(err)
 		return "", "", err
 	}
 
-	s := PullScript{}
-
-	err = filepath.Walk(rendered, func(path string, info os.FileInfo, err error) error {
-		return pull(&s, path, info, err)
-	})
+	images, err := chart.CollectImages(rendered)
 	if err != nil {
 		fmt.Println(err)
 		return "", "", err
 	}
 
 	script := "docker-pull.sh"
-	scriptPath := path.Join(dir, script)
-	err = ioutil.WriteFile(scriptPath, []byte(s.String()), os.ModePerm)
+	scriptPath := path.Join(tmp, script)
+	err = tmpl.CompileTo(dockerPullScript, images, scriptPath)
 	if err != nil {
 		fmt.Println(err)
 		return "", "", err
@@ -70,19 +59,43 @@ func PullImage(opts *sh.Options, dir string, chart string) (string, string, erro
 	return script, scriptPath, nil
 }
 
-func pull(script *PullScript, path string, f os.FileInfo, err error) error {
-	if !f.IsDir() && filepath.Ext(path) == ".yaml" {
-		fmt.Printf("pull: %s\n", path)
-		in, err := ioutil.ReadFile(path)
-		if err != nil {
-			return err
-		}
-		fmt.Println(string(in))
-		t := chart.Template{}
-		yaml.Unmarshal(in, &t)
-		for _, c := range t.Spec.Template.Spec.Containers {
-			script.Images = append(script.Images, c.Image)
-		}
+func RetagAndPush(opts *sh.Options, tar, registry, tmp string) (string, string, error) {
+	err := tgz.Extract(opts, tar, tmp)
+	// 不確定為啥 tar 的輸出都在 err 中..
+	//if err != nil {
+	//	fmt.Println(err)
+	//	return err
+	//}
+
+	// Render chart templates locally
+	rendered, err := helm.Template(opts, tmp)
+	if err != nil {
+		fmt.Println(err)
+		return "", "", err
 	}
-	return nil
+
+	retag := Retag{
+		Registry: registry,
+	}
+	retag.Images, err =
+		chart.CollectImages(rendered)
+	if err != nil {
+		fmt.Println(err)
+		return "", "", err
+	}
+
+	script := "retag-and-push.sh"
+	scriptPath := path.Join(tmp, script)
+	err = tmpl.CompileTo(retagAndPushScript, retag, scriptPath)
+	if err != nil {
+		fmt.Println(err)
+		return "", "", err
+	}
+
+	return script, scriptPath, nil
+}
+
+type Retag struct {
+	Registry string
+	Images   []chart.Image
 }

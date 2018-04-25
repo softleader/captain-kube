@@ -4,6 +4,8 @@ import (
 	"testing"
 	"encoding/json"
 	"github.com/softleader/captain-kube/ansible/playbook"
+	"github.com/softleader/captain-kube/sh"
+	"fmt"
 )
 
 func TestCommandOf(t *testing.T) {
@@ -13,7 +15,34 @@ func TestCommandOf(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	if commandOf(b) != `ansible-playbook -i hosts-93 -t "icp" -e "version=abc chart=softleader-jasmine namespace=gardenia" -v staging.yml` {
-		t.Error()
+	expected := `ansible-playbook -i hosts-93 -t "icp" -e "version=abc chart=softleader-jasmine chart_path= script= script_path= namespace=gardenia" -v staging.yml`
+	actual := commandOf(b)
+	if actual != expected {
+		t.Error("\nexpected:\n", expected, "\nactual was:\n", actual)
 	}
+}
+
+func TestPlay(t *testing.T) {
+	play := `ansible-playbook -i hosts-93 -t "icp" -e "version=abc chart=softleader-jasmine chart_path= script= script_path= namespace=gardenia" -v staging.yml`
+
+	opts := sh.Options{
+		Pwd:     "/Users/Matt/go/src/github.com/softleader/captain-kube/docs/playbooks",
+		Verbose: true,
+	}
+	sh.C(&opts, play)
+}
+
+func Test(t *testing.T) {
+	e := make(map[string]interface{})
+	e["version"] = "aaa"
+	e["chart"] = "bbb"
+	e["chart_path"] = "xxx"
+	r := playbook.RetagPush{
+		Images:         []string{"a", "b", "c"},
+		Registry:       "to",
+		SourceRegistry: "from",
+	}
+	e["script"] = r
+	b, _ := json.Marshal(e)
+	fmt.Println(string(b))
 }

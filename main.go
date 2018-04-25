@@ -74,7 +74,7 @@ func newApp(args *app.Args) *iris.Application {
 					return
 				}
 				defer os.RemoveAll(tmp) // clean up
-				book.Script, book.ScriptPath, err = docker.Pull(&opts, path.Join(args.Workdir, book.Chart), tmp)
+				book.Images, err = docker.Pull(&opts, path.Join(args.Workdir, book.Chart), tmp)
 				if err != nil {
 					ctx.StreamWriter(pipe.Println(err.Error()))
 					return
@@ -120,7 +120,7 @@ func newApp(args *app.Args) *iris.Application {
 				return
 			}
 			defer os.RemoveAll(tmp) // clean up
-			book.Script, book.ScriptPath, err = docker.RetagAndPush(&opts, path.Join(args.Workdir, book.Chart), book.Registry, tmp)
+			book.Images, err = docker.RetagAndPush(&opts, path.Join(args.Workdir, book.Chart), book.SourceRegistry, tmp)
 			if err != nil {
 				ctx.StreamWriter(pipe.Println(err.Error()))
 				return

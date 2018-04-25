@@ -9,7 +9,7 @@ type Book interface {
 	Yaml() []string
 	I() string
 	T() []string
-	E() []string
+	E() string
 	V() bool
 }
 
@@ -22,9 +22,7 @@ func commandOf(book Book) (command string) {
 	if len(book.T()) > 0 {
 		s = append(s, "-t", "\""+strings.Join(book.T(), ",")+"\"")
 	}
-	if len(book.E()) > 0 {
-		s = append(s, "-e", "\""+strings.Join(book.E(), " ")+"\"")
-	}
+	s = append(s, "-e", book.E())
 	if book.V() {
 		s = append(s, "-v")
 	}

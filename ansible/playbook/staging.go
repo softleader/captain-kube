@@ -1,5 +1,7 @@
 package playbook
 
+import "encoding/json"
+
 type Staging struct {
 	Inventory  string   `json:"inventory"`
 	Tags       []string `json:"tags"`
@@ -7,8 +9,7 @@ type Staging struct {
 	Version    string   `json:"version,omitempty"`
 	Chart      string   `json:"chart,omitempty"`
 	ChartPath  string   `json:"-"`
-	Script     string   `json:"-"`
-	ScriptPath string   `json:"-"`
+	Images     []string `json:"-"`
 	Verbose    bool     `json:"verbose"`
 	DockerPull bool     `json:"dockerPull"`
 }
@@ -32,8 +33,15 @@ func (b Staging) T() []string {
 	return b.Tags
 }
 
-func (b Staging) E() []string {
-	return []string{"version=" + b.Version, "chart=" + b.Chart, "chart_path=" + b.ChartPath, "script=" + b.Script, "script_path=" + b.ScriptPath, "namespace=" + b.Namespace}
+func (b Staging) E() string {
+	e := make(map[string]interface{})
+	e["version"] = b.Version
+	e["chart"] = b.Chart
+	e["chart_path"] = b.ChartPath
+	e["namespace"] = b.Namespace
+	e["images"] = b.Images
+	bs, _ := json.Marshal(e)
+	return string(bs)
 }
 
 func (b Staging) V() bool {

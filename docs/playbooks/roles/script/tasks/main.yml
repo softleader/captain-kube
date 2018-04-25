@@ -1,12 +1,18 @@
 ---
-- name: upload script
-  copy:
-    src: "{{ script_path }}"
-    dest: "{{ workdir.path }}/{{ script }}"
+- name: docker pull
+  shell: "{{ lookup('template', 'pull.sh') }}"
+  register: script_result
   tags:
-    - script
+    - pull
 
-- name: execute script
-  shell: sh {{ workdir.path }}/{{ script }}
+- name: docker retag and push
+  shell: "{{ lookup('template', 'retag-push.sh') }}"
+  register: script_result
   tags:
-    - script
+    - retag-push
+
+- name: stdout
+  debug: msg={{ script_result.stdout_lines }}
+  tags:
+    - pull
+    - retag-push

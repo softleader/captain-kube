@@ -3,32 +3,31 @@ package docker
 import (
 	"github.com/softleader/captain-kube/sh"
 	"fmt"
-	"path"
 	"github.com/softleader/captain-kube/tgz"
 	"github.com/softleader/captain-kube/helm"
-	"github.com/softleader/captain-kube/tmpl"
 	"github.com/softleader/captain-kube/charts"
 )
 
-const dockerPullScript = `
-#!/usr/bin/env bash
-{{ range $key, $value := . }}
-docker pull {{ $value.Name }}
-{{ end }}
-exit 0
-`
+//
+//const dockerPullScript = `
+//#!/usr/bin/env bash
+//{{ range $key, $value := . }}
+//docker pull {{ $value.Name }}
+//{{ end }}
+//exit 0
+//`
+//
+//const retagAndPushScript = `
+//#!/usr/bin/env bash
+//{{ $registry := .Registry }}
+//{{ range $key, $value := .Images }}
+//docker tag {{ $value.Name }} {{ $registry }}/{{ $value.RemoteName }} && docker push {{ $registry }}/{{ $value.RemoteName }}
+//{{ end }}
+//exit 0
+//`
 
-const retagAndPushScript = `
-#!/usr/bin/env bash
-{{ $registry := .Registry }}
-{{ range $key, $value := .Images }}
-docker tag {{ $value.Name }} {{ $registry }}/{{ $value.RemoteName }} && docker push {{ $registry }}/{{ $value.RemoteName }}
-{{ end }}
-exit 0
-`
-
-func Pull(opts *sh.Options, tar, tmp string) (string, string, error) {
-	err := tgz.Extract(opts, tar, tmp)
+func Pull(opts *sh.Options, tar, tmp string) (images []string, err error) {
+	err = tgz.Extract(opts, tar, tmp)
 	// 不確定為啥 tar 的輸出都在 err 中..
 	//if err != nil {
 	//	fmt.Println(err)
@@ -39,28 +38,36 @@ func Pull(opts *sh.Options, tar, tmp string) (string, string, error) {
 	rendered, err := helm.Template(opts, tmp)
 	if err != nil {
 		fmt.Println(err)
-		return "", "", err
+		return
 	}
 
-	images, err := charts.CollectImages(rendered)
+	collected, err := charts.CollectImages(rendered, func(registry string) bool {
+		return true
+	})
 	if err != nil {
 		fmt.Println(err)
-		return "", "", err
+		return
 	}
 
-	script := "docker-pull.sh"
-	scriptPath := path.Join(tmp, script)
-	err = tmpl.CompileTo(dockerPullScript, images, scriptPath)
-	if err != nil {
-		fmt.Println(err)
-		return "", "", err
+	images = make([]string, len(collected))
+	for i, v := range collected {
+		images[i] = v.Name
 	}
+	return
 
-	return script, scriptPath, nil
+	//script := "docker-pull.sh"
+	//scriptPath := path.Join(tmp, script)
+	//err = tmpl.CompileTo(dockerPullScript, images, scriptPath)
+	//if err != nil {
+	//	fmt.Println(err)
+	//	return "", "", err
+	//}
+
+	// return script, scriptPath, nil
 }
 
-func RetagAndPush(opts *sh.Options, tar, registry, tmp string) (string, string, error) {
-	err := tgz.Extract(opts, tar, tmp)
+func RetagAndPush(opts *sh.Options, tar, sourceRegistry, tmp string) (images []string, err error) {
+	err = tgz.Extract(opts, tar, tmp)
 	// 不確定為啥 tar 的輸出都在 err 中..
 	//if err != nil {
 	//	fmt.Println(err)
@@ -71,31 +78,39 @@ func RetagAndPush(opts *sh.Options, tar, registry, tmp string) (string, string, 
 	rendered, err := helm.Template(opts, tmp)
 	if err != nil {
 		fmt.Println(err)
-		return "", "", err
+		return
 	}
 
-	retag := Retag{
-		Registry: registry,
-	}
-	retag.Images, err =
-		charts.CollectImages(rendered)
+	//retag := Retag{
+	//	Registry: registry,
+	//}
+	collected, err :=
+		charts.CollectImages(rendered, func(registry string) bool {
+			return registry == sourceRegistry
+		})
 	if err != nil {
 		fmt.Println(err)
-		return "", "", err
+		return
 	}
 
-	script := "retag-and-push.sh"
-	scriptPath := path.Join(tmp, script)
-	err = tmpl.CompileTo(retagAndPushScript, retag, scriptPath)
-	if err != nil {
-		fmt.Println(err)
-		return "", "", err
+	images = make([]string, len(collected))
+	for i, v := range collected {
+		images[i] = v.Name
 	}
+	return
 
-	return script, scriptPath, nil
+	//script := "retag-and-push.sh"
+	//scriptPath := path.Join(tmp, script)
+	//err = tmpl.CompileTo(retagAndPushScript, retag, scriptPath)
+	//if err != nil {
+	//	fmt.Println(err)
+	//	return "", "", err
+	//}
+	//
+	//return script, scriptPath, nil
 }
 
-type Retag struct {
-	Registry string
-	Images   []charts.Image
-}
+//type Retag struct {
+//	Registry string
+//	Images   []charts.Image
+//}

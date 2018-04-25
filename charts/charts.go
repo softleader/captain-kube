@@ -32,10 +32,10 @@ type collect struct {
 	Images []Image
 }
 
-func CollectImages(chart string) ([]Image, error) {
+func CollectImages(chart string, filter func(string) bool) ([]Image, error) {
 	collect := collect{}
 	err := filepath.Walk(chart, func(path string, info os.FileInfo, err error) error {
-		return image(&collect, path, info, err)
+		return image(&collect, filter, path, info, err)
 	})
 	if err != nil {
 		return nil, err
@@ -43,7 +43,7 @@ func CollectImages(chart string) ([]Image, error) {
 	return collect.Images, nil
 }
 
-func image(collect *collect, path string, f os.FileInfo, err error) error {
+func image(collect *collect, filter func(string) bool, path string, f os.FileInfo, err error) error {
 	if !f.IsDir() && filepath.Ext(path) == ".yaml" {
 		fmt.Printf("pull: %s\n", path)
 		in, err := ioutil.ReadFile(path)
@@ -54,24 +54,26 @@ func image(collect *collect, path string, f os.FileInfo, err error) error {
 		t := Template{}
 		yaml.Unmarshal(in, &t)
 		for _, c := range t.Spec.Template.Spec.Containers {
-			image := Image{
-				Name:       c.Image,
-				RemoteName: after(c.Image, "/"),
+			if filter(before(c.Image, "/")) {
+				image := Image{
+					Name:       c.Image,
+					RemoteName: after(c.Image, "/"),
+				}
+				collect.Images = append(collect.Images, image)
 			}
-			collect.Images = append(collect.Images, image)
 		}
 	}
 	return nil
 }
 
-//func before(value string, a string) string {
-//	// Get substring before a string.
-//	pos := strings.Index(value, a)
-//	if pos == -1 {
-//		return ""
-//	}
-//	return value[0:pos]
-//}
+func before(value string, a string) string {
+	// Get substring before a string.
+	pos := strings.Index(value, a)
+	if pos == -1 {
+		return ""
+	}
+	return value[0:pos]
+}
 
 func after(value string, a string) string {
 	// Get substring after a string.

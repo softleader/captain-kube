@@ -1,9 +1,9 @@
 ---
 - name: login to {{ inventory_hostname }}
-  shell: kubectl config set-cluster mycluster.icp --server={{ inventory_hostname }} --insecure-skip-tls-verify=true &&
-          kubectl config set-context mycluster.icp-context --cluster=mycluster.icp &&
-          kubectl config set-credentials {{ user }} --token={{ token }} &&
-          kubectl config set-context mycluster.icp-context --user={{ user }} --namespace=default &&
-          kubectl config use-context mycluster.icp-context
+  shell: kubectl config set-cluster {{ kubectl_cluster_name }} --server={{ inventory_hostname }} --insecure-skip-tls-verify=true &&
+          kubectl config set-context {{ kubectl_cluster_name }}-context --cluster={{ kubectl_cluster_name }} &&
+          kubectl config set-credentials {{ kubectl_user }} --username={{ kubectl_user }} --password={{ kubectl_pass }} &&
+          kubectl config set-context {{ kubectl_cluster_name }}-context --user={{ kubectl_user }} --namespace=default &&
+          kubectl config use-context {{ kubectl_cluster_name }}-context
   tags:
-    - icp
+    - always

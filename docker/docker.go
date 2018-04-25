@@ -7,7 +7,7 @@ import (
 	"github.com/softleader/captain-kube/tgz"
 	"github.com/softleader/captain-kube/helm"
 	"github.com/softleader/captain-kube/tmpl"
-	"github.com/softleader/captain-kube/chart"
+	"github.com/softleader/captain-kube/charts"
 )
 
 const dockerPullScript = `
@@ -42,7 +42,7 @@ func Pull(opts *sh.Options, tar, tmp string) (string, string, error) {
 		return "", "", err
 	}
 
-	images, err := chart.CollectImages(rendered)
+	images, err := charts.CollectImages(rendered)
 	if err != nil {
 		fmt.Println(err)
 		return "", "", err
@@ -78,7 +78,7 @@ func RetagAndPush(opts *sh.Options, tar, registry, tmp string) (string, string, 
 		Registry: registry,
 	}
 	retag.Images, err =
-		chart.CollectImages(rendered)
+		charts.CollectImages(rendered)
 	if err != nil {
 		fmt.Println(err)
 		return "", "", err
@@ -97,5 +97,5 @@ func RetagAndPush(opts *sh.Options, tar, registry, tmp string) (string, string, 
 
 type Retag struct {
 	Registry string
-	Images   []chart.Image
+	Images   []charts.Image
 }

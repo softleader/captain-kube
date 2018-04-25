@@ -22,7 +22,7 @@ func TestCompile(t *testing.T) {
 func TestCompile2(t *testing.T) {
 	retag := Retag{
 		Registry: "hub.softleader.com.tw",
-		Images:   []chart.Image{{Name: "a"}, {Name: "b"}, {Name: "c"}},
+		Images:   []charts.Image{{Name: "a"}, {Name: "b"}, {Name: "c"}},
 	}
 	text := `{{ $registry := .Registry }}
 {{ range $key, $value := .Images}}
@@ -38,5 +38,5 @@ func TestCompile2(t *testing.T) {
 
 type Retag struct {
 	Registry string
-	Images   []chart.Image
+	Images   []charts.Image
 }

@@ -3,12 +3,12 @@
 
 [uat:vars]
 ansible_connection=ssh 
-ansible_ssh_user=<ssh-username>
-ansible_ssh_pass=<ssh-password>
-user=<icp-username>
-pass=<icp-password>
-account=<icp-account>
-token=<icp-token>
+ansible_ssh_user=<ssh_user>
+ansible_ssh_pass=<ssh_password>
+kubectl_cluster_name=<kubectl_cluster>
+kubectl_user=<kubectl_user>
+kubectl_pass=<kubectl_pass>
+icp_account=<icp_account>
 
 [prod]
 2.2.2.2
@@ -17,17 +17,7 @@ token=<icp-token>
 ansible_connection=ssh 
 ansible_ssh_user=<ssh-username>
 ansible_ssh_pass=<ssh-password>
-user=<icp-username>
-pass=<icp-password>
-account=<icp-account>
-token=<icp-token>
-
-[registry]
-3.3.3.3
-
-[registry:vars]
-ansible_connection=ssh 
-ansible_ssh_user=<ssh-username>
-ansible_ssh_pass=<ssh-password>
-user=client
-password=poweredbysoftleader
+kubectl_cluster_name=<kubectl_cluster>
+kubectl_user=<kubectl_user>
+kubectl_pass=<kubectl_pass>
+icp_account=<icp_account>

@@ -15,6 +15,7 @@ import (
 	"github.com/softleader/captain-kube/pipe"
 	"io/ioutil"
 	"os"
+	"github.com/softleader/captain-kube/slice"
 )
 
 func main() {
@@ -67,7 +68,7 @@ func newApp(args *app.Args) *iris.Application {
 				Verbose: book.V(),
 			}
 			book.Inventory = path.Join(args.Workdir, book.Inventory)
-			if book.DockerPull {
+			if slice.Contains(book.Tags, "pull") {
 				tmp, err := ioutil.TempDir("/tmp", ".staging")
 				if err != nil {
 					ctx.StreamWriter(pipe.Println(err.Error()))
@@ -79,7 +80,6 @@ func newApp(args *app.Args) *iris.Application {
 					ctx.StreamWriter(pipe.Println(err.Error()))
 					return
 				}
-				book.Tags = append(book.Tags, "script")
 			}
 			_, _, err = ansible.Play(&opts, *book)
 			if err != nil {
@@ -114,19 +114,20 @@ func newApp(args *app.Args) *iris.Application {
 			}
 			book.Inventory = path.Join(args.Workdir, book.Inventory)
 
-			tmp, err := ioutil.TempDir("/tmp", ".release")
-			if err != nil {
-				ctx.StreamWriter(pipe.Println(err.Error()))
-				return
+			if slice.Contains(book.Tags, "retag") {
+				tmp, err := ioutil.TempDir("/tmp", ".release")
+				if err != nil {
+					ctx.StreamWriter(pipe.Println(err.Error()))
+					return
+				}
+				defer os.RemoveAll(tmp) // clean up
+				book.Images, err = docker.Retag(&opts, path.Join(args.Workdir, book.Chart), book.SourceRegistry, tmp)
+				if err != nil {
+					ctx.StreamWriter(pipe.Println(err.Error()))
+					return
+				}
+				book.Tags = append(book.Tags, "push")
 			}
-			defer os.RemoveAll(tmp) // clean up
-			book.Images, err = docker.RetagAndPush(&opts, path.Join(args.Workdir, book.Chart), book.SourceRegistry, tmp)
-			if err != nil {
-				ctx.StreamWriter(pipe.Println(err.Error()))
-				return
-			}
-			book.Tags = append(book.Tags, "script")
-
 			_, _, err = ansible.Play(&opts, *book)
 			if err != nil {
 				ctx.StreamWriter(pipe.Println(err.Error()))

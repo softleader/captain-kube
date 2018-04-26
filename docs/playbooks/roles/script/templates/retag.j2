@@ -1,0 +1,3 @@
+{% for image in images %}
+docker tag {{ image.Registry }}/{{ image.Name }} {{ registry }}/{{ image.Name }}
+{% endfor %}

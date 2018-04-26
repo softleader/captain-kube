@@ -26,7 +26,7 @@ import (
 //exit 0
 //`
 
-func Pull(opts *sh.Options, tar, tmp string) (images []string, err error) {
+func Pull(opts *sh.Options, tar, tmp string) (images []charts.Image, err error) {
 	err = tgz.Extract(opts, tar, tmp)
 	// 不確定為啥 tar 的輸出都在 err 中..
 	//if err != nil {
@@ -41,17 +41,12 @@ func Pull(opts *sh.Options, tar, tmp string) (images []string, err error) {
 		return
 	}
 
-	collected, err := charts.CollectImages(rendered, func(registry string) bool {
+	images, err = charts.CollectImages(rendered, func(registry string) bool {
 		return true
 	})
 	if err != nil {
 		fmt.Println(err)
 		return
-	}
-
-	images = make([]string, len(collected))
-	for i, v := range collected {
-		images[i] = v.Name
 	}
 	return
 
@@ -66,7 +61,7 @@ func Pull(opts *sh.Options, tar, tmp string) (images []string, err error) {
 	// return script, scriptPath, nil
 }
 
-func RetagAndPush(opts *sh.Options, tar, sourceRegistry, tmp string) (images []string, err error) {
+func Retag(opts *sh.Options, tar, sourceRegistry, tmp string) (images []charts.Image, err error) {
 	err = tgz.Extract(opts, tar, tmp)
 	// 不確定為啥 tar 的輸出都在 err 中..
 	//if err != nil {
@@ -84,7 +79,7 @@ func RetagAndPush(opts *sh.Options, tar, sourceRegistry, tmp string) (images []s
 	//retag := Retag{
 	//	Registry: registry,
 	//}
-	collected, err :=
+	images, err =
 		charts.CollectImages(rendered, func(registry string) bool {
 			return registry == sourceRegistry
 		})
@@ -93,10 +88,6 @@ func RetagAndPush(opts *sh.Options, tar, sourceRegistry, tmp string) (images []s
 		return
 	}
 
-	images = make([]string, len(collected))
-	for i, v := range collected {
-		images[i] = v.Name
-	}
 	return
 
 	//script := "retag-and-push.sh"
@@ -109,8 +100,3 @@ func RetagAndPush(opts *sh.Options, tar, sourceRegistry, tmp string) (images []s
 	//
 	//return script, scriptPath, nil
 }
-
-//type Retag struct {
-//	Registry string
-//	Images   []charts.Image
-//}

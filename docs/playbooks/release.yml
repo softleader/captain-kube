@@ -3,7 +3,6 @@
   hosts: uat
 
   roles:
-    - workdir
     - script
 
 - name: Draft a release

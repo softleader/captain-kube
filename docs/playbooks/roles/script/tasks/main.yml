@@ -1,18 +1,25 @@
 ---
-- name: docker pull
-  shell: "{{ lookup('template', 'pull.sh') }}"
+- name: pull images
+  shell: "{{ lookup('template', 'pull.j2') }}"
   register: script_result
   tags:
     - pull
 
-- name: docker retag and push
-  shell: "{{ lookup('template', 'retag-push.sh') }}"
+- name: retag images
+  shell: "{{ lookup('template', 'retag.j2') }}"
   register: script_result
   tags:
-    - retag-push
+    - retag
 
-- name: stdout
-  debug: msg={{ script_result.stdout_lines }}
+- name: push images
+  shell: "{{ lookup('template', 'push.j2') }}"
+  register: script_result
   tags:
-    - pull
-    - retag-push
+    - push
+
+#- name: stdout
+#  debug: msg={{ script_result.stdout_lines }}
+#  tags:
+#    - pull
+#    - push
+#    - retag

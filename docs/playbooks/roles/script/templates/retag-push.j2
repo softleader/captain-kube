@@ -1,3 +1,0 @@
-{% for image in images %}
-docker tag {{ source_registry }}/{{ image }} {{ registry }}/{{ image }} && docker push {{ registry }}/{{ image }}
-{% endfor %}

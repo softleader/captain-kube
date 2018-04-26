@@ -22,7 +22,7 @@ func commandOf(book Book) (command string) {
 	if len(book.T()) > 0 {
 		s = append(s, "-t", "\""+strings.Join(book.T(), ",")+"\"")
 	}
-	s = append(s, "-e", book.E())
+	s = append(s, "-e", "'"+book.E()+"'")
 	if book.V() {
 		s = append(s, "-v")
 	}

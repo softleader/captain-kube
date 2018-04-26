@@ -1,17 +1,19 @@
 package playbook
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"github.com/softleader/captain-kube/charts"
+)
 
 type Staging struct {
-	Inventory  string   `json:"inventory"`
-	Tags       []string `json:"tags"`
-	Namespace  string   `json:"namespace"`
-	Version    string   `json:"version,omitempty"`
-	Chart      string   `json:"chart,omitempty"`
-	ChartPath  string   `json:"-"`
-	Images     []string `json:"-"`
-	Verbose    bool     `json:"verbose"`
-	DockerPull bool     `json:"dockerPull"`
+	Inventory  string         `json:"inventory"`
+	Tags       []string       `json:"tags"`
+	Namespace  string         `json:"namespace"`
+	Version    string         `json:"version"`
+	Chart      string         `json:"chart,omitempty"`
+	ChartPath  string         `json:"-"`
+	Images     []charts.Image `json:"-"`
+	Verbose    bool           `json:"verbose"`
 }
 
 func NewStaging() *Staging {

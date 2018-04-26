@@ -23,9 +23,9 @@ type Template struct {
 }
 
 type Image struct {
-	Name       string // hub.softleader.com.tw/captain-kube:latest
-	RemoteName string // captain-kube:latest
-	Registry   string
+	Registry string // hub.softleader.com.tw
+	Name     string // captain-kube:latest
+	FullName string // hub.softleader.com.tw/captain-kube:latest
 }
 
 type collect struct {
@@ -54,11 +54,11 @@ func image(collect *collect, filter func(string) bool, path string, f os.FileInf
 		t := Template{}
 		yaml.Unmarshal(in, &t)
 		for _, c := range t.Spec.Template.Spec.Containers {
-			if filter(before(c.Image, "/")) {
-				image := Image{
-					Name:       c.Image,
-					RemoteName: after(c.Image, "/"),
-				}
+			image := Image{
+				Registry: before(c.Image, "/"),
+				Name:     after(c.Image, "/"),
+			}
+			if filter(image.Registry) {
 				collect.Images = append(collect.Images, image)
 			}
 		}

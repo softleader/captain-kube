@@ -1,18 +1,21 @@
 package playbook
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"github.com/softleader/captain-kube/charts"
+)
 
 type Release struct {
-	Inventory      string   `json:"inventory"`
-	Tags           []string `json:"tags"`
-	Namespace      string   `json:"namespace"`
-	Version        string   `json:"version,omitempty"`
-	Chart          string   `json:"chart,omitempty"`
-	ChartPath      string   `json:"-"`
-	Verbose        bool     `json:"verbose"`
-	Images         []string `json:"-"`
-	SourceRegistry string   `json:"source_registry"`
-	Registry       string   `json:"registry"`
+	Inventory      string         `json:"inventory"`
+	Tags           []string       `json:"tags"`
+	Namespace      string         `json:"namespace"`
+	Version        string         `json:"version,omitempty"`
+	Chart          string         `json:"chart,omitempty"`
+	ChartPath      string         `json:"-"`
+	Verbose        bool           `json:"verbose"`
+	Images         []charts.Image `json:"-"`
+	SourceRegistry string         `json:"source_registry"`
+	Registry       string         `json:"registry"`
 }
 
 func NewRelease() *Release {
@@ -42,7 +45,6 @@ func (b Release) E() string {
 	e["namespace"] = b.Namespace
 	e["images"] = b.Images
 	e["registry"] = b.Registry
-	e["source_registry"] = b.SourceRegistry
 	bs, _ := json.Marshal(e)
 	return string(bs)
 }

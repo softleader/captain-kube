@@ -36,39 +36,36 @@
 <div class="container">
     <p>
     <form>
+        <div class="form-group">
+            <label for="kind">Kind</label>
+            <div class="form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" type="radio" name="kind" value="helm">
+                    Google Helm
+                </label>
+            </div>
+            <div class="form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" type="radio" name="kind" value="icp" checked>
+                    IBM Cloud Private
+                </label>
+            </div>
+            <div class="form-check disabled">
+                <label class="form-check-label">
+                    <input class="form-check-input" type="radio" name="kind" value="openshift" disabled>
+                    Red Hat OpenShift
+                </label>
+            </div>
+        </div>
 
         <div class="form-group">
             <label for="namespace">Namespace</label>
             <input type="text" class="form-control" id="namespace" required>
         </div>
 
-        <div class="form-group disabled">
+        <div class="form-group">
             <label for="chart">Chart</label>
             <input type="file" class="form-control" id="chart" required>
-        </div>
-
-        <div class="form-group disabled">
-            <label for="tags">Tags</label>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="icp" id="tags-helm">
-                <label class="form-check-label" for="tags-helm">
-                    Helm
-                </label>
-            </div>
-
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="icp" id="tags-icp">
-                <label class="form-check-label" for="tags-icp">
-                    ICP
-                </label>
-            </div>
-
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="openshift" id="tags-openshift" disabled>
-                <label class="form-check-label" for="tags-openshift">
-                    OpenShift
-                </label>
-            </div>
         </div>
 
         <div class="form-group">
@@ -77,15 +74,33 @@
         </div>
 
         <div class="form-group">
-            <label for="version">Registry</label>
-            <input type="text" class="form-control" id="registry" required>
+            <label for="tags">Pre-Actions</label>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="retag" id="tags-retag">
+                <label class="form-check-label" for="tags-retag">
+                    Retag Images
+                </label>
+            </div>
         </div>
 
-        <div class="form-check">
-            <label class="form-check-label">
-                <input type="checkbox" id="verbose" class="form-check-input">
-                Verbose
-            </label>
+        <div class="form-group">
+            <label for="registry">Registry</label>
+            <div class="input-group">
+                <input type="text" class="form-control" id="source_registry" value="hub.softleader.com.tw" disabled>
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id=""><i class="fas fa-angle-double-right"></i></span>
+                </div>
+                <input type="text" class="form-control" id="registry" disabled>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="verbose">
+                <label class="form-check-label" for="verbose">
+                    Verbose
+                </label>
+            </div>
         </div>
 
         <button id="release" url="/release" type="submit" class="btn btn-outline-primary"
@@ -123,10 +138,14 @@
                 "version": $("#version").val(),
                 "tags": [],
                 "verbose": $("#verbose").is(":checked"),
+                "source_registry":$("#source_registry").val(),
                 "registry":$("#registry").val()
             }
 
             $("input:checkbox[id^='tags-']:checked").each((i, e) => data.tags.push(e.value));
+            data.tags.push($('input[name=kind]:checked').val());
+
+            console.log(data)
 
             var formData = new FormData();
             formData.append('file', $('#chart')[0].files[0]);
@@ -157,6 +176,15 @@
                 return "Are you sure you want to leave this page while drafting release?";
             }
             return;
+        });
+
+        $("#tags-retag").click(function () {
+            $('#registry').prop('disabled', function (i, v) {
+                return !v;
+            });
+            $('#source_registry').prop('disabled', function (i, v) {
+                return !v;
+            });
         });
     })
 </script>

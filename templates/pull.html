@@ -29,10 +29,10 @@
             <li class="nav-item">
                 <a class="nav-link" href="/release">Release</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item active">
                 <a class="nav-link" href="/script/pull">Pull</a>
             </li>
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" href="/script/retag">Retag</a>
             </li>
         </ul>
@@ -47,18 +47,7 @@
             <input type="file" class="form-control" id="chart" required>
         </div>
 
-        <div class="form-group">
-            <label for="registry">Registry</label>
-            <div class="input-group">
-                <input type="text" class="form-control" id="source_registry" value="hub.softleader.com.tw" required>
-                <div class="input-group-prepend">
-                    <span class="input-group-text" id=""><i class="fas fa-angle-double-right"></i></span>
-                </div>
-                <input type="text" class="form-control" id="registry" required>
-            </div>
-        </div>
-
-        <button id="generate" url="/script/retag" type="submit" class="btn btn-outline-primary"
+        <button id="generate" url="/script/pull" type="submit" class="btn btn-outline-primary"
                 onclick="$(this).parent().attr('action', $(this).attr('url'))">
             <i class="fas fa-file-alt" aria-hidden="true"></i> Generate Script
         </button>
@@ -94,7 +83,7 @@
 
             $.ajax({
                 type: 'post',
-                url: event.target.action + "/" + $("#source_registry").val() + "/" + $("#registry").val(),
+                url: event.target.action,
                 data: formData,
                 dataType: 'json',
                 processData: false,

@@ -18,7 +18,7 @@ const pullScript = `
 #!/usr/bin/env bash
 
 {{- range $key, $value := index . "images" }}
-docker pull {{ $value.Name }}
+docker pull {{ $value.Registry }}/{{ $value.Name }}
 {{- end }}
 
 exit 0
@@ -27,22 +27,54 @@ exit 0
 const retagAndPushScript = `
 #!/usr/bin/env bash
 
-{{- $registry := index . "registry" }}
+{{ $registry := index . "registry" }}
 {{- range $key, $value := index . "images" }}
-docker tag {{ $value.Name }} {{ $registry }}/{{ $value.Name }} && docker push {{ $registry }}/{{ $value.Name }}
+docker tag {{ $value.Registry }}/{{ $value.Name }} {{ $registry }}/{{ $value.Name }} && docker push {{ $registry }}/{{ $value.Name }}
 {{- end }}
 
 exit 0
 `
 
-func Pull() {
+func Pull(workdir, playbooks string, ctx iris.Context) {
+	var chartPath string
+	ctx.UploadFormFiles(workdir, func(context context.Context, file *multipart.FileHeader) {
+		chartPath = path.Join(workdir, file.Filename)
+	})
+	opts := sh.Options{
+		Ctx:     &ctx,
+		Pwd:     playbooks,
+		Verbose: true,
+	}
+	tmp, err := ioutil.TempDir("/tmp", "script.")
+	if err != nil {
+		ctx.StreamWriter(pipe.Println(err.Error()))
+		return
+	}
 
+	data := make(map[string]interface{})
+	data["images"], err = docker.Pull(&opts, chartPath, tmp)
+	if err != nil {
+		ctx.StreamWriter(pipe.Println(err.Error()))
+		return
+	}
+
+	script, err := ioutil.TempFile(tmp, "pull-")
+	if err != nil {
+		ctx.StreamWriter(pipe.Println(err.Error()))
+		return
+	}
+	err = tmpl.CompileTo(pullScript, data, script.Name())
+	if err != nil {
+		ctx.StreamWriter(pipe.Println(err.Error()))
+		return
+	}
+	ctx.StreamWriter(pipe.Println("generated " + script.Name()))
 }
 
+
 func Retag(workdir, playbooks string, ctx iris.Context) {
-	var chart, chartPath string
+	var chartPath string
 	ctx.UploadFormFiles(workdir, func(context context.Context, file *multipart.FileHeader) {
-		chart = file.Filename
 		chartPath = path.Join(workdir, file.Filename)
 	})
 	opts := sh.Options{
@@ -81,6 +113,6 @@ func DownloadScript(ctx iris.Context) {
 	script := ctx.FormValue("file")
 	if script != "" {
 		defer os.Remove(filepath.Base(script))
-		ctx.SendFile(filepath.Base(script)+".sh", script)
+		ctx.SendFile(script, filepath.Base(script)+".sh")
 	}
 }

@@ -50,7 +50,7 @@ func NewApplication(args *Args) *iris.Application {
 			})
 
 			pull.Post("/", func(ctx context.Context) {
-				route.Pull()
+				route.Pull(args.Workdir, args.Playbooks, ctx)
 			})
 		}
 

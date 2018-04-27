@@ -114,8 +114,22 @@ func Retag(workdir, playbooks string, ctx iris.Context) {
 
 func DownloadScript(ctx iris.Context) {
 	script := ctx.FormValue("file")
-	if script != "" {
-		defer os.Remove(filepath.Base(script))
+	if scriptExists(script) {
+		defer os.RemoveAll(filepath.Dir(script))
 		ctx.SendFile(script, filepath.Base(script))
 	}
+}
+
+func scriptExists(path string) bool {
+	if path == "" {
+		return false
+	}
+	f, err := os.Stat(path)
+	if err == nil && !f.IsDir() {
+		return true
+	}
+	if os.IsNotExist(err) {
+		return false
+	}
+	return true
 }

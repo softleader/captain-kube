@@ -110,6 +110,9 @@
                 if (dl) {
                     var $a = $("<a></a>").addClass("btn btn-outline-info").append("<i class=\"fa fa-download\" aria-hidden=\"true\"></i> Download");
                     $a.attr("href", "/script?file=" + dl[1]);
+                    $a.click(function () {
+                        $(this).remove();
+                    })
                     $output.append($("<hr/>")).append($a);
                     return;
                 }

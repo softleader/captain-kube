@@ -17,7 +17,7 @@ import (
 const pullScript = `
 #!/usr/bin/env bash
 
-{{- range $key, $value := index . "images" }}
+{{ range $key, $value := index . "images" }}
 docker pull {{ $value.Registry }}/{{ $value.Name }}
 {{- end }}
 
@@ -29,7 +29,11 @@ const retagAndPushScript = `
 
 {{ $registry := index . "registry" }}
 {{- range $key, $value := index . "images" }}
-docker tag {{ $value.Registry }}/{{ $value.Name }} {{ $registry }}/{{ $value.Name }} && docker push {{ $registry }}/{{ $value.Name }}
+docker tag {{ $value.Registry }}/{{ $value.Name }} {{ $registry }}/{{ $value.Name }}
+{{- end }}
+
+{{ range $key, $value := index . "images" }}
+docker push {{ $registry }}/{{ $value.Name }}
 {{- end }}
 
 exit 0

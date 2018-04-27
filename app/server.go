@@ -41,22 +41,31 @@ func NewApplication(args *Args) *iris.Application {
 		})
 	}
 
-	pull := app.Party("/pull")
+	script := app.Party("/script")
 	{
-		pull.Get("/", func(ctx context.Context) {
-			ctx.View("pull.html")
-		})
+		pull := script.Party("/pull")
+		{
+			pull.Get("/", func(ctx context.Context) {
+				ctx.View("pull.html")
+			})
 
-		pull.Post("/", route.Pull)
-	}
+			pull.Post("/", func(ctx context.Context) {
+				route.Pull()
+			})
+		}
 
-	retag := app.Party("/retag")
-	{
-		retag.Get("/", func(ctx context.Context) {
-			ctx.View("retag.html")
-		})
+		retag := script.Party("/retag")
+		{
+			retag.Get("/", func(ctx context.Context) {
+				ctx.View("retag.html")
+			})
 
-		retag.Post("/", route.Retag)
+			retag.Post("/{source_registry:string}/{registry:string}", func(ctx context.Context) {
+				route.Retag(args.Workdir, args.Playbooks, ctx)
+			})
+		}
+
+		script.Get("/", route.DownloadScript)
 	}
 
 	return app

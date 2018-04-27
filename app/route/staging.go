@@ -37,13 +37,13 @@ func Staging(workdir, playbooks string, ctx iris.Context) {
 	}
 	book.Inventory = path.Join(workdir, book.Inventory)
 	if slice.Contains(book.Tags, "pull") {
-		tmp, err := ioutil.TempDir("/tmp", ".staging")
+		tmp, err := ioutil.TempDir("/tmp", "staging.")
 		if err != nil {
 			ctx.StreamWriter(pipe.Println(err.Error()))
 			return
 		}
 		defer os.RemoveAll(tmp) // clean up
-		book.Images, err = docker.Pull(&opts, path.Join(workdir, book.Chart), tmp)
+		book.Images, err = docker.Pull(&opts, book.ChartPath, tmp)
 		if err != nil {
 			ctx.StreamWriter(pipe.Println(err.Error()))
 			return

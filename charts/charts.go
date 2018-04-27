@@ -25,7 +25,6 @@ type Template struct {
 type Image struct {
 	Registry string // hub.softleader.com.tw
 	Name     string // captain-kube:latest
-	FullName string // hub.softleader.com.tw/captain-kube:latest
 }
 
 type collect struct {

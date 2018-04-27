@@ -23,11 +23,14 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" href="/staging">Staging</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="/release">Release</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="/script/retag">Retag</a>
             </li>
         </ul>
     </div>
@@ -37,65 +40,24 @@
     <p>
     <form>
         <div class="form-group">
-            <label for="kind">Kind</label>
-            <div class="form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" type="radio" name="kind" value="helm">
-                    Google Helm
-                </label>
-            </div>
-            <div class="form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" type="radio" name="kind" value="icp" checked>
-                    IBM Cloud Private
-                </label>
-            </div>
-            <div class="form-check disabled">
-                <label class="form-check-label">
-                    <input class="form-check-input" type="radio" name="kind" value="openshift" disabled>
-                    Red Hat OpenShift
-                </label>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label for="namespace">Namespace</label>
-            <input type="text" class="form-control" id="namespace" required>
-        </div>
-
-        <div class="form-group">
             <label for="chart">Chart</label>
             <input type="file" class="form-control" id="chart" required>
         </div>
 
-
         <div class="form-group">
-            <label for="version">Version</label>
-            <input type="text" class="form-control" id="version">
-        </div>
-
-        <div class="form-group">
-            <label for="tags">Pre-Actions</label>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="pull" id="tags-pull">
-                <label class="form-check-label" for="tags-pull">
-                    Pull Images
-                </label>
+            <label for="registry">Registry</label>
+            <div class="input-group">
+                <input type="text" class="form-control" id="source_registry" value="hub.softleader.com.tw" required>
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id=""><i class="fas fa-angle-double-right"></i></span>
+                </div>
+                <input type="text" class="form-control" id="registry" required>
             </div>
         </div>
 
-        <div class="form-group">
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="verbose">
-                <label class="form-check-label" for="verbose">
-                    Verbose
-                </label>
-            </div>
-        </div>
-
-        <button id="staging" url="/staging" type="submit" class="btn btn-outline-primary"
+        <button id="generate" url="/script/retag" type="submit" class="btn btn-outline-primary"
                 onclick="$(this).parent().attr('action', $(this).attr('url'))">
-            <i class="fa fa-bomb" aria-hidden="true"></i> Fire in the hole
+            <i class="fas fa-file-alt" aria-hidden="true"></i> Generate Script
         </button>
     </form>
     </p>
@@ -123,31 +85,17 @@
 
             var $output = $("#output");
             $output.empty().parent().removeClass().addClass("alert alert-success")
-            var data = {
-                "namespace": $("#namespace").val(),
-                "version": $("#version").val(),
-                "tags": [],
-                "verbose": $("#verbose").is(":checked"),
-            }
-
-            $("input:checkbox[id^='tags-']:checked").each((i, e) => data.tags.push(e.value));
-            data.tags.push($('input[name=kind]:checked').val());
-
-            console.log(data)
 
             var formData = new FormData();
             formData.append('file', $('#chart')[0].files[0]);
 
             $.ajax({
                 type: 'post',
-                url: event.target.action,
+                url: event.target.action + "/" + $("#source_registry").val() + "/" + $("#registry").val(),
                 data: formData,
                 dataType: 'json',
                 processData: false,
                 contentType: false,
-                headers: {
-                    "Captain-Kube": JSON.stringify(data)
-                },
                 xhrFields: {
                     onprogress: function (e) {
                         $output.text(e.currentTarget.response);
@@ -155,15 +103,31 @@
                 }
             }).always(function () {
                 $btns.prop('disabled', false);
+                var dl = /generated\s(.+)$/gm.exec($output.text())
+                if (dl) {
+                    var $a = $("<a></a>").addClass("btn btn-outline-info").append("<i class=\"fa fa-download\" aria-hidden=\"true\"></i> Download");
+                    $a.attr("href", "/script=file?" + dl[1]);
+                    $output.append($("<hr/>")).append($a);
+                    return;
+                }
             });
         });
 
 
         $(window).on('beforeunload', function () {
-            if ($('#staging').is(':disabled')) {
-                return "Are you sure you want to leave this page while staging?";
+            if ($('#generate').is(':disabled')) {
+                return "Are you sure you want to leave this page while drafting release?";
             }
             return;
+        });
+
+        $("#tags-retag").click(function () {
+            $('#registry').prop('disabled', function (i, v) {
+                return !v;
+            });
+            $('#source_registry').prop('disabled', function (i, v) {
+                return !v;
+            });
         });
     })
 </script>

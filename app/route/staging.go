@@ -37,16 +37,19 @@ func Staging(workdir, playbooks string, ctx iris.Context) {
 	}
 	book.Inventory = path.Join(workdir, book.Inventory)
 	if slice.Contains(book.Tags, "pull") {
-		tmp, err := ioutil.TempDir("/tmp", "staging.")
+		tmp, err := ioutil.TempDir("/tmp", "")
 		if err != nil {
 			ctx.StreamWriter(pipe.Println(err.Error()))
 			return
 		}
 		defer os.RemoveAll(tmp) // clean up
-		book.Images, err = docker.Pull(&opts, book.ChartPath, tmp)
+		images, err := docker.Pull(&opts, book.ChartPath, tmp)
 		if err != nil {
 			ctx.StreamWriter(pipe.Println(err.Error()))
 			return
+		}
+		for _, i := range images {
+			book.Images = append(book.Images, i...)
 		}
 	}
 	_, _, err = ansible.Play(&opts, *book)

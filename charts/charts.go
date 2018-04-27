@@ -3,7 +3,6 @@ package charts
 import (
 	"path/filepath"
 	"os"
-	"fmt"
 	"io/ioutil"
 	"gopkg.in/yaml.v2"
 	"strings"
@@ -27,29 +26,25 @@ type Image struct {
 	Name     string // captain-kube:latest
 }
 
-type collect struct {
-	Images []Image
-}
-
-func CollectImages(chart string, filter func(string) bool) ([]Image, error) {
-	collect := collect{}
-	err := filepath.Walk(chart, func(path string, info os.FileInfo, err error) error {
-		return image(&collect, filter, path, info, err)
+func CollectImages(chart string, filter func(string) bool) (images map[string][]Image, err error) {
+	images = make(map[string][]Image)
+	err = filepath.Walk(chart, func(path string, info os.FileInfo, err error) error {
+		i, err := image(filter, path, info)
+		if len(i) > 0 {
+			images[path] = i
+		}
+		return err
 	})
-	if err != nil {
-		return nil, err
-	}
-	return collect.Images, nil
+	return
 }
 
-func image(collect *collect, filter func(string) bool, path string, f os.FileInfo, err error) error {
+func image(filter func(string) bool, path string, f os.FileInfo) ([]Image, error) {
+	var i []Image
 	if !f.IsDir() && filepath.Ext(path) == ".yaml" {
-		fmt.Printf("pull: %s\n", path)
 		in, err := ioutil.ReadFile(path)
 		if err != nil {
-			return err
+			return i, err
 		}
-		fmt.Println(string(in))
 		t := Template{}
 		yaml.Unmarshal(in, &t)
 		for _, c := range t.Spec.Template.Spec.Containers {
@@ -58,11 +53,11 @@ func image(collect *collect, filter func(string) bool, path string, f os.FileInf
 				Name:     after(c.Image, "/"),
 			}
 			if filter(image.Registry) {
-				collect.Images = append(collect.Images, image)
+				i = append(i, image)
 			}
 		}
 	}
-	return nil
+	return i, nil
 }
 
 func before(value string, a string) string {

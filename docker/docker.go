@@ -26,7 +26,7 @@ import (
 //exit 0
 //`
 
-func Pull(opts *sh.Options, tar, tmp string) (images []charts.Image, err error) {
+func Pull(opts *sh.Options, tar, tmp string) (images map[string][]charts.Image, err error) {
 	err = tgz.Extract(opts, tar, tmp)
 	// 不確定為啥 tar 的輸出都在 err 中..
 	//if err != nil {
@@ -61,7 +61,7 @@ func Pull(opts *sh.Options, tar, tmp string) (images []charts.Image, err error) 
 	// return script, scriptPath, nil
 }
 
-func Retag(opts *sh.Options, tar, sourceRegistry, tmp string) (images []charts.Image, err error) {
+func Retag(opts *sh.Options, tar, sourceRegistry, tmp string) (images map[string][]charts.Image, err error) {
 	err = tgz.Extract(opts, tar, tmp)
 	// 不確定為啥 tar 的輸出都在 err 中..
 	//if err != nil {

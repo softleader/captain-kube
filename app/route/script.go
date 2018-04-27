@@ -14,30 +14,28 @@ import (
 	"os"
 )
 
-const pullScript = `
-#!/usr/bin/env bash
-
-{{ range $key, $value := index . "images" }}
-docker pull {{ $value.Registry }}/{{ $value.Name }}
+const pullScript = `#!/usr/bin/env bash
+{{ range $source, $images := index . "images" }}
+##---
+# Source: {{ $source }}
+{{- range $key, $image := $images }}
+docker pull {{ $image.Registry }}/{{ $image.Name }}
+{{- end }}
 {{- end }}
 
-exit 0
-`
+exit 0`
 
-const retagAndPushScript = `
-#!/usr/bin/env bash
-
+const retagAndPushScript = `#!/usr/bin/env bash
 {{ $registry := index . "registry" }}
-{{- range $key, $value := index . "images" }}
-docker tag {{ $value.Registry }}/{{ $value.Name }} {{ $registry }}/{{ $value.Name }}
+{{- range $source, $images := index . "images" }}
+##---
+# Source: {{ $source }}
+{{- range $key, $image := $images }}
+docker tag {{ $image.Registry }}/{{ $image.Name }} {{ $registry }}/{{ $image.Name }} && docker push {{ $registry }}/{{ $image.Name }}
+{{- end }}
 {{- end }}
 
-{{ range $key, $value := index . "images" }}
-docker push {{ $registry }}/{{ $value.Name }}
-{{- end }}
-
-exit 0
-`
+exit 0`
 
 func Pull(workdir, playbooks string, ctx iris.Context) {
 	var chartPath string
@@ -49,7 +47,7 @@ func Pull(workdir, playbooks string, ctx iris.Context) {
 		Pwd:     playbooks,
 		Verbose: true,
 	}
-	tmp, err := ioutil.TempDir("/tmp", "script.")
+	tmp, err := ioutil.TempDir("/tmp", "")
 	if err != nil {
 		ctx.StreamWriter(pipe.Println(err.Error()))
 		return
@@ -85,7 +83,7 @@ func Retag(workdir, playbooks string, ctx iris.Context) {
 		Pwd:     playbooks,
 		Verbose: true,
 	}
-	tmp, err := ioutil.TempDir("/tmp", "script.")
+	tmp, err := ioutil.TempDir("/tmp", "")
 	if err != nil {
 		ctx.StreamWriter(pipe.Println(err.Error()))
 		return

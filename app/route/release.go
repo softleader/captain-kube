@@ -38,16 +38,19 @@ func Release(workdir, playbooks string, ctx iris.Context) {
 	book.Inventory = path.Join(workdir, book.Inventory)
 
 	if slice.Contains(book.Tags, "retag") {
-		tmp, err := ioutil.TempDir("/tmp", "release.")
+		tmp, err := ioutil.TempDir("/tmp", "")
 		if err != nil {
 			ctx.StreamWriter(pipe.Println(err.Error()))
 			return
 		}
 		defer os.RemoveAll(tmp) // clean up
-		book.Images, err = docker.Retag(&opts, book.ChartPath, book.SourceRegistry, tmp)
+		images, err := docker.Retag(&opts, book.ChartPath, book.SourceRegistry, tmp)
 		if err != nil {
 			ctx.StreamWriter(pipe.Println(err.Error()))
 			return
+		}
+		for _, i := range images {
+			book.Images = append(book.Images, i...)
 		}
 		book.Tags = append(book.Tags, "push")
 	}

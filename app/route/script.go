@@ -75,7 +75,6 @@ func Pull(workdir, playbooks string, ctx iris.Context) {
 	ctx.StreamWriter(pipe.Println("generated " + script.Name()))
 }
 
-
 func Retag(workdir, playbooks string, ctx iris.Context) {
 	var chartPath string
 	ctx.UploadFormFiles(workdir, func(context context.Context, file *multipart.FileHeader) {
@@ -117,6 +116,6 @@ func DownloadScript(ctx iris.Context) {
 	script := ctx.FormValue("file")
 	if script != "" {
 		defer os.Remove(filepath.Base(script))
-		ctx.SendFile(script, filepath.Base(script)+".sh")
+		ctx.SendFile(script, filepath.Base(script))
 	}
 }

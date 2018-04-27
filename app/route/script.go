@@ -125,10 +125,10 @@ func scriptExists(path string) bool {
 		return false
 	}
 	f, err := os.Stat(path)
-	if err == nil && !f.IsDir() {
-		return true
+	if err != nil && os.IsNotExist(err) {
+		return false
 	}
-	if os.IsNotExist(err) {
+	if f.IsDir() {
 		return false
 	}
 	return true

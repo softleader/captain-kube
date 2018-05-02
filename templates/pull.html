@@ -7,6 +7,7 @@
     <link rel="icon" href="/favicon.ico">
     <link rel="stylesheet" href="/bootstrap-4.1.0-dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/fontawesome-free-5.0.10/web-fonts-with-css/css/fontawesome-all.css">
+    <link rel="stylesheet" href="/footer.css">
 </head>
 <body>
 
@@ -39,29 +40,41 @@
     </div>
 </nav>
 
-<div class="container">
-    <p>
-    <form>
-        <div class="form-group">
-            <label for="chart">Chart</label>
-            <input type="file" class="form-control" id="chart" required>
-        </div>
+<main role="main">
+    <div class="container">
+        <p>
+        <form>
+            <div class="form-group">
+                <label for="chart">Chart</label>
+                <input type="file" class="form-control" id="chart" required>
+            </div>
 
-        <button id="generate" url="/script/pull" type="submit" class="btn btn-outline-primary"
-                onclick="$(this).parent().attr('action', $(this).attr('url'))">
-            <i class="fas fa-file-alt" aria-hidden="true"></i> Generate Script
-        </button>
-    </form>
-    </p>
-    <hr>
-    <p>
-    <div class="alert alert-success" role="alert">
-        <h4 class="alert-heading"><i class="fa fa-terminal" aria-hidden="true"></i></h4>
+            <button id="generate" url="/script/pull" type="submit" class="btn btn-outline-primary"
+                    onclick="$(this).parent().attr('action', $(this).attr('url'))">
+                <i class="fas fa-file-alt" aria-hidden="true"></i> Generate Script
+            </button>
+        </form>
+        </p>
         <hr>
-        <pre id="output"></pre>
+        <p>
+        <div class="alert alert-success" role="alert">
+            <h4 class="alert-heading"><i class="fa fa-terminal" aria-hidden="true"></i></h4>
+            <hr>
+            <pre id="output"></pre>
+        </div>
+        </p>
     </div>
-    </p>
-</div>
+</main>
+
+<footer class="text-muted">
+    <div class="container">
+        <p class="float-right">
+            <a href="#"><i class="fas fa-angle-double-up fa-2x"></i></a>
+        </p>
+        <p><a href="https://github.com/softleader"><i class="fab fa-github"></i></a> <a href="https://www.facebook.com/softleader"><i class="fab fa-facebook"></i></a></p>
+        <p>Copyright © 2018 <a href="https://www.softleader.com.tw">SoftLeader Technology Crop</a>. All rights reserved.</p>
+    </div>
+</footer>
 
 <script src="/jquery-3.3.1.min.js"></script>
 <script src="/bootstrap-4.1.0-dist/js/bootstrap.bundle.min.js"></script>

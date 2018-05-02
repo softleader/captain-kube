@@ -1,7 +1,7 @@
-[uat]
+[staging]
 1.1.1.1
 
-[uat:vars]
+[staging:vars]
 ansible_connection=ssh 
 ansible_ssh_user=<ssh_user>
 ansible_ssh_pass=<ssh_password>
@@ -10,11 +10,11 @@ kubectl_user=<kubectl_user>
 kubectl_pass=<kubectl_pass>
 icp_account=<icp_account>
 
-[prod]
+[production]
 2.2.2.2
 
-[prod:vars]
-ansible_connection=ssh 
+[production:vars]
+ansible_connection=ssh
 ansible_ssh_user=<ssh-username>
 ansible_ssh_pass=<ssh-password>
 kubectl_cluster_name=<kubectl_cluster>

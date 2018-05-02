@@ -1,6 +1,6 @@
 ---
 - name: Staging a Helm Charts
-  hosts: uat
+  hosts: staging
 
   roles:
     - workdir

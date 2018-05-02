@@ -1,12 +1,12 @@
 ---
 - name: Retag and push images
-  hosts: uat
+  hosts: staging
 
   roles:
     - script
 
 - name: Draft a release
-  hosts: prod
+  hosts: staging
 
   roles:
     - workdir

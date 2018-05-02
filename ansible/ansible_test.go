@@ -6,6 +6,7 @@ import (
 	"github.com/softleader/captain-kube/ansible/playbook"
 	"github.com/softleader/captain-kube/sh"
 	"fmt"
+	"github.com/softleader/captain-kube/charts"
 )
 
 func TestCommandOf(t *testing.T) {
@@ -32,17 +33,15 @@ func TestPlay(t *testing.T) {
 	sh.C(&opts, play)
 }
 
-func Test(t *testing.T) {
+func TestPrintAnsibleExtraVars(t *testing.T) {
 	e := make(map[string]interface{})
 	e["version"] = "aaa"
 	e["chart"] = "bbb"
 	e["chart_path"] = "xxx"
-	r := playbook.RetagPush{
-		Images:         []string{"a", "b", "c"},
-		Registry:       "to",
-		SourceRegistry: "from",
+	e["namespace"] = "default"
+	e["images"] = []charts.Image{
+		{Registry: "hub.softleader.com.tw", Name: "a"}, {Registry: "hub.softleader.com.tw", Name: "b"}, {Registry: "hub.softleader.com.tw", Name: "c"},
 	}
-	e["script"] = r
 	b, _ := json.Marshal(e)
 	fmt.Println(string(b))
 }

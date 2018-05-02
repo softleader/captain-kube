@@ -1,7 +1,7 @@
-[uat]
+[staging]
 192.168.1.93
 
-[uat:vars]
+[staging:vars]
 ansible_connection=ssh 
 ansible_ssh_user=root 
 ansible_ssh_pass=sleader
@@ -10,10 +10,10 @@ kubectl_user=admin
 kubectl_pass=admin
 icp_account=ICP Account
 
-[prod]
+[production]
 192.168.1.93
 
-[prod:vars]
+[production:vars]
 ansible_connection=ssh 
 ansible_ssh_user=root 
 ansible_ssh_pass=sleader
@@ -21,3 +21,11 @@ kubectl_cluster_name=mycluster.icp
 kubectl_user=admin
 kubectl_pass=admin
 icp_account=ICP Account
+
+[registry]
+3.3.3.3
+
+[registry:vars]
+ansible_connection=ssh
+ansible_ssh_user=root
+ansible_ssh_pass=sleader

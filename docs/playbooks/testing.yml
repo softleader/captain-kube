@@ -1,6 +1,4 @@
 ---
-- name: Testing all hosts
-  hosts: all
-
-  roles:
-    - kubectl
+- hosts: all
+  tasks:
+    - shell: nc {{ hostvars['registry']['ansible_eth0']['ipv4']['address'] }} 5000 -v

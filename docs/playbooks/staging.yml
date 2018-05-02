@@ -1,9 +1,11 @@
 ---
+- hosts: registry
+  roles:
+    - registry
+
 - name: Staging a Helm Charts
   hosts: staging
-
   roles:
     - workdir
-    - script
     - kubectl
     - charts

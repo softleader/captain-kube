@@ -1,12 +1,10 @@
 ---
-- name: Retag and push images
-  hosts: staging
-
+- hosts: registry
   roles:
-    - script
+    - registry
 
 - name: Draft a release
-  hosts: staging
+  hosts: production
 
   roles:
     - workdir

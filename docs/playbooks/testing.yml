@@ -1,4 +1,8 @@
 ---
-- hosts: all
+- hosts: registry
   tasks:
-    - shell: nc {{ hostvars['registry']['ansible_eth0']['ipv4']['address'] }} 5000 -v
+    - shell: echo "success"
+
+- hosts: staging, production
+  roles:
+    - kubectl

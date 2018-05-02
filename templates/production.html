@@ -28,7 +28,7 @@
                 <a class="nav-link" href="/staging">Staging</a>
             </li>
             <li class="nav-item active">
-                <a class="nav-link" href="/release">Release</a>
+                <a class="nav-link" href="/production">Production</a>
             </li>
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Script</a>
@@ -112,7 +112,7 @@
                 </div>
             </div>
 
-            <button id="release" url="/release" type="submit" class="btn btn-outline-primary"
+            <button id="production" url="/production" type="submit" class="btn btn-outline-primary"
                     onclick="$(this).parent().attr('action', $(this).attr('url'))">
                 <i class="fa fa-bomb" aria-hidden="true"></i> Fire in the hole
             </button>
@@ -192,7 +192,7 @@
 
 
         $(window).on('beforeunload', function () {
-            if ($('#release').is(':disabled')) {
+            if ($('#production').is(':disabled')) {
                 return "Are you sure you want to leave this page while drafting release?";
             }
             return;

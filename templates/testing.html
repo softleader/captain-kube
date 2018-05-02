@@ -24,16 +24,16 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
+            <li class="nav-item active">
                 <a class="nav-link" href="/staging">Staging</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="/production">Production</a>
             </li>
-            <li class="nav-item dropdown active">
+            <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Script</a>
                 <div class="dropdown-menu">
-                    <a class="dropdown-item active" href="/script/pull">Pull</a>
+                    <a class="dropdown-item" href="/script/pull">Pull</a>
                     <a class="dropdown-item" href="/script/retag">Retag</a>
                 </div>
             </li>
@@ -43,16 +43,19 @@
 
 <main role="main">
     <div class="container">
-        <p>
-        <form>
-            <div class="form-group">
-                <label for="chart">Chart</label>
-                <input type="file" class="form-control" id="chart" required>
+        <div class="form-group">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="verbose">
+                <label class="form-check-label" for="verbose">
+                    Verbose
+                </label>
             </div>
+        </div>
 
-            <button id="generate" url="/script/pull" type="submit" class="btn btn-outline-primary"
+        <form>
+            <button id="testing" url="/testing" type="submit" class="btn btn-outline-primary"
                     onclick="$(this).parent().attr('action', $(this).attr('url'))">
-                <i class="fas fa-file-alt" aria-hidden="true"></i> Generate Script
+                <i class="fa fa-bomb" aria-hidden="true"></i> Fire in the hole
             </button>
         </form>
         </p>
@@ -91,17 +94,21 @@
 
             var $output = $("#output");
             $output.empty().parent().removeClass().addClass("alert alert-success")
+            var data = {
+                "verbose": $("#verbose").is(":checked"),
+            }
 
-            var formData = new FormData();
-            formData.append('file', $('#chart')[0].files[0]);
+            console.log(data)
 
             $.ajax({
                 type: 'post',
                 url: event.target.action,
-                data: formData,
                 dataType: 'json',
                 processData: false,
                 contentType: false,
+                headers: {
+                    "Captain-Kube": JSON.stringify(data)
+                },
                 xhrFields: {
                     onprogress: function (e) {
                         $output.text(e.currentTarget.response);
@@ -109,34 +116,15 @@
                 }
             }).always(function () {
                 $btns.prop('disabled', false);
-                var dl = /generated\s(.+)$/gm.exec($output.text())
-                if (dl) {
-                    var $a = $("<a></a>").addClass("btn btn-outline-info").append("<i class=\"fa fa-download\" aria-hidden=\"true\"></i> Download");
-                    $a.attr("href", "/script?file=" + dl[1]);
-                    $a.click(function () {
-                        $(this).remove();
-                    })
-                    $output.append($("<hr/>")).append($a);
-                    return;
-                }
             });
         });
 
 
         $(window).on('beforeunload', function () {
-            if ($('#generate').is(':disabled')) {
-                return "Are you sure you want to leave this page while drafting release?";
+            if ($('#staging').is(':disabled')) {
+                return "Are you sure you want to leave this page while testing?";
             }
             return;
-        });
-
-        $("#tags-retag").click(function () {
-            $('#registry').prop('disabled', function (i, v) {
-                return !v;
-            });
-            $('#source_registry').prop('disabled', function (i, v) {
-                return !v;
-            });
         });
     })
 </script>

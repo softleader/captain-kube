@@ -5,7 +5,7 @@ import (
 	"github.com/softleader/captain-kube/charts"
 )
 
-type Release struct {
+type Production struct {
 	Inventory      string         `json:"inventory"`
 	Tags           []string       `json:"tags"`
 	Namespace      string         `json:"namespace"`
@@ -18,26 +18,26 @@ type Release struct {
 	Registry       string         `json:"registry"`
 }
 
-func NewRelease() *Release {
-	return &Release{
+func NewProduction() *Production {
+	return &Production{
 		Inventory: "hosts",
 		Namespace: "default",
 	}
 }
 
-func (b Release) Yaml() []string {
-	return []string{"release.yml"}
+func (b Production) Yaml() []string {
+	return []string{"production.yml"}
 }
 
-func (b Release) I() string {
+func (b Production) I() string {
 	return b.Inventory
 }
 
-func (b Release) T() []string {
+func (b Production) T() []string {
 	return b.Tags
 }
 
-func (b Release) E() string {
+func (b Production) E() string {
 	e := make(map[string]interface{})
 	e["version"] = b.Version
 	e["chart"] = b.Chart
@@ -49,6 +49,6 @@ func (b Release) E() string {
 	return string(bs)
 }
 
-func (b Release) V() bool {
+func (b Production) V() bool {
 	return b.Verbose
 }

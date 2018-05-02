@@ -19,10 +19,12 @@ func Play(opts *sh.Options, book Book) (arg string, out string, err error) {
 
 func commandOf(book Book) (command string) {
 	s := []string{"ansible-playbook", "-i", book.I()}
-	if len(book.T()) > 0 {
-		s = append(s, "-t", "\""+strings.Join(book.T(), ",")+"\"")
+	if t := book.T(); len(t) > 0 {
+		s = append(s, "-t", "\""+strings.Join(t, ",")+"\"")
 	}
-	s = append(s, "-e", "'"+book.E()+"'")
+	if e := book.E(); e != "" {
+		s = append(s, "-e", "'"+e+"'")
+	}
 	if book.V() {
 		s = append(s, "-v")
 	}

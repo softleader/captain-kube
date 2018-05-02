@@ -19,6 +19,17 @@ func NewApplication(args *Args) *iris.Application {
 		ctx.Redirect("/staging")
 	})
 
+	testing := app.Party("/testing")
+	{
+		testing.Get("/", func(ctx context.Context) {
+			ctx.View("testing.html")
+		})
+
+		testing.Post("/", func(ctx context.Context) {
+			route.Testing(args.Workdir, args.Playbooks, ctx)
+		})
+	}
+
 	staging := app.Party("/staging")
 	{
 		staging.Get("/", func(ctx context.Context) {
@@ -30,14 +41,14 @@ func NewApplication(args *Args) *iris.Application {
 		})
 	}
 
-	release := app.Party("/release")
+	production := app.Party("/production")
 	{
-		release.Get("/", func(ctx context.Context) {
-			ctx.View("release.html")
+		production.Get("/", func(ctx context.Context) {
+			ctx.View("production.html")
 		})
 
-		release.Post("/", func(ctx context.Context) {
-			route.Release(args.Workdir, args.Playbooks, ctx)
+		production.Post("/", func(ctx context.Context) {
+			route.Production(args.Workdir, args.Playbooks, ctx)
 		})
 	}
 

@@ -18,8 +18,8 @@ import (
 	"github.com/softleader/captain-kube/slice"
 )
 
-func Release(workdir, playbooks string, ctx iris.Context) {
-	book := playbook.NewRelease()
+func Production(workdir, playbooks string, ctx iris.Context) {
+	book := playbook.NewProduction()
 	ctx.UploadFormFiles(workdir, func(context context.Context, file *multipart.FileHeader) {
 		book.Chart = file.Filename
 		book.ChartPath = path.Join(workdir, file.Filename)

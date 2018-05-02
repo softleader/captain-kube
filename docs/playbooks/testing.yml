@@ -1,0 +1,6 @@
+---
+- name: Testing all hosts
+  hosts: all
+
+  roles:
+    - kubectl

@@ -19,7 +19,8 @@ RUN apk update && \
 	cp /usr/share/zoneinfo/Asia/Taipei /etc/localtime && \
 	echo "Asia/Taipei" > /etc/timezone && \
 	curl -L https://github.com/docker/compose/releases/download/1.21.0/docker-compose-$(uname -s)-$(uname -m) -o /docker-compose && \
-	curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | bash
+	curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | bash && \
+	helm init -c
 
 ENV CAPTAIN_KUBE=/captain-kube
 ENV PLAYBOOKS=${CAPTAIN_KUBE}/playbooks

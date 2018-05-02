@@ -121,7 +121,7 @@
 
 
         $(window).on('beforeunload', function () {
-            if ($('#staging').is(':disabled')) {
+            if ($('form button:submit').is(':disabled')) {
                 return "Are you sure you want to leave this page while testing?";
             }
             return;

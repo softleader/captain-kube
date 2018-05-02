@@ -135,7 +135,7 @@
 
 
         $(window).on('beforeunload', function () {
-            if ($('#generate').is(':disabled')) {
+            if ($('form button:submit').is(':disabled')) {
                 return "Are you sure you want to leave this page while drafting release?";
             }
             return;

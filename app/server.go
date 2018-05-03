@@ -16,7 +16,7 @@ func NewApplication(args *Args) *iris.Application {
 	app.StaticWeb("/", "./static")
 
 	app.Get("/", func(ctx context.Context) {
-		ctx.Redirect("/staging")
+		ctx.View("index.html")
 	})
 
 	testing := app.Party("/testing")

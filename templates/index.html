@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="/bootstrap-4.1.0-dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/fontawesome-free-5.0.10/web-fonts-with-css/css/fontawesome-all.css">
     <link rel="stylesheet" href="/footer.css">
+    <link rel="stylesheet" href="/index.css">
 </head>
 <body>
 
@@ -24,10 +25,10 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
+            <li class="nav-item active">
                 <a class="nav-link" href="/">Home</a>
             </li>
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" href="/staging">Staging</a>
             </li>
             <li class="nav-item">
@@ -45,31 +46,21 @@
 </nav>
 
 <main role="main">
+
     <div class="container">
-        <div class="form-group">
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="verbose">
-                <label class="form-check-label" for="verbose">
-                    Verbose
-                </label>
+        <div class="row">
+            <div class="col-6 mx-auto col-md-6 order-md-2">
+                <img class="img-fluid mb-3 mb-md-0" src="/captainkube-01.svg" alt="">
+            </div>
+            <div class="col-md-6 order-md-1 text-center text-md-left">
+                <p class="lead">
+                    Deploy SoftLeader's projects faster, more reliable and automatically to <a href="https://kubernetes.io" class="text-dark">Kubernetes</a> with Captain Kube.
+                </p>
+                <div class="d-flex flex-column flex-md-row lead mb-3">
+                    <a href="/staging/" class="btn btn-outline-primary mb-3 mb-md-0 mr-md-3">Get started</a>
+                </div>
             </div>
         </div>
-
-        <form>
-            <button id="testing" url="/testing" type="submit" class="btn btn-outline-primary"
-                    onclick="$(this).parent().attr('action', $(this).attr('url'))">
-                <i class="fa fa-bomb" aria-hidden="true"></i> Fire in the hole
-            </button>
-        </form>
-        </p>
-        <hr>
-        <p>
-        <div class="alert alert-success" role="alert">
-            <h4 class="alert-heading"><i class="fa fa-terminal" aria-hidden="true"></i></h4>
-            <hr>
-            <pre id="output"></pre>
-        </div>
-        </p>
     </div>
 </main>
 
@@ -85,52 +76,6 @@
 
 <script src="/jquery-3.3.1.min.js"></script>
 <script src="/bootstrap-4.1.0-dist/js/bootstrap.bundle.min.js"></script>
-
-<script>
-
-    $(function () {
-        $("form").submit(function (event) {
-            event.preventDefault();
-
-            var $btns = $("button");
-            $btns.prop('disabled', true);
-
-            var $output = $("#output");
-            $output.empty().parent().removeClass().addClass("alert alert-success")
-            var data = {
-                "verbose": $("#verbose").is(":checked"),
-            }
-
-            console.log(data)
-
-            $.ajax({
-                type: 'post',
-                url: event.target.action,
-                dataType: 'json',
-                processData: false,
-                contentType: false,
-                headers: {
-                    "Captain-Kube": JSON.stringify(data)
-                },
-                xhrFields: {
-                    onprogress: function (e) {
-                        $output.text(e.currentTarget.response);
-                    }
-                }
-            }).always(function () {
-                $btns.prop('disabled', false);
-            });
-        });
-
-
-        $(window).on('beforeunload', function () {
-            if ($('form button:submit').is(':disabled')) {
-                return "Are you sure you want to leave this page while testing?";
-            }
-            return;
-        });
-    })
-</script>
 
 </body>
 </html>

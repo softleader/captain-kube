@@ -1,6 +1,6 @@
 ![](./docs/captainkube-01.svg)
 
-> A command line tool for Kubernetes helps SoftLeader client deploying SoftLeader products
+> Deploy SoftLeader's projects faster, more reliable and automatically to Kubernetes with Captain Kube.
 
 Documentation and Other Links:
 

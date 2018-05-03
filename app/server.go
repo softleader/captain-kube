@@ -15,6 +15,9 @@ func NewApplication(args *Args) *iris.Application {
 	tmpl := iris.HTML("templates", ".html")
 	tmpl.Reload(true)
 	tmpl.AddFunc("Contains", slice.Contains)
+	tmpl.AddFunc("NotContains", func(vs []string, s string) bool {
+		return !slice.Contains(vs, s)
+	})
 	app.RegisterView(tmpl)
 
 	app.StaticWeb("/", "./static")

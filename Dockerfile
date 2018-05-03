@@ -27,13 +27,17 @@ ENV PLAYBOOKS=${CAPTAIN_KUBE}/playbooks
 
 VOLUME /tmp
 
+# 這邊跟 Captain Kube 的設定或控制有關, 不會在 runtime 參考到的
 COPY docs/initial.sh /initial.sh
 COPY docs/upgrade.sh /upgrade.sh
+COPY docs/docker-compose.yml /docker-compose.yml
+COPY docs/daemon.yaml /daemon.yaml
+
+# 這邊是 Captain Kube runtime 使用
 COPY docs/playbooks/ ${PLAYBOOKS}/
 COPY dist/main ${CAPTAIN_KUBE}/main
 COPY templates/ ${CAPTAIN_KUBE}/templates/
 COPY static/ ${CAPTAIN_KUBE}/static/
-COPY docs/docker-compose.yml ${CAPTAIN_KUBE}/docker-compose.yml
 
 WORKDIR ${CAPTAIN_KUBE}
 

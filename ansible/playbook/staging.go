@@ -6,21 +6,18 @@ import (
 )
 
 type Staging struct {
-	Inventory  string         `json:"inventory"`
-	Tags       []string       `json:"tags"`
-	Namespace  string         `json:"namespace"`
-	Version    string         `json:"version"`
-	Chart      string         `json:"chart,omitempty"`
-	ChartPath  string         `json:"-"`
-	Images     []charts.Image `json:"-"`
-	Verbose    bool           `json:"verbose"`
+	Inventory string         `json:"inventory"`
+	Tags      []string       `json:"tags"`
+	Namespace string         `json:"namespace"`
+	Version   string         `json:"version"`
+	Chart     string         `json:"chart,omitempty"`
+	ChartPath string         `json:"-"`
+	Images    []charts.Image `json:"-"`
+	Verbose   bool           `json:"verbose"`
 }
 
 func NewStaging() *Staging {
-	return &Staging{
-		Inventory: "hosts",
-		Namespace: "default",
-	}
+	return &Staging{}
 }
 
 func (b Staging) Yaml() []string {

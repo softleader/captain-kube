@@ -4,6 +4,9 @@ import (
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/context"
 	"github.com/softleader/captain-kube/app/route"
+	"github.com/softleader/captain-kube/ansible/playbook"
+	"github.com/softleader/captain-kube/ansible"
+	"github.com/softleader/captain-kube/slice"
 )
 
 func NewApplication(args *Args) *iris.Application {
@@ -11,6 +14,7 @@ func NewApplication(args *Args) *iris.Application {
 
 	tmpl := iris.HTML("templates", ".html")
 	tmpl.Reload(true)
+	tmpl.AddFunc("Contains", slice.Contains)
 	app.RegisterView(tmpl)
 
 	app.StaticWeb("/", "./static")
@@ -22,6 +26,9 @@ func NewApplication(args *Args) *iris.Application {
 	testing := app.Party("/testing")
 	{
 		testing.Get("/", func(ctx context.Context) {
+			dft := playbook.NewTesting()
+			ansible.ExtendsDefaultValues(args.Workdir, dft)
+			ctx.ViewData("dft", dft)
 			ctx.View("testing.html")
 		})
 
@@ -33,6 +40,9 @@ func NewApplication(args *Args) *iris.Application {
 	staging := app.Party("/staging")
 	{
 		staging.Get("/", func(ctx context.Context) {
+			dft := playbook.NewStaging()
+			ansible.ExtendsDefaultValues(args.Workdir, dft)
+			ctx.ViewData("dft", dft)
 			ctx.View("staging.html")
 		})
 
@@ -44,6 +54,9 @@ func NewApplication(args *Args) *iris.Application {
 	production := app.Party("/production")
 	{
 		production.Get("/", func(ctx context.Context) {
+			dft := playbook.NewProduction()
+			ansible.ExtendsDefaultValues(args.Workdir, dft)
+			ctx.ViewData("dft", dft)
 			ctx.View("production.html")
 		})
 

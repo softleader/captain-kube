@@ -14,15 +14,12 @@ type Production struct {
 	ChartPath      string         `json:"-"`
 	Verbose        bool           `json:"verbose"`
 	Images         []charts.Image `json:"-"`
-	SourceRegistry string         `json:"source_registry"`
+	SourceRegistry string         `json:"sourceRegistry" yaml:"sourceRegistry" `
 	Registry       string         `json:"registry"`
 }
 
 func NewProduction() *Production {
-	return &Production{
-		Inventory: "hosts",
-		Namespace: "default",
-	}
+	return &Production{}
 }
 
 func (b Production) Yaml() []string {

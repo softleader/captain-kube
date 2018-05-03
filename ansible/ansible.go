@@ -3,6 +3,9 @@ package ansible
 import (
 	"github.com/softleader/captain-kube/sh"
 	"strings"
+	"path"
+	"io/ioutil"
+	"gopkg.in/yaml.v2"
 )
 
 type Book interface {
@@ -11,6 +14,17 @@ type Book interface {
 	T() []string
 	E() string
 	V() bool
+}
+
+const daemonYaml = "daemon.yaml"
+
+func ExtendsDefaultValues(workdir string, book interface{}) (err error) {
+	raw, err := ioutil.ReadFile(path.Join(workdir, daemonYaml))
+	if err != nil {
+		return
+	}
+	yaml.Unmarshal(raw, book)
+	return
 }
 
 func Play(opts *sh.Options, book Book) (arg string, out string, err error) {

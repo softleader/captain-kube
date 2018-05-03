@@ -6,9 +6,7 @@ type Testing struct {
 }
 
 func NewTesting() *Testing {
-	return &Testing{
-		Inventory: "hosts",
-	}
+	return &Testing{}
 }
 
 func (b Testing) Yaml() []string {

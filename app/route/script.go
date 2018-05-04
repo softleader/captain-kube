@@ -37,20 +37,21 @@ docker tag {{ $image.Registry }}/{{ $image.Name }} {{ $registry }}/{{ $image.Nam
 
 exit 0`
 
-func Pull(workdir, playbooks string, ctx iris.Context) {
+func Pull(playbooks string, ctx iris.Context) {
+	tmp, err := ioutil.TempDir("/tmp", "")
+	if err != nil {
+		ctx.StreamWriter(pipe.Println(err.Error()))
+		return
+	}
+
 	var chartPath string
-	ctx.UploadFormFiles(workdir, func(context context.Context, file *multipart.FileHeader) {
-		chartPath = path.Join(workdir, file.Filename)
+	ctx.UploadFormFiles(tmp, func(context context.Context, file *multipart.FileHeader) {
+		chartPath = path.Join(tmp, file.Filename)
 	})
 	opts := sh.Options{
 		Ctx:     &ctx,
 		Pwd:     playbooks,
 		Verbose: true,
-	}
-	tmp, err := ioutil.TempDir("/tmp", "")
-	if err != nil {
-		ctx.StreamWriter(pipe.Println(err.Error()))
-		return
 	}
 
 	data := make(map[string]interface{})
@@ -73,20 +74,21 @@ func Pull(workdir, playbooks string, ctx iris.Context) {
 	ctx.StreamWriter(pipe.Println("generated " + script.Name()))
 }
 
-func Retag(workdir, playbooks string, ctx iris.Context) {
+func Retag(playbooks string, ctx iris.Context) {
+	tmp, err := ioutil.TempDir("/tmp", "")
+	if err != nil {
+		ctx.StreamWriter(pipe.Println(err.Error()))
+		return
+	}
+
 	var chartPath string
-	ctx.UploadFormFiles(workdir, func(context context.Context, file *multipart.FileHeader) {
-		chartPath = path.Join(workdir, file.Filename)
+	ctx.UploadFormFiles(tmp, func(context context.Context, file *multipart.FileHeader) {
+		chartPath = path.Join(tmp, file.Filename)
 	})
 	opts := sh.Options{
 		Ctx:     &ctx,
 		Pwd:     playbooks,
 		Verbose: true,
-	}
-	tmp, err := ioutil.TempDir("/tmp", "")
-	if err != nil {
-		ctx.StreamWriter(pipe.Println(err.Error()))
-		return
 	}
 
 	data := make(map[string]interface{})

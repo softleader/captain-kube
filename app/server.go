@@ -77,7 +77,7 @@ func NewApplication(args *Args) *iris.Application {
 			})
 
 			pull.Post("/", func(ctx context.Context) {
-				route.Pull(args.Workdir, args.Playbooks, ctx)
+				route.Pull(args.Playbooks, ctx)
 			})
 		}
 
@@ -88,7 +88,7 @@ func NewApplication(args *Args) *iris.Application {
 			})
 
 			retag.Post("/{source_registry:string}/{registry:string}", func(ctx context.Context) {
-				route.Retag(args.Workdir, args.Playbooks, ctx)
+				route.Retag(args.Playbooks, ctx)
 			})
 		}
 

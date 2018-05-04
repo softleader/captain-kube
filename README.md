@@ -4,5 +4,6 @@
 
 Documentation and Other Links:
 
+- [GitHub Page](https://softleader.github.io/captain-kube/)
 - [Setup Documentation](https://github.com/softleader/captain-kube/wiki/Installation)
 - [Usage Documentation](https://github.com/softleader/captain-kube/wiki)

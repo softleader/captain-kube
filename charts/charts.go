@@ -31,7 +31,8 @@ func CollectImages(chart string, filter func(string) bool) (images map[string][]
 	err = filepath.Walk(chart, func(path string, info os.FileInfo, err error) error {
 		i, err := image(filter, path, info)
 		if len(i) > 0 {
-			images[path] = i
+			src := strings.Replace(path, chart+"/", "", -1)
+			images[src] = i
 		}
 		return err
 	})

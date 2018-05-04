@@ -49,22 +49,22 @@
         <p>
         <form>
             <div class="form-group">
-                <label for="platform">Platform</label>
+                <label for="platform">Orchestration</label>
                 <div class="form-check">
                     <label class="form-check-label">
-                        <input class="form-check-input" type="radio" name="platform" value="helm" {{ if Contains .dft.Tags "helm" }}checked{{ end }}>
+                        <input class="form-check-input" type="radio" name="orchestration" value="helm" {{ if Contains .dft.Tags "helm" }}checked{{ end }}>
                         Google Helm
                     </label>
                 </div>
                 <div class="form-check">
                     <label class="form-check-label">
-                        <input class="form-check-input" type="radio" name="platform" value="icp" {{ if Contains .dft.Tags "icp" }}checked{{ end }}>
+                        <input class="form-check-input" type="radio" name="orchestration" value="icp" {{ if Contains .dft.Tags "icp" }}checked{{ end }}>
                         IBM Cloud Private
                     </label>
                 </div>
                 <div class="form-check disabled">
                     <label class="form-check-label text-muted">
-                        <input class="form-check-input" type="radio" name="platform" value="openshift" {{ if Contains .dft.Tags "openshift" }}checked{{ end }} disabled>
+                        <input class="form-check-input" type="radio" name="orchestration" value="openshift" {{ if Contains .dft.Tags "openshift" }}checked{{ end }} disabled>
                         Red Hat OpenShift
                     </label>
                 </div>
@@ -181,7 +181,7 @@
             }
 
             $("input:checkbox[id^='tags-']:checked").each((i, e) => data.tags.push(e.value));
-            data.tags.push($('input[name=platform]:checked').val());
+            data.tags.push($('input[name=orchestration]:checked').val());
 
             console.log(data)
 

@@ -19,13 +19,20 @@ import (
 )
 
 func Production(workdir, playbooks string, ctx iris.Context) {
+	tmp, err := ioutil.TempDir("/tmp", "")
+	if err != nil {
+		ctx.StreamWriter(pipe.Println(err.Error()))
+		return
+	}
+	defer os.RemoveAll(tmp) // clean up
+
 	book := playbook.NewProduction()
-	ctx.UploadFormFiles(workdir, func(context context.Context, file *multipart.FileHeader) {
+	ctx.UploadFormFiles(tmp, func(context context.Context, file *multipart.FileHeader) {
 		book.Chart = file.Filename
-		book.ChartPath = path.Join(workdir, file.Filename)
+		book.ChartPath = path.Join(tmp, file.Filename)
 	})
 	body := ctx.GetHeader("Captain-Kube")
-	err := json.Unmarshal([]byte(body), &book)
+	err = json.Unmarshal([]byte(body), &book)
 	if err != nil {
 		ctx.StreamWriter(pipe.Println(err.Error()))
 		return
@@ -38,12 +45,6 @@ func Production(workdir, playbooks string, ctx iris.Context) {
 	book.Inventory = path.Join(workdir, book.Inventory)
 
 	if slice.Contains(book.Tags, "retag") {
-		tmp, err := ioutil.TempDir("/tmp", "")
-		if err != nil {
-			ctx.StreamWriter(pipe.Println(err.Error()))
-			return
-		}
-		defer os.RemoveAll(tmp) // clean up
 		images, err := docker.Retag(&opts, book.ChartPath, book.SourceRegistry, tmp)
 		if err != nil {
 			ctx.StreamWriter(pipe.Println(err.Error()))

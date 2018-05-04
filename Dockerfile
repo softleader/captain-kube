@@ -1,24 +1,7 @@
-FROM alpine
+FROM softleader/ansible
 MAINTAINER softleader.com.tw
 
-RUN apk update && \
-	apk --no-cache add \
-		bash \
-		vim \
-		tree \
-		curl \
-		procps \
-		tzdata \
-		ansible \
-		python \
-		openssh \
-		openssl \
-		sshpass \
-	&& rm -rf /var/cache/apk/* && \
-	ls /usr/share/zoneinfo && \
-	cp /usr/share/zoneinfo/Asia/Taipei /etc/localtime && \
-	echo "Asia/Taipei" > /etc/timezone && \
-	curl -L https://github.com/docker/compose/releases/download/1.21.0/docker-compose-$(uname -s)-$(uname -m) -o /docker-compose && \
+RUN curl -L https://github.com/docker/compose/releases/download/1.21.0/docker-compose-$(uname -s)-$(uname -m) -o /docker-compose && \
 	curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | bash && \
 	helm init -c
 

@@ -1,8 +1,0 @@
----
-- name: create temporary work directory
-  tempfile:
-    state: directory
-    suffix: .captain-kube
-  register: workdir
-  tags:
-    - always

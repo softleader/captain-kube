@@ -1,8 +1,0 @@
----
-- hosts: registry
-  tasks:
-    - shell: docker --version
-
-- hosts: staging, production
-  roles:
-    - kubectl

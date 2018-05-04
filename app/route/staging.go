@@ -19,7 +19,7 @@ import (
 )
 
 func Staging(workdir, playbooks string, ctx iris.Context) {
-	tmp, err := ioutil.TempDir("/tmp", "")
+	tmp, err := ioutil.TempDir(os.TempDir(), "")
 	if err != nil {
 		ctx.StreamWriter(pipe.Println(err.Error()))
 		return

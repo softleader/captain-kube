@@ -38,7 +38,7 @@ docker tag {{ $image.Registry }}/{{ $image.Name }} {{ $registry }}/{{ $image.Nam
 exit 0`
 
 func Pull(playbooks string, ctx iris.Context) {
-	tmp, err := ioutil.TempDir("/tmp", "")
+	tmp, err := ioutil.TempDir(os.TempDir(), "")
 	if err != nil {
 		ctx.StreamWriter(pipe.Println(err.Error()))
 		return
@@ -75,7 +75,7 @@ func Pull(playbooks string, ctx iris.Context) {
 }
 
 func Retag(playbooks string, ctx iris.Context) {
-	tmp, err := ioutil.TempDir("/tmp", "")
+	tmp, err := ioutil.TempDir(os.TempDir(), "")
 	if err != nil {
 		ctx.StreamWriter(pipe.Println(err.Error()))
 		return

@@ -3,6 +3,8 @@ GOARCH?=amd64
 BINARY?=dist
 OUTPUT?=main
 
+all: test build
+
 test:
 	go test ./...
 

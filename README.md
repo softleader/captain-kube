@@ -1,6 +1,4 @@
-![](./docs/captainkube-01.svg)
-
-> Deploy SoftLeader's projects faster, more reliable and automatically to Kubernetes with Captain Kube.
+![](./docs/printscreen.png)
 
 Documentation and Other Links:
 

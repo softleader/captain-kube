@@ -1,6 +1,6 @@
 ![](./docs/captainkube-01.svg)
 
-> Porting SoftLeader's projects faster, more reliable and automatically to Kubernetes with Captain Kube.
+> Porting SoftLeader's products faster, more reliable and automatically to Kubernetes with Captain Kube.
 
 Documentation and Other Links:
 

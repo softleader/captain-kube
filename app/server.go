@@ -4,14 +4,12 @@ import (
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/context"
 	"github.com/softleader/captain-kube/app/route"
-	"github.com/softleader/captain-kube/ansible/playbook"
-	"github.com/softleader/captain-kube/ansible"
 	"github.com/softleader/captain-kube/slice"
-	"fmt"
 )
 
 func NewApplication(args *Args) *iris.Application {
 	app := iris.New()
+	d := GetDaemon(args.Workdir)
 
 	tmpl := iris.HTML("templates", ".html")
 	tmpl.Reload(true)
@@ -24,23 +22,13 @@ func NewApplication(args *Args) *iris.Application {
 	app.StaticWeb("/", "./static")
 
 	app.Get("/", func(ctx context.Context) {
-		fmt.Println("Authorization:", ctx.GetHeader("Authorization"))
-		fmt.Println("Captain-Kube realm:", ctx.GetHeader("Captain-Kube realm"))
-		fmt.Println("Captain-Kube:", ctx.GetHeader("Captain-Kube"))
-		fmt.Println("Host:", ctx.GetHeader("Host"))
-		fmt.Println("X-Real-IP:", ctx.GetHeader("X-Real-IP"))
-		fmt.Println("X-User:", ctx.GetHeader("X-User"))
-		fmt.Println("X-Forwarded-For:", ctx.GetHeader("X-Forwarded-For"))
-		fmt.Println("X-Forwarded-Proto:", ctx.GetHeader("X-Forwarded-Proto"))
 		ctx.View("index.html")
 	})
 
 	testing := app.Party("/testing")
 	{
 		testing.Get("/", func(ctx context.Context) {
-			dft := playbook.NewTesting()
-			ansible.ExtendsDefaultValues(args.Workdir, dft)
-			ctx.ViewData("dft", dft)
+			ctx.ViewData("dft", d.DefaultValue)
 			ctx.View("testing.html")
 		})
 
@@ -52,9 +40,7 @@ func NewApplication(args *Args) *iris.Application {
 	staging := app.Party("/staging")
 	{
 		staging.Get("/", func(ctx context.Context) {
-			dft := playbook.NewStaging()
-			ansible.ExtendsDefaultValues(args.Workdir, dft)
-			ctx.ViewData("dft", dft)
+			ctx.ViewData("dft", d.DefaultValue)
 			ctx.View("staging.html")
 		})
 
@@ -66,9 +52,7 @@ func NewApplication(args *Args) *iris.Application {
 	production := app.Party("/production")
 	{
 		production.Get("/", func(ctx context.Context) {
-			dft := playbook.NewProduction()
-			ansible.ExtendsDefaultValues(args.Workdir, dft)
-			ctx.ViewData("dft", dft)
+			ctx.ViewData("dft", d.DefaultValue)
 			ctx.View("production.html")
 		})
 
@@ -82,6 +66,7 @@ func NewApplication(args *Args) *iris.Application {
 		pull := script.Party("/pull")
 		{
 			pull.Get("/", func(ctx context.Context) {
+				ctx.ViewData("dft", d.DefaultValue)
 				ctx.View("pull.html")
 			})
 
@@ -93,6 +78,7 @@ func NewApplication(args *Args) *iris.Application {
 		retag := script.Party("/retag")
 		{
 			retag.Get("/", func(ctx context.Context) {
+				ctx.ViewData("dft", d.DefaultValue)
 				ctx.View("retag.html")
 			})
 

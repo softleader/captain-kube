@@ -56,11 +56,11 @@
             <div class="form-group">
                 <label for="registry">Registry</label>
                 <div class="input-group">
-                    <input type="text" class="form-control" id="source_registry" value="hub.softleader.com.tw" required>
+                    <input type="text" class="form-control" id="sourceRegistry" value="{{ .dft.SourceRegistry }}">
                     <div class="input-group-prepend">
                         <span class="input-group-text" id=""><i class="fas fa-angle-double-right"></i></span>
                     </div>
-                    <input type="text" class="form-control" id="registry" required>
+                    <input type="text" class="form-control" id="registry" value="{{ .dft.Registry }}">
                 </div>
             </div>
 
@@ -125,7 +125,7 @@
 
             $.ajax({
                 type: 'post',
-                url: event.target.action + "/" + $("#source_registry").val() + "/" + $("#registry").val(),
+                url: event.target.action + "/" + $("#sourceRegistry").val() + "/" + $("#registry").val(),
                 data: formData,
                 dataType: 'json',
                 processData: false,
@@ -156,15 +156,6 @@
                 return "Are you sure you want to leave this page while drafting release?";
             }
             return;
-        });
-
-        $("#tags-retag").click(function () {
-            $('#registry').prop('disabled', function (i, v) {
-                return !v;
-            });
-            $('#source_registry').prop('disabled', function (i, v) {
-                return !v;
-            });
         });
     })
 </script>

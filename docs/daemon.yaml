@@ -1,10 +1,9 @@
-inventory: hosts
-tags:
+defaultValue:
+  inventory: hosts
+  tags:
   - icp
-#  - pull
-#  - retag
-namespace: default
-version:
-verbose: false
-sourceRegistry: hub.softleader.com.tw
-registry:
+  namespace: default 
+  version: 
+  verbose: false
+  sourceRegistry: hub.softleader.com.tw
+  registry: 

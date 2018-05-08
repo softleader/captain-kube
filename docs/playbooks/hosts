@@ -22,10 +22,10 @@ kubectl_user=<kubectl_user>
 kubectl_pass=<kubectl_pass>
 icp_account=<icp_account>
 
-[registry]
+[porter]
 3.3.3.3
 
-[registry:vars]
+[porter:vars]
 ansible_connection=ssh
 ansible_ssh_user=<ssh_user>
 ansible_ssh_pass=<ssh_password>

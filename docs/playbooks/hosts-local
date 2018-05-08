@@ -18,8 +18,8 @@ kubectl_user=<kubectl_user>
 kubectl_pass=<kubectl_pass>
 icp_account=<icp_account>
 
-[registry]
+[porter]
 localhost
 
-[registry:vars]
+[porter:vars]
 ansible_connection=local

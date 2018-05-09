@@ -1,5 +1,6 @@
 ---
-- hosts: porter
+- name: Runing Pre-Procedures
+  hosts: porter
   roles:
     - docker-image
 

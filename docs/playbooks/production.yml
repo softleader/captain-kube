@@ -1,11 +1,11 @@
 ---
-- hosts: porter
+- name: Runing Pre-Procedures
+  hosts: porter
   roles:
     - docker-image
 
 - name: Draft a release
   hosts: production
-
   roles:
     - workdir
     - kubectl

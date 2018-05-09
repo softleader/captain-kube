@@ -1,5 +1,5 @@
 ---
-- name: login to {{ inventory_hostname }}
+- name: Login
   shell: "{{ lookup('template', 'configure-client.j2') }}"
   tags:
     - always

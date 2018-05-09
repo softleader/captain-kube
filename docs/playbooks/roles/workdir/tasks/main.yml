@@ -1,5 +1,5 @@
 ---
-- name: create temporary work directory
+- name: Creating temporary work directory
   tempfile:
     state: directory
     suffix: .captain-kube

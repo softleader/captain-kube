@@ -1,11 +1,11 @@
 ---
 - hosts: porter
   roles:
-    - docker
+    - docker-image
 
 - name: Staging a Helm Charts
   hosts: staging
   roles:
     - workdir
     - kubectl
-    - charts
+    - helm-chart

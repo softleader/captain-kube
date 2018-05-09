@@ -1,7 +1,10 @@
 [staging]
 1.1.1.1
+..
+1.1.1.9
 
 [staging:vars]
+#ansible_connection=local
 ansible_connection=ssh 
 ansible_ssh_user=<ssh_user>
 ansible_ssh_pass=<ssh_password>
@@ -14,6 +17,7 @@ icp_account=<icp_account>
 2.2.2.2
 
 [production:vars]
+#ansible_connection=local
 ansible_connection=ssh
 ansible_ssh_user=<ssh-username>
 ansible_ssh_pass=<ssh-password>
@@ -26,6 +30,7 @@ icp_account=<icp_account>
 3.3.3.3
 
 [porter:vars]
+#ansible_connection=local
 ansible_connection=ssh
 ansible_ssh_user=<ssh_user>
 ansible_ssh_pass=<ssh_password>

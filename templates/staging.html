@@ -80,11 +80,10 @@
                 <input type="file" class="form-control" id="chart" required>
             </div>
 
-
-            <div class="form-group">
-                <label for="version">Version</label>
-                <input type="text" class="form-control" id="version" value="{{ .dft.Version }}">
-            </div>
+            {{/*<div class="form-group">*/}}
+                {{/*<label for="version">Version</label>*/}}
+                {{/*<input type="text" class="form-control" id="version" value="{{ .dft.Version }}">*/}}
+            {{/*</div>*/}}
 
             <div class="form-group">
                 <label for="tags">Pre-Actions</label>
@@ -163,7 +162,7 @@
             var data = {
                 "inventory": "{{ .dft.Inventory }}",
                 "namespace": $("#namespace").val(),
-                "version": $("#version").val(),
+                // "version": $("#version").val(),
                 "tags": [],
                 "verbose": $("#verbose").is(":checked"),
             }

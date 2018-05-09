@@ -1,7 +1,7 @@
 ---
 - hosts: porter
   roles:
-    - registry
+    - docker
 
 - name: Draft a release
   hosts: production

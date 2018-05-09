@@ -72,7 +72,7 @@
 
             <div class="form-group">
                 <label for="namespace">Namespace</label>
-                <input type="text" class="form-control" id="namespace" value="{{ .dft.Namespace }}" required>
+                <input type="text" class="form-control" id="namespace" value="{{ .dft.Namespace }}" {{ if NotContains .dft.Tags "helm" }}disabled{{ end }}>
             </div>
 
             <div class="form-group">
@@ -208,12 +208,15 @@
             });
         });
 
-
         $(window).on('beforeunload', function () {
             if ($('form button:submit').is(':disabled')) {
                 return "Are you sure you want to leave this page while drafting release?";
             }
             return;
+        });
+
+        $("[name=platform]").click(function () {
+            $('#namespace').prop('disabled', $(this).val() != "helm");
         });
 
         $("#tags-retag").click(function () {

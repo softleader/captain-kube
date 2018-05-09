@@ -6,10 +6,10 @@ import (
 )
 
 type Production struct {
-	Inventory      string         `json:"inventory"`
+	Inventory      string         `json:"inventory,omitempty"`
 	Tags           []string       `json:"tags"`
 	Namespace      string         `json:"namespace"`
-	Version        string         `json:"version,omitempty"`
+	Version        string         `json:"version"`
 	Chart          string         `json:"chart,omitempty"`
 	ChartPath      string         `json:"-"`
 	Verbose        bool           `json:"verbose"`

@@ -6,7 +6,7 @@ import (
 )
 
 type Staging struct {
-	Inventory string         `json:"inventory"`
+	Inventory string         `json:"inventory,omitempty"`
 	Tags      []string       `json:"tags"`
 	Namespace string         `json:"namespace"`
 	Version   string         `json:"version"`

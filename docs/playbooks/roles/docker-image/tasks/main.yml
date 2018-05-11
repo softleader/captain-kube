@@ -8,11 +8,13 @@
 - name: Retaging images
   shell: docker tag {{ item.Registry}}/{{ item.Name }} {{ registry }}/{{ item.Name }}
   loop: "{{ images }}"
+  when: labels is defined and "porter" in labels
   tags:
     - retag
 
 - name: Pushing images
   shell: docker push {{ registry }}/{{ item.Name }}
   loop: "{{ images }}"
+  when: labels is defined and "porter" in labels
   tags:
     - push

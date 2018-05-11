@@ -1,8 +1,4 @@
 ---
-- hosts: porter
-  tasks:
-    - shell: docker --version
-
 - hosts: staging, production
   roles:
     - kubectl

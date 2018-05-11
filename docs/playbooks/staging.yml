@@ -1,12 +1,8 @@
 ---
-- name: Runing Pre-Procedures
-  hosts: porter
-  roles:
-    - docker-image
-
 - name: Staging a Helm Charts
   hosts: staging
   roles:
+    - docker-image
     - workdir
     - kubectl
     - helm-chart

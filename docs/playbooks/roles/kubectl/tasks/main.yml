@@ -1,5 +1,6 @@
 ---
 - name: Login
   shell: "{{ lookup('template', 'configure-client.j2') }}"
+  when: master is defined and master == "true"
   tags:
     - always

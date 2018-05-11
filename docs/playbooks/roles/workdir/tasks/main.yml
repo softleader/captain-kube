@@ -4,5 +4,6 @@
     state: directory
     suffix: .captain-kube
   register: workdir
+  when: master is defined and master == "true"
   tags:
     - always

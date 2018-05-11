@@ -1,5 +1,5 @@
 [staging]
-localhost
+localhost master=true
 
 [staging:vars]
 ansible_connection=local
@@ -9,7 +9,7 @@ kubectl_pass=<kubectl_pass>
 icp_account=<icp_account>
 
 [production]
-localhost
+localhost master=true
 
 [production:vars]
 ansible_connection=local

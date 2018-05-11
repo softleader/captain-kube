@@ -1,5 +1,5 @@
 [staging]
-1.1.1.1 labels=master,porter
+1.1.1.1 labels=master
 ..
 1.1.1.9
 
@@ -23,3 +23,11 @@ kubectl_cluster_name=<kubectl_cluster>
 kubectl_user=<kubectl_user>
 kubectl_pass=<kubectl_pass>
 icp_account=<icp_account>
+
+[porter]
+3.3.3.3
+
+[porter:vars]
+ansible_connection=ssh
+ansible_ssh_user=<ssh_user>
+ansible_ssh_pass=<ssh_password>

@@ -1,6 +1,6 @@
 ---
 - name: Staging a Helm Charts
-  hosts: staging
+  hosts: porter, staging
   roles:
     - docker-image
     - workdir

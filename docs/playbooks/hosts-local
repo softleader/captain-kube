@@ -17,3 +17,9 @@ kubectl_cluster_name=<kubectl_cluster>
 kubectl_user=<kubectl_user>
 kubectl_pass=<kubectl_pass>
 icp_account=<icp_account>
+
+[porter]
+localhost
+
+[porter:vars]
+ansible_connection=local

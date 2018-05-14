@@ -1,6 +1,6 @@
 ---
-- name: Pulling images
+- name: Pulling tagged images
   shell: docker pull {{ registry }}/{{ item.Name }}
-  loop: "{{ images }}"
+  loop: "{{ retag_images }}"
   tags:
-    - pull
+    - retag

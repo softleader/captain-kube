@@ -12,7 +12,7 @@ type Production struct {
 	Version        string         `json:"version"`
 	Chart          string         `json:"chart,omitempty"`
 	ChartPath      string         `json:"-"`
-	Images         []charts.Image `json:"-"`
+	RetagImages    []charts.Image `json:"-"` // 需要被 retag 的 image
 	Verbose        bool           `json:"verbose"`
 	SourceRegistry string         `json:"sourceRegistry" yaml:"sourceRegistry" `
 	Registry       string         `json:"registry"`
@@ -40,7 +40,7 @@ func (b Production) E() string {
 	e["chart"] = b.Chart
 	e["chart_path"] = b.ChartPath
 	e["namespace"] = b.Namespace
-	e["images"] = b.Images
+	e["retag_images"] = b.RetagImages
 	e["registry"] = b.Registry
 	bs, _ := json.Marshal(e)
 	return string(bs)

@@ -6,14 +6,17 @@ import (
 )
 
 type Staging struct {
-	Inventory string         `json:"inventory,omitempty"`
-	Tags      []string       `json:"tags"`
-	Namespace string         `json:"namespace"`
-	Version   string         `json:"version"`
-	Chart     string         `json:"chart,omitempty"`
-	ChartPath string         `json:"-"`
-	Images    []charts.Image `json:"-"`
-	Verbose   bool           `json:"verbose"`
+	Inventory      string         `json:"inventory,omitempty"`
+	Tags           []string       `json:"tags"`
+	Namespace      string         `json:"namespace"`
+	Version        string         `json:"version"`
+	Chart          string         `json:"chart,omitempty"`
+	ChartPath      string         `json:"-"`
+	Images         []charts.Image `json:"-"` // chart 中所有的 image
+	RetagImages    []charts.Image `json:"-"` // 需要被 retag 的 image
+	Verbose        bool           `json:"verbose"`
+	SourceRegistry string         `json:"sourceRegistry" yaml:"sourceRegistry" `
+	Registry       string         `json:"registry"`
 }
 
 func NewStaging() *Staging {
@@ -39,6 +42,8 @@ func (b Staging) E() string {
 	e["chart_path"] = b.ChartPath
 	e["namespace"] = b.Namespace
 	e["images"] = b.Images
+	e["retag_images"] = b.RetagImages
+	e["registry"] = b.Registry
 	bs, _ := json.Marshal(e)
 	return string(bs)
 }

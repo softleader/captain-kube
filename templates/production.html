@@ -34,10 +34,10 @@
                 <a class="nav-link" href="/production">Production</a>
             </li>
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Image</a>
+                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Script</a>
                 <div class="dropdown-menu">
-                    <a class="dropdown-item" href="/image/pull">Pull</a>
-                    <a class="dropdown-item" href="/image/retag">Retag</a>
+                    <a class="dropdown-item" href="/script/image-pull">Image Pull</a>
+                    <a class="dropdown-item" href="/script/image-retag">Image Retag</a>
                 </div>
             </li>
         </ul>
@@ -95,7 +95,7 @@
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" value="retag" id="tags-retag" {{ if Contains .daemon.DefaultValue.Tags "retag" }}checked{{ end }}>
                     <label class="form-check-label" for="tags-retag">
-                        Retag Images
+                        Retag images & Sync to production nodes
                     </label>
                 </div>
             </div>

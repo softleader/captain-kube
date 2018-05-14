@@ -62,9 +62,9 @@ func NewApplication(args *Args) *iris.Application {
 		})
 	}
 
-	image := app.Party("/image")
+	script := app.Party("/script")
 	{
-		pull := image.Party("/pull")
+		pull := script.Party("/image-pull")
 		{
 			pull.Get("/", func(ctx context.Context) {
 				ctx.ViewData("daemon", d)
@@ -76,7 +76,7 @@ func NewApplication(args *Args) *iris.Application {
 			})
 		}
 
-		retag := image.Party("/retag")
+		retag := script.Party("/image-retag")
 		{
 			retag.Get("/", func(ctx context.Context) {
 				ctx.ViewData("daemon", d)
@@ -88,7 +88,7 @@ func NewApplication(args *Args) *iris.Application {
 			})
 		}
 
-		image.Get("/", route.DownloadScript)
+		script.Get("/", route.DownloadScript)
 	}
 
 	return app

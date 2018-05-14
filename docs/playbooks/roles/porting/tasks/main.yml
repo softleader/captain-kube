@@ -5,14 +5,14 @@
   tags:
     - pull
 
-- name: Retaging images
+- name: Tagging images
   shell: docker tag {{ item.Registry}}/{{ item.Name }} {{ registry }}/{{ item.Name }}
-  loop: "{{ images }}"
+  loop: "{{ retag_images }}"
   tags:
     - retag
 
 - name: Pushing images
   shell: docker push {{ registry }}/{{ item.Name }}
-  loop: "{{ images }}"
+  loop: "{{ retag_images }}"
   tags:
-    - push
+    - retag

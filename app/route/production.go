@@ -51,10 +51,10 @@ func Production(workdir, playbooks string, ctx iris.Context) {
 			return
 		}
 		for _, i := range images {
-			book.Images = append(book.Images, i...)
+			book.RetagImages = append(book.RetagImages, i...)
 		}
-		book.Tags = append(book.Tags, "push")
 	}
+
 	_, _, err = ansible.Play(&opts, *book)
 	if err != nil {
 		ctx.StreamWriter(pipe.Println(err.Error()))

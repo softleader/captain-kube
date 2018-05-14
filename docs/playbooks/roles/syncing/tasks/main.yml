@@ -1,0 +1,6 @@
+---
+- name: Pulling images
+  shell: docker pull {{ registry }}/{{ item.Name }}
+  loop: "{{ images }}"
+  tags:
+    - pull

@@ -1,8 +1,17 @@
 ---
-- name: Staging a Helm Charts
-  hosts: porter, staging
+- name: Porting images
+  hosts: porter
   roles:
-    - docker-image
+    - porting
+
+- name: Synchronising images to staging nodes
+  hosts: staging
+  roles:
+    - syncing
+
+- name: Staging a Helm Charts
+  hosts: staging
+  roles:
     - workdir
     - kubectl
     - helm-chart

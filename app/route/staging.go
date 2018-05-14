@@ -10,12 +10,12 @@ import (
 	"github.com/kataras/iris/context"
 
 	"github.com/kataras/iris"
-	"github.com/softleader/captain-kube/ansible"
 	"github.com/softleader/captain-kube/ansible/playbook"
 	"github.com/softleader/captain-kube/docker"
 	"github.com/softleader/captain-kube/pipe"
 	"github.com/softleader/captain-kube/sh"
 	"github.com/softleader/captain-kube/slice"
+	"github.com/softleader/captain-kube/ansible"
 )
 
 func Staging(workdir, playbooks string, ctx iris.Context) {
@@ -43,6 +43,7 @@ func Staging(workdir, playbooks string, ctx iris.Context) {
 		Verbose: book.V(),
 	}
 	book.Inventory = path.Join(workdir, book.Inventory)
+
 	if slice.Contains(book.Tags, "pull") {
 		images, err := docker.Pull(&opts, book.ChartPath, tmp)
 		if err != nil {
@@ -53,6 +54,18 @@ func Staging(workdir, playbooks string, ctx iris.Context) {
 			book.Images = append(book.Images, i...)
 		}
 	}
+
+	if slice.Contains(book.Tags, "retag") {
+		images, err := docker.Retag(&opts, book.ChartPath, book.SourceRegistry, tmp)
+		if err != nil {
+			ctx.StreamWriter(pipe.Println(err.Error()))
+			return
+		}
+		for _, i := range images {
+			book.RetagImages = append(book.RetagImages, i...)
+		}
+	}
+
 	_, _, err = ansible.Play(&opts, *book)
 	if err != nil {
 		ctx.StreamWriter(pipe.Println(err.Error()))

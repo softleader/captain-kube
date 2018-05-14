@@ -1,8 +1,17 @@
 ---
-- name: Draft a release
-  hosts: porter, production
+- name: Porting images
+  hosts: porter
   roles:
-    - docker-image
+    - porting
+
+- name: Synchronising images to production nodes
+  hosts: production
+  roles:
+    - syncing
+
+- name: Drafting a release
+  hosts: production
+  roles:
     - workdir
     - kubectl
     - helm-chart

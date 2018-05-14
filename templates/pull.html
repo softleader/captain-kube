@@ -34,10 +34,10 @@
                 <a class="nav-link" href="/production">Production</a>
             </li>
             <li class="nav-item dropdown active">
-                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Image</a>
+                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Script</a>
                 <div class="dropdown-menu">
-                    <a class="dropdown-item active" href="/image/pull">Pull</a>
-                    <a class="dropdown-item" href="/image/retag">Retag</a>
+                    <a class="dropdown-item active" href="/script/image-pull">Image Pull</a>
+                    <a class="dropdown-item" href="/script/image-retag">Image Retag</a>
                 </div>
             </li>
         </ul>
@@ -58,7 +58,7 @@
                 <input type="file" class="form-control" id="chart" required>
             </div>
 
-            <button id="generate" url="/image/pull" type="submit" class="btn btn-outline-primary"
+            <button id="generate" url="/script/image-pull" type="submit" class="btn btn-outline-primary"
                     onclick="$(this).parent().attr('action', $(this).attr('url'))">
                 Generate Script
             </button>
@@ -134,7 +134,7 @@
                 var dl = /generated\s(.+)$/gm.exec($output.text())
                 if (dl) {
                     var $a = $("<a></a>").addClass("btn btn-outline-info").append("<i class=\"fa fa-download\" aria-hidden=\"true\"></i> Download");
-                    $a.attr("href", "/image?file=" + dl[1]);
+                    $a.attr("href", "/script?file=" + dl[1]);
                     $a.click(function () {
                         $(this).remove();
                     })

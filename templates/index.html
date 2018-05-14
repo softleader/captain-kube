@@ -9,21 +9,21 @@
     <link rel="stylesheet" href="/fontawesome-free-5.0.10/web-fonts-with-css/css/fontawesome-all.css">
     <link rel="stylesheet" href="/footer.css">
     <link rel="stylesheet" href="/index.css">
+    <link rel="stylesheet" href="/template.css">
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-md navbar-light bg-light fixed-top">
     <a class="navbar-brand" href="https://softleader.github.io/captain-kube/">
         <img src="/captainkube-02.png"
              width="30" height="30" class="d-inline-block align-top" alt="">
         Captain Kube
     </a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
                 <a class="nav-link" href="/">Home</a>
@@ -35,12 +35,17 @@
                 <a class="nav-link" href="/production">Production</a>
             </li>
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Script</a>
+                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Image</a>
                 <div class="dropdown-menu">
-                    <a class="dropdown-item" href="/script/pull">Pull</a>
-                    <a class="dropdown-item" href="/script/retag">Retag</a>
+                    <a class="dropdown-item" href="/image/pull">Pull</a>
+                    <a class="dropdown-item" href="/image/retag">Retag</a>
                 </div>
             </li>
+        </ul>
+        <ul class="my-2 my-lg-0 navbar-nav">
+        {{ if .daemon.Kubernetes.Url }}
+            <a class="btn btn-outline-primary mb-3 mb-md-0 mr-md-3" href="{{ .daemon.Kubernetes.Url }}">Kubernetes</a>
+        {{ end }}
         </ul>
     </div>
 </nav>

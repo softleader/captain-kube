@@ -12,8 +12,8 @@ type Production struct {
 	Version        string         `json:"version"`
 	Chart          string         `json:"chart,omitempty"`
 	ChartPath      string         `json:"-"`
-	Verbose        bool           `json:"verbose"`
 	Images         []charts.Image `json:"-"`
+	Verbose        bool           `json:"verbose"`
 	SourceRegistry string         `json:"sourceRegistry" yaml:"sourceRegistry" `
 	Registry       string         `json:"registry"`
 }

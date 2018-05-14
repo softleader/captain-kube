@@ -9,17 +9,18 @@ import (
 const daemonYaml = "daemon.yaml"
 
 type Daemon struct {
-	DefaultValue `yaml:"defaultValue"`
-}
-
-type DefaultValue struct {
-	Inventory      string   `yaml:"inventory"`
-	Tags           []string `yaml:"tags"`
-	Namespace      string   `yaml:"namespace"`
-	Version        string   `yaml:"version"`
-	Verbose        bool     `yaml:"verbose"`
-	SourceRegistry string   `yaml:"sourceRegistry"`
-	Registry       string   `yaml:"registry"`
+	DefaultValue struct {
+		Inventory      string   `yaml:"inventory"`
+		Tags           []string `yaml:"tags"`
+		Namespace      string   `yaml:"namespace"`
+		Version        string   `yaml:"version"`
+		Verbose        bool     `yaml:"verbose"`
+		SourceRegistry string   `yaml:"sourceRegistry"`
+		Registry       string   `yaml:"registry"`
+	} `yaml:"defaultValue"`
+	Kubernetes struct {
+		Url string `yaml:"url"`
+	} `yaml:"kubernetes"`
 }
 
 func GetDaemon(workdir string) (d *Daemon) {
@@ -30,8 +31,3 @@ func GetDaemon(workdir string) (d *Daemon) {
 	yaml.Unmarshal(raw, &d)
 	return
 }
-
-//func (d DefaultValue) DeepCopyTo(i interface{}) {
-//	b, _ := json.Marshal(d)
-//	json.Unmarshal(b, i)
-//}

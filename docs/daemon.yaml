@@ -6,4 +6,6 @@ defaultValue:
   version: 
   verbose: false
   sourceRegistry: hub.softleader.com.tw
-  registry: 
+  registry:
+kubernetes:
+  url: https://1.1.1.1:8443/

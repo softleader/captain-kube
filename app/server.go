@@ -22,13 +22,14 @@ func NewApplication(args *Args) *iris.Application {
 	app.StaticWeb("/", "./static")
 
 	app.Get("/", func(ctx context.Context) {
+		ctx.ViewData("daemon", d)
 		ctx.View("index.html")
 	})
 
 	testing := app.Party("/testing")
 	{
 		testing.Get("/", func(ctx context.Context) {
-			ctx.ViewData("dft", d.DefaultValue)
+			ctx.ViewData("daemon", d)
 			ctx.View("testing.html")
 		})
 
@@ -40,7 +41,7 @@ func NewApplication(args *Args) *iris.Application {
 	staging := app.Party("/staging")
 	{
 		staging.Get("/", func(ctx context.Context) {
-			ctx.ViewData("dft", d.DefaultValue)
+			ctx.ViewData("daemon", d)
 			ctx.View("staging.html")
 		})
 
@@ -52,7 +53,7 @@ func NewApplication(args *Args) *iris.Application {
 	production := app.Party("/production")
 	{
 		production.Get("/", func(ctx context.Context) {
-			ctx.ViewData("dft", d.DefaultValue)
+			ctx.ViewData("daemon", d)
 			ctx.View("production.html")
 		})
 
@@ -61,12 +62,12 @@ func NewApplication(args *Args) *iris.Application {
 		})
 	}
 
-	script := app.Party("/script")
+	image := app.Party("/image")
 	{
-		pull := script.Party("/pull")
+		pull := image.Party("/pull")
 		{
 			pull.Get("/", func(ctx context.Context) {
-				ctx.ViewData("dft", d.DefaultValue)
+				ctx.ViewData("daemon", d)
 				ctx.View("pull.html")
 			})
 
@@ -75,10 +76,10 @@ func NewApplication(args *Args) *iris.Application {
 			})
 		}
 
-		retag := script.Party("/retag")
+		retag := image.Party("/retag")
 		{
 			retag.Get("/", func(ctx context.Context) {
-				ctx.ViewData("dft", d.DefaultValue)
+				ctx.ViewData("daemon", d)
 				ctx.View("retag.html")
 			})
 
@@ -87,7 +88,7 @@ func NewApplication(args *Args) *iris.Application {
 			})
 		}
 
-		script.Get("/", route.DownloadScript)
+		image.Get("/", route.DownloadScript)
 	}
 
 	return app

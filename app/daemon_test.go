@@ -7,9 +7,11 @@ import (
 	"path"
 	"fmt"
 	"github.com/softleader/captain-kube/ansible/playbook"
+	"gopkg.in/yaml.v2"
 )
 
-const daemon = `defaultValue:
+const daemon = `
+defaultValue:
   inventory: hosts
   tags:
   - icp
@@ -17,7 +19,16 @@ const daemon = `defaultValue:
   version: 
   verbose: false
   sourceRegistry: hub.softleader.com.tw
-  registry: `
+  registry:
+kubernetes:
+  url: https://192.168.1.93:8443/
+`
+
+func TestLoadDaemonYAML(t *testing.T) {
+	d := Daemon{}
+	yaml.Unmarshal([]byte(daemon), &d)
+	fmt.Printf("%+v", d)
+}
 
 func TestExtendsTo(t *testing.T) {
 	tmp, err := ioutil.TempDir(os.TempDir(), "")

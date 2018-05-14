@@ -69,7 +69,7 @@
                 </div>
             </div>
 
-            <button id="generate" url="/script/retag" type="submit" class="btn btn-outline-primary"
+            <button id="generate" url="/image/retag" type="submit" class="btn btn-outline-primary"
                     onclick="$(this).parent().attr('action', $(this).attr('url'))">
                 Generate Script
             </button>
@@ -145,7 +145,7 @@
                 var dl = /generated\s(.+)$/gm.exec($output.text())
                 if (dl) {
                     var $a = $("<a></a>").addClass("btn btn-outline-info").append("<i class=\"fa fa-download\" aria-hidden=\"true\"></i> Download");
-                    $a.attr("href", "/script?file=" + dl[1]);
+                    $a.attr("href", "/image?file=" + dl[1]);
                     $a.click(function () {
                         $(this).remove();
                     })

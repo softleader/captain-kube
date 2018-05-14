@@ -1,10 +1,10 @@
 ---
-- name: Porting images
+- name: Preparing Materials
   hosts: porter
   roles:
     - porting
 
-- name: Synchronising images to staging nodes
+- name: Synchronising to Staging Nodes
   hosts: staging
   roles:
     - syncing

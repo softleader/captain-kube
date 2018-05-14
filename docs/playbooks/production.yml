@@ -1,15 +1,15 @@
 ---
-- name: Porting images
+- name: Preparing Materials
   hosts: porter
   roles:
     - porting
 
-- name: Synchronising images to production nodes
+- name: Synchronising to Production Nodes
   hosts: production
   roles:
     - syncing
 
-- name: Drafting a release
+- name: Drafting a Release
   hosts: production
   roles:
     - workdir

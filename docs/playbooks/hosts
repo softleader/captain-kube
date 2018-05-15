@@ -1,7 +1,8 @@
 [staging]
 1.1.1.1 labels=master
+1.1.2.1 labels=master
 ..
-1.1.1.9
+1.1.2.9
 
 [staging:vars]
 ansible_connection=ssh
@@ -14,6 +15,8 @@ icp_account=<icp_account>
 
 [production]
 2.2.2.2 labels=master
+..
+2.2.2.9
 
 [production:vars]
 ansible_connection=ssh

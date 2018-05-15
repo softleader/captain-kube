@@ -18,9 +18,6 @@ type Daemon struct {
 		SourceRegistry string   `yaml:"sourceRegistry"`
 		Registry       string   `yaml:"registry"`
 	} `yaml:"defaultValue"`
-	Kubernetes struct {
-		Url string `yaml:"url"`
-	} `yaml:"kubernetes"`
 }
 
 func GetDaemon(workdir string) (d *Daemon) {

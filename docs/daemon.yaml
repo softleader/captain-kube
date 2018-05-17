@@ -1,9 +1,9 @@
 defaultValue:
-             inventory: hosts
-             tags:
-             - icp
-             namespace: default
-             version:
-             verbose: false
-             sourceRegistry: hub.softleader.com.tw
-             registry:
+  inventory: hosts
+  tags:
+  - icp
+  namespace: default
+  version:
+  verbose: false
+  sourceRegistry: changeit
+  registry:

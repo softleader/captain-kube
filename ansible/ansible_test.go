@@ -46,7 +46,7 @@ func TestCommandOf(t *testing.T) {
 	expected := `ansible-playbook -i hosts -t "icp" -e '{"chart":"softleader-jasmine","chart_path":"","images":null,"namespace":"gardenia","registry":"","retag_images":null,"version":"abc"}' -v staging.yml`
 	actual := commandOf(b)
 	if actual != expected {
-		t.Error("\nexpected:\n", expected, "\nactual was:\n", actual)
+		t.Errorf("Expected\n%s\n, but got:\n%s", expected, actual)
 	}
 }
 
@@ -72,6 +72,6 @@ func TestPrintAnsibleExtraVars(t *testing.T) {
 	expected := `{"chart":"bbb","chart_path":"xxx","images":[{"Registry":"hub.softleader.com.tw","Name":"a"},{"Registry":"hub.softleader.com.tw","Name":"b"},{"Registry":"hub.softleader.com.tw","Name":"c"}],"namespace":"default","version":"aaa"}`
 	actual := string(b)
 	if actual != expected {
-		t.Error("\nexpected:\n", expected, "\nactual was:\n", actual)
+		t.Errorf("\nExpected\n%s\n, but got\n%s", expected, actual)
 	}
 }

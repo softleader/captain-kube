@@ -6,7 +6,7 @@ OUTPUT?=main
 all: test build
 
 test:
-	go test ./...
+	go test -cover -race ./...
 
 build:
 	GOOS=${GOOS} GOARCH=${GOARCH} go build -o ${BINARY}/${OUTPUT} .

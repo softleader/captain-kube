@@ -65,7 +65,6 @@
         </form>
         </p>
         <hr>
-        <p>
         <div class="bg-dark console-output">
             <div class="row flex-nowrap justify-content-between align-items-center">
                 <div class="col-4 pt-1">
@@ -82,7 +81,6 @@
                 <pre id="output" class="text-light console-output-font"></pre>
             </p>
         </div>
-        </p>
     </div>
 </main>
 
@@ -138,7 +136,7 @@
                     $a.click(function () {
                         $(this).remove();
                     })
-                    $output.append($("<hr/>")).append($a);
+                    $output.append($("<hr/>")).append($a).append($("<p/>"));
                     return;
                 }
             });

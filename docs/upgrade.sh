@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-docker pull hub.softleader.com.tw/captain-kube
+docker pull softleader/captain-kube
+# docker pull hub.softleader.com.tw/captain-kube
 docker-compose down
 docker-compose up -d
 

@@ -69,7 +69,7 @@
         </p>
         <hr>
         <p>
-        <div class="alert alert-success" role="alert">
+        <div class="bg-dark console-output">
             <div class="row flex-nowrap justify-content-between align-items-center">
                 <div class="col-4 pt-1">
                     <i class="fa fa-terminal text-muted" aria-hidden="true"></i>
@@ -82,7 +82,7 @@
                 </div>
             </div>
             <p>
-                <pre id="output"></pre>
+            <pre id="output" class="text-light console-output-font"></pre>
             </p>
         </div>
         </p>
@@ -115,7 +115,7 @@
             $btns.prop('disabled', true);
 
             var $output = $("#output");
-            $output.empty().parent().removeClass().addClass("alert alert-success")
+            $output.empty();
             var data = {
                 "inventory": "{{ .daemon.DefaultValue.Inventory }}",
                 "verbose": $("#verbose").is(":checked"),

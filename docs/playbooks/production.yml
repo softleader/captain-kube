@@ -12,6 +12,6 @@
 - name: Drafting a Release
   hosts: production
   roles:
-    - workdir
     - kubectl
+    - workdir
     - helm-chart

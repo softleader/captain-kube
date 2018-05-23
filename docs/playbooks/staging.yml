@@ -12,6 +12,6 @@
 - name: Staging a Helm Charts
   hosts: staging
   roles:
-    - workdir
     - kubectl
+    - workdir
     - helm-chart

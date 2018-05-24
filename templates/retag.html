@@ -140,7 +140,7 @@
                 $btns.prop('disabled', false);
                 var dl = /generated\s(.+)$/gm.exec($output.text())
                 if (dl) {
-                    var $a = $("<a></a>").addClass("btn btn-outline-info").append("<i class=\"fa fa-download\" aria-hidden=\"true\"></i> Download");
+                    var $a = $("<a></a>").addClass("btn btn-outline-info").append("Download");
                     $a.attr("href", "/script?file=" + dl[1]);
                     $a.click(function () {
                         $(this).remove();

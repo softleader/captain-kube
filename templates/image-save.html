@@ -36,8 +36,10 @@
             <li class="nav-item dropdown active">
                 <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Script</a>
                 <div class="dropdown-menu">
-                    <a class="dropdown-item active" href="/script/image-pull">Image Pull</a>
+                    <a class="dropdown-item" href="/script/image-pull">Image Pull</a>
                     <a class="dropdown-item" href="/script/image-retag">Image Retag</a>
+                    <a class="dropdown-item active" href="/script/image-save">Image Save</a>
+                    <a class="dropdown-item" href="/script/image-load">Image Load</a>
                 </div>
             </li>
         </ul>
@@ -58,7 +60,7 @@
                 <input type="file" class="form-control" id="chart" required>
             </div>
 
-            <button id="generate" url="/script/image-pull" type="submit" class="btn btn-outline-primary btn-block"
+            <button id="generate" url="/script/image-save" type="submit" class="btn btn-outline-primary btn-block"
                     onclick="$(this).parent().attr('action', $(this).attr('url'))">
                 Generate Script
             </button>

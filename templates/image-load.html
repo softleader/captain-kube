@@ -33,13 +33,13 @@
             <li class="nav-item">
                 <a class="nav-link" href="/production">Production</a>
             </li>
-            <li class="nav-item dropdown">
+            <li class="nav-item dropdown active">
                 <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Script</a>
                 <div class="dropdown-menu">
                     <a class="dropdown-item" href="/script/image-pull">Image Pull</a>
                     <a class="dropdown-item" href="/script/image-retag">Image Retag</a>
                     <a class="dropdown-item" href="/script/image-save">Image Save</a>
-                    <a class="dropdown-item" href="/script/image-load">Image Load</a>
+                    <a class="dropdown-item active" href="/script/image-load">Image Load</a>
                 </div>
             </li>
         </ul>
@@ -53,19 +53,16 @@
 
 <main role="main">
     <div class="container">
-        <div class="form-group">
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="verbose" {{ if .daemon.DefaultValue.Verbose }}checked{{ end }}>
-                <label class="form-check-label" for="verbose">
-                    Verbose
-                </label>
-            </div>
-        </div>
-
+        <p>
         <form>
-            <button id="testing" url="/testing" type="submit" class="btn btn-outline-primary btn-block"
+            <div class="form-group">
+                <label for="chart">Chart</label>
+                <input type="file" class="form-control" id="chart" required>
+            </div>
+
+            <button id="generate" url="/script/image-load" type="submit" class="btn btn-outline-primary btn-block"
                     onclick="$(this).parent().attr('action', $(this).attr('url'))">
-                Fire in the hole
+                Generate Script
             </button>
         </form>
         </p>
@@ -114,22 +111,17 @@
 
             var $output = $("#output");
             $output.empty();
-            var data = {
-                "inventory": "{{ .daemon.DefaultValue.Inventory }}",
-                "verbose": $("#verbose").is(":checked"),
-            }
 
-            console.log(data)
+            var formData = new FormData();
+            formData.append('file', $('#chart')[0].files[0]);
 
             $.ajax({
                 type: 'post',
                 url: event.target.action,
+                data: formData,
                 dataType: 'json',
                 processData: false,
                 contentType: false,
-                headers: {
-                    "Captain-Kube": JSON.stringify(data)
-                },
                 xhrFields: {
                     onprogress: function (e) {
                         $output.text(e.currentTarget.response);
@@ -137,14 +129,33 @@
                 }
             }).always(function () {
                 $btns.prop('disabled', false);
+                var dl = /generated\s(.+)$/gm.exec($output.text())
+                if (dl) {
+                    var $a = $("<a></a>").addClass("btn btn-outline-info").append("Download");
+                    $a.attr("href", "/script?file=" + dl[1]);
+                    $a.click(function () {
+                        $(this).remove();
+                    })
+                    $output.append($("<hr/>")).append($a).append($("<p/>"));
+                    return;
+                }
             });
         });
 
         $(window).on('beforeunload', function () {
             if ($('form button:submit').is(':disabled')) {
-                return "Are you sure you want to leave this page while testing?";
+                return "Are you sure you want to leave this page while drafting release?";
             }
             return;
+        });
+
+        $("#tags-retag").click(function () {
+            $('#registry').prop('disabled', function (i, v) {
+                return !v;
+            });
+            $('#source_registry').prop('disabled', function (i, v) {
+                return !v;
+            });
         });
     })
 </script>

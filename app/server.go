@@ -68,7 +68,7 @@ func NewApplication(args *Args) *iris.Application {
 		{
 			pull.Get("/", func(ctx context.Context) {
 				ctx.ViewData("daemon", d)
-				ctx.View("pull.html")
+				ctx.View("image-pull.html")
 			})
 
 			pull.Post("/", func(ctx context.Context) {
@@ -80,11 +80,35 @@ func NewApplication(args *Args) *iris.Application {
 		{
 			retag.Get("/", func(ctx context.Context) {
 				ctx.ViewData("daemon", d)
-				ctx.View("retag.html")
+				ctx.View("image-retag.html")
 			})
 
 			retag.Post("/{source_registry:string}/{registry:string}", func(ctx context.Context) {
 				route.Retag(args.Playbooks, ctx)
+			})
+		}
+
+		save := script.Party("/image-save")
+		{
+			save.Get("/", func(ctx context.Context) {
+				ctx.ViewData("daemon", d)
+				ctx.View("image-save.html")
+			})
+
+			save.Post("/", func(ctx context.Context) {
+				route.Save(args.Playbooks, ctx)
+			})
+		}
+
+		load := script.Party("/image-load")
+		{
+			load.Get("/", func(ctx context.Context) {
+				ctx.ViewData("daemon", d)
+				ctx.View("image-load.html")
+			})
+
+			load.Post("/", func(ctx context.Context) {
+				route.Load(args.Playbooks, ctx)
 			})
 		}
 

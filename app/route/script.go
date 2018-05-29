@@ -37,6 +37,30 @@ docker tag {{ $image.Registry }}/{{ $image.Name }} {{ $registry }}/{{ $image.Nam
 
 exit 0`
 
+const save = `#!/usr/bin/env bash
+{{ $registry := index . "registry" }}
+{{- range $source, $images := index . "images" }}
+##---
+# Source: {{ $source }}
+{{- range $key, $image := $images }}
+docker save -o ./{{ $image.Name }}.tar {{ $image.Registry }}/{{ $image.Name }}
+{{- end }}
+{{- end }}
+
+exit 0`
+
+const load = `#!/usr/bin/env bash
+{{ $registry := index . "registry" }}
+{{- range $source, $images := index . "images" }}
+##---
+# Source: {{ $source }}
+{{- range $key, $image := $images }}
+docker load -i ./{{ $image.Name }}.tar
+{{- end }}
+{{- end }}
+
+exit 0`
+
 func Pull(playbooks string, ctx iris.Context) {
 	tmp, err := ioutil.TempDir(os.TempDir(), "")
 	if err != nil {
@@ -105,6 +129,80 @@ func Retag(playbooks string, ctx iris.Context) {
 		return
 	}
 	err = tmpl.CompileTo(retagAndPushScript, data, script.Name())
+	if err != nil {
+		ctx.StreamWriter(pipe.Println(err.Error()))
+		return
+	}
+	ctx.StreamWriter(pipe.Println("generated " + script.Name()))
+}
+
+func Save(playbooks string, ctx iris.Context) {
+	tmp, err := ioutil.TempDir(os.TempDir(), "")
+	if err != nil {
+		ctx.StreamWriter(pipe.Println(err.Error()))
+		return
+	}
+
+	var chartPath string
+	ctx.UploadFormFiles(tmp, func(context context.Context, file *multipart.FileHeader) {
+		chartPath = path.Join(tmp, file.Filename)
+	})
+	opts := sh.Options{
+		Ctx:     &ctx,
+		Pwd:     playbooks,
+		Verbose: true,
+	}
+
+	data := make(map[string]interface{})
+	data["images"], err = docker.Pull(&opts, chartPath, tmp)
+	if err != nil {
+		ctx.StreamWriter(pipe.Println(err.Error()))
+		return
+	}
+
+	script, err := ioutil.TempFile(tmp, "save-")
+	if err != nil {
+		ctx.StreamWriter(pipe.Println(err.Error()))
+		return
+	}
+	err = tmpl.CompileTo(save, data, script.Name())
+	if err != nil {
+		ctx.StreamWriter(pipe.Println(err.Error()))
+		return
+	}
+	ctx.StreamWriter(pipe.Println("generated " + script.Name()))
+}
+
+func Load(playbooks string, ctx iris.Context) {
+	tmp, err := ioutil.TempDir(os.TempDir(), "")
+	if err != nil {
+		ctx.StreamWriter(pipe.Println(err.Error()))
+		return
+	}
+
+	var chartPath string
+	ctx.UploadFormFiles(tmp, func(context context.Context, file *multipart.FileHeader) {
+		chartPath = path.Join(tmp, file.Filename)
+	})
+	opts := sh.Options{
+		Ctx:     &ctx,
+		Pwd:     playbooks,
+		Verbose: true,
+	}
+
+	data := make(map[string]interface{})
+	data["images"], err = docker.Pull(&opts, chartPath, tmp)
+	if err != nil {
+		ctx.StreamWriter(pipe.Println(err.Error()))
+		return
+	}
+
+	script, err := ioutil.TempFile(tmp, "load-")
+	if err != nil {
+		ctx.StreamWriter(pipe.Println(err.Error()))
+		return
+	}
+	err = tmpl.CompileTo(load, data, script.Name())
 	if err != nil {
 		ctx.StreamWriter(pipe.Println(err.Error()))
 		return

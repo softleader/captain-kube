@@ -6,3 +6,5 @@
 - hosts: staging, production
   roles:
     - kubectl
+  tasks:
+    - shell: kubectl get pod -n kube-system

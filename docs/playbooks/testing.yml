@@ -7,4 +7,4 @@
   roles:
     - kubectl
   tasks:
-    - shell: kubectl get pod -n kube-system
+    - shell: kubectl get node

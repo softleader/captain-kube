@@ -43,7 +43,7 @@ func TestCommandOf(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	expected := `ansible-playbook -i hosts -t "icp" -e '{"chart":"softleader-jasmine","chart_path":"","images":null,"namespace":"gardenia","registry":"","retag_images":null,"version":"abc"}' -v staging.yml`
+	expected := `ansible-playbook -i hosts -t "icp" -e '{"chart":"softleader-jasmine","chart_path":"","images":null,"namespace":"gardenia","registry":"","retag_images":null,"version":"abc"}' -vvv staging.yml`
 	actual := commandOf(b)
 	if actual != expected {
 		t.Errorf("Expected\n%s\n, but got:\n%s", expected, actual)

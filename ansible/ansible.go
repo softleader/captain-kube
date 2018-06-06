@@ -26,7 +26,7 @@ func commandOf(book Book) (command string) {
 		s = append(s, "-e", "'"+e+"'")
 	}
 	if book.V() {
-		s = append(s, "-v")
+		s = append(s, "-vvv")
 	}
 	s = append(s, book.Yaml()...)
 	command = strings.Join(s, " ")

@@ -4,6 +4,7 @@ localhost labels=master,porter
 [staging:vars]
 ansible_connection=local
 kubectl_cluster_name=<kubectl_cluster>
+kubectl_user_id=<kubectl_user_id>
 kubectl_user=<kubectl_user>
 kubectl_pass=<kubectl_pass>
 icp_account=<icp_account>
@@ -14,6 +15,7 @@ localhost labels=master
 [production:vars]
 ansible_connection=local
 kubectl_cluster_name=<kubectl_cluster>
+kubectl_user_id=<kubectl_user_id>
 kubectl_user=<kubectl_user>
 kubectl_pass=<kubectl_pass>
 icp_account=<icp_account>

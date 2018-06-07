@@ -14,13 +14,13 @@
     - icp
 
 - name: Loading chart
-  shell: bx pr load-helm-chart --archive {{ workdir.path }}/{{ chart }}
+  shell: bx pr load-helm-chart --archive '{{ workdir.path }}/{{ chart }}'
   when: labels is defined and "master" in labels
   tags:
     - icp
 
 - name: Installing chart
-  shell: helm install {{ workdir.path }}/{{ chart }} -n {{ namespace }}
+  shell: helm install '{{ workdir.path }}/{{ chart }}' -n {{ namespace }}
   when: labels is defined and "master" in labels
   tags:
     - helm

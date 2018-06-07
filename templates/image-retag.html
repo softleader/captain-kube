@@ -4,17 +4,17 @@
     <title>SoftLeader Captain Kube</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="icon" href="/favicon.ico">
-    <link rel="stylesheet" href="/bootstrap-4.1.0-dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/fontawesome-free-5.0.10/web-fonts-with-css/css/fontawesome-all.css">
-    <link rel="stylesheet" href="/footer.css">
-    <link rel="stylesheet" href="/template.css">
+    <link rel="icon" href="{{ .args.DefaultRoute }}/favicon.ico">
+    <link rel="stylesheet" href="{{ .args.DefaultRoute }}/bootstrap-4.1.0-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ .args.DefaultRoute }}/fontawesome-free-5.0.10/web-fonts-with-css/css/fontawesome-all.css">
+    <link rel="stylesheet" href="{{ .args.DefaultRoute }}/footer.css">
+    <link rel="stylesheet" href="{{ .args.DefaultRoute }}/template.css">
 </head>
 <body>
 
 <nav class="navbar navbar-expand-md navbar-light bg-light fixed-top">
     <a class="navbar-brand" href="https://softleader.github.io/captain-kube/">
-        <img src="/captainkube-02.png"
+        <img src="{{ .args.DefaultRoute }}/captainkube-02.png"
              width="30" height="30" class="d-inline-block align-top" alt="">
         Captain Kube
     </a>
@@ -25,21 +25,21 @@
     <div class="collapse navbar-collapse" id="navbarsExampleDefault">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-                <a class="nav-link" href="/">Home</a>
+                <a class="nav-link" href="{{ .args.DefaultRoute }}/">Home</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/staging">Staging</a>
+                <a class="nav-link" href="{{ .args.DefaultRoute }}/staging">Staging</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/production">Production</a>
+                <a class="nav-link" href="{{ .args.DefaultRoute }}/production">Production</a>
             </li>
             <li class="nav-item dropdown active">
                 <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Script</a>
                 <div class="dropdown-menu">
-                    <a class="dropdown-item" href="/script/image-pull">Image Pull</a>
-                    <a class="dropdown-item active" href="/script/image-retag">Image Retag</a>
-                    <a class="dropdown-item" href="/script/image-save">Image Save</a>
-                    <a class="dropdown-item" href="/script/image-load">Image Load</a>
+                    <a class="dropdown-item" href="{{ .args.DefaultRoute }}/script/image-pull">Image Pull</a>
+                    <a class="dropdown-item active" href="{{ .args.DefaultRoute }}/script/image-retag">Image Retag</a>
+                    <a class="dropdown-item" href="{{ .args.DefaultRoute }}/script/image-save">Image Save</a>
+                    <a class="dropdown-item" href="{{ .args.DefaultRoute }}/script/image-load">Image Load</a>
                 </div>
             </li>
         </ul>
@@ -71,7 +71,7 @@
                 </div>
             </div>
 
-            <button id="generate" url="/script/image-retag" type="submit" class="btn btn-outline-primary btn-block"
+            <button id="generate" url="{{ .args.DefaultRoute }}/script/image-retag" type="submit" class="btn btn-outline-primary btn-block"
                     onclick="$(this).parent().attr('action', $(this).attr('url'))">
                 Generate Script
             </button>
@@ -105,9 +105,9 @@
     </div>
 </footer>
 
-<script src="/jquery-3.3.1.min.js"></script>
-<script src="/bootstrap-4.1.0-dist/js/bootstrap.bundle.min.js"></script>
-<script src="/clipboard.min.js"></script>
+<script src="{{ .args.DefaultRoute }}/jquery-3.3.1.min.js"></script>
+<script src="{{ .args.DefaultRoute }}/bootstrap-4.1.0-dist/js/bootstrap.bundle.min.js"></script>
+<script src="{{ .args.DefaultRoute }}/clipboard.min.js"></script>
 
 <script>
 
@@ -143,7 +143,7 @@
                 var dl = /generated\s(.+)$/gm.exec($output.text())
                 if (dl) {
                     var $a = $("<a></a>").addClass("btn btn-outline-info").append("Download");
-                    $a.attr("href", "/script?file=" + dl[1]);
+                    $a.attr("href", "{{ .args.DefaultRoute }}/script?file=" + dl[1]);
                     $a.click(function () {
                         $(this).remove();
                     })

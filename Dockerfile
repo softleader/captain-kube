@@ -9,6 +9,8 @@ RUN apk add --update apache2-utils \
 
 ENV CAPTAIN_KUBE=/captain-kube
 ENV PLAYBOOKS=${CAPTAIN_KUBE}/playbooks
+ENV DEFAULT_ROUTE="/"
+ENV PORT=10080
 
 VOLUME /tmp
 
@@ -27,4 +29,4 @@ COPY static/ ${CAPTAIN_KUBE}/static/
 
 WORKDIR ${CAPTAIN_KUBE}
 
-CMD ${CAPTAIN_KUBE}/main -playbooks=${PLAYBOOKS} -workdir=/data
+CMD ${CAPTAIN_KUBE}/main -playbooks=${PLAYBOOKS} -workdir=/data -port=${PORT} -defaultRoute=${DEFAULT_ROUTE}

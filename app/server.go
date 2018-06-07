@@ -5,6 +5,7 @@ import (
 	"github.com/kataras/iris/context"
 	"github.com/softleader/captain-kube/app/route"
 	"github.com/softleader/captain-kube/slice"
+	"github.com/kataras/iris/core/router"
 )
 
 func NewApplication(args *Args) *iris.Application {
@@ -18,102 +19,114 @@ func NewApplication(args *Args) *iris.Application {
 		return !slice.Contains(vs, s)
 	})
 	app.RegisterView(tmpl)
-
-	app.StaticWeb("/", "./static")
-
-	app.Get("/", func(ctx context.Context) {
+	app.UseGlobal(func(ctx iris.Context) {
 		ctx.ViewData("daemon", d)
-		ctx.View("index.html")
+		ctx.ViewData("args", args)
+		ctx.Next() // execute the next handler, in this case the main one.
 	})
 
-	testing := app.Party("/testing")
+	app.StaticWeb(args.DefaultRoute, "./static")
+
+	root := rootParty(app, args)
 	{
-		testing.Get("/", func(ctx context.Context) {
-			ctx.ViewData("daemon", d)
-			ctx.View("testing.html")
+		root.Get("/", func(ctx context.Context) {
+			ctx.View("index.html")
 		})
 
-		testing.Post("/", func(ctx context.Context) {
-			route.Testing(args.Workdir, args.Playbooks, ctx)
-		})
-	}
-
-	staging := app.Party("/staging")
-	{
-		staging.Get("/", func(ctx context.Context) {
-			ctx.ViewData("daemon", d)
-			ctx.View("staging.html")
-		})
-
-		staging.Post("/", func(ctx context.Context) {
-			route.Staging(args.Workdir, args.Playbooks, ctx)
-		})
-	}
-
-	production := app.Party("/production")
-	{
-		production.Get("/", func(ctx context.Context) {
-			ctx.ViewData("daemon", d)
-			ctx.View("production.html")
-		})
-
-		production.Post("/", func(ctx context.Context) {
-			route.Production(args.Workdir, args.Playbooks, ctx)
-		})
-	}
-
-	script := app.Party("/script")
-	{
-		pull := script.Party("/image-pull")
+		testing := root.Party("/testing")
 		{
-			pull.Get("/", func(ctx context.Context) {
-				ctx.ViewData("daemon", d)
-				ctx.View("image-pull.html")
+			testing.Get("/", func(ctx context.Context) {
+				ctx.View("testing.html")
 			})
 
-			pull.Post("/", func(ctx context.Context) {
-				route.Pull(args.Playbooks, ctx)
+			testing.Post("/", func(ctx context.Context) {
+				route.Testing(args.Workdir, args.Playbooks, ctx)
 			})
 		}
 
-		retag := script.Party("/image-retag")
+		staging := root.Party("/staging")
 		{
-			retag.Get("/", func(ctx context.Context) {
-				ctx.ViewData("daemon", d)
-				ctx.View("image-retag.html")
+			staging.Get("/", func(ctx context.Context) {
+				ctx.View("staging.html")
 			})
 
-			retag.Post("/{source_registry:string}/{registry:string}", func(ctx context.Context) {
-				route.Retag(args.Playbooks, ctx)
+			staging.Post("/", func(ctx context.Context) {
+				route.Staging(args.Workdir, args.Playbooks, ctx)
 			})
 		}
 
-		save := script.Party("/image-save")
+		production := root.Party("/production")
 		{
-			save.Get("/", func(ctx context.Context) {
-				ctx.ViewData("daemon", d)
-				ctx.View("image-save.html")
+			production.Get("/", func(ctx context.Context) {
+				ctx.View("production.html")
 			})
 
-			save.Post("/", func(ctx context.Context) {
-				route.Save(args.Playbooks, ctx)
+			production.Post("/", func(ctx context.Context) {
+				route.Production(args.Workdir, args.Playbooks, ctx)
 			})
 		}
 
-		load := script.Party("/image-load")
+		script := root.Party("/script")
 		{
-			load.Get("/", func(ctx context.Context) {
-				ctx.ViewData("daemon", d)
-				ctx.View("image-load.html")
-			})
+			pull := script.Party("/image-pull")
+			{
+				pull.Get("/", func(ctx context.Context) {
+					ctx.View("image-pull.html")
+				})
 
-			load.Post("/", func(ctx context.Context) {
-				route.Load(args.Playbooks, ctx)
-			})
+				pull.Post("/", func(ctx context.Context) {
+					route.Pull(args.Playbooks, ctx)
+				})
+			}
+
+			retag := script.Party("/image-retag")
+			{
+				retag.Get("/", func(ctx context.Context) {
+					ctx.View("image-retag.html")
+				})
+
+				retag.Post("/{source_registry:string}/{registry:string}", func(ctx context.Context) {
+					route.Retag(args.Playbooks, ctx)
+				})
+			}
+
+			save := script.Party("/image-save")
+			{
+				save.Get("/", func(ctx context.Context) {
+					ctx.View("image-save.html")
+				})
+
+				save.Post("/", func(ctx context.Context) {
+					route.Save(args.Playbooks, ctx)
+				})
+			}
+
+			load := script.Party("/image-load")
+			{
+				load.Get("/", func(ctx context.Context) {
+					ctx.View("image-load.html")
+				})
+
+				load.Post("/", func(ctx context.Context) {
+					route.Load(args.Playbooks, ctx)
+				})
+			}
+
+			script.Get("/", route.DownloadScript)
 		}
-
-		script.Get("/", route.DownloadScript)
 	}
 
 	return app
+}
+
+func rootParty(app *iris.Application, args *Args) (root router.Party) {
+	relativePath := "/"
+	if args.DefaultRoute != "" {
+		app.Any(relativePath, func(ctx context.Context) {
+			ctx.Redirect(args.DefaultRoute)
+		})
+		relativePath = args.DefaultRoute
+	}
+	root = app.Party(relativePath)
+	return
 }

@@ -9,6 +9,8 @@ metadata:
     heritage: {{ .Release.Service }}
 spec:
   replicas: 1
+  nodeSelector:
+    master: "true"
   selector:
     matchLabels:
       app: {{ template "captain-kube.name" . }}
@@ -43,17 +45,3 @@ spec:
           volumeMounts:
           - mountPath: /data/
             name: {{ .Chart.Name }}-volume
-          resources:
-{{ toYaml .Values.resources | indent 12 }}
-    {{- with .Values.nodeSelector }}
-      nodeSelector:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.affinity }}
-      affinity:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.tolerations }}
-      tolerations:
-{{ toYaml . | indent 8 }}
-    {{- end }}

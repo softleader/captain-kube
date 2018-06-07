@@ -12,9 +12,7 @@ service:
 
 ingress:
   enabled: true
-  annotations: {}
   path: /captain-kube
-  tls: []
 
 volume:
   hostPath: /changeit

@@ -2,7 +2,7 @@ apiVersion: v1
 appVersion: "1.0"
 maintainers: 
   - name: SoftLeader
-icon: https://github.com/softleader/captain-kube/blob/helm-chart/logo/captain-kube.svg
+icon: https://github.com/softleader/captain-kube/blob/helm-chart/logo/captain-kube.png
 description: Install SoftLeader's products faster, more reliable and automatically on Kubernetes with Captain Kube.
 name: captain-kube
 version: 0.1.1

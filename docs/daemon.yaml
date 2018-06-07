@@ -1,9 +1,0 @@
-defaultValue:
-  inventory: hosts
-  tags:
-  - icp
-  namespace: default
-  version:
-  verbose: false
-  sourceRegistry: changeit
-  registry:

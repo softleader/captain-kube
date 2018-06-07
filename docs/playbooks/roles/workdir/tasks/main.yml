@@ -1,9 +1,0 @@
----
-- name: Creating temporary work directory
-  tempfile:
-    state: directory
-    suffix: .captain-kube
-  register: workdir
-  when: labels is defined and "master" in labels
-  tags:
-    - always

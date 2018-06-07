@@ -1,0 +1,8 @@
+apiVersion: v1
+appVersion: "1.0"
+maintainers: 
+  - name: SoftLeader
+icon: https://avatars0.githubusercontent.com/u/18475967?s=200&v=4
+description: Install SoftLeader's products faster, more reliable and automatically on Kubernetes with Captain Kube.
+name: captain-kube
+version: 0.1.0

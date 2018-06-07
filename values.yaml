@@ -1,11 +1,9 @@
-replicaCount: 1
 fullnameOverride: false
 nameOverride: false
 
 image:
   repository: softleader/captain-kube
-  # repository: hub.softleader.com.tw/captain-kube
-  tag: stable
+  tag: latest
   pullPolicy: IfNotPresent
 
 service:
@@ -15,8 +13,11 @@ service:
 ingress:
   enabled: false
   annotations: {}
-  path: /
+  path: /captain-kube
   tls: []
+
+volume:
+  hostPath: /changeit
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -30,7 +31,9 @@ resources: {}
   #  cpu: 100m
   #  memory: 128Mi
 
-nodeSelector: {}
+nodeSelector: {
+  master: "true"
+}
 
 tolerations: []
 

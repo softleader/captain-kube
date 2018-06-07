@@ -8,7 +8,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: 1
   selector:
     matchLabels:
       app: {{ template "captain-kube.name" . }}
@@ -19,6 +19,11 @@ spec:
         app: {{ template "captain-kube.name" . }}
         release: {{ .Release.Name }}
     spec:
+      volumes:
+      - name: {{ .Chart.Name }}-volume
+        hostPath:
+          path: "{{ .Values.volume.hostPath }}"
+          type: Directory
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -35,6 +40,9 @@ spec:
             httpGet:
               path: /
               port: http
+          volumeMounts:
+          - mountPath: /data/
+            name: {{ .Chart.Name }}-volume
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}

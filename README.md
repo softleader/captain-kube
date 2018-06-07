@@ -1,4 +1,4 @@
-![](https://github.com/softleader/captain-kube/blob/master/docs/captainkube-01.svg)
+![](https://raw.githubusercontent.com/softleader/captain-kube/master/docs/captainkube-01.svg)
 
 > Install SoftLeader's products faster, more reliable and automatically on Kubernetes with Captain Kube.
 

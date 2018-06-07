@@ -7,11 +7,11 @@ import (
 )
 
 type Args struct {
-	Playbooks    string
-	Workdir      string
-	Addr         string
-	Port         int
-	DefaultRoute string
+	Playbooks   string
+	Workdir     string
+	Addr        string
+	Port        int
+	ContextPath string
 }
 
 func NewArgs() *Args {
@@ -20,7 +20,7 @@ func NewArgs() *Args {
 	flag.StringVar(&a.Workdir, "workdir", "", "Docker 中 mount 出去的目錄, 通常會放客戶端的 hosts")
 	flag.StringVar(&a.Addr, "addr", "", " Determine application address (default blank)")
 	flag.IntVar(&a.Port, "port", 10080, "Determine application port")
-	flag.StringVar(&a.DefaultRoute, "defaultRoute", "/", " Determine application default route")
+	flag.StringVar(&a.ContextPath, "contextPath", "/", " Determine application context-path")
 	flag.Parse()
 
 	marshaled, err := json.MarshalIndent(a, "", " ")
@@ -28,8 +28,8 @@ func NewArgs() *Args {
 		panic(err)
 	}
 
-	if a.DefaultRoute == "/" {
-		a.DefaultRoute = ""
+	if a.ContextPath == "/" {
+		a.ContextPath = ""
 	}
 	fmt.Println("Parsed flags:", string(marshaled))
 

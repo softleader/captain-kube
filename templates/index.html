@@ -4,18 +4,18 @@
     <title>SoftLeader Captain Kube</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="icon" href="{{ .args.DefaultRoute }}/favicon.ico">
-    <link rel="stylesheet" href="{{ .args.DefaultRoute }}/bootstrap-4.1.0-dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{{ .args.DefaultRoute }}/fontawesome-free-5.0.10/web-fonts-with-css/css/fontawesome-all.css">
-    <link rel="stylesheet" href="{{ .args.DefaultRoute }}/footer.css">
-    <link rel="stylesheet" href="{{ .args.DefaultRoute }}/index.css">
-    <link rel="stylesheet" href="{{ .args.DefaultRoute }}/template.css">
+    <link rel="icon" href="{{ .app.ContextPath }}/favicon.ico">
+    <link rel="stylesheet" href="{{ .app.ContextPath }}/bootstrap-4.1.0-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ .app.ContextPath }}/fontawesome-free-5.0.10/web-fonts-with-css/css/fontawesome-all.css">
+    <link rel="stylesheet" href="{{ .app.ContextPath }}/footer.css">
+    <link rel="stylesheet" href="{{ .app.ContextPath }}/index.css">
+    <link rel="stylesheet" href="{{ .app.ContextPath }}/template.css">
 </head>
 <body>
 
 <nav class="navbar navbar-expand-md navbar-light bg-light fixed-top">
     <a class="navbar-brand" href="https://softleader.github.io/captain-kube/">
-        <img src="{{ .args.DefaultRoute }}/captainkube-02.png"
+        <img src="{{ .app.ContextPath }}/captainkube-02.png"
              width="30" height="30" class="d-inline-block align-top" alt="">
         Captain Kube
     </a>
@@ -26,21 +26,21 @@
     <div class="collapse navbar-collapse" id="navbarsExampleDefault">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <a class="nav-link" href="{{ .args.DefaultRoute }}/">Home</a>
+                <a class="nav-link" href="{{ .app.ContextPath }}/">Home</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ .args.DefaultRoute }}/staging">Staging</a>
+                <a class="nav-link" href="{{ .app.ContextPath }}/staging">Staging</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ .args.DefaultRoute }}/production">Production</a>
+                <a class="nav-link" href="{{ .app.ContextPath }}/production">Production</a>
             </li>
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Script</a>
                 <div class="dropdown-menu">
-                    <a class="dropdown-item" href="{{ .args.DefaultRoute }}/script/image-pull">Image Pull</a>
-                    <a class="dropdown-item" href="{{ .args.DefaultRoute }}/script/image-retag">Image Retag</a>
-                    <a class="dropdown-item" href="{{ .args.DefaultRoute }}/script/image-save">Image Save</a>
-                    <a class="dropdown-item" href="{{ .args.DefaultRoute }}/script/image-load">Image Load</a>
+                    <a class="dropdown-item" href="{{ .app.ContextPath }}/script/image-pull">Image Pull</a>
+                    <a class="dropdown-item" href="{{ .app.ContextPath }}/script/image-retag">Image Retag</a>
+                    <a class="dropdown-item" href="{{ .app.ContextPath }}/script/image-save">Image Save</a>
+                    <a class="dropdown-item" href="{{ .app.ContextPath }}/script/image-load">Image Load</a>
                 </div>
             </li>
         </ul>
@@ -57,14 +57,14 @@
     <div class="container">
         <div class="row">
             <div class="col-6 mx-auto col-md-6 order-md-2">
-                <img class="img-fluid mb-3 mb-md-0" src="{{ .args.DefaultRoute }}/captainkube-01.svg" alt="">
+                <img class="img-fluid mb-3 mb-md-0" src="{{ .app.ContextPath }}/captainkube-01.svg" alt="">
             </div>
             <div class="col-md-6 order-md-1 text-center text-md-left">
                 <p class="lead">
                     Install SoftLeader's products faster, more reliable and automatically on <a href="https://kubernetes.io" class="text-dark">Kubernetes</a> with Captain Kube.
                 </p>
                 <div class="d-flex flex-column flex-md-row lead mb-3">
-                    <a href="{{ .args.DefaultRoute }}/staging" class="btn btn-outline-primary mb-3 mb-md-0 mr-md-3">Get started</a>
+                    <a href="{{ .app.ContextPath }}/staging" class="btn btn-outline-primary mb-3 mb-md-0 mr-md-3">Get started</a>
                     <a href="https://github.com/softleader/captain-kube/wiki" class="btn btn-outline-secondary">Learn more</a>
                 </div>
             </div>
@@ -79,8 +79,8 @@
     </div>
 </footer>
 
-<script src="{{ .args.DefaultRoute }}/jquery-3.3.1.min.js"></script>
-<script src="{{ .args.DefaultRoute }}/bootstrap-4.1.0-dist/js/bootstrap.bundle.min.js"></script>
+<script src="{{ .app.ContextPath }}/jquery-3.3.1.min.js"></script>
+<script src="{{ .app.ContextPath }}/bootstrap-4.1.0-dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

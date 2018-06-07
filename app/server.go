@@ -21,11 +21,11 @@ func NewApplication(args *Args) *iris.Application {
 	app.RegisterView(tmpl)
 	app.UseGlobal(func(ctx iris.Context) {
 		ctx.ViewData("daemon", d)
-		ctx.ViewData("args", args)
+		ctx.ViewData("app", args)
 		ctx.Next() // execute the next handler, in this case the main one.
 	})
 
-	app.StaticWeb(args.DefaultRoute, "./static")
+	app.StaticWeb(args.ContextPath, "./static")
 
 	root := rootParty(app, args)
 	{
@@ -121,11 +121,11 @@ func NewApplication(args *Args) *iris.Application {
 
 func rootParty(app *iris.Application, args *Args) (root router.Party) {
 	relativePath := "/"
-	if args.DefaultRoute != "" {
+	if args.ContextPath != "" {
 		app.Any(relativePath, func(ctx context.Context) {
-			ctx.Redirect(args.DefaultRoute)
+			ctx.Redirect(args.ContextPath)
 		})
-		relativePath = args.DefaultRoute
+		relativePath = args.ContextPath
 	}
 	root = app.Party(relativePath)
 	return

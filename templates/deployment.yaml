@@ -9,8 +9,6 @@ metadata:
     heritage: {{ .Release.Service }}
 spec:
   replicas: 1
-  nodeSelector:
-    master: "true"
   selector:
     matchLabels:
       app: {{ template "captain-kube.name" . }}
@@ -21,6 +19,8 @@ spec:
         app: {{ template "captain-kube.name" . }}
         release: {{ .Release.Name }}
     spec:
+      nodeSelector:
+        master: "true"
       volumes:
       - name: {{ .Chart.Name }}-volume
         hostPath:
@@ -33,3 +33,6 @@ spec:
           volumeMounts:
           - mountPath: /data/
             name: {{ .Chart.Name }}-volume
+          env:
+           - name: DEFAULT_ROUTE
+             value: {{ .Values.ingress.path }}

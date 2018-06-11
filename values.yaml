@@ -6,13 +6,13 @@ image:
   tag: latest
   pullPolicy: IfNotPresent
 
-service:
-  type: ClusterIP
-  port: 10080
-
 ingress:
   enabled: true
   path: /captain-kube
 
 volume:
   hostPath: /changeit
+
+service:
+  type: ClusterIP
+  port: 80

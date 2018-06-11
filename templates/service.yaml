@@ -11,6 +11,11 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
+      name: nginx
+      targetPort: 80
+      protocol: TCP
+    - port: 10080
+      name: {{ template "captain-kube.name" . }}
       protocol: TCP
   selector:
     app: {{ template "captain-kube.name" . }}

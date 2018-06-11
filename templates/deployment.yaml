@@ -26,8 +26,24 @@ spec:
         hostPath:
           path: "{{ .Values.volume.hostPath }}"
           type: Directory
+      - name: {{ .Chart.Name }}-auth-volume
+        hostPath:
+          path: "{{ .Values.volume.hostPath }}/auth"
+          type: Directory
+      - name: {{ .Chart.Name }}-auth-conf-volume
+        hostPath:
+          path: "{{ .Values.volume.hostPath }}/auth/nginx.conf"
+          type: File
       containers:
-        - name: {{ .Chart.Name }}
+        - name: nginx
+          image: "nginx:alpine"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+          - mountPath: /etc/nginx/conf.d
+            name: {{ .Chart.Name }}-auth-volume
+          - mountPath: /etc/nginx/nginx.conf:ro
+            name: {{ .Chart.Name }}-auth-conf-volume
+        - name: {{ template "captain-kube.name" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           volumeMounts:

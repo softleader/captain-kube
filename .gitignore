@@ -12,6 +12,7 @@
 .idea
 build/
 main
+vendor/
 
 dist/
 .DS_Store

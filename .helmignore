@@ -21,3 +21,5 @@
 *.tmproj
 logo/
 .tgz
+vendor/
+

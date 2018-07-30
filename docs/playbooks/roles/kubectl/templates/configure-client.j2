@@ -1,4 +1,4 @@
-kubectl config set-cluster {{ kubectl_cluster_name }} --server={{ inventory_hostname }} --insecure-skip-tls-verify=true
+kubectl config set-cluster {{ kubectl_cluster_name }} --server=https://{{ inventory_hostname }}:8001 --insecure-skip-tls-verify=true
 kubectl config set-context {{ kubectl_cluster_name }}-context --cluster={{ kubectl_cluster_name }}
 kubectl config set-credentials {{ kubectl_user_id | default('cluster-admin') }} --username={{ kubectl_user }} --password={{ kubectl_pass }}
 kubectl config set-context {{ kubectl_cluster_name }}-context --user={{ kubectl_user }} --namespace=default

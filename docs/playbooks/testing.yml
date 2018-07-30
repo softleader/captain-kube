@@ -8,3 +8,4 @@
     - kubectl
   tasks:
     - shell: kubectl get node
+      when: labels is defined and "master" in labels

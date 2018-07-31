@@ -37,7 +37,7 @@ import (
 //}
 
 func TestCommandOf(t *testing.T) {
-	j := `{"inventory":"hosts","tags":["icp"],"version":"abc","namespace":"gardenia","chart":"softleader-jasmine","verbose":true}`
+	j := `{"inventory":"hosts","tags":["icp"],"version":"abc","namespace":"gardenia","chart":"softleader-jasmine","verbose":{"enabled":true,"level":3}}`
 	b := playbook.NewStaging()
 	err := json.Unmarshal([]byte(j), &b)
 	if err != nil {

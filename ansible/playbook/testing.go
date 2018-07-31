@@ -1,8 +1,8 @@
 package playbook
 
 type Testing struct {
-	Inventory string `json:"inventory"`
-	Verbose   bool   `json:"verbose"`
+	Inventory string  `json:"inventory"`
+	Verbose   Verbose `json:"verbose"`
 }
 
 func NewTesting() *Testing {
@@ -25,6 +25,6 @@ func (b Testing) E() string {
 	return ""
 }
 
-func (b Testing) V() bool {
-	return b.Verbose
+func (b Testing) V() string {
+	return b.Verbose.String()
 }

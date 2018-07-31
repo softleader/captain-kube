@@ -1,4 +1,4 @@
-![](./docs/captainkube-01.svg)
+![](https://raw.githubusercontent.com/softleader/captain-kube/helm-chart/logo/banner.png)
 
 > Install SoftLeader's products faster, more reliable and automatically on Kubernetes with Captain Kube.
 

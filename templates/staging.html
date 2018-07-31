@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="{{ .app.ContextPath }}/fontawesome-free-5.0.10/web-fonts-with-css/css/fontawesome-all.css">
     <link rel="stylesheet" href="{{ .app.ContextPath }}/footer.css">
     <link rel="stylesheet" href="{{ .app.ContextPath }}/template.css">
+    <link rel="stylesheet" href="{{ .app.ContextPath }}/bootstrap-slider.min.css">
 </head>
 <body>
 
@@ -120,12 +121,22 @@
             </div>
 
 
-        <div class="form-group">
+            <div class="form-group">
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" id="verbose" {{ if .daemon.DefaultValue.Verbose }}checked{{ end }}>
                     <label class="form-check-label" for="verbose">
-                        Verbose
+                        Verbose mode
                     </label>
+                </div>
+                <div class="form-check">
+                    <input id="level" type="text"
+                           data-provide="slider"
+                           data-slider-ticks="[1, 2, 3, 4]"
+                    {{/*data-slider-ticks-labels='["less log", "", "", "more log"]'*/}}
+                           data-slider-step="1"
+                           data-slider-value="3"
+                           data-slider-tooltip="hide"
+                           data-slider-enabled="false">
                 </div>
             </div>
 
@@ -166,10 +177,20 @@
 <script src="{{ .app.ContextPath }}/jquery-3.3.1.min.js"></script>
 <script src="{{ .app.ContextPath }}/bootstrap-4.1.0-dist/js/bootstrap.bundle.min.js"></script>
 <script src="{{ .app.ContextPath }}/clipboard.min.js"></script>
+<script src="{{ .app.ContextPath }}/bootstrap-slider.min.js"></script>
 
 <script>
 
     $(function () {
+        var $level = $("#level").slider();
+        $("#verbose").click(function() {
+            if(this.checked) {
+                $level.slider("enable");
+            } else {
+                $level.slider("disable");
+            }
+        });
+
         new ClipboardJS('.btn');
 
         $("form").submit(function (event) {
@@ -185,7 +206,10 @@
                 "namespace": $("#namespace").val(),
                 // "version": $("#version").val(),
                 "tags": [],
-                "verbose": $("#verbose").is(":checked"),
+                "verbose": {
+                    "enabled": $("#verbose").is(":checked"),
+                    "level": $level.slider('getValue')
+                },
                 "sourceRegistry":$("#sourceRegistry").val(),
                 "registry":$("#registry").val()
             }

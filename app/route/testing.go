@@ -22,7 +22,7 @@ func Testing(workdir, playbooks string, ctx iris.Context) {
 	opts := sh.Options{
 		Ctx:     &ctx,
 		Pwd:     playbooks,
-		Verbose: book.V(),
+		Verbose: book.V() != "",
 	}
 	book.Inventory = path.Join(workdir, book.Inventory)
 	_, _, err = ansible.Play(&opts, *book)

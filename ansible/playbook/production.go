@@ -13,7 +13,7 @@ type Production struct {
 	Chart          string         `json:"chart,omitempty"`
 	ChartPath      string         `json:"-"`
 	RetagImages    []charts.Image `json:"-"` // 需要被 retag 的 image
-	Verbose        bool           `json:"verbose"`
+	Verbose        Verbose        `json:"verbose"`
 	SourceRegistry string         `json:"sourceRegistry" yaml:"sourceRegistry" `
 	Registry       string         `json:"registry"`
 }
@@ -46,6 +46,6 @@ func (b Production) E() string {
 	return string(bs)
 }
 
-func (b Production) V() bool {
-	return b.Verbose
+func (b Production) V() string {
+	return b.Verbose.String()
 }

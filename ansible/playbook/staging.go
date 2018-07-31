@@ -14,7 +14,7 @@ type Staging struct {
 	ChartPath      string         `json:"-"`
 	Images         []charts.Image `json:"-"` // chart 中所有的 image
 	RetagImages    []charts.Image `json:"-"` // 需要被 retag 的 image
-	Verbose        bool           `json:"verbose"`
+	Verbose        Verbose        `json:"verbose"`
 	SourceRegistry string         `json:"sourceRegistry" yaml:"sourceRegistry" `
 	Registry       string         `json:"registry"`
 }
@@ -48,6 +48,6 @@ func (b Staging) E() string {
 	return string(bs)
 }
 
-func (b Staging) V() bool {
-	return b.Verbose
+func (b Staging) V() string {
+	return b.Verbose.String()
 }

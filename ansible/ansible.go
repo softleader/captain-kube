@@ -10,7 +10,7 @@ type Book interface {
 	I() string
 	T() []string
 	E() string
-	V() bool
+	V() string
 }
 
 func Play(opts *sh.Options, book Book) (arg string, out string, err error) {
@@ -25,9 +25,7 @@ func commandOf(book Book) (command string) {
 	if e := book.E(); e != "" {
 		s = append(s, "-e", "'"+e+"'")
 	}
-	if book.V() {
-		s = append(s, "-vvv")
-	}
+	s = append(s, book.V())
 	s = append(s, book.Yaml()...)
 	command = strings.Join(s, " ")
 	return

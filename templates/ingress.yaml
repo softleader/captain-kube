@@ -1,6 +1,5 @@
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "captain-kube.fullname" . -}}
-{{- $servicePort := .Values.service.port -}}
 {{- $ingressPath := .Values.ingress.path -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -18,5 +17,5 @@ spec:
           - path: {{ .Values.ingress.path }}
             backend:
               serviceName: {{ $fullName }}
-              servicePort: {{ $servicePort }}
+              servicePort: 80
 {{- end }}

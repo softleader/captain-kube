@@ -18,6 +18,6 @@ ingress:
 volume:
   hostPath: /changeit
 
-publish:
+nodePort:
   enabled: false
-  nodePort: 80
+  port: 80

@@ -1,4 +1,4 @@
-{{- if .Values.publish.enabled -}}
+{{- if .Values.nodePort.enabled -}}
 apiVersion: v1
 kind: Service
 metadata:
@@ -14,7 +14,7 @@ spec:
     - name: {{ template "captain-kube.name" . }}
       protocol: TCP
       port: 80
-      nodePort: {{ .Values.publish.nodePort }}
+      nodePort: {{ .Values.nodePort.port }}
   selector:
     app: {{ template "captain-kube.name" . }}
     release: {{ .Release.Name }}

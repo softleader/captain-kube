@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>SoftLeader Captain Kube</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" href="{{ .app.ContextPath }}/favicon.ico">
+    <link rel="stylesheet" href="{{ .app.ContextPath }}/bootstrap-4.1.0-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ .app.ContextPath }}/fontawesome-free-5.0.10/web-fonts-with-css/css/fontawesome-all.css">
+    <link rel="stylesheet" href="{{ .app.ContextPath }}/footer.css">
+    <link rel="stylesheet" href="{{ .app.ContextPath }}/template.css">
+    <link rel="stylesheet" href="{{ .app.ContextPath }}/bootstrap-slider.min.css">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-md navbar-light bg-light fixed-top">
+    <a class="navbar-brand" href="https://softleader.github.io/captain-kube/">
+        <img src="{{ .app.ContextPath }}/captainkube-02.png"
+             width="30" height="30" class="d-inline-block align-top" alt="">
+        Captain Kube
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="{{ .app.ContextPath }}/">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ .app.ContextPath }}/staging">Staging</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ .app.ContextPath }}/production">Production</a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Script</a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="{{ .app.ContextPath }}/script/image-pull">Image Pull</a>
+                    <a class="dropdown-item" href="{{ .app.ContextPath }}/script/image-retag">Image Retag</a>
+                    <a class="dropdown-item" href="{{ .app.ContextPath }}/script/image-save">Image Save</a>
+                    <a class="dropdown-item" href="{{ .app.ContextPath }}/script/image-load">Image Load</a>
+                </div>
+            </li>
+        </ul>
+        {{/*<ul class="my-2 my-lg-0 navbar-nav">*/}}
+        {{/*{{ if .daemon.Kubernetes.Url }}*/}}
+            {{/*<a class="btn btn-outline-primary mb-3 mb-md-0 mr-md-3" href="{{ .daemon.Kubernetes.Url }}">Kubernetes</a>*/}}
+        {{/*{{ end }}*/}}
+        {{/*</ul>*/}}
+    </div>
+</nav>
+
+<main role="main">
+    <div class="container">
+        <div class="form-group" id="commands">
+            <label for="tags">Choose commands</label>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="prune" id="prune">
+                <label class="form-check-label" for="prune">
+                    prune
+                </label>
+            </div>
+        </div>
+
+        <hr/>
+
+        <div class="form-group">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="verbose" {{ if .daemon.DefaultValue.Verbose }}checked{{ end }}>
+                <label class="form-check-label" for="verbose">
+                    Verbose mode
+                </label>
+            </div>
+            <div class="form-check">
+                <input id="level" type="text"
+                       data-provide="slider"
+                       data-slider-ticks="[1, 2, 3, 4]"
+                {{/*data-slider-ticks-labels='["less log", "", "", "more log"]'*/}}
+                       data-slider-step="1"
+                       data-slider-value="3"
+                       data-slider-tooltip="hide"
+                       data-slider-enabled="false">
+            </div>
+        </div>
+
+        <form>
+            <button id="commands" url="{{ .app.ContextPath }}/commands" type="submit" class="btn btn-outline-primary btn-block"
+                    onclick="$(this).parent().attr('action', $(this).attr('url'))">
+                Fire in the hole
+            </button>
+        </form>
+        </p>
+        <hr>
+        <div class="bg-dark console-output">
+            <div class="row flex-nowrap justify-content-between align-items-center">
+                <div class="col-4 pt-1">
+                    <i class="fa fa-terminal text-muted" aria-hidden="true"></i>
+                </div>
+                <div class="col-4 text-center"></div>
+                <div class="col-4 d-flex justify-content-end align-items-center">
+                    <button class="btn btn-link" data-clipboard-target="#output">
+                        <i class="fas fa-copy text-muted" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+            <p><pre id="output" class="text-light console-output-font"></pre></p>
+        </div>
+    </div>
+</main>
+
+<footer class="text-muted">
+    <div class="container">
+        <p class="float-right">
+            <a href="#" class="text-muted"><i class="fas fa-angle-double-up fa-2x"></i></a>
+        </p>
+        <p><a href="https://github.com/softleader" class="text-muted"><i class="fab fa-github"></i></a> <a href="https://www.facebook.com/softleader" class="text-muted"><i class="fab fa-facebook"></i></a></p>
+        <p>Copyright © 2018 <a href="https://www.softleader.com.tw" class="text-muted">SoftLeader Technology Crop</a>. All rights reserved.</p>
+    </div>
+</footer>
+
+<script src="{{ .app.ContextPath }}/jquery-3.3.1.min.js"></script>
+<script src="{{ .app.ContextPath }}/bootstrap-4.1.0-dist/js/bootstrap.bundle.min.js"></script>
+<script src="{{ .app.ContextPath }}/clipboard.min.js"></script>
+<script src="{{ .app.ContextPath }}/bootstrap-slider.min.js"></script>
+
+<script>
+
+    $(function () {
+        var $level = $("#level").slider();
+        $("#verbose").click(function() {
+            if(this.checked) {
+                $level.slider("enable");
+            } else {
+                $level.slider("disable");
+            }
+        });
+
+        new ClipboardJS('.btn');
+
+        $("form").submit(function (event) {
+            event.preventDefault();
+
+            var $btns = $("button");
+            $btns.prop('disabled', true);
+
+            var $output = $("#output");
+            $output.empty();
+            var data = {
+                "inventory": "{{ .daemon.DefaultValue.Inventory }}",
+                "commands": [],
+                "verbose": {
+                    "enabled": $("#verbose").is(":checked"),
+                    "level": $level.slider('getValue')
+                },
+            }
+            $("#commands input:checkbox:checked").each((i, e) => data.commands.push(e.value));
+
+            console.log(data)
+
+            $.ajax({
+                type: 'post',
+                url: event.target.action,
+                dataType: 'json',
+                processData: false,
+                contentType: false,
+                headers: {
+                    "Captain-Kube": JSON.stringify(data)
+                },
+                xhrFields: {
+                    onprogress: function (e) {
+                        $output.text(e.currentTarget.response);
+                    }
+                }
+            }).always(function () {
+                $btns.prop('disabled', false);
+            });
+        });
+
+        $(window).on('beforeunload', function () {
+            if ($('form button:submit').is(':disabled')) {
+                return "Are you sure you want to leave this page while testing?";
+            }
+            return;
+        });
+    })
+</script>
+
+</body>
+</html>

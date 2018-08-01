@@ -1,0 +1,6 @@
+---
+- hosts: all
+  tasks:
+    - name: prune
+      shell: docker system prune -f
+      tags: [ 'never', 'prune' ]

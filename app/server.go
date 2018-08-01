@@ -33,6 +33,17 @@ func NewApplication(args *Args) *iris.Application {
 			ctx.View("index.html")
 		})
 
+		commands := root.Party("/commands")
+		{
+			commands.Get("/", func(ctx context.Context) {
+				ctx.View("commands.html")
+			})
+
+			commands.Post("/", func(ctx context.Context) {
+				route.Commands(args.Workdir, args.Playbooks, ctx)
+			})
+		}
+
 		testing := root.Party("/testing")
 		{
 			testing.Get("/", func(ctx context.Context) {

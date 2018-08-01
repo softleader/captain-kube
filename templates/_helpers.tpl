@@ -3,7 +3,7 @@
 Expand the name of the chart.
 */}}
 {{- define "captain-kube.name" -}}
-{{- default .Chart.Name .Values.nameOverride | trim | trunc 63 | trimSuffix "-" -}}
+{{- default .Chart.Name .Values.nameOverride | replace " " "" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
@@ -19,7 +19,7 @@ If release name contains chart name it will be used as a full name.
 {{- if contains $name .Release.Name -}}
 {{- .Release.Name | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
-{{- printf "%s-%s" .Release.Name $name | trim  | trunc 63 | trimSuffix "-" -}}
+{{- printf "%s-%s" .Release.Name $name | replace " " ""  | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 {{- end -}}
 {{- end -}}
@@ -28,5 +28,5 @@ If release name contains chart name it will be used as a full name.
 Create chart name and version as used by the chart label.
 */}}
 {{- define "captain-kube.chart" -}}
-{{- printf "%s-%s" .Chart.Name .Chart.Version | trim  | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
+{{- printf "%s-%s" .Chart.Name .Chart.Version | replace " " ""  | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}

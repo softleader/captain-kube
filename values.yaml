@@ -20,4 +20,4 @@ volume:
 
 nodePort:
   enabled: false
-  port: 80
+  port: 30080

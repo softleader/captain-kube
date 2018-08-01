@@ -78,8 +78,11 @@ func Pull(playbooks string, ctx iris.Context) {
 		Verbose: true,
 	}
 
+	sourceRegistry := ctx.FormValue("sr")
+	registry := ctx.FormValue("r")
+
 	data := make(map[string]interface{})
-	data["images"], err = docker.Pull(&opts, chartPath, tmp)
+	data["images"], err = docker.PullAndChangeRegistry(&opts, chartPath, sourceRegistry, registry, tmp)
 	if err != nil {
 		ctx.StreamWriter(pipe.Println(err.Error()))
 		return
@@ -115,9 +118,17 @@ func Retag(playbooks string, ctx iris.Context) {
 		Verbose: true,
 	}
 
+	sourceRegistry := ctx.FormValue("sr")
+	registry := ctx.FormValue("r")
+
+	if registry == "" || sourceRegistry == "" {
+		ctx.StreamWriter(pipe.Printf("Both registry: '%s' and sourceRegistry: %s are required", registry, sourceRegistry))
+		return
+	}
+
 	data := make(map[string]interface{})
-	data["registry"] = ctx.Params().Get("registry")
-	data["images"], err = docker.Retag(&opts, chartPath, ctx.Params().Get("source_registry"), tmp)
+	data["registry"] = registry
+	data["images"], err = docker.Retag(&opts, chartPath, sourceRegistry, tmp)
 	if err != nil {
 		ctx.StreamWriter(pipe.Println(err.Error()))
 		return

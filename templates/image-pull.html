@@ -60,6 +60,25 @@
                 <input type="file" class="form-control" id="chart" required>
             </div>
 
+            <div class="form-group">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="changeRegistry">
+                    <label class="form-check-label" for="changeRegistry">
+                        Change registry as well
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="input-group">
+                    <input type="text" class="form-control" id="sourceRegistry" value="{{ .daemon.DefaultValue.SourceRegistry }}" disabled>
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id=""><i class="fas fa-angle-double-right"></i></span>
+                    </div>
+                    <input type="text" class="form-control" id="registry" value="{{ .daemon.DefaultValue.Registry }}" disabled>
+                </div>
+            </div>
+
             <button id="generate" url="{{ .app.ContextPath }}/script/image-pull" type="submit" class="btn btn-outline-primary btn-block"
                     onclick="$(this).parent().attr('action', $(this).attr('url'))">
                 Generate Script
@@ -117,7 +136,7 @@
 
             $.ajax({
                 type: 'post',
-                url: event.target.action,
+                url: event.target.action + "?sr=" + $("#sourceRegistry").val() + "&r=" + $("#registry").val(),
                 data: formData,
                 dataType: 'json',
                 processData: false,
@@ -149,11 +168,11 @@
             return;
         });
 
-        $("#tags-retag").click(function () {
+        $("#changeRegistry").click(function () {
             $('#registry').prop('disabled', function (i, v) {
                 return !v;
             });
-            $('#source_registry').prop('disabled', function (i, v) {
+            $('#sourceRegistry').prop('disabled', function (i, v) {
                 return !v;
             });
         });

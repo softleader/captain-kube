@@ -96,7 +96,7 @@ func NewApplication(args *Args) *iris.Application {
 					ctx.View("image-retag.html")
 				})
 
-				retag.Post("/{source_registry:string}/{registry:string}", func(ctx context.Context) {
+				retag.Post("/", func(ctx context.Context) {
 					route.Retag(args.Playbooks, ctx)
 				})
 			}

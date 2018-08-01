@@ -26,10 +26,10 @@ type Image struct {
 	Name     string // captain-kube:latest
 }
 
-func CollectImages(chart string, filter func(string) bool) (images map[string][]Image, err error) {
+func CollectImages(chart string, filter func(Image) bool, comsumer func(Image) Image) (images map[string][]Image, err error) {
 	images = make(map[string][]Image)
 	err = filepath.Walk(chart, func(path string, info os.FileInfo, err error) error {
-		i, err := image(filter, path, info)
+		i, err := image(path, info, filter, comsumer)
 		if len(i) > 0 {
 			src := strings.Replace(path, chart+"/", "", -1)
 			images[src] = i
@@ -39,7 +39,7 @@ func CollectImages(chart string, filter func(string) bool) (images map[string][]
 	return
 }
 
-func image(filter func(string) bool, path string, f os.FileInfo) ([]Image, error) {
+func image(path string, f os.FileInfo, filter func(Image) bool, comsumer func(Image) Image) ([]Image, error) {
 	var i []Image
 	if !f.IsDir() && filepath.Ext(path) == ".yaml" {
 		in, err := ioutil.ReadFile(path)
@@ -53,8 +53,8 @@ func image(filter func(string) bool, path string, f os.FileInfo) ([]Image, error
 				Registry: before(c.Image, "/"),
 				Name:     after(c.Image, "/"),
 			}
-			if filter(image.Registry) {
-				i = append(i, image)
+			if filter(image) {
+				i = append(i, comsumer(image))
 			}
 		}
 	}

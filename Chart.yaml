@@ -5,4 +5,4 @@ maintainers:
 icon: https://raw.githubusercontent.com/softleader/captain-kube/helm-chart/logo/captain-kube.png
 description: Install SoftLeader's products faster, more reliable and automatically on Kubernetes with Captain Kube.
 name: captain-kube
-version: 1.1.7
+version: 1.1.8

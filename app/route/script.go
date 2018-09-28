@@ -1,17 +1,18 @@
 package route
 
 import (
-	"mime/multipart"
-	"path"
-	"github.com/softleader/captain-kube/sh"
-	"io/ioutil"
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/context"
-	"github.com/softleader/captain-kube/pipe"
 	"github.com/softleader/captain-kube/docker"
-	"path/filepath"
+	"github.com/softleader/captain-kube/pipe"
+	"github.com/softleader/captain-kube/sh"
 	"github.com/softleader/captain-kube/tmpl"
+	"io/ioutil"
+	"mime/multipart"
 	"os"
+	"path"
+	"path/filepath"
+	"strconv"
 )
 
 const pullScript = `#!/usr/bin/env bash
@@ -78,8 +79,12 @@ func Pull(playbooks string, ctx iris.Context) {
 		Verbose: true,
 	}
 
-	sourceRegistry := ctx.FormValue("sr")
-	registry := ctx.FormValue("r")
+	var sourceRegistry, registry string
+	changeRegistry := ctx.FormValue("c")
+	if change, _ := strconv.ParseBool(changeRegistry); change {
+		sourceRegistry = ctx.FormValue("sr")
+		registry = ctx.FormValue("r")
+	}
 
 	data := make(map[string]interface{})
 	data["images"], err = docker.PullAndChangeRegistry(&opts, chartPath, sourceRegistry, registry, tmp)

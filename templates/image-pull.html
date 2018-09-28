@@ -136,7 +136,7 @@
 
             $.ajax({
                 type: 'post',
-                url: event.target.action + "?sr=" + $("#sourceRegistry").val() + "&r=" + $("#registry").val(),
+                url: event.target.action + "?sr=" + $("#sourceRegistry").val() + "&r=" + $("#registry").val() + "&c=" + $("#changeRegistry").is(":checked"),
                 data: formData,
                 dataType: 'json',
                 processData: false,

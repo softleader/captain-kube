@@ -1,10 +1,10 @@
 package charts
 
 import (
-	"path/filepath"
-	"os"
-	"io/ioutil"
 	"gopkg.in/yaml.v2"
+	"io/ioutil"
+	"os"
+	"path/filepath"
 	"strings"
 )
 

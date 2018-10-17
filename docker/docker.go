@@ -1,11 +1,11 @@
 package docker
 
 import (
-	"github.com/softleader/captain-kube/sh"
 	"fmt"
-	"github.com/softleader/captain-kube/tgz"
-	"github.com/softleader/captain-kube/helm"
 	"github.com/softleader/captain-kube/charts"
+	"github.com/softleader/captain-kube/helm"
+	"github.com/softleader/captain-kube/sh"
+	"github.com/softleader/captain-kube/tgz"
 )
 
 func PullAndChangeRegistry(opts *sh.Options, tar, sourceRegistry, registry, tmp string) (images map[string][]charts.Image, err error) {
@@ -40,7 +40,7 @@ func PullAndChangeRegistry(opts *sh.Options, tar, sourceRegistry, registry, tmp 
 }
 
 func Pull(opts *sh.Options, tar, tmp string) (images map[string][]charts.Image, err error) {
-	return PullAndChangeRegistry(opts, tar, "", "", tar)
+	return PullAndChangeRegistry(opts, tar, "", "", tmp)
 }
 
 func Retag(opts *sh.Options, tar, sourceRegistry, tmp string) (images map[string][]charts.Image, err error) {

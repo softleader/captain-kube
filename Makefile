@@ -1,23 +1,41 @@
-GOOS?=linux
-GOARCH?=amd64
-BINARY?=dist
-OUTPUT?=main
+HAS_GLIDE := $(shell command -v glide;)
+DIST := $(CURDIR)/_dist
+BUILD := $(CURDIR)/_build
+BINARY := caplet
+REGISTRY := softleader
 
-.PHONY: all clean
+.PHONY: install
+install: bootstrap test build
+	mkdir -p $(SL_PLUGIN_DIR)
+	cp $(BUILD)/$(BINARY) $(SL_PLUGIN_DIR)
+	cp $(METADATA) $(SL_PLUGIN_DIR)
 
-all: test build publish clean
-
+.PHONY: test
 test:
-	go test -cover -race ./...
+	go test ./... -v
 
-build:
-	GOOS=${GOOS} GOARCH=${GOARCH} go build -o ${BINARY}/${OUTPUT} .
+.PHONY: build
+build: clean bootstrap
+	mkdir -p $(BUILD)
+	go build -o $(BUILD)/$(BINARY)
 
-publish:
-	docker build -t hub.softleader.com.tw/captain-kube .
-	docker push hub.softleader.com.tw/captain-kube
-	docker tag hub.softleader.com.tw/captain-kube softleader/captain-kube
-	docker push softleader/captain-kube
+.PHONY: dist
+dist:
+	mkdir -p $(DIST)
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o $(DIST)/$(BINARY) -a -tags netgo $(MAIN)
+	docker build -t $(REGISTRY)/$(BINARY) .
+	docker push $(REGISTRY)/$(BINARY)
 
+.PHONY: bootstrap
+bootstrap:
+ifndef HAS_GLIDE
+	go get -u github.com/Masterminds/glide
+endif
+ifeq (,$(wildcard ./glide.yaml))
+	glide init --non-interactive
+endif
+	glide install --strip-vendor	
+
+.PHONY: clean
 clean:
-	rm -rf ${BINARY}/
+	rm -rf _*

@@ -1,20 +1,19 @@
 package main
 
 import (
-	"github.com/kataras/iris"
-	"github.com/softleader/captain-kube/app"
-	"strconv"
+	"github.com/gin-gonic/gin"
+	"net"
 )
 
 func main() {
-	args := app.NewArgs()
-
-	// https://github.com/kataras/iris
-	app.NewApplication(args).Run(
-		iris.Addr(args.Addr+":"+strconv.Itoa(args.Port)),
-		iris.WithoutVersionChecker,
-		iris.WithoutServerError(iris.ErrServerClosed),
-		iris.WithOptimizations,         // enables faster json serialization and more
-		iris.WithPostMaxMemory(32<<20), // with post limit at 32 MB.
-	)
+	r := gin.Default()
+	r.GET("/hosts/:host", func(c *gin.Context) {
+		addrs, err := net.LookupHost(c.Param("host"))
+		if err != nil {
+			c.AbortWithError(400, err)
+			return
+		}
+		c.JSON(200, addrs)
+	})
+	r.Run() // listen and serve on 0.0.0.0:8080
 }

@@ -3,6 +3,7 @@ DIST := $(CURDIR)/_dist
 BUILD := $(CURDIR)/_build
 BINARY := caplet
 REGISTRY := softleader
+MAIN := ./cmd/captain
 
 .PHONY: install
 install: bootstrap test build
@@ -17,7 +18,7 @@ test:
 .PHONY: build
 build: clean bootstrap
 	mkdir -p $(BUILD)
-	go build -o $(BUILD)/$(BINARY)
+	go build -o $(BUILD)/$(BINARY) $(MAIN)
 
 .PHONY: dist
 dist:

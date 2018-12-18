@@ -29,7 +29,7 @@ ifndef HAS_GLIDE
 	go get -u github.com/Masterminds/glide
 endif
 ifeq (,$(wildcard ./glide.yaml))
-	glide init --non-interactive
+	glide init
 endif
 	glide install --strip-vendor
 

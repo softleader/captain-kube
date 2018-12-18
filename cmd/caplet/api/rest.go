@@ -35,6 +35,7 @@ func Rest() {
 			c.AbortWithError(500, err)
 			return
 		}
+		defer out.Close()
 
 		// log to console and response
 		termFd, isTerm := term.GetFdInfo(os.Stderr)

@@ -5,7 +5,6 @@ import (
 	"github.com/softleader/captain-kube/pkg/image"
 	"google.golang.org/grpc"
 	"log"
-	"time"
 )
 
 func main() {
@@ -16,14 +15,15 @@ func main() {
 	defer conn.Close()
 
 	c := image.NewPullerClient(conn)
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	defer cancel()
+	//ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	//defer cancel()
+	ctx := context.Background()
 	r, err := c.Pull(ctx, &image.PullRequest{
-		Host:  "softleader",
-		Repo:  "caplet",
+		Host: "softleader",
+		Repo: "caplet",
 	})
 	if err != nil {
 		log.Fatalf("could not pull image: %v", err)
 	}
-	log.Printf("Pull %s tag: %s", r.GetResults().GetTag(), r.GetResults().GetMessage())
+	log.Printf("Pull %s tag:\n%s", r.GetResults().GetTag(), r.GetResults().GetMessage())
 }

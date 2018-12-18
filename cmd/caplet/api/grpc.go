@@ -33,6 +33,7 @@ func (s *server) Pull(_ context.Context, req *image.PullRequest) (*image.PullRes
 	if err != nil {
 		return nil, err
 	}
+	defer out.Close()
 
 	return &image.PullResponse{
 		Results: &image.Result{

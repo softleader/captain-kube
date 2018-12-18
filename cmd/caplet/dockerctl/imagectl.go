@@ -36,7 +36,6 @@ func Pull(host string, repo string, tag string) (io.ReadCloser, error) {
 		log.Println("pull image failed: ", image)
 		return nil, err
 	}
-	defer out.Close()
 
 	return out, nil
 }

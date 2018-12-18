@@ -1,5 +1,5 @@
-hash: 8d533a44cf043905d38189e18d2e07833e47c3b6a31e8fefe08e174c3e4eb6de
-updated: 2018-12-18T10:22:58.363973+08:00
+hash: 8f965a832761d8de7909b0223075555c9c2389a72dfd8ecbf977c440f7edd4ce
+updated: 2018-12-18T12:15:12.183031+08:00
 imports:
 - name: github.com/Azure/go-ansiterm
   version: d6e3b3328b783f23731bc4d058875b0371ff8109
@@ -59,6 +59,11 @@ imports:
   version: 1643683e1b54a9e88ad26d98f81400c8c9d9f4f9
   subpackages:
   - proto
+  - protoc-gen-go/descriptor
+  - ptypes
+  - ptypes/any
+  - ptypes/duration
+  - ptypes/timestamp
 - name: github.com/json-iterator/go
   version: d05f387f50c0c406889b62cb5ec51c76a64d89ee
 - name: github.com/mattn/go-isatty
@@ -90,15 +95,65 @@ imports:
   subpackages:
   - context
   - context/ctxhttp
+  - http/httpguts
+  - http2
+  - http2/hpack
+  - idna
   - internal/socks
+  - internal/timeseries
   - proxy
+  - trace
 - name: golang.org/x/sys
   version: 98c5dad5d1a0e8a73845ecc8897d0bd56586511d
   subpackages:
   - unix
   - windows
+- name: golang.org/x/text
+  version: 6f44c5a2ea40ee3593d98cdcc905cc1fdaa660e2
+  subpackages:
+  - secure/bidirule
+  - transform
+  - unicode/bidi
+  - unicode/norm
+- name: google.golang.org/genproto
+  version: 67d6565462c5a0d99b88193d59fefa10ca7e3010
+  subpackages:
+  - googleapis/rpc/status
 - name: google.golang.org/grpc
   version: df014850f6dee74ba2fc94874043a9f3f75fbfd8
+  subpackages:
+  - balancer
+  - balancer/base
+  - balancer/roundrobin
+  - binarylog/grpc_binarylog_v1
+  - codes
+  - connectivity
+  - credentials
+  - credentials/internal
+  - encoding
+  - encoding/proto
+  - grpclog
+  - internal
+  - internal/backoff
+  - internal/binarylog
+  - internal/channelz
+  - internal/envconfig
+  - internal/grpcrand
+  - internal/grpcsync
+  - internal/syscall
+  - internal/transport
+  - keepalive
+  - metadata
+  - naming
+  - peer
+  - reflection
+  - reflection/grpc_reflection_v1alpha
+  - resolver
+  - resolver/dns
+  - resolver/passthrough
+  - stats
+  - status
+  - tap
 - name: gopkg.in/go-playground/validator.v8
   version: 5f1438d3fca68893a817e4a66806cea46a9e4ebf
 - name: gopkg.in/yaml.v2

@@ -7,7 +7,9 @@ import:
   - pkg/jsonmessage
   - pkg/term
 - package: github.com/gin-gonic/gin
+- package: github.com/golang/protobuf
+  subpackages:
+  - proto
 - package: google.golang.org/grpc
   subpackages:
   - reflection
-- package: io/ioutil

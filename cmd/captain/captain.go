@@ -1,19 +1,29 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
-	"net"
+	"context"
+	"github.com/softleader/captain-kube/pkg/image"
+	"google.golang.org/grpc"
+	"log"
+	"time"
 )
 
 func main() {
-	r := gin.Default()
-	r.GET("/hosts/:host", func(c *gin.Context) {
-		addrs, err := net.LookupHost(c.Param("host"))
-		if err != nil {
-			c.AbortWithError(400, err)
-			return
-		}
-		c.JSON(200, addrs)
+	conn, err := grpc.Dial("localhost", grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("did not connect: %v", err)
+	}
+	defer conn.Close()
+
+	c := image.NewImagesClient(conn)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	r, err := c.Pull(ctx, &image.PullRequest{
+		Host: "softleader",
+		Repo: "caplet",
 	})
-	r.Run() // listen and serve on 0.0.0.0:8080
+	if err != nil {
+		log.Fatalf("could not pull image: %v", err)
+	}
+	log.Printf("Pull %s tag: %s", r.GetResults().GetTag(), r.GetResults().GetMessage())
 }

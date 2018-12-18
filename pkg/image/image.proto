@@ -7,14 +7,15 @@ message PullRequest {
 }
 
 message PullResponse {
-    repeated Result results = 1;
+    Result results = 1;
 }
 
 message Result {
     string tag = 1;
-    repeated string message = 2;
+    string message = 2;
 }
 
 service Images {
-    rpc Pull (PullRequest) returns (PullResponse) {};
+    rpc Pull (PullRequest) returns (PullResponse) {
+    };
 }

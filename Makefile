@@ -31,7 +31,7 @@ endif
 ifeq (,$(wildcard ./glide.yaml))
 	glide init --non-interactive
 endif
-	glide install --strip-vendor	
+	glide install --strip-vendor
 
 .PHONY: clean
 clean:

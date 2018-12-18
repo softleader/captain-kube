@@ -4,6 +4,7 @@ import "github.com/softleader/captain-kube/cmd/caplet/api"
 
 func main() {
 
-	api.Rest()
+	//api.Rest()
+	api.Grpc()
 
 }

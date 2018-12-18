@@ -16,6 +16,5 @@ message Result {
 }
 
 service Puller {
-    rpc Pull (PullRequest) returns (PullResponse) {
-    };
+    rpc Pull (PullRequest) returns (PullResponse) {}
 }

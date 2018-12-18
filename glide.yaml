@@ -8,3 +8,6 @@ import:
   - pkg/term
 - package: github.com/gin-gonic/gin
 - package: google.golang.org/grpc
+  subpackages:
+  - reflection
+- package: io/ioutil

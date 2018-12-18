@@ -15,6 +15,6 @@ message Result {
     repeated string message = 2;
 }
 
-service ImageService {
-    rpc Pull (PullRequest) returns (PullResponse);
+service Images {
+    rpc Pull (PullRequest) returns (PullResponse) {};
 }

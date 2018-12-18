@@ -15,7 +15,7 @@ message Result {
     string message = 2;
 }
 
-service Images {
+service Puller {
     rpc Pull (PullRequest) returns (PullResponse) {
     };
 }

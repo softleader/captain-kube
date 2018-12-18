@@ -1,0 +1,10 @@
+package: github.com/softleader/captain-kube
+import:
+- package: github.com/docker/docker
+  subpackages:
+  - api/types
+  - client
+  - pkg/jsonmessage
+  - pkg/term
+- package: github.com/gin-gonic/gin
+- package: google.golang.org/grpc

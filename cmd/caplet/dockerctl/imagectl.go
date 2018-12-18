@@ -18,7 +18,12 @@ func Pull(host string, repo string, tag string) (io.ReadCloser, error) {
 		cliVsn = "1.39"
 	}
 
-	cli, err := client.NewClientWithOpts(client.WithVersion(cliVsn))
+	// cli, err := client.NewClientWithOpts(client.WithVersion(cliVsn))
+	// Use DOCKER_HOST to set the url to the docker server.
+	// Use DOCKER_API_VERSION to set the version of the API to reach, leave empty for latest.
+	// Use DOCKER_CERT_PATH to load the TLS certificates from.
+	// Use DOCKER_TLS_VERIFY to enable or disable TLS verification, off by default.
+	cli, err := client.NewEnvClient()
 	if err != nil {
 		log.Println("client init failed, version: ", cliVsn)
 		return nil, err

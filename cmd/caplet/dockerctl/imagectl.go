@@ -6,17 +6,16 @@ import (
 	"github.com/docker/docker/client"
 	"io"
 	"log"
-	"os"
 )
 
 func Pull(host string, repo string, tag string) (io.ReadCloser, error) {
 	// docker client
 	ctx := context.Background()
 
-	cliVsn, exist := os.LookupEnv("DOCKER_CLIENT_VERSION")
-	if !exist {
-		cliVsn = "1.39"
-	}
+	//cliVsn, exist := os.LookupEnv("DOCKER_CLIENT_VERSION")
+	//if !exist {
+	//	cliVsn = "1.39"
+	//}
 
 	// cli, err := client.NewClientWithOpts(client.WithVersion(cliVsn))
 	// Use DOCKER_HOST to set the url to the docker server.
@@ -25,7 +24,7 @@ func Pull(host string, repo string, tag string) (io.ReadCloser, error) {
 	// Use DOCKER_TLS_VERIFY to enable or disable TLS verification, off by default.
 	cli, err := client.NewEnvClient()
 	if err != nil {
-		log.Println("client init failed, version: ", cliVsn)
+		log.Println("client init failed: ", err.Error())
 		return nil, err
 	}
 

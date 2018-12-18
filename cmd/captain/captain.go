@@ -15,7 +15,7 @@ func main() {
 	}
 	defer conn.Close()
 
-	c := image.NewImagesClient(conn)
+	c := image.NewPullerClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 	r, err := c.Pull(ctx, &image.PullRequest{

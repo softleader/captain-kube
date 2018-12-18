@@ -38,7 +38,7 @@ func main() {
 		log.Println("pulling image: ", image)
 		out, err := cli.ImagePull(ctx, image, types.ImagePullOptions{})
 		if err != nil {
-			log.Fatalln("pull image failed: ", image)
+			log.Println("pull image failed: ", image)
 			c.AbortWithError(500, err)
 			return
 		}
@@ -51,7 +51,7 @@ func main() {
 		log.Println("pulled image: ", image)
 
 		// response
-		c.String(200, "image: ["+image+"] pull complete")
+		c.String(200, "image: [%s] pull complete", image)
 	})
 
 	r.Run() // listen and serve on 0.0.0.0:8080

@@ -18,9 +18,9 @@ build: clean bootstrap
 .PHONY: dist
 dist:
 	mkdir -p $(DIST)
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o $(DIST)/$(BINARY) -a -tags netgo $(CAPTAIN)
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o $(DIST)/$(BINARY) -a -tags netgo ./cmd/$(CAPTAIN)
 	docker build -t $(REGISTRY)/$(CAPTAIN) . && docker push $(REGISTRY)/$(CAPTAIN)
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o $(DIST)/$(BINARY) -a -tags netgo $(CAPLET)
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o $(DIST)/$(BINARY) -a -tags netgo ./cmd/$(CAPLET)
 	docker build -t $(REGISTRY)/$(CAPLET) . && docker push $(REGISTRY)/$(CAPLET)
 
 .PHONY: bootstrap

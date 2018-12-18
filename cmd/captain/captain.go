@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"github.com/softleader/captain-kube/pkg/image"
+	"github.com/softleader/captain-kube/pkg/proto/image"
 	"google.golang.org/grpc"
 	"log"
 )

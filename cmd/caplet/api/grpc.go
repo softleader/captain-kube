@@ -2,8 +2,8 @@ package api
 
 import (
 	"context"
-	"github.com/softleader/captain-kube/cmd/caplet/dockerctl"
-	"github.com/softleader/captain-kube/pkg/image"
+	"github.com/softleader/captain-kube/pkg/dockerctl"
+	"github.com/softleader/captain-kube/pkg/proto/image"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"io/ioutil"

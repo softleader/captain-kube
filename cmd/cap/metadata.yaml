@@ -1,0 +1,21 @@
+name: cap
+version: 0.1.0
+usage: the cap plugin
+description: The cap plugin
+exec:
+  command: $SL_PLUGIN_DIR/cap
+  platform:
+  - os: darwin
+    arch: ""
+    command: $SL_PLUGIN_DIR/cap
+  - os: windows
+    arch: ""
+    command: $SL_PLUGIN_DIR/cap
+hook:
+  command: echo hello cap
+  platform: []
+ignoreglobalflags: false
+github:
+  scopes:
+  - read:org
+  - user

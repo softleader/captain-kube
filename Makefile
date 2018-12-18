@@ -1,15 +1,9 @@
 HAS_GLIDE := $(shell command -v glide;)
 DIST := $(CURDIR)/_dist
 BUILD := $(CURDIR)/_build
-BINARY := caplet
 REGISTRY := softleader
-MAIN := ./cmd/captain
-
-.PHONY: install
-install: bootstrap test build
-	mkdir -p $(SL_PLUGIN_DIR)
-	cp $(BUILD)/$(BINARY) $(SL_PLUGIN_DIR)
-	cp $(METADATA) $(SL_PLUGIN_DIR)
+CAPTAIN := captain
+CAPLET := caplet
 
 .PHONY: test
 test:
@@ -18,14 +12,16 @@ test:
 .PHONY: build
 build: clean bootstrap
 	mkdir -p $(BUILD)
-	go build -o $(BUILD)/$(BINARY) $(MAIN)
+	go build -o $(BUILD)/$(BINARY) ./cmd/$(CAPTAIN)
+	go build -o $(BUILD)/$(BINARY) ./cmd/$(CAPLET)
 
 .PHONY: dist
 dist:
 	mkdir -p $(DIST)
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o $(DIST)/$(BINARY) -a -tags netgo $(MAIN)
-	docker build -t $(REGISTRY)/$(BINARY) .
-	docker push $(REGISTRY)/$(BINARY)
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o $(DIST)/$(BINARY) -a -tags netgo $(CAPTAIN)
+	docker build -t $(REGISTRY)/$(CAPTAIN) . && docker push $(REGISTRY)/$(CAPTAIN)
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o $(DIST)/$(BINARY) -a -tags netgo $(CAPLET)
+	docker build -t $(REGISTRY)/$(CAPLET) . && docker push $(REGISTRY)/$(CAPLET)
 
 .PHONY: bootstrap
 bootstrap:

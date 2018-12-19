@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/proto/file"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -17,7 +18,7 @@ const (
 
 type server struct{}
 
-func (s *server) Upload(stream file.Uploader_UploadServer) error {
+func (s *server) Upload(stream proto.Uploader_UploadServer) error {
 	log.Println("reciving file")
 
 	os.Remove("./data/uploaded.txt")
@@ -44,7 +45,7 @@ func (s *server) Upload(stream file.Uploader_UploadServer) error {
 	log.Println("file recived: ", info.Size(), "bytes")
 	defer f.Close()
 
-	return stream.SendAndClose(&file.UploadResponse{
+	return stream.SendAndClose(&proto.UploadResponse{
 		Message: "Upload received with success",
 	})
 }
@@ -56,7 +57,7 @@ func main() {
 	}
 
 	s := grpc.NewServer()
-	file.RegisterUploaderServer(s, &server{})
+	proto.RegisterUploaderServer(s, &server{})
 
 	reflection.Register(s)
 	if err := s.Serve(lis); err != nil {

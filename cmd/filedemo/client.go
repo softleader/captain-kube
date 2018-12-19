@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"github.com/softleader/captain-kube/pkg/proto/file"
+	"github.com/softleader/captain-kube/pkg/proto"
 	"google.golang.org/grpc"
 	"io"
 	"log"
@@ -16,7 +16,7 @@ func main() {
 	}
 	defer conn.Close()
 
-	c := file.NewUploaderClient(conn)
+	c := proto.NewUploaderClient(conn)
 	ctx := context.Background()
 
 	f, err := os.Open("./data/APPLICATION_2.pdf")
@@ -32,7 +32,7 @@ func main() {
 	buf := make([]byte, 4)
 	for {
 		if n, err := f.Read(buf); err == nil {
-			stream.Send(&file.Chunk{
+			stream.Send(&proto.Chunk{
 				Content: buf[:n],
 			})
 		} else {

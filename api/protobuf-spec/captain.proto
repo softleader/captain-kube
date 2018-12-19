@@ -17,7 +17,6 @@ message InstallChartResponse {
 
 message GenerateScriptRequest {
     Chart chart = 1;
-    int64 timeout = 2;
     bool pull = 3;
     ReTag retag = 4;
     bool save = 5;

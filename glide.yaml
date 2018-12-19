@@ -17,3 +17,5 @@ import:
   version: ^1.17.0
   subpackages:
   - reflection
+- package: github.com/spf13/cobra
+  version: ^0.0.3

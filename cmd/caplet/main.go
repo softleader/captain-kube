@@ -1,12 +1,15 @@
 package main
 
 import (
-	"github.com/softleader/captain-kube/cmd/caplet/app/server"
+	"fmt"
+	"github.com/softleader/captain-kube/cmd/caplet/app"
+	"os"
 )
 
 func main() {
-
-	//server.Rest()
-	server.Grpc()
-
+	command := app.NewCapletCommand()
+	if err := command.Execute(); err != nil {
+		fmt.Fprintf(os.Stderr, "%v\n", err)
+		os.Exit(1)
+	}
 }

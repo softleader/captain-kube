@@ -1,5 +1,5 @@
-hash: aa1ed58dfe6b4ebed8fa91efdc2b4b05223b9b3d0d4793a4f8b4d1bfa215a037
-updated: 2018-12-18T14:47:51.0910309+08:00
+hash: 1e8fc2475a15315063d1acc7907f033e8baa1e96d43fef2b2ce609736ca90edc
+updated: 2018-12-19T10:04:30.096122+08:00
 imports:
 - name: github.com/Azure/go-ansiterm
   version: d6e3b3328b783f23731bc4d058875b0371ff8109
@@ -56,7 +56,7 @@ imports:
   - json
   - render
 - name: github.com/golang/protobuf
-  version: 1d3f30b51784bec5aad268e59fd3c2fc1c2fe73f
+  version: b27b920f9e71b439b873b17bf99f56467623814a
   subpackages:
   - proto
   - protoc-gen-go/descriptor
@@ -64,6 +64,8 @@ imports:
   - ptypes/any
   - ptypes/duration
   - ptypes/timestamp
+- name: github.com/inconshreveable/mousetrap
+  version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
 - name: github.com/json-iterator/go
   version: d05f387f50c0c406889b62cb5ec51c76a64d89ee
 - name: github.com/konsorten/go-windows-terminal-sequences
@@ -84,6 +86,10 @@ imports:
   version: 059132a15dd08d6704c67711dae0cf35ab991756
 - name: github.com/Sirupsen/logrus
   version: 2067ea4241cec716fbd0ac90f42f339f963bff92
+- name: github.com/spf13/cobra
+  version: ef82de70bb3f60c65fb8eebacbb2d122ef517385
+- name: github.com/spf13/pflag
+  version: 3ebe029320b2676d667ae88da602a5f854788a8a
 - name: github.com/ugorji/go
   version: 772ced7fd4c2f6322c07537a9a93b68d74551fa6
   subpackages:

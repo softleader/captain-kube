@@ -11,7 +11,9 @@ import (
 	"strings"
 )
 
-func Rest() {
+type Rest struct{}
+
+func (_ Rest) Serve(out io.Writer, port int) error {
 	r := gin.Default()
 
 	r.GET("/fetch/:host/:repotag", func(c *gin.Context) {

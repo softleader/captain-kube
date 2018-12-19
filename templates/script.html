@@ -38,11 +38,11 @@
             <div class="form-group" id="registry-group" style="display: none">
                 <label for="registry">Registry</label>
                 <div class="input-group">
-                    <input type="text" class="form-control" name="sourceRegistry" id="sourceRegistry" value="{{ .config.DefaultValue.SourceRegistry }}">
+                    <input type="text" class="form-control" name="sourceRegistry" id="sourceRegistry" value="{{ .config.DefaultValue.SourceRegistry }}" required>
                     <div class="input-group-prepend">
                         <span class="input-group-text" id=""><i class="fas fa-angle-double-right"></i></span>
                     </div>
-                    <input type="text" class="form-control" name="registry" id="registry" value="{{ .config.DefaultValue.Registry }}">
+                    <input type="text" class="form-control" name="registry" id="registry" value="{{ .config.DefaultValue.Registry }}" required>
                 </div>
             </div>
 

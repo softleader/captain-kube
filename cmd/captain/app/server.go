@@ -2,13 +2,14 @@ package app
 
 import (
 	"fmt"
-	"github.com/softleader/captain-kube/cmd/captain/app/client"
+	"github.com/softleader/captain-kube/cmd/captain/app/server"
+	"github.com/softleader/captain-kube/pkg/proto/captain"
 	"github.com/softleader/captain-kube/pkg/verbose"
 	"github.com/spf13/cobra"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 	"io"
 	"net"
-	"strings"
-	"sync"
 )
 
 var ErrNonCapletDaemonFound = fmt.Errorf("non caplet daemon found")
@@ -26,7 +27,15 @@ func NewCaptainCommand() (cmd *cobra.Command) {
 	cmd = &cobra.Command{
 		Use:  "captain",
 		Long: "captain is the brain of captain-kube system",
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			if len(c.endpoints) == 0 {
+				if c.endpoints, err = net.LookupHost(c.caplet); err != nil {
+					return
+				}
+			}
+			if len(c.endpoints) == 0 {
+				return ErrNonCapletDaemonFound
+			}
 			return c.run()
 		},
 	}
@@ -42,32 +51,13 @@ func NewCaptainCommand() (cmd *cobra.Command) {
 }
 
 func (c *captainCmd) run() (err error) {
-	if len(c.endpoints) == 0 {
-		if c.endpoints, err = net.LookupHost(c.caplet); err != nil {
-			return err
-		}
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%v", c.port))
+	if err != nil {
+		return fmt.Errorf("failed to listen: %v", err)
 	}
-	if len(c.endpoints) == 0 {
-		return ErrNonCapletDaemonFound
-	}
-	ch := make(chan error, len(c.endpoints))
-	var wg sync.WaitGroup
-	for _, ep := range c.endpoints {
-		wg.Add(1)
-		go func(out io.Writer, endpoint string, port int) {
-			defer wg.Done()
-			ch <- client.PullImage(out, endpoint, port)
-		}(c.out, ep, c.port)
-	}
-	wg.Wait()
-	close(ch)
-	if len(ch) > 0 {
-		var errors []string
-		for e := range ch {
-			errors = append(errors, e.Error())
-		}
-		return fmt.Errorf(strings.Join(errors, "\n"))
-	}
-	return nil
-
+	s := grpc.NewServer()
+	captain.RegisterCaptainServer(s, server.NewCaptainServer(c.out, c.endpoints, c.port))
+	reflection.Register(s)
+	verbose.Fprintf(c.out, "listening and serving GRPC on %v\n", lis.Addr().String())
+	return s.Serve(lis)
 }

@@ -53,7 +53,7 @@ func NewCapletCommand() (cmd *cobra.Command) {
 	c := newCapletCmd()
 	cmd = &cobra.Command{
 		Use:  "caplet",
-		Long: "caplet is a daemon run on nodes",
+		Long: "caplet is a daemon run on every kubernetes node",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return c.run()
 		},

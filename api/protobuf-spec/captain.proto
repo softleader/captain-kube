@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package proto;
+
+message InstallChartRequest {
+    string fileName = 1;
+    bytes content = 2;
+    // timeout specifies the max amount of time any caplet can run.
+    int64 timeout = 3;
+}
+
+message InstallChartResponse {
+    string message = 1;
+}
+
+service Captain {
+    rpc InstallChart (InstallChartRequest) returns (InstallChartResponse) {
+    }
+}

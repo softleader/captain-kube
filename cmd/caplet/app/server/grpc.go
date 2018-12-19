@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/softleader/captain-kube/cmd/caplet/app/dockerctl"
-	"github.com/softleader/captain-kube/pkg/proto/image"
+	"github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/verbose"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -16,7 +16,7 @@ import (
 type Grpc struct{}
 type server struct{}
 
-func (g *server) Pull(_ context.Context, req *image.PullRequest) (*image.PullResponse, error) {
+func (g *server) PullImage(_ context.Context, req *proto.PullImageRequest) (*proto.PullImageResponse, error) {
 
 	var tag string
 	if tag = req.GetTag(); len(tag) == 0 {
@@ -34,11 +34,9 @@ func (g *server) Pull(_ context.Context, req *image.PullRequest) (*image.PullRes
 	}
 	defer out.Close()
 
-	return &image.PullResponse{
-		Results: &image.Result{
-			Tag:     tag,
-			Message: string(bytes),
-		},
+	return &proto.PullImageResponse{
+		Tag:     tag,
+		Message: string(bytes),
 	}, nil
 }
 
@@ -49,10 +47,8 @@ func (_ Grpc) Serve(out io.Writer, port int) error {
 	}
 
 	s := grpc.NewServer()
-
-	image.RegisterPullerServer(s, &server{})
-	verbose.Fprintf(out, "registered %q\n", "puller service")
-
+	proto.RegisterCapletServer(s, &server{})
+	verbose.Fprintf(out, "registered caplet server\n")
 	reflection.Register(s)
 
 	verbose.Fprintf(out, "listening and serving GRPC on %v\n", lis.Addr().String())

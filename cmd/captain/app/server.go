@@ -3,7 +3,7 @@ package app
 import (
 	"fmt"
 	"github.com/softleader/captain-kube/cmd/captain/app/server"
-	"github.com/softleader/captain-kube/pkg/proto/captain"
+	"github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/verbose"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
@@ -56,7 +56,7 @@ func (c *captainCmd) run() (err error) {
 		return fmt.Errorf("failed to listen: %v", err)
 	}
 	s := grpc.NewServer()
-	captain.RegisterCaptainServer(s, server.NewCaptainServer(c.out, c.endpoints, c.port))
+	proto.RegisterCaptainServer(s, server.NewCaptainServer(c.out, c.endpoints, c.port))
 	reflection.Register(s)
 	verbose.Fprintf(c.out, "listening and serving GRPC on %v\n", lis.Addr().String())
 	return s.Serve(lis)

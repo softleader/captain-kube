@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package proto;
+
+message PullImageRequest {
+    string host = 1;
+    string repo = 2;
+    string tag = 3;
+}
+
+message PullImageResponse {
+    string tag = 1;
+    string message = 2;
+}
+
+service Caplet {
+    rpc PullImage (PullImageRequest) returns (PullImageResponse) {
+    }
+}

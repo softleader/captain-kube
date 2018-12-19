@@ -2,31 +2,54 @@ package server
 
 import (
 	"context"
+	"github.com/softleader/captain-kube/pkg/arc"
 	"github.com/softleader/captain-kube/pkg/caplet"
+	"github.com/softleader/captain-kube/pkg/helm"
+	"github.com/softleader/captain-kube/pkg/helm/chart"
 	"github.com/softleader/captain-kube/pkg/proto"
+	"io/ioutil"
+	"os"
+	"path/filepath"
 )
 
-func (s *CaptainServer) InstallChart(c context.Context, req *proto.InstallChartRequest) (*proto.InstallChartResponse, error) {
+func (s *CaptainServer) InstallChart(c context.Context, req *proto.InstallChartRequest) (resp *proto.InstallChartResponse, err error) {
+	path, err := ioutil.TempDir(os.TempDir(), "captain-generate-script")
+	if err != nil {
+		return
+	}
+	chartFile := "" // TODO
+	chartPath := filepath.Join(path, req.GetChart().GetFileName())
+	if err = arc.Extract(s.out, chartFile, chartPath); err != nil {
+		return
+	}
+	tplPath := filepath.Join(chartPath, template)
+	if err := helm.Template(s.out, chartPath, tplPath); err != nil {
+		return
+	}
+	images, err := chart.CollectImages(tplPath)
+	if err != nil {
+		return nil, err
+	}
 
-	// TODO:
-	// 1. 解開壓縮檔
-	// 2. 執行 helm template, 取得要部署的檔案
-	// 3. parse 出所有 image
-	// 4. parallel call caplet pull
+	caplet.PullImage(s.out, s.endpoints, s.port, newPullImageRequest(images), req.GetTimeout())
 
-	// TODO: 從 chart 來
-	var images []*proto.Image
-	images = append(images, &proto.Image{
-		Host: "",
-		Repo: "alpine",
-		Tag:  "",
-	})
-
-	caplet.PullImage(s.out, s.endpoints, s.port, &proto.PullImageRequest{
-		Images: images,
-	}, req.GetTimeout())
-
-	return &proto.InstallChartResponse{
+	// TODO: how to get caplet out?
+	resp = &proto.InstallChartResponse{
 		Out: "looks good!!?",
-	}, nil
+	}
+	return
+}
+
+func newPullImageRequest(images chart.Images) (req *proto.PullImageRequest) {
+	req = &proto.PullImageRequest{}
+	for _, imgs := range images {
+		for _, img := range imgs {
+			req.Images = append(req.Images, &proto.Image{
+				Host: img.Host,
+				Repo: img.Repo,
+				Tag:  img.Tag,
+			})
+		}
+	}
+	return
 }

@@ -31,34 +31,8 @@ func image(path string, f os.FileInfo) ([]*Image, error) {
 		t := Template{}
 		yaml.Unmarshal(in, &t)
 		for _, c := range t.Spec.Template.Spec.Containers {
-			image := Image{
-				Host: before(c.Image, "/"),
-				Name: after(c.Image, "/"),
-			}
-			i = append(i, &image)
+			i = append(i, newImage(c.Image))
 		}
 	}
 	return i, nil
-}
-
-func before(value string, a string) string {
-	// Get substring before a string.
-	pos := strings.Index(value, a)
-	if pos == -1 {
-		return ""
-	}
-	return value[0:pos]
-}
-
-func after(value string, a string) string {
-	// Get substring after a string.
-	pos := strings.Index(value, a)
-	if pos == -1 {
-		return ""
-	}
-	adjustedPos := pos + len(a)
-	if adjustedPos >= len(value) {
-		return ""
-	}
-	return value[adjustedPos:len(value)]
 }

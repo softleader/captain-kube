@@ -13,7 +13,7 @@ func Extract(out io.Writer, source, destination string) (err error) {
 		return
 	}
 
-	verbose.Fprintf(out, "extracting archive to $q", destination)
+	verbose.Fprintf(out, "extracting archive to %q", destination)
 
 	if err = archiver.Unarchive(source, destination); err != nil { // find Unarchiver by header
 		var arc interface{}

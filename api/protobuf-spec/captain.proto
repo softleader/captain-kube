@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package proto;
 
+import "retag.proto";
+
 message InstallChartRequest {
     string fileName = 1;
     bytes content = 2;
@@ -13,7 +15,21 @@ message InstallChartResponse {
     string message = 1;
 }
 
+message GenerateScriptRequest {
+    bool pull = 1;
+    Retag retag = 2;
+    bool save = 3;
+    bool load = 4;
+}
+
+message GenerateScriptResponse {
+    string out = 1;
+}
+
 service Captain {
     rpc InstallChart (InstallChartRequest) returns (InstallChartResponse) {
     }
+    rpc GenerateScript (GenerateScriptRequest) returns (GenerateScriptResponse) {
+    }
 }
+

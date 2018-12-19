@@ -9,6 +9,11 @@ CAPLET := caplet
 test:
 	go test ./... -v
 
+build: protoc
+protoc:
+	protoc -I api/protobuf-spec/ --go_out=plugins=grpc:pkg/proto api/protobuf-spec/*.proto
+
+
 .PHONY: build
 build: clean bootstrap
 	mkdir -p $(BUILD)

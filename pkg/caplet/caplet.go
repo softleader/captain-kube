@@ -8,9 +8,11 @@ import (
 	"github.com/softleader/captain-kube/pkg/verbose"
 	"google.golang.org/grpc"
 	"io"
+	"strings"
+	"sync"
 )
 
-func PullImage(out io.Writer, endpoint string, port int, req *proto.PullImageRequest, timeout int) error {
+func pullImage(out io.Writer, endpoint string, port int, req *proto.PullImageRequest, timeout int64) error {
 	conn, err := grpc.Dial(fmt.Sprintf("%s:%v", endpoint, port), grpc.WithInsecure())
 	if err != nil {
 		return fmt.Errorf("did not connect: %v", err)
@@ -23,6 +25,32 @@ func PullImage(out io.Writer, endpoint string, port int, req *proto.PullImageReq
 	if err != nil {
 		return fmt.Errorf("could not pull image: %v", err)
 	}
-	verbose.Fprintf(out, "Pull %s tag:\n%s", r.GetTag(), r.GetMessage())
+	if verbose.Enabled {
+		for _, i := range r.Images {
+			fmt.Fprintf(out, "pulled %v", i)
+		}
+	}
+	return nil
+}
+
+func PullImage(out io.Writer, endpoints []string, port int, req *proto.PullImageRequest, timeout int64) error {
+	ch := make(chan error, len(endpoints))
+	var wg sync.WaitGroup
+	for _, ep := range endpoints {
+		wg.Add(1)
+		go func(out io.Writer, endpoint string, port int, req *proto.PullImageRequest, timeout int64) {
+			defer wg.Done()
+			ch <- pullImage(out, endpoint, port, req, timeout)
+		}(out, ep, port, req, timeout)
+	}
+	wg.Wait()
+	close(ch)
+	if len(ch) > 0 {
+		var errors []string
+		for e := range ch {
+			errors = append(errors, e.Error())
+		}
+		return fmt.Errorf(strings.Join(errors, "\n"))
+	}
 	return nil
 }

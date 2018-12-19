@@ -61,7 +61,7 @@ func NewCapletCommand() (cmd *cobra.Command) {
 
 	c.out = cmd.OutOrStdout()
 	f := cmd.Flags()
-	f.BoolVarP(&verbose.Verbose, "verbose", "v", verbose.Verbose, "enable verbose output")
+	f.BoolVarP(&verbose.Enabled, "verbose", "v", verbose.Enabled, "enable verbose output")
 	f.StringVar(&c.serve, "serve", c.serve, "specify api kind to serve (grpc or rest), override "+EnvCapletServe)
 	f.IntVarP(&c.port, "port", "p", c.port, "specify the port to serve, override "+EnvCapletPort)
 

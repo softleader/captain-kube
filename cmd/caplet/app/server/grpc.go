@@ -1,6 +1,7 @@
 package server
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"github.com/softleader/captain-kube/cmd/caplet/app/dockerctl"
@@ -11,6 +12,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net"
+	"strings"
 )
 
 type Grpc struct{}
@@ -18,26 +20,35 @@ type server struct{}
 
 func (g *server) PullImage(_ context.Context, req *proto.PullImageRequest) (*proto.PullImageResponse, error) {
 
-	var tag string
-	if tag = req.GetTag(); len(tag) == 0 {
-		tag = "latest"
+	var buf bytes.Buffer
+	var errors []string
+	for _, image := range req.Images {
+		if out, err := pull(image); err != nil {
+			errors = append(errors, err.Error())
+		} else {
+			if bytes, err := ioutil.ReadAll(out); err != nil { // FIXME: to streaming output
+				errors = append(errors, err.Error())
+			} else {
+				buf.Write(bytes)
+				out.Close()
+			}
+		}
 	}
 
-	out, err := dockerctl.Pull(req.GetHost(), req.GetRepo(), tag)
-	if err != nil {
-		return nil, err
+	if len(errors) > 0 {
+		return nil, fmt.Errorf(strings.Join(errors, "\n"))
 	}
-
-	bytes, err := ioutil.ReadAll(out)
-	if err != nil {
-		return nil, err
-	}
-	defer out.Close()
 
 	return &proto.PullImageResponse{
-		Tag:     tag,
-		Message: string(bytes),
+		Images:  req.Images,
+		Message: buf.String(),
 	}, nil
+}
+func pull(image *proto.Image) (io.ReadCloser, error) {
+	if tag := image.GetTag(); len(tag) == 0 {
+		image.Tag = "latest"
+	}
+	return dockerctl.Pull(image.GetHost(), image.GetRepo(), image.GetTag())
 }
 
 func (_ Grpc) Serve(out io.Writer, port int) error {

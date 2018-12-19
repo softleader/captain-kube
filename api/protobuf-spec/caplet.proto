@@ -3,13 +3,17 @@ syntax = "proto3";
 package proto;
 
 message PullImageRequest {
+    repeated Image images = 1;
+}
+
+message Image {
     string host = 1;
     string repo = 2;
     string tag = 3;
 }
 
 message PullImageResponse {
-    string tag = 1;
+    repeated Image images = 1;
     string message = 2;
 }
 

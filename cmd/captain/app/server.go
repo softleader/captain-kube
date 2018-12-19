@@ -42,7 +42,7 @@ func NewCaptainCommand() (cmd *cobra.Command) {
 
 	c.out = cmd.OutOrStdout()
 	f := cmd.Flags()
-	f.BoolVarP(&verbose.Verbose, "verbose", "v", verbose.Verbose, "enable verbose output")
+	f.BoolVarP(&verbose.Enabled, "verbose", "v", verbose.Enabled, "enable verbose output")
 	f.StringArrayVarP(&c.endpoints, "endpoint", "e", []string{}, "specify the endpoint of caplets")
 	f.IntVarP(&c.port, "port", "p", 50051, "specify the port of caplet")
 	f.StringVar(&c.caplet, "caplet", "caplet", "specify the hostname of caplet daemon to lookup")

@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"github.com/softleader/captain-kube/pkg/proto"
-	"github.com/softleader/captain-kube/pkg/proto/file"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"io"

@@ -23,7 +23,7 @@ func NewCapuiCommand() (cmd *cobra.Command) {
 
 	c.out = cmd.OutOrStdout()
 	f := cmd.Flags()
-	f.BoolVarP(&verbose.Verbose, "verbose", "v", verbose.Verbose, "enable verbose output")
+	f.BoolVarP(&verbose.Enabled, "verbose", "v", verbose.Enabled, "enable verbose output")
 	f.StringVarP(&c.configPath, "config", "c", "configs/default_capui_config.yaml", "path of config file (yaml)")
 
 	return

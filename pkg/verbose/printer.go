@@ -6,10 +6,10 @@ import (
 	"os"
 )
 
-var Verbose = false
+var Enabled = false
 
 func Fprintf(w io.Writer, format string, a ...interface{}) (n int, err error) {
-	if Verbose {
+	if Enabled {
 		return fmt.Fprintf(w, format, a...)
 	}
 	return
@@ -20,7 +20,7 @@ func Printf(format string, a ...interface{}) (n int, err error) {
 }
 
 func Fprint(w io.Writer, a ...interface{}) (n int, err error) {
-	if Verbose {
+	if Enabled {
 		return fmt.Fprint(w, a...)
 	}
 	return
@@ -31,7 +31,7 @@ func Print(a ...interface{}) (n int, err error) {
 }
 
 func Fprintln(w io.Writer, a ...interface{}) (n int, err error) {
-	if Verbose {
+	if Enabled {
 		return fmt.Fprintln(w, a...)
 	}
 	return

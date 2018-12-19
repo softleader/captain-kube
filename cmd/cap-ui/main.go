@@ -1,21 +1,15 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
-	"net/http"
+	"fmt"
+	"github.com/softleader/captain-kube/cmd/cap-ui/app"
+	"os"
 )
 
 func main() {
-	r := gin.Default()
-
-	r.Static("/static", "static")
-	r.LoadHTMLGlob("templates/index.html")
-	//r.LoadHTMLGlob("templates/*.html")
-	r.GET("/", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "index.html", nil)
-		//c.HTML(http.StatusOK, "index.html", gin.H{
-		//})
-	})
-
-	r.Run() // listen and serve on 0.0.0.0:8080
+	command := app.NewCapuiCommand()
+	if err := command.Execute(); err != nil {
+		fmt.Fprintf(os.Stderr, "%v\n", err)
+		os.Exit(1)
+	}
 }

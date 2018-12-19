@@ -1,56 +1,10 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <title>SoftLeader Captain Kube</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="icon" href="{{ .app.ContextPath }}/favicon.ico">
-    <link rel="stylesheet" href="{{ .app.ContextPath }}/bootstrap-4.1.0-dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{{ .app.ContextPath }}/fontawesome-free-5.0.10/web-fonts-with-css/css/fontawesome-all.css">
-    <link rel="stylesheet" href="{{ .app.ContextPath }}/footer.css">
-    <link rel="stylesheet" href="{{ .app.ContextPath }}/template.css">
-    <link rel="stylesheet" href="{{ .app.ContextPath }}/bootstrap-slider.min.css">
+{{ template "tmp_head.html" }}
 </head>
 <body>
-
-<nav class="navbar navbar-expand-md navbar-light bg-light fixed-top">
-    <a class="navbar-brand" href="https://softleader.github.io/captain-kube/">
-        <img src="{{ .app.ContextPath }}/captainkube-02.png"
-             width="30" height="30" class="d-inline-block align-top" alt="">
-        Captain Kube
-    </a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-                <a class="nav-link" href="{{ .app.ContextPath }}/">Home</a>
-            </li>
-            <li class="nav-item active">
-                <a class="nav-link" href="{{ .app.ContextPath }}/staging">Staging</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ .app.ContextPath }}/production">Production</a>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Script</a>
-                <div class="dropdown-menu">
-                    <a class="dropdown-item" href="{{ .app.ContextPath }}/script/image-pull">Image Pull</a>
-                    <a class="dropdown-item" href="{{ .app.ContextPath }}/script/image-retag">Image Retag</a>
-                    <a class="dropdown-item" href="{{ .app.ContextPath }}/script/image-save">Image Save</a>
-                    <a class="dropdown-item" href="{{ .app.ContextPath }}/script/image-load">Image Load</a>
-                </div>
-            </li>
-        </ul>
-        {{/*<ul class="my-2 my-lg-0 navbar-nav">*/}}
-        {{/*{{ if .daemon.Kubernetes.Url }}*/}}
-            {{/*<a class="btn btn-outline-primary mb-3 mb-md-0 mr-md-3" href="{{ .daemon.Kubernetes.Url }}">Kubernetes</a>*/}}
-        {{/*{{ end }}*/}}
-        {{/*</ul>*/}}
-    </div>
-</nav>
+{{ template "tmp_navi.html" . }}
 
 <main role="main">
     <div class="container">
@@ -60,19 +14,19 @@
                 <label for="platform">Platform</label>
                 <div class="form-check">
                     <label class="form-check-label">
-                        <input class="form-check-input" type="radio" name="platform" value="helm" {{ if Contains .daemon.DefaultValue.Tags "helm" }}checked{{ end }}>
+                        <input class="form-check-input" type="radio" name="platform" value="helm" {{ if Contains .config.DefaultValue.Tags "helm" }}checked{{ end }}>
                         Google Helm
                     </label>
                 </div>
                 <div class="form-check">
                     <label class="form-check-label">
-                        <input class="form-check-input" type="radio" name="platform" value="icp" {{ if Contains .daemon.DefaultValue.Tags "icp" }}checked{{ end }}>
+                        <input class="form-check-input" type="radio" name="platform" value="icp" {{ if Contains .config.DefaultValue.Tags "icp" }}checked{{ end }}>
                         IBM Cloud Private
                     </label>
                 </div>
                 {{/*<div class="form-check disabled">*/}}
                     {{/*<label class="form-check-label text-muted">*/}}
-                        {{/*<input class="form-check-input" type="radio" name="platform" value="openshift" {{ if Contains .daemon.DefaultValue.Tags "openshift" }}checked{{ end }} disabled>*/}}
+                        {{/*<input class="form-check-input" type="radio" name="platform" value="openshift" {{ if Contains .config.DefaultValue.Tags "openshift" }}checked{{ end }} disabled>*/}}
                         {{/*Red Hat OpenShift*/}}
                     {{/*</label>*/}}
                 {{/*</div>*/}}
@@ -80,7 +34,7 @@
 
             <div class="form-group">
                 <label for="namespace">Namespace</label>
-                <input type="text" class="form-control" id="namespace" value="{{ .daemon.DefaultValue.Namespace }}" {{ if NotContains .daemon.DefaultValue.Tags "helm" }}disabled{{ end }}>
+                <input type="text" class="form-control" id="namespace" value="{{ .config.DefaultValue.Namespace }}" {{ if NotContains .config.DefaultValue.Tags "helm" }}disabled{{ end }}>
             </div>
 
             <div class="form-group">
@@ -90,19 +44,19 @@
 
             {{/*<div class="form-group">*/}}
                 {{/*<label for="version">Version</label>*/}}
-                {{/*<input type="text" class="form-control" id="version" value="{{ .daemon.DefaultValue.Version }}">*/}}
+                {{/*<input type="text" class="form-control" id="version" value="{{ .config.DefaultValue.Version }}">*/}}
             {{/*</div>*/}}
 
             <div class="form-group">
                 <label for="tags">Pre-Procedures</label>
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="pull" id="tags-pull" {{ if Contains .daemon.DefaultValue.Tags "pull" }}checked{{ end }}>
+                    <input class="form-check-input" type="checkbox" value="pull" id="tags-pull" {{ if Contains .config.DefaultValue.Tags "pull" }}checked{{ end }}>
                     <label class="form-check-label" for="tags-pull">
                         Pull images in Chart
                     </label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="retag" id="tags-retag" {{ if Contains .daemon.DefaultValue.Tags "retag" }}checked{{ end }}>
+                    <input class="form-check-input" type="checkbox" value="retag" id="tags-retag" {{ if Contains .config.DefaultValue.Tags "retag" }}checked{{ end }}>
                     <label class="form-check-label" for="tags-retag">
                         Retag images & Sync to staging nodes
                     </label>
@@ -112,18 +66,18 @@
             <div class="form-group">
                 <label for="registry">Registry</label>
                 <div class="input-group">
-                    <input type="text" class="form-control" id="sourceRegistry" value="{{ .daemon.DefaultValue.SourceRegistry }}" {{ if NotContains .daemon.DefaultValue.Tags "retag" }}disabled{{ end }}>
+                    <input type="text" class="form-control" id="sourceRegistry" value="{{ .config.DefaultValue.SourceRegistry }}" {{ if NotContains .config.DefaultValue.Tags "retag" }}disabled{{ end }}>
                     <div class="input-group-prepend">
                         <span class="input-group-text" id=""><i class="fas fa-angle-double-right"></i></span>
                     </div>
-                    <input type="text" class="form-control" id="registry" value="{{ .daemon.DefaultValue.Registry }}" {{ if NotContains .daemon.DefaultValue.Tags "retag" }}disabled{{ end }}>
+                    <input type="text" class="form-control" id="registry" value="{{ .config.DefaultValue.Registry }}" {{ if NotContains .config.DefaultValue.Tags "retag" }}disabled{{ end }}>
                 </div>
             </div>
 
 
             <div class="form-group">
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="verbose" {{ if .daemon.DefaultValue.Verbose }}checked{{ end }}>
+                    <input class="form-check-input" type="checkbox" id="verbose" {{ if .config.DefaultValue.Verbose }}checked{{ end }}>
                     <label class="form-check-label" for="verbose">
                         Verbose mode
                     </label>
@@ -140,7 +94,7 @@
                 </div>
             </div>
 
-            <button id="staging" url="{{ .app.ContextPath }}/staging" type="submit" class="btn btn-outline-primary btn-block"
+            <button id="staging" url="/staging" type="submit" class="btn btn-outline-primary btn-block"
                     onclick="$(this).parent().attr('action', $(this).attr('url'))">
                 Fire in the hole
             </button>
@@ -174,10 +128,9 @@
     </div>
 </footer>
 
-<script src="{{ .app.ContextPath }}/jquery-3.3.1.min.js"></script>
-<script src="{{ .app.ContextPath }}/bootstrap-4.1.0-dist/js/bootstrap.bundle.min.js"></script>
-<script src="{{ .app.ContextPath }}/clipboard.min.js"></script>
-<script src="{{ .app.ContextPath }}/bootstrap-slider.min.js"></script>
+{{ template "tmp_script.html" }}
+<script src="static/clipboard.min.js"></script>
+<script src="static/bootstrap-slider.min.js"></script>
 
 <script>
 
@@ -202,7 +155,7 @@
             var $output = $("#output");
             $output.empty();
             var data = {
-                "inventory": "{{ .daemon.DefaultValue.Inventory }}",
+                "inventory": "{{ .config.DefaultValue.Inventory }}",
                 "namespace": $("#namespace").val(),
                 // "version": $("#version").val(),
                 "tags": [],
@@ -212,12 +165,10 @@
                 },
                 "sourceRegistry":$("#sourceRegistry").val(),
                 "registry":$("#registry").val()
-            }
+            };
 
             $("input:checkbox[id^='tags-']:checked").each((i, e) => data.tags.push(e.value));
             data.tags.push($('input[name=platform]:checked').val());
-
-            console.log(data)
 
             var formData = new FormData();
             formData.append('file', $('#chart')[0].files[0]);

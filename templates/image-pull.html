@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>SoftLeader Captain Kube</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" href="{{ .app.ContextPath }}/favicon.ico">
+    <link rel="stylesheet" href="{{ .app.ContextPath }}/bootstrap-4.1.0-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ .app.ContextPath }}/fontawesome-free-5.0.10/web-fonts-with-css/css/fontawesome-all.css">
+    <link rel="stylesheet" href="{{ .app.ContextPath }}/footer.css">
+    <link rel="stylesheet" href="{{ .app.ContextPath }}/template.css">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-md navbar-light bg-light fixed-top">
+    <a class="navbar-brand" href="https://softleader.github.io/captain-kube/">
+        <img src="{{ .app.ContextPath }}/captainkube-02.png"
+             width="30" height="30" class="d-inline-block align-top" alt="">
+        Captain Kube
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="{{ .app.ContextPath }}/">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ .app.ContextPath }}/staging">Staging</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ .app.ContextPath }}/production">Production</a>
+            </li>
+            <li class="nav-item dropdown active">
+                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Script</a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item active" href="{{ .app.ContextPath }}/script/image-pull">Image Pull</a>
+                    <a class="dropdown-item" href="{{ .app.ContextPath }}/script/image-retag">Image Retag</a>
+                    <a class="dropdown-item" href="{{ .app.ContextPath }}/script/image-save">Image Save</a>
+                    <a class="dropdown-item" href="{{ .app.ContextPath }}/script/image-load">Image Load</a>
+                </div>
+            </li>
+        </ul>
+        {{/*<ul class="my-2 my-lg-0 navbar-nav">*/}}
+        {{/*{{ if .daemon.Kubernetes.Url }}*/}}
+            {{/*<a class="btn btn-outline-primary mb-3 mb-md-0 mr-md-3" href="{{ .daemon.Kubernetes.Url }}">Kubernetes</a>*/}}
+        {{/*{{ end }}*/}}
+        {{/*</ul>*/}}
+    </div>
+</nav>
+
+<main role="main">
+    <div class="container">
+        <p>
+        <form>
+            <div class="form-group">
+                <label for="chart">Chart</label>
+                <input type="file" class="form-control" id="chart" required>
+            </div>
+
+            <div class="form-group">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="changeRegistry">
+                    <label class="form-check-label" for="changeRegistry">
+                        Change registry as well
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="input-group">
+                    <input type="text" class="form-control" id="sourceRegistry" value="{{ .daemon.DefaultValue.SourceRegistry }}" disabled>
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id=""><i class="fas fa-angle-double-right"></i></span>
+                    </div>
+                    <input type="text" class="form-control" id="registry" value="{{ .daemon.DefaultValue.Registry }}" disabled>
+                </div>
+            </div>
+
+            <button id="generate" url="{{ .app.ContextPath }}/script/image-pull" type="submit" class="btn btn-outline-primary btn-block"
+                    onclick="$(this).parent().attr('action', $(this).attr('url'))">
+                Generate Script
+            </button>
+        </form>
+        </p>
+        <hr>
+        <div class="bg-dark console-output">
+            <div class="row flex-nowrap justify-content-between align-items-center">
+                <div class="col-4 pt-1">
+                    <i class="fa fa-terminal text-muted" aria-hidden="true"></i>
+                </div>
+                <div class="col-4 text-center"></div>
+                <div class="col-4 d-flex justify-content-end align-items-center">
+                    <button class="btn btn-link" data-clipboard-target="#output">
+                        <i class="fas fa-copy text-muted" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+            <p><pre id="output" class="text-light console-output-font"></pre></p>
+        </div>
+    </div>
+</main>
+
+<footer class="text-muted">
+    <div class="container">
+        <p class="float-right">
+            <a href="#" class="text-muted"><i class="fas fa-angle-double-up fa-2x"></i></a>
+        </p>
+        <p><a href="https://github.com/softleader" class="text-muted"><i class="fab fa-github"></i></a> <a href="https://www.facebook.com/softleader" class="text-muted"><i class="fab fa-facebook"></i></a></p>
+        <p>Copyright © 2018 <a href="https://www.softleader.com.tw" class="text-muted">SoftLeader Technology Crop</a>. All rights reserved.</p>
+    </div>
+</footer>
+
+<script src="{{ .app.ContextPath }}/jquery-3.3.1.min.js"></script>
+<script src="{{ .app.ContextPath }}/bootstrap-4.1.0-dist/js/bootstrap.bundle.min.js"></script>
+<script src="{{ .app.ContextPath }}/clipboard.min.js"></script>
+
+<script>
+
+    $(function () {
+        new ClipboardJS('.btn');
+
+        $("form").submit(function (event) {
+            event.preventDefault();
+
+            var $btns = $("button");
+            $btns.prop('disabled', true);
+
+            var $output = $("#output");
+            $output.empty();
+
+            var formData = new FormData();
+            formData.append('file', $('#chart')[0].files[0]);
+
+            $.ajax({
+                type: 'post',
+                url: event.target.action + "?sr=" + $("#sourceRegistry").val() + "&r=" + $("#registry").val() + "&c=" + $("#changeRegistry").is(":checked"),
+                data: formData,
+                dataType: 'json',
+                processData: false,
+                contentType: false,
+                xhrFields: {
+                    onprogress: function (e) {
+                        $output.text(e.currentTarget.response);
+                    }
+                }
+            }).always(function () {
+                $btns.prop('disabled', false);
+                var dl = /generated\s(.+)$/gm.exec($output.text())
+                if (dl) {
+                    var $a = $("<a></a>").addClass("btn btn-outline-info").append("Download");
+                    $a.attr("href", "{{ .app.ContextPath }}/script?file=" + dl[1]);
+                    $a.click(function () {
+                        $(this).remove();
+                    })
+                    $output.append($("<hr/>")).append($a).append($("<p/>"));
+                    return;
+                }
+            });
+        });
+
+        $(window).on('beforeunload', function () {
+            if ($('form button:submit').is(':disabled')) {
+                return "Are you sure you want to leave this page while drafting release?";
+            }
+            return;
+        });
+
+        $("#changeRegistry").click(function () {
+            $('#registry').prop('disabled', function (i, v) {
+                return !v;
+            });
+            $('#sourceRegistry').prop('disabled', function (i, v) {
+                return !v;
+            });
+        });
+    })
+</script>
+
+</body>
+</html>

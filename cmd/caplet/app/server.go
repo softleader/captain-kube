@@ -38,13 +38,13 @@ func NewCapletCommand() (cmd *cobra.Command) {
 		port:  defaultEnvCapletPort,
 		serve: defaultEnvCapletServe,
 	}
-	if value, found := os.LookupEnv(EnvCapletPort); found {
-		if p, err := strconv.Atoi(value); err != nil {
+	if v, found := os.LookupEnv(EnvCapletPort); found {
+		if p, err := strconv.Atoi(v); err != nil {
 			c.port = p
 		}
 	}
-	if value, found := os.LookupEnv(EnvCapletServe); found {
-		c.serve = value
+	if v, found := os.LookupEnv(EnvCapletServe); found {
+		c.serve = v
 	}
 
 	cmd = &cobra.Command{

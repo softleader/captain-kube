@@ -19,3 +19,5 @@ import:
   - reflection
 - package: github.com/spf13/cobra
   version: ^0.0.3
+- package: github.com/mholt/archiver
+  version: ^3.1.1

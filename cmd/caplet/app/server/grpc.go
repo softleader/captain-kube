@@ -49,13 +49,12 @@ func (_ Grpc) Serve(out io.Writer, port int) error {
 	}
 
 	s := grpc.NewServer()
+
 	image.RegisterPullerServer(s, &server{})
-	verbose.Fprintf(out, "registered puller service")
+	verbose.Fprintf(out, "registered %q\n", "puller service")
 
 	reflection.Register(s)
-	if err := s.Serve(lis); err != nil {
-		return fmt.Errorf("failed to serve: %v", err)
-	}
+
 	verbose.Fprintf(out, "listening on %v\n", lis.Addr().String())
-	return nil
+	return s.Serve(lis)
 }

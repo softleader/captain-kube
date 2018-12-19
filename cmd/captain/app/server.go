@@ -11,6 +11,8 @@ import (
 	"sync"
 )
 
+var ErrNonCapletDaemonFound = fmt.Errorf("non caplet daemon found")
+
 type captainCmd struct {
 	out       io.Writer
 	serve     string
@@ -40,14 +42,13 @@ func NewCaptainCommand() (cmd *cobra.Command) {
 }
 
 func (c *captainCmd) run() (err error) {
-
 	if len(c.endpoints) == 0 {
 		if c.endpoints, err = net.LookupHost(c.caplet); err != nil {
 			return err
 		}
 	}
 	if len(c.endpoints) == 0 {
-		return fmt.Errorf("non caplet daemon found")
+		return ErrNonCapletDaemonFound
 	}
 	ch := make(chan error, len(c.endpoints))
 	var wg sync.WaitGroup

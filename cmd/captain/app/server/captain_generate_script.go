@@ -10,6 +10,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 const template = "t"
@@ -28,28 +29,43 @@ func (s *CaptainServer) GenerateScript(c context.Context, req *proto.GenerateScr
 	if err := helm.Template(s.out, chartPath, tplPath); err != nil {
 		return
 	}
-	images, err := chart.CollectImages(tplPath, func(image chart.Image) bool {
-		return true
-	}, func(image chart.Image) chart.Image {
-		image.ReTag(req.GetRetag().GetFrom(), req.GetRetag().GetTo())
-		return image
-	})
+	images, err := chart.CollectImages(tplPath)
 	if err != nil {
 		return nil, err
 	}
 
 	var buf bytes.Buffer
 
+	if from, to := strings.TrimSpace(req.GetRetag().GetFrom()), strings.TrimSpace(req.GetRetag().GetTo()); from != "" && to != "" {
+		script, err := images.GenerateReTagScript(from, to)
+		if err != nil {
+			return nil, err
+		}
+		buf.Write(script.Bytes())
+	}
+
 	if req.Pull {
-		buf.Write([]byte(images.GeneratePullScript()))
+		script, err := images.GeneratePullScript()
+		if err != nil {
+			return nil, err
+		}
+		buf.Write(script.Bytes())
 	}
 
 	if req.Load {
-		buf.Write([]byte(images.GenerateLoadScript()))
+		script, err :=  images.GenerateLoadScript()
+		if err != nil {
+			return nil, err
+		}
+		buf.Write(script.Bytes())
 	}
 
 	if req.Save {
-		buf.Write([]byte(images.GenerateSaveScript()))
+		script, err := images.GenerateSaveScript()
+		if err != nil {
+			return nil, err
+		}
+		buf.Write(script.Bytes())
 	}
 
 	resp = &proto.GenerateScriptResponse{

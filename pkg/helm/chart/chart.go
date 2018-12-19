@@ -26,7 +26,7 @@ type Image struct {
 	Name string // e.g. captain-kube:latest
 }
 
-type Images map[string][]Image
+type Images map[string][]*Image
 
 func (i *Image) ReTag(from, to string) {
 	if from != "" && to != "" && i.Host == from {
@@ -34,10 +34,10 @@ func (i *Image) ReTag(from, to string) {
 	}
 }
 
-func CollectImages(chart string, filter func(Image) bool, comsumer func(Image) Image) (images Images, err error) {
-	images = make(map[string][]Image)
+func CollectImages(chart string) (images Images, err error) {
+	images = make(map[string][]*Image)
 	err = filepath.Walk(chart, func(path string, info os.FileInfo, err error) error {
-		i, err := image(path, info, filter, comsumer)
+		i, err := image(path, info)
 		if len(i) > 0 {
 			src := strings.Replace(path, chart+"/", "", -1)
 			images[src] = i
@@ -47,8 +47,8 @@ func CollectImages(chart string, filter func(Image) bool, comsumer func(Image) I
 	return
 }
 
-func image(path string, f os.FileInfo, filter func(Image) bool, comsumer func(Image) Image) ([]Image, error) {
-	var i []Image
+func image(path string, f os.FileInfo) ([]*Image, error) {
+	var i []*Image
 	if !f.IsDir() && filepath.Ext(path) == ".yaml" {
 		in, err := ioutil.ReadFile(path)
 		if err != nil {
@@ -61,9 +61,7 @@ func image(path string, f os.FileInfo, filter func(Image) bool, comsumer func(Im
 				Host: before(c.Image, "/"),
 				Name: after(c.Image, "/"),
 			}
-			if filter(image) {
-				i = append(i, comsumer(image))
-			}
+			i = append(i, &image)
 		}
 	}
 	return i, nil

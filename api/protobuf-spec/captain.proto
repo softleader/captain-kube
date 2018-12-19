@@ -9,6 +9,8 @@ message InstallChartRequest {
     Chart chart = 1;
     // timeout specifies the max amount of time any caplet can run.
     int64 timeout = 2;
+    // sync forces all node to pull image
+    bool sync = 3;
 }
 
 message InstallChartResponse {

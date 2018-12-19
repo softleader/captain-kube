@@ -66,11 +66,11 @@
             <div class="form-group">
                 <label for="registry">Registry</label>
                 <div class="input-group">
-                    <input type="text" class="form-control" name="sourceRegistry" id="sourceRegistry" value="{{ .config.DefaultValue.SourceRegistry }}" {{ if NotContains .config.DefaultValue.Tags "retag" }}disabled{{ end }}>
+                    <input type="text" class="form-control" name="sourceRegistry" id="sourceRegistry" value="{{ .config.DefaultValue.SourceRegistry }}" {{ if NotContains .config.DefaultValue.Tags "retag" }}disabled{{ end }} required>
                     <div class="input-group-prepend">
                         <span class="input-group-text" id=""><i class="fas fa-angle-double-right"></i></span>
                     </div>
-                    <input type="text" class="form-control" name="registry" id="registry" value="{{ .config.DefaultValue.Registry }}" {{ if NotContains .config.DefaultValue.Tags "retag" }}disabled{{ end }}>
+                    <input type="text" class="form-control" name="registry" id="registry" value="{{ .config.DefaultValue.Registry }}" {{ if NotContains .config.DefaultValue.Tags "retag" }}disabled{{ end }} required>
                 </div>
             </div>
 

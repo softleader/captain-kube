@@ -47,7 +47,7 @@ func NewCaptainCommand() (cmd *cobra.Command) {
 	f.IntVarP(&c.port, "port", "p", 8081, "specify the port of captain")
 	f.StringVar(&c.capletHostname, "caplet-hostname", "caplet", "specify the hostname of caplet daemon to lookup if '--caplet-endpoint' is not specified")
 	f.IntVar(&c.capletPort, "caplet-port", 50051, "specify the port of caplet daemon to connect")
-	f.StringArrayVar(&c.endpoints, "caplet-endpoint", []string{}, "specify the endpoint of caplet daemon to connect")
+	f.StringArrayVar(&c.endpoints, "caplet-endpoint", []string{"localhost"}, "specify the endpoint of caplet daemon to connect")
 
 	return
 }

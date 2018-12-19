@@ -49,5 +49,5 @@ func (_ Rest) Serve(out io.Writer, port int) error {
 		c.String(200, "image: [%s] pull complete", image)
 	})
 
-	r.Run() // listen and serve on 0.0.0.0:8080
+	return r.Run() // listen and serve on 0.0.0.0:8080
 }

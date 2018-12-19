@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/softleader/captain-kube/cmd/caplet/app/dockerctl"
 	"github.com/softleader/captain-kube/pkg/proto/image"
+	"github.com/softleader/captain-kube/pkg/verbose"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"io"
@@ -49,12 +50,12 @@ func (_ Grpc) Serve(out io.Writer, port int) error {
 
 	s := grpc.NewServer()
 	image.RegisterPullerServer(s, &server{})
-	fmt.Fprintf(out, "registered puller service")
+	verbose.Fprintf(out, "registered puller service")
 
 	reflection.Register(s)
 	if err := s.Serve(lis); err != nil {
 		return fmt.Errorf("failed to serve: %v", err)
 	}
-	fmt.Fprintf(out, "listening on %v\n", lis.Addr().String())
+	verbose.Fprintf(out, "listening on %v\n", lis.Addr().String())
 	return nil
 }

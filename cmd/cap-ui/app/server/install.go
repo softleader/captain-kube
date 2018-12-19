@@ -1,6 +1,6 @@
 package server
 
-type StagingRequest struct {
+type InstallRequest struct {
 	Platform       string   `form:"platform"`
 	Namespace      string   `form:"namespace"`
 	Tags           []string `form:"tags"`

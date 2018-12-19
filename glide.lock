@@ -1,5 +1,5 @@
-hash: 1c9b72cc8afbcc9a3995cd6350ea0ef37680068310a0ca3a4f7425358ee7faa0
-updated: 2018-12-19T17:46:11.556883+08:00
+hash: 7cd4c14d21530a1b8eb7fe5a74b9b322a84d45de212e22b90a958a05a795465b
+updated: 2018-12-19T18:09:47.1305348+08:00
 imports:
 - name: github.com/Azure/go-ansiterm
   version: d6e3b3328b783f23731bc4d058875b0371ff8109
@@ -83,7 +83,7 @@ imports:
 - name: github.com/mattn/go-isatty
   version: 3fb116b820352b7f0c281308a4d6250c22d94e27
 - name: github.com/mholt/archiver
-  version: d572b2e8b82726cee9476d1b9d63a7fe9b601ff1
+  version: 4e41ad6272dc64198f898f690ad5c4bc3a5189fa
 - name: github.com/Microsoft/go-winio
   version: 97e4973ce50b2ff5f09635a57e2b88a037aae829
 - name: github.com/modern-go/concurrent
@@ -107,7 +107,7 @@ imports:
 - name: github.com/spf13/cobra
   version: ef82de70bb3f60c65fb8eebacbb2d122ef517385
 - name: github.com/spf13/pflag
-  version: 3ebe029320b2676d667ae88da602a5f854788a8a
+  version: 916c5bf2d89aff6fd3e10e7811337218dfa81cb5
 - name: github.com/ugorji/go
   version: 772ced7fd4c2f6322c07537a9a93b68d74551fa6
   subpackages:
@@ -121,11 +121,11 @@ imports:
 - name: github.com/xi2/xz
   version: 48954b6210f8d154cb5f8484d3a3e1f83489309e
 - name: golang.org/x/crypto
-  version: de0752318171da717af4ce24d0a2e8626afaeb11
+  version: 505ab145d0a99da450461ae2c1a9f6cd10d1f447
   subpackages:
   - ssh/terminal
 - name: golang.org/x/net
-  version: c39426892332e1bb5ec0a434a079bf82f5d30c54
+  version: e147a9138326bc0e9d4e179541ffd8af41cff8a9
   subpackages:
   - context
   - context/ctxhttp
@@ -138,7 +138,7 @@ imports:
   - proxy
   - trace
 - name: golang.org/x/sys
-  version: 98c5dad5d1a0e8a73845ecc8897d0bd56586511d
+  version: 074acd46bca67915925527c07849494d115e7c43
   subpackages:
   - unix
   - windows
@@ -191,5 +191,5 @@ imports:
 - name: gopkg.in/go-playground/validator.v8
   version: 5f1438d3fca68893a817e4a66806cea46a9e4ebf
 - name: gopkg.in/yaml.v2
-  version: 5420a8b6744d3b0345ab293f6fcba19c978f1183
+  version: 51d6538a90f86fe93ac480b35f37b2be17fef232
 testImports: []

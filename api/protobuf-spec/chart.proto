@@ -5,4 +5,5 @@ package proto;
 message Chart {
     string fileName = 1;
     bytes content = 2;
+    int64 fileSize = 3;
 }

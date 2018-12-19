@@ -58,7 +58,7 @@
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" name="tags" value="r" id="tags-retag" {{ if Contains .config.DefaultValue.Tags "retag" }}checked{{ end }}>
                     <label class="form-check-label" for="tags-retag">
-                        Retag images & Sync to staging nodes
+                        Retag images & Sync to install nodes
                     </label>
                 </div>
             </div>
@@ -94,7 +94,7 @@
                 </div>
             </div>
 
-            <button id="staging" url="/staging" type="submit" class="btn btn-outline-primary btn-block"
+            <button id="install" url="/install" type="submit" class="btn btn-outline-primary btn-block"
                     onclick="$(this).parent().attr('action', $(this).attr('url'))">
                 Fire in the hole
             </button>
@@ -194,7 +194,7 @@
 
         $(window).on('beforeunload', function () {
             if ($('form button:submit').is(':disabled')) {
-                return "Are you sure you want to leave this page while staging?";
+                return "Are you sure you want to leave this page while install?";
             }
             return;
         });

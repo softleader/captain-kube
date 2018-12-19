@@ -1,9 +1,13 @@
 package server
 
 import (
+	"bytes"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/softleader/captain-kube/pkg/captain"
+	"github.com/softleader/captain-kube/pkg/proto"
 	"html/template"
+	"io"
 	"net/http"
 )
 
@@ -26,26 +30,46 @@ func Ui(cfg *config) (err error) {
 		})
 	})
 
-	r.GET("/staging", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "staging.html", gin.H{
+	r.GET("/install", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "install.html", gin.H{
 			"config": &cfg,
 		})
 	})
-	r.POST("/staging", func(c *gin.Context) {
-		fmt.Fprintln(c.Writer, "call: POST /staging")
+	r.POST("/install", func(c *gin.Context) {
+		fmt.Fprintln(c.Writer, "call: POST /install")
 
-		var request StagingRequest
+		var request InstallRequest
 		if err := c.Bind(&request); err != nil {
 			fmt.Fprintln(c.Writer, "binding form data error:", err)
+			return
 		} else {
 			fmt.Fprintln(c.Writer, "form:", request)
 		}
 
 		if file, header, err := c.Request.FormFile("file"); err != nil {
 			fmt.Fprintln(c.Writer, "loading form file error:", err)
+			return
 		} else {
 			fmt.Fprintln(c.Writer, "file.header:", header)
 			fmt.Fprintln(c.Writer, "file:", file)
+
+			buf := bytes.NewBuffer(nil)
+			if readed, err := io.Copy(buf, file); err != nil {
+				fmt.Fprintln(c.Writer, "reading file failed:", err)
+			} else {
+				fmt.Fprintln(c.Writer, "readed ", readed, " bytes")
+			}
+
+			request := proto.InstallChartRequest{
+				Chart: &proto.Chart{
+					FileName: header.Filename,
+					Content:  buf.Bytes(),
+					FileSize: header.Size,
+				},
+			}
+			if err := captain.InstallChart(c.Writer, cfg.DefaultValue.CaptainUrl, &request, 300); err != nil {
+				fmt.Fprintln(c.Writer, "call captain InstallChart failed:", err)
+			}
 		}
 	})
 
@@ -60,15 +84,36 @@ func Ui(cfg *config) (err error) {
 		var request ScriptRequest
 		if err := c.Bind(&request); err != nil {
 			fmt.Fprintln(c.Writer, "binding form data error:", err)
+			return
 		} else {
 			fmt.Fprintln(c.Writer, "form:", request)
 		}
 
 		if file, header, err := c.Request.FormFile("file"); err != nil {
 			fmt.Fprintln(c.Writer, "loading form file error:", err)
+			return
 		} else {
 			fmt.Fprintln(c.Writer, "file.header:", header)
 			fmt.Fprintln(c.Writer, "file:", file)
+
+			buf := bytes.NewBuffer(nil)
+			if readed, err := io.Copy(buf, file); err != nil {
+				fmt.Fprintln(c.Writer, "reading file failed:", err)
+			} else {
+				fmt.Fprintln(c.Writer, "readed ", readed, " bytes")
+			}
+
+			request := proto.GenerateScriptRequest{
+				Chart: &proto.Chart{
+					FileName: header.Filename,
+					Content:  buf.Bytes(),
+					FileSize: header.Size,
+				},
+			}
+
+			if err := captain.GenerateScript(c.Writer, cfg.DefaultValue.CaptainUrl, &request, 300); err != nil {
+				fmt.Fprintln(c.Writer, "call captain InstallChart failed:", err)
+			}
 		}
 
 	})

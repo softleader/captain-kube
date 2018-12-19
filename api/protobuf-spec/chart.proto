@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+package proto;
+
+message Chart {
+    string fileName = 1;
+    bytes content = 2;
+}

@@ -26,5 +26,7 @@ func (s *CaptainServer) InstallChart(c context.Context, req *proto.InstallChartR
 		Images: images,
 	}, req.GetTimeout())
 
-	return nil, nil
+	return &proto.InstallChartResponse{
+		Out: "looks good!!?",
+	}, nil
 }

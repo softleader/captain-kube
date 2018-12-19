@@ -3,23 +3,25 @@ syntax = "proto3";
 package proto;
 
 import "retag.proto";
+import "chart.proto";
 
 message InstallChartRequest {
-    string fileName = 1;
-    bytes content = 2;
+    Chart chart = 1;
     // timeout specifies the max amount of time any caplet can run.
-    int64 timeout = 3;
+    int64 timeout = 2;
 }
 
 message InstallChartResponse {
-    string message = 1;
+    string out = 1;
 }
 
 message GenerateScriptRequest {
-    bool pull = 1;
-    Retag retag = 2;
-    bool save = 3;
-    bool load = 4;
+    Chart chart = 1;
+    int64 timeout = 2;
+    bool pull = 3;
+    ReTag retag = 4;
+    bool save = 5;
+    bool load = 6;
 }
 
 message GenerateScriptResponse {

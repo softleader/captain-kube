@@ -20,7 +20,7 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
-type Retag struct {
+type ReTag struct {
 	From                 string   `protobuf:"bytes,2,opt,name=from,proto3" json:"from,omitempty"`
 	To                   string   `protobuf:"bytes,3,opt,name=to,proto3" json:"to,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -28,39 +28,39 @@ type Retag struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Retag) Reset()         { *m = Retag{} }
-func (m *Retag) String() string { return proto.CompactTextString(m) }
-func (*Retag) ProtoMessage()    {}
-func (*Retag) Descriptor() ([]byte, []int) {
+func (m *ReTag) Reset()         { *m = ReTag{} }
+func (m *ReTag) String() string { return proto.CompactTextString(m) }
+func (*ReTag) ProtoMessage()    {}
+func (*ReTag) Descriptor() ([]byte, []int) {
 	return fileDescriptor_bcd84e9f4113ddcc, []int{0}
 }
 
-func (m *Retag) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Retag.Unmarshal(m, b)
+func (m *ReTag) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ReTag.Unmarshal(m, b)
 }
-func (m *Retag) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Retag.Marshal(b, m, deterministic)
+func (m *ReTag) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ReTag.Marshal(b, m, deterministic)
 }
-func (m *Retag) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Retag.Merge(m, src)
+func (m *ReTag) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ReTag.Merge(m, src)
 }
-func (m *Retag) XXX_Size() int {
-	return xxx_messageInfo_Retag.Size(m)
+func (m *ReTag) XXX_Size() int {
+	return xxx_messageInfo_ReTag.Size(m)
 }
-func (m *Retag) XXX_DiscardUnknown() {
-	xxx_messageInfo_Retag.DiscardUnknown(m)
+func (m *ReTag) XXX_DiscardUnknown() {
+	xxx_messageInfo_ReTag.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_Retag proto.InternalMessageInfo
+var xxx_messageInfo_ReTag proto.InternalMessageInfo
 
-func (m *Retag) GetFrom() string {
+func (m *ReTag) GetFrom() string {
 	if m != nil {
 		return m.From
 	}
 	return ""
 }
 
-func (m *Retag) GetTo() string {
+func (m *ReTag) GetTo() string {
 	if m != nil {
 		return m.To
 	}
@@ -68,17 +68,17 @@ func (m *Retag) GetTo() string {
 }
 
 func init() {
-	proto.RegisterType((*Retag)(nil), "proto.Retag")
+	proto.RegisterType((*ReTag)(nil), "proto.ReTag")
 }
 
 func init() { proto.RegisterFile("retag.proto", fileDescriptor_bcd84e9f4113ddcc) }
 
 var fileDescriptor_bcd84e9f4113ddcc = []byte{
-	// 82 bytes of a gzipped FileDescriptorProto
+	// 84 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x2e, 0x4a, 0x2d, 0x49,
 	0x4c, 0xd7, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x62, 0x05, 0x53, 0x4a, 0xda, 0x5c, 0xac, 0x41,
-	0x20, 0x51, 0x21, 0x21, 0x2e, 0x96, 0xb4, 0xa2, 0xfc, 0x5c, 0x09, 0x26, 0x05, 0x46, 0x0d, 0xce,
-	0x20, 0x30, 0x5b, 0x88, 0x8f, 0x8b, 0xa9, 0x24, 0x5f, 0x82, 0x19, 0x2c, 0xc2, 0x54, 0x92, 0x9f,
-	0xc4, 0x06, 0xd6, 0x63, 0x0c, 0x08, 0x00, 0x00, 0xff, 0xff, 0x8d, 0x2a, 0x73, 0x5f, 0x49, 0x00,
-	0x00, 0x00,
+	0xa9, 0x21, 0x89, 0xe9, 0x42, 0x42, 0x5c, 0x2c, 0x69, 0x45, 0xf9, 0xb9, 0x12, 0x4c, 0x0a, 0x8c,
+	0x1a, 0x9c, 0x41, 0x60, 0xb6, 0x10, 0x1f, 0x17, 0x53, 0x49, 0xbe, 0x04, 0x33, 0x58, 0x84, 0xa9,
+	0x24, 0x3f, 0x89, 0x0d, 0xac, 0xc7, 0x18, 0x10, 0x00, 0x00, 0xff, 0xff, 0xa7, 0x78, 0x38, 0x1d,
+	0x49, 0x00, 0x00, 0x00,
 }

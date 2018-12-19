@@ -16,22 +16,16 @@
             <li class="nav-item">
                 <a class="nav-link" href="/staging">Staging</a>
             </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Script</a>
-                <div class="dropdown-menu">
-                    <a class="dropdown-item" href="/script/image-pull">Image Pull</a>
-                    <a class="dropdown-item" href="/script/image-retag">Image Retag</a>
-                    <a class="dropdown-item" href="/script/image-save">Image Save</a>
-                    <a class="dropdown-item" href="/script/image-load">Image Load</a>
-                </div>
+            <li class="nav-item">
+                <a class="nav-link" href="/script">Script</a>
             </li>
         </ul>
         <form class="form-inline my-2 my-lg-0">
             <div class="input-group mr-sm-2">
                 <div class="input-group-prepend">
-                    <div class="input-group-text">@</div>
+                    <div class="input-group-text">Kubernetes@</div>
                 </div>
-                <input class="form-control form-control-sm" type="text" readonly="readonly" value="{{ .config.DefaultValue.CaptainUrl }}">
+                <input class="form-control" type="text" readonly="readonly" value="{{ .config.DefaultValue.CaptainUrl }}">
             </div>
         </form>
     </div>

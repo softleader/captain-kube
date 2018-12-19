@@ -9,7 +9,7 @@
 <main role="main">
     <div class="container">
         <p>
-        <form>
+        <form id="dataForm">
             <div class="form-group">
                 <label for="platform">Platform</label>
                 <div class="form-check">
@@ -34,12 +34,12 @@
 
             <div class="form-group">
                 <label for="namespace">Namespace</label>
-                <input type="text" class="form-control" id="namespace" value="{{ .config.DefaultValue.Namespace }}" {{ if NotContains .config.DefaultValue.Tags "helm" }}disabled{{ end }}>
+                <input type="text" class="form-control" name="namespace" id="namespace" value="{{ .config.DefaultValue.Namespace }}" {{ if NotContains .config.DefaultValue.Tags "helm" }}disabled{{ end }}>
             </div>
 
             <div class="form-group">
                 <label for="chart">Chart</label>
-                <input type="file" class="form-control" id="chart" required>
+                <input type="file" class="form-control" name="file" required>
             </div>
 
             {{/*<div class="form-group">*/}}
@@ -50,13 +50,13 @@
             <div class="form-group">
                 <label for="tags">Pre-Procedures</label>
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="pull" id="tags-pull" {{ if Contains .config.DefaultValue.Tags "pull" }}checked{{ end }}>
+                    <input class="form-check-input" type="checkbox" name="tags" value="p" id="tags-pull" {{ if Contains .config.DefaultValue.Tags "pull" }}checked{{ end }}>
                     <label class="form-check-label" for="tags-pull">
                         Pull images in Chart
                     </label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="retag" id="tags-retag" {{ if Contains .config.DefaultValue.Tags "retag" }}checked{{ end }}>
+                    <input class="form-check-input" type="checkbox" name="tags" value="r" id="tags-retag" {{ if Contains .config.DefaultValue.Tags "retag" }}checked{{ end }}>
                     <label class="form-check-label" for="tags-retag">
                         Retag images & Sync to staging nodes
                     </label>
@@ -66,18 +66,18 @@
             <div class="form-group">
                 <label for="registry">Registry</label>
                 <div class="input-group">
-                    <input type="text" class="form-control" id="sourceRegistry" value="{{ .config.DefaultValue.SourceRegistry }}" {{ if NotContains .config.DefaultValue.Tags "retag" }}disabled{{ end }}>
+                    <input type="text" class="form-control" name="sourceRegistry" id="sourceRegistry" value="{{ .config.DefaultValue.SourceRegistry }}" {{ if NotContains .config.DefaultValue.Tags "retag" }}disabled{{ end }}>
                     <div class="input-group-prepend">
                         <span class="input-group-text" id=""><i class="fas fa-angle-double-right"></i></span>
                     </div>
-                    <input type="text" class="form-control" id="registry" value="{{ .config.DefaultValue.Registry }}" {{ if NotContains .config.DefaultValue.Tags "retag" }}disabled{{ end }}>
+                    <input type="text" class="form-control" name="registry" id="registry" value="{{ .config.DefaultValue.Registry }}" {{ if NotContains .config.DefaultValue.Tags "retag" }}disabled{{ end }}>
                 </div>
             </div>
 
 
             <div class="form-group">
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="verbose" {{ if .config.DefaultValue.Verbose }}checked{{ end }}>
+                    <input class="form-check-input" type="checkbox" name="verbose" id="verbose" {{ if .config.DefaultValue.Verbose }}checked{{ end }}>
                     <label class="form-check-label" for="verbose">
                         Verbose mode
                     </label>
@@ -170,8 +170,7 @@
             $("input:checkbox[id^='tags-']:checked").each((i, e) => data.tags.push(e.value));
             data.tags.push($('input[name=platform]:checked').val());
 
-            var formData = new FormData();
-            formData.append('file', $('#chart')[0].files[0]);
+            var formData = new FormData($('#dataForm')[0]);
 
             $.ajax({
                 type: 'post',

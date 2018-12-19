@@ -1,4 +1,4 @@
-package app
+package server
 
 import (
 	"gopkg.in/yaml.v2"

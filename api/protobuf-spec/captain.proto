@@ -17,10 +17,10 @@ message InstallChartResponse {
 
 message GenerateScriptRequest {
     Chart chart = 1;
-    bool pull = 3;
-    ReTag retag = 4;
-    bool save = 5;
-    bool load = 6;
+    bool pull = 2;
+    ReTag retag = 3;
+    bool save = 4;
+    bool load = 5;
 }
 
 message GenerateScriptResponse {

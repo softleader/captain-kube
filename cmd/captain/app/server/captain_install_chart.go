@@ -25,7 +25,7 @@ func (s *CaptainServer) InstallChart(c context.Context, req *proto.InstallChartR
 			return
 		}
 		tplPath := filepath.Join(chartPath, template)
-		if err := helm.Template(s.out, chartPath, tplPath); err != nil {
+		if err = helm.Template(s.out, chartPath, tplPath); err != nil {
 			return
 		}
 		images, err := chart.CollectImages(tplPath)

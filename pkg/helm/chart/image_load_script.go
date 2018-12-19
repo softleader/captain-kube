@@ -7,7 +7,6 @@ import (
 )
 
 const loadScript = `
-{{ $registry := index . "registry" }}
 {{- range $source, $images := index . "images" }}
 ##---
 # Source: {{ $source }}

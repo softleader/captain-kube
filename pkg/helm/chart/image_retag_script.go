@@ -6,7 +6,7 @@ import (
 )
 
 const retagScript = `
-{{ $registry := index . "registry" }}
+{{ $from := index . "from" }}
 {{- range $source, $images := index . "images" }}
 ##---
 # Source: {{ $source }}

@@ -33,8 +33,8 @@ var servers = map[string]Caplet{
 	"rest": server.Rest{},
 }
 
-func NewCapletCommand() (cmd *cobra.Command) {
-	c := capletCmd{
+func newCapletCmd() (c *capletCmd) {
+	c = &capletCmd{
 		port:  defaultEnvCapletPort,
 		serve: defaultEnvCapletServe,
 	}
@@ -46,7 +46,11 @@ func NewCapletCommand() (cmd *cobra.Command) {
 	if v, found := os.LookupEnv(EnvCapletServe); found {
 		c.serve = v
 	}
+	return
+}
 
+func NewCapletCommand() (cmd *cobra.Command) {
+	c := newCapletCmd()
 	cmd = &cobra.Command{
 		Use:  "caplet",
 		Long: "caplet is a daemon run on nodes",

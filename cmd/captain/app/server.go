@@ -8,6 +8,7 @@ import (
 	"io"
 	"net"
 	"strings"
+	"sync"
 )
 
 type captainCmd struct {
@@ -48,13 +49,22 @@ func (c *captainCmd) run() (err error) {
 	if len(c.endpoints) == 0 {
 		return fmt.Errorf("non caplet daemon found")
 	}
-	var errors []string
+	ch := make(chan error, len(c.endpoints))
+	var wg sync.WaitGroup
 	for _, ep := range c.endpoints {
-		if err = client.PullImage(c.out, ep, c.port); err != nil {
-			errors = append(errors, err.Error())
-		}
+		wg.Add(1)
+		go func(out io.Writer, endpoint string, port int) {
+			defer wg.Done()
+			ch <- client.PullImage(out, endpoint, port)
+		}(c.out, ep, c.port)
 	}
-	if len(errors) > 0 {
+	wg.Wait()
+	close(ch)
+	if len(ch) > 0 {
+		var errors []string
+		for e := range ch {
+			errors = append(errors, e.Error())
+		}
 		return fmt.Errorf(strings.Join(errors, "\n"))
 	}
 	return nil

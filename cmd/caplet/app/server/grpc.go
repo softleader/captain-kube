@@ -55,6 +55,6 @@ func (_ Grpc) Serve(out io.Writer, port int) error {
 
 	reflection.Register(s)
 
-	verbose.Fprintf(out, "listening on %v\n", lis.Addr().String())
+	verbose.Fprintf(out, "listening and serving GRPC on %v\n", lis.Addr().String())
 	return s.Serve(lis)
 }

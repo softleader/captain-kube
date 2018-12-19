@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"github.com/docker/docker/pkg/jsonmessage"
 	"github.com/docker/docker/pkg/term"
 	"github.com/gin-gonic/gin"
@@ -49,5 +50,5 @@ func (_ Rest) Serve(out io.Writer, port int) error {
 		c.String(200, "image: [%s] pull complete", image)
 	})
 
-	return r.Run() // listen and serve on 0.0.0.0:8080
+	return r.Run(fmt.Sprintf(":%v", port))
 }

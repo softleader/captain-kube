@@ -1,5 +1,5 @@
 hash: 1e8fc2475a15315063d1acc7907f033e8baa1e96d43fef2b2ce609736ca90edc
-updated: 2018-12-19T10:04:30.096122+08:00
+updated: 2018-12-19T10:50:37.177976+08:00
 imports:
 - name: github.com/Azure/go-ansiterm
   version: d6e3b3328b783f23731bc4d058875b0371ff8109
@@ -95,11 +95,11 @@ imports:
   subpackages:
   - codec
 - name: golang.org/x/crypto
-  version: 505ab145d0a99da450461ae2c1a9f6cd10d1f447
+  version: de0752318171da717af4ce24d0a2e8626afaeb11
   subpackages:
   - ssh/terminal
 - name: golang.org/x/net
-  version: e147a9138326bc0e9d4e179541ffd8af41cff8a9
+  version: c39426892332e1bb5ec0a434a079bf82f5d30c54
   subpackages:
   - context
   - context/ctxhttp
@@ -112,7 +112,7 @@ imports:
   - proxy
   - trace
 - name: golang.org/x/sys
-  version: dcdaa6325bcb8d3c07805583fe12153f08a41e2b
+  version: 98c5dad5d1a0e8a73845ecc8897d0bd56586511d
   subpackages:
   - unix
   - windows
@@ -165,5 +165,5 @@ imports:
 - name: gopkg.in/go-playground/validator.v8
   version: 5f1438d3fca68893a817e4a66806cea46a9e4ebf
 - name: gopkg.in/yaml.v2
-  version: 51d6538a90f86fe93ac480b35f37b2be17fef232
+  version: 5420a8b6744d3b0345ab293f6fcba19c978f1183
 testImports: []

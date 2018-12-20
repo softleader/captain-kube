@@ -1,6 +1,5 @@
 defaultValue:
   captainUrl: localhost:8081
-  uiPort: 8080
   inventory: hosts
   tags:
   - icp

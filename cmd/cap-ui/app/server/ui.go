@@ -11,7 +11,7 @@ import (
 	"net/http"
 )
 
-func Ui(cfg *config) (err error) {
+func Ui(cfg *config, port int) (err error) {
 	r := gin.Default()
 
 	r.SetFuncMap(template.FuncMap{
@@ -125,7 +125,7 @@ func Ui(cfg *config) (err error) {
 
 	})
 
-	r.Run(fmt.Sprintf(":%v", cfg.DefaultValue.UiPort))
+	r.Run(fmt.Sprintf(":%v", port))
 
 	return
 }

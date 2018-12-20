@@ -10,6 +10,7 @@ import (
 type capuiCmd struct {
 	out        io.Writer
 	configPath string
+	port       int
 }
 
 func NewCapuiCommand() (cmd *cobra.Command) {
@@ -26,6 +27,7 @@ func NewCapuiCommand() (cmd *cobra.Command) {
 	f := cmd.Flags()
 	f.BoolVarP(&verbose.Enabled, "verbose", "v", verbose.Enabled, "enable verbose output")
 	f.StringVarP(&c.configPath, "config", "c", "configs/default_capui_config.yaml", "path of config file (yaml)")
+	f.IntVarP(&c.port, "port", "p", 8080, "port of web ui serve port")
 
 	return
 }
@@ -35,6 +37,6 @@ func (cmd *capuiCmd) run() error {
 	if err != nil {
 		return err
 	} else {
-		return server.Ui(c)
+		return server.Ui(c, cmd.port)
 	}
 }

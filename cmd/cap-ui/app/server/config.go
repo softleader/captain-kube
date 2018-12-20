@@ -9,7 +9,6 @@ import (
 type config struct {
 	DefaultValue struct {
 		CaptainUrl     string   `yaml:"captainUrl"`
-		UiPort         int      `yaml:"uiPort"`
 		Inventory      string   `yaml:"inventory"`
 		Tags           []string `yaml:"tags"`
 		Namespace      string   `yaml:"namespace"`

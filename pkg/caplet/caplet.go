@@ -25,12 +25,8 @@ type Endpoint struct {
 	Port   int
 }
 
-func (e *Endpoint) connect() (*grpc.ClientConn, error) {
-	return grpc.Dial(fmt.Sprintf("%s:%v", e.Target, e.Port), grpc.WithInsecure())
-}
-
 func (e *Endpoint) PullImage(out io.Writer, req *proto.PullImageRequest, timeout int64) error {
-	conn, err := e.connect()
+	conn, err := grpc.Dial(fmt.Sprintf("%s:%v", e.Target, e.Port), grpc.WithInsecure())
 	if err != nil {
 		return fmt.Errorf("did not connect: %v", err)
 	}

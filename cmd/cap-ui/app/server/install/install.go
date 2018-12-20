@@ -105,7 +105,7 @@ func pullAndSync(out io.Writer, form Request, request *proto.InstallChartRequest
 		for _, tpl := range tpls {
 			for _, image := range tpl {
 				fmt.Fprintln(out, "pulling ", image)
-				result, err := dockerctl.Pull(*image)
+				result, err := dockerctl.Pull(*image, nil) // TODO: get RegistryAuth from config
 				if err != nil {
 					fmt.Fprintln(out, "pull image failed: ", image, ", error: ", err)
 				}
@@ -121,11 +121,11 @@ func pullAndSync(out io.Writer, form Request, request *proto.InstallChartRequest
 				for _, image := range tpl {
 					if image.Host == form.SourceRegistry {
 						fmt.Fprintln(out, "syncing ", image)
-						result, err := dockerctl.Retage(*image, chart.Image{
+						result, err := dockerctl.ReTag(*image, chart.Image{
 							Host: form.Registry,
 							Repo: image.Repo,
 							Tag:  image.Tag,
-						})
+						}, nil) // TODO: get RegistryAuth from config
 						if err != nil {
 							fmt.Fprintln(out, "sync image failed: ", image, ", error: ", err)
 						}

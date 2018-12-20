@@ -47,7 +47,7 @@ func pull(sw *streamWriter, image *proto.Image) error {
 		Host: image.Host,
 		Repo: image.Repo,
 		Tag:  image.Tag,
-	})
+	}, image.GetRegistryAuth())
 	if err != nil {
 		return err
 	}

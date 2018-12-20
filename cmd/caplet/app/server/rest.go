@@ -38,7 +38,7 @@ func (_ Rest) Serve(out io.Writer, port int) error {
 			Host: host,
 			Repo: repo,
 			Tag:  tag,
-		})
+		}, nil)
 		if err != nil {
 			c.AbortWithError(500, err)
 			return

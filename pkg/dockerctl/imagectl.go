@@ -2,14 +2,17 @@ package dockerctl
 
 import (
 	"context"
+	"encoding/base64"
+	"encoding/json"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
 	"github.com/softleader/captain-kube/pkg/helm/chart"
+	"github.com/softleader/captain-kube/pkg/proto"
 	"io"
 	"log"
 )
 
-func Pull(image chart.Image) (io.ReadCloser, error) {
+func Pull(image chart.Image, registryAuth *proto.RegistryAuth) (io.ReadCloser, error) {
 	ctx := context.Background()
 
 	// Use DOCKER_HOST to set the url to the docker server.
@@ -23,7 +26,13 @@ func Pull(image chart.Image) (io.ReadCloser, error) {
 	}
 
 	log.Println("pulling image: ", image)
-	out, err := cli.ImagePull(ctx, image.String(), types.ImagePullOptions{})
+	opt := types.ImagePullOptions{}
+	if registryAuth != nil {
+		if opt.RegistryAuth, err = encode(registryAuth); err != nil {
+			return nil, err
+		}
+	}
+	out, err := cli.ImagePull(ctx, image.String(), opt)
 	if err != nil {
 		log.Println("pull image failed: ", image)
 		return nil, err
@@ -32,7 +41,7 @@ func Pull(image chart.Image) (io.ReadCloser, error) {
 	return out, nil
 }
 
-func Retage(source chart.Image, target chart.Image) (io.ReadCloser, error) {
+func ReTag(source chart.Image, target chart.Image, registryAuth *proto.RegistryAuth) (io.ReadCloser, error) {
 	ctx := context.Background()
 
 	// Use DOCKER_HOST to set the url to the docker server.
@@ -52,11 +61,25 @@ func Retage(source chart.Image, target chart.Image) (io.ReadCloser, error) {
 	}
 
 	log.Println("pushing image: ", target)
-	out, err := cli.ImagePush(ctx, target.String(), types.ImagePushOptions{})
+	opt := types.ImagePushOptions{}
+	if registryAuth != nil {
+		if opt.RegistryAuth, err = encode(registryAuth); err != nil {
+			return nil, err
+		}
+	}
+	out, err := cli.ImagePush(ctx, target.String(), opt)
 	if err := cli.ImageTag(ctx, source.String(), target.String()); err != nil {
 		log.Println("push image failed: ", target)
 		return nil, err
 	}
 
 	return out, nil
+}
+
+func encode(auth *proto.RegistryAuth) (string, error) {
+	b, err := json.Marshal(auth)
+	if err != nil {
+		return "", nil
+	}
+	return base64.URLEncoding.EncodeToString(b), nil
 }

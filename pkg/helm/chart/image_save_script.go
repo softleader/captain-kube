@@ -7,9 +7,9 @@ import (
 
 const saveScript = `
 {{ $from := index . "from" }}
-{{- range $source, $images := index . "images" }}
+{{- range $path, $images := index . "tpls" }}
 ##---
-# Source: {{ $source }}
+# Source: {{ $path }}
 {{- range $key, $image := $images }}
 docker tag {{ $from }}/{{ $image.Name }} {{ $image.Host }}/{{ $image.Name }}
 {{- end }}
@@ -20,7 +20,7 @@ var saveTemplate = template.Must(template.New("").Parse(saveScript))
 
 func (i *Templates) GenerateSaveScript() (buf bytes.Buffer, err error) {
 	data := make(map[string]interface{})
-	data["images"] = i
+	data["tpls"] = i
 	err = saveTemplate.Execute(&buf, data)
 	return
 }

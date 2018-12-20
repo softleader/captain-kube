@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-const template = "t"
+const templateDir = "t"
 
 type Templates map[string][]*Image
 
@@ -25,7 +25,7 @@ func LoadArchive(out io.Writer, archivePath string) (tpls Templates, err error) 
 	if err = arc.Extract(out, archivePath, extractPath); err != nil {
 		return
 	}
-	tplPath := filepath.Join(archivePath, template)
+	tplPath := filepath.Join(archivePath, templateDir)
 	if err = helm.Template(out, extractPath, tplPath); err != nil {
 		return
 	}

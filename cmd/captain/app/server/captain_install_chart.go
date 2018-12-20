@@ -27,8 +27,8 @@ func (s *CaptainServer) InstallChart(c context.Context, req *proto.InstallChartR
 
 func newPullImageRequest(tpls chart.Templates) (req *proto.PullImageRequest) {
 	req = &proto.PullImageRequest{}
-	for _, imgs := range tpls {
-		for _, img := range imgs {
+	for _, tpl := range tpls {
+		for _, img := range tpl {
 			req.Images = append(req.Images, &proto.Image{
 				Host: img.Host,
 				Repo: img.Repo,

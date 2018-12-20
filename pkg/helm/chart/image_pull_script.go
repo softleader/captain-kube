@@ -6,9 +6,9 @@ import (
 )
 
 const pullScript = `
-{{ range $source, $images := index . "images" }}
+{{ range $path, $images := index . "tpls" }}
 ##---
-# Source: {{ $source }}
+# Source: {{ $path }}
 {{- range $key, $image := $images }}
 docker pull {{ $image.Host }}/{{ $image.Name }}
 {{- end }}
@@ -19,7 +19,7 @@ var pullTemplate = template.Must(template.New("").Parse(pullScript))
 
 func (i *Templates) GeneratePullScript() (buf bytes.Buffer, err error) {
 	data := make(map[string]interface{})
-	data["images"] = i
+	data["tpls"] = i
 	err = pullTemplate.Execute(&buf, data)
 	return
 }

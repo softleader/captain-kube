@@ -7,9 +7,9 @@ import (
 
 const retagScript = `
 {{ $from := index . "from" }}
-{{- range $source, $images := index . "images" }}
+{{- range $path, $images := index . "tpls" }}
 ##---
-# Source: {{ $source }}
+# Source: {{ $path }}
 {{- range $key, $image := $images }}
 docker tag {{ $from }}/{{ $image.Name }} {{ $image.Host }}/{{ $image.Name }}
 {{- end }}
@@ -30,7 +30,7 @@ func (i *Templates) GenerateReTagScript(from, to string) (buf bytes.Buffer, err 
 	}
 	data := make(map[string]interface{})
 	data["from"] = from
-	data["images"] = retags
+	data["tpls"] = retags
 	err = retagTemplate.Execute(&buf, data)
 	return
 }

@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"github.com/softleader/captain-kube/cmd/caplet/app/dockerctl"
+	"github.com/softleader/captain-kube/pkg/dockerctl"
 	"github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/verbose"
 	"google.golang.org/grpc"

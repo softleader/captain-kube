@@ -2,6 +2,7 @@ package app
 
 import (
 	"github.com/softleader/captain-kube/cmd/cap-ui/app/server"
+	"github.com/softleader/captain-kube/cmd/cap-ui/app/server/comm"
 	"github.com/softleader/captain-kube/pkg/verbose"
 	"github.com/spf13/cobra"
 	"io"
@@ -33,7 +34,7 @@ func NewCapuiCommand() (cmd *cobra.Command) {
 }
 
 func (cmd *capuiCmd) run() error {
-	c, err := server.GetConfig(cmd.configPath)
+	c, err := comm.GetConfig(cmd.configPath)
 	if err != nil {
 		return err
 	} else {

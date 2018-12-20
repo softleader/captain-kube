@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/softleader/captain-kube/pkg/dur"
 	"github.com/softleader/captain-kube/pkg/proto"
-	"github.com/softleader/captain-kube/pkg/verbose"
 	"google.golang.org/grpc"
 	"io"
 )
@@ -29,9 +28,7 @@ func InstallChart(out io.Writer, url string, req *proto.InstallChartRequest, tim
 	if err != nil {
 		return fmt.Errorf("could not install chart: %v", err)
 	}
-	if verbose.Enabled {
-		fmt.Fprintf(out, "chart installed %v", r.GetOut())
-	}
+	fmt.Fprintf(out, "chart installed %v", r.GetOut())
 	return nil
 
 }
@@ -50,9 +47,7 @@ func GenerateScript(out io.Writer, url string, req *proto.GenerateScriptRequest,
 	if err != nil {
 		return fmt.Errorf("could not generate script: %v", err)
 	}
-	if verbose.Enabled {
-		fmt.Fprintf(out, "script generated %v", r.GetOut())
-	}
+	fmt.Fprintf(out, "script generated %v", r.GetOut())
 	return nil
 
 }

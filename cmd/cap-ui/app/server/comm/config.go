@@ -1,4 +1,4 @@
-package server
+package comm
 
 import (
 	"gopkg.in/yaml.v2"
@@ -6,7 +6,7 @@ import (
 	"log"
 )
 
-type config struct {
+type Config struct {
 	DefaultValue struct {
 		CaptainUrl     string   `yaml:"captainUrl"`
 		Inventory      string   `yaml:"inventory"`
@@ -19,7 +19,7 @@ type config struct {
 	} `yaml:"defaultValue"`
 }
 
-func GetConfig(configYamlPath string) (c *config, err error) {
+func GetConfig(configYamlPath string) (c *Config, err error) {
 	raw, err := ioutil.ReadFile(configYamlPath)
 	if err != nil {
 		log.Fatalln("load config '", configYamlPath, "' failed, abort to up serve, error: ", err)

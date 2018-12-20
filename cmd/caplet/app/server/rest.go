@@ -5,7 +5,7 @@ import (
 	"github.com/docker/docker/pkg/jsonmessage"
 	"github.com/docker/docker/pkg/term"
 	"github.com/gin-gonic/gin"
-	"github.com/softleader/captain-kube/cmd/caplet/app/dockerctl"
+	"github.com/softleader/captain-kube/pkg/dockerctl"
 	"io"
 	"log"
 	"os"

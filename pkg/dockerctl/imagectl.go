@@ -76,8 +76,17 @@ func ReTag(source chart.Image, target chart.Image, registryAuth *proto.RegistryA
 	return out, nil
 }
 
-func encode(auth *proto.RegistryAuth) (string, error) {
-	b, err := json.Marshal(auth)
+// proto.RegistryAuth gen 出來的 Username 跟 Password 的 u 跟 p 都是小寫 json, docker 要大寫, 所以只能再轉換一次
+type auth struct {
+	Username string `json:"Username,omitempty"`
+	Password string `json:"Password,omitempty"`
+}
+
+func encode(ra *proto.RegistryAuth) (string, error) {
+	b, err := json.Marshal(auth{
+		Username: ra.Username,
+		Password: ra.Password,
+	})
 	if err != nil {
 		return "", nil
 	}

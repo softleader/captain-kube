@@ -64,11 +64,13 @@ func PullImage(out io.Writer, endpoints []*Endpoint, req *proto.PullImageRequest
 	}
 	wg.Wait()
 	close(ch)
-	if len(ch) > 0 {
-		var errors []string
-		for e := range ch {
+	var errors []string
+	for e := range ch {
+		if e != nil {
 			errors = append(errors, e.Error())
 		}
+	}
+	if len(errors) > 0 {
 		return fmt.Errorf(strings.Join(errors, "\n"))
 	}
 	return nil

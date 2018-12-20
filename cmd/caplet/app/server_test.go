@@ -29,13 +29,17 @@ func TestGrpc(t *testing.T) {
 		Repo: "helm",
 	})
 
-	ep := caplet.Endpoint{
+	ep := &caplet.Endpoint{
 		Target:  "localhost",
 		Port:    caplet.DefaultPort,
 		Timeout: dur.DefaultDeadlineSecond,
 	}
 
-	if err := ep.PullImage(out, req); err != nil {
+	//if err := ep.PullImage(out, req); err != nil {
+	//	t.Error(err)
+	//}
+
+	if err := caplet.PullImage(out, []*caplet.Endpoint{ep}, req); err != nil {
 		t.Error(err)
 	}
 }

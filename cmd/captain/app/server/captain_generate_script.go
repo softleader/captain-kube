@@ -1,7 +1,6 @@
 package server
 
 import (
-	"bytes"
 	"github.com/softleader/captain-kube/pkg/helm/chart"
 	"github.com/softleader/captain-kube/pkg/proto"
 	"strings"
@@ -13,9 +12,7 @@ func (s *CaptainServer) GenerateScript(req *proto.GenerateScriptRequest, stream 
 	if err != nil {
 		return err
 	}
-
-	var buf bytes.Buffer
-
+	
 	if from, to := strings.TrimSpace(req.GetRetag().GetFrom()), strings.TrimSpace(req.GetRetag().GetTo()); from != "" && to != "" {
 		script, err := tpls.GenerateReTagScript(from, to)
 		if err != nil {

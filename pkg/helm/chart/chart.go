@@ -25,7 +25,7 @@ func LoadArchive(out io.Writer, archivePath string) (tpls Templates, err error) 
 	if err = arc.Extract(out, archivePath, extractPath); err != nil {
 		return
 	}
-	tplPath := filepath.Join(archivePath, templateDir)
+	tplPath := filepath.Join(extractPath, templateDir)
 	if err = helm.Template(out, extractPath, tplPath); err != nil {
 		return
 	}

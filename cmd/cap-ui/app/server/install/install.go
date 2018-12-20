@@ -67,7 +67,9 @@ func Serve(path string, r *gin.Engine, cfg *comm.Config) {
 				},
 			}
 
-			pullAndSync(c.Writer, form, &request)
+			if err := pullAndSync(c.Writer, form, &request); err != nil {
+				fmt.Fprintln(c.Writer, "Pull/Sync failed:", err)
+			}
 
 			if err := captain.InstallChart(c.Writer, cfg.DefaultValue.CaptainUrl, &request, form.Verbose, 30*1000); err != nil {
 				fmt.Fprintln(c.Writer, "call captain InstallChart failed:", err)
@@ -81,11 +83,12 @@ func pullAndSync(out io.Writer, form Request, request *proto.InstallChartRequest
 	var tpls chart.Templates
 	if len(form.Tags) > 0 {
 		// mk temp file
-		tmpFile, err := ioutil.TempFile(os.TempDir(), "capui-")
+		tmpFile, err := ioutil.TempFile(os.TempDir(), "capui-*.tgz")
 		if err != nil {
 			return err
 		}
 		defer os.Remove(tmpFile.Name())
+
 		if _, err := tmpFile.Write(request.Chart.Content); err != nil {
 			return err
 		}

@@ -1,6 +1,7 @@
 package chart
 
 import (
+	"fmt"
 	"github.com/softleader/captain-kube/pkg/arc"
 	"github.com/softleader/captain-kube/pkg/helm"
 	"gopkg.in/yaml.v2"
@@ -25,12 +26,29 @@ func LoadArchive(out io.Writer, archivePath string) (tpls Templates, err error) 
 	if err = arc.Extract(out, archivePath, extractPath); err != nil {
 		return
 	}
-	tplPath := filepath.Join(extractPath, templateDir)
-	if err = helm.Template(out, extractPath, tplPath); err != nil {
+	chartDir, err := findFirstDir(extractPath)
+	if err != nil {
+		return
+	}
+	tplPath := filepath.Join(chartDir, templateDir)
+	if err = helm.Template(out, chartDir, tplPath); err != nil {
 		return
 	}
 	tpls, err = LoadDir(out, tplPath)
 	return
+}
+
+func findFirstDir(path string) (string, error) {
+	extractDir, err := ioutil.ReadDir(path)
+	if err != nil {
+		return "", err
+	}
+	for _, f := range extractDir {
+		if f.IsDir() {
+			return filepath.Join(path, f.Name()), err
+		}
+	}
+	return "", fmt.Errorf("no dir found in %q", path)
 }
 
 func LoadDir(_ io.Writer, chartPath string) (tpls Templates, err error) {

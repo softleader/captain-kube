@@ -24,7 +24,7 @@ type streamWriter struct {
 func (s *streamWriter) Write(p []byte) (n int, err error) {
 	n = len(p)
 	err = s.Send(&proto.PullImageResponse{
-		Message: p,
+		Msg: p,
 	})
 	return
 }

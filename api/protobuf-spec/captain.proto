@@ -28,7 +28,7 @@ message GenerateScriptRequest {
 }
 
 message GenerateScriptResponse {
-    bytes out = 1;
+    bytes msg = 1;
 }
 
 service Captain {

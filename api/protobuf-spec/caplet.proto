@@ -16,7 +16,7 @@ message Image {
 }
 
 message PullImageResponse {
-    bytes message = 1;
+    bytes msg = 1;
 }
 
 service Caplet {

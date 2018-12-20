@@ -12,14 +12,14 @@ func (s *CaptainServer) GenerateScript(req *proto.GenerateScriptRequest, stream 
 	if err != nil {
 		return err
 	}
-	
+
 	if from, to := strings.TrimSpace(req.GetRetag().GetFrom()), strings.TrimSpace(req.GetRetag().GetTo()); from != "" && to != "" {
 		script, err := tpls.GenerateReTagScript(from, to)
 		if err != nil {
 			return err
 		}
 		if err := stream.Send(&proto.GenerateScriptResponse{
-			Out: script.Bytes(),
+			Msg: script.Bytes(),
 		}); err != nil {
 			return err
 		}
@@ -31,7 +31,7 @@ func (s *CaptainServer) GenerateScript(req *proto.GenerateScriptRequest, stream 
 			return err
 		}
 		if err := stream.Send(&proto.GenerateScriptResponse{
-			Out: script.Bytes(),
+			Msg: script.Bytes(),
 		}); err != nil {
 			return err
 		}
@@ -43,7 +43,7 @@ func (s *CaptainServer) GenerateScript(req *proto.GenerateScriptRequest, stream 
 			return err
 		}
 		if err := stream.Send(&proto.GenerateScriptResponse{
-			Out: script.Bytes(),
+			Msg: script.Bytes(),
 		}); err != nil {
 			return err
 		}
@@ -55,7 +55,7 @@ func (s *CaptainServer) GenerateScript(req *proto.GenerateScriptRequest, stream 
 			return err
 		}
 		if err := stream.Send(&proto.GenerateScriptResponse{
-			Out: script.Bytes(),
+			Msg: script.Bytes(),
 		}); err != nil {
 			return err
 		}

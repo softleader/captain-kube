@@ -46,7 +46,7 @@ func (e *Endpoint) PullImage(out io.Writer, req *proto.PullImageRequest, timeout
 		if err != nil {
 			fmt.Errorf("%v.PullImage(_) = _, %v", c, err)
 		}
-		out.Write(recv.GetMessage())
+		out.Write(recv.GetMsg())
 	}
 	return nil
 }

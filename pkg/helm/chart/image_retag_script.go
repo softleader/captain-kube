@@ -11,7 +11,7 @@ const retagScript = `
 ##---
 # Source: {{ $path }}
 {{- range $key, $image := $images }}
-docker tag {{ $from }}/{{ $image.Name }} {{ $image.Host }}/{{ $image.Name }}
+docker tag {{ $from }}/{{ $image.Name }} {{ $image.Host }}/{{ $image.Name }} && docker push {{ $image.Host }}/{{ $image.Name }}
 {{- end }}
 {{- end }}
 `

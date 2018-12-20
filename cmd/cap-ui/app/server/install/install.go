@@ -17,7 +17,7 @@ type Request struct {
 	Tags           []string `form:"tags"`
 	SourceRegistry string   `form:"sourceRegistry"`
 	Registry       string   `form:"registry"`
-	Verbose        string   `form:"verbose"`
+	Verbose        bool     `form:"verbose"`
 }
 
 func Serve(path string, r *gin.Engine, cfg *comm.Config) {
@@ -29,12 +29,12 @@ func Serve(path string, r *gin.Engine, cfg *comm.Config) {
 	r.POST(path, func(c *gin.Context) {
 		fmt.Fprintln(c.Writer, "call: POST /install")
 
-		var request Request
-		if err := c.Bind(&request); err != nil {
+		var form Request
+		if err := c.Bind(&form); err != nil {
 			fmt.Fprintln(c.Writer, "binding form data error:", err)
 			return
 		} else {
-			fmt.Fprintln(c.Writer, "form:", request)
+			fmt.Fprintln(c.Writer, "form:", form)
 		}
 
 		if file, header, err := c.Request.FormFile("file"); err != nil {
@@ -58,9 +58,10 @@ func Serve(path string, r *gin.Engine, cfg *comm.Config) {
 					FileSize: header.Size,
 				},
 			}
-			if err := captain.InstallChart(c.Writer, cfg.DefaultValue.CaptainUrl, &request, 30*1000); err != nil {
+			if err := captain.InstallChart(c.Writer, cfg.DefaultValue.CaptainUrl, &request, form.Verbose, 30*1000); err != nil {
 				fmt.Fprintln(c.Writer, "call captain InstallChart failed:", err)
 			}
+			fmt.Fprintln(c.Writer, "InstallChart finish")
 		}
 	})
 }

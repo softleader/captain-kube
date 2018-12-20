@@ -3,6 +3,9 @@ package app
 import (
 	"fmt"
 	"github.com/softleader/captain-kube/cmd/captain/app/server"
+	"github.com/softleader/captain-kube/pkg/caplet"
+	"github.com/softleader/captain-kube/pkg/captain"
+	"github.com/softleader/captain-kube/pkg/env"
 	"github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/verbose"
 	"github.com/spf13/cobra"
@@ -24,7 +27,11 @@ type captainCmd struct {
 }
 
 func NewCaptainCommand() (cmd *cobra.Command) {
-	c := captainCmd{}
+	c := captainCmd{
+		port:           env.LookupInt(captain.EnvPort, captain.DefaultPort),
+		capletPort:     env.LookupInt(caplet.EnvPort, caplet.DefaultPort),
+		capletHostname: env.Lookup(caplet.EnvHostname, caplet.DefaultHostname),
+	}
 	cmd = &cobra.Command{
 		Use:  "captain",
 		Long: "captain is the brain of captain-kube system",
@@ -44,10 +51,10 @@ func NewCaptainCommand() (cmd *cobra.Command) {
 	c.out = cmd.OutOrStdout()
 	f := cmd.Flags()
 	f.BoolVarP(&verbose.Enabled, "verbose", "v", verbose.Enabled, "enable verbose output")
-	f.IntVarP(&c.port, "port", "p", 8081, "specify the port of captain")
-	f.StringVar(&c.capletHostname, "caplet-hostname", "caplet", "specify the hostname of caplet daemon to lookup if '--caplet-endpoint' is not specified")
-	f.IntVar(&c.capletPort, "caplet-port", 50051, "specify the port of caplet daemon to connect")
-	f.StringArrayVar(&c.endpoints, "caplet-endpoint", []string{"localhost"}, "specify the endpoint of caplet daemon to connect")
+	f.IntVarP(&c.port, "port", "p", c.port, "specify the port of captain, override "+captain.EnvPort)
+	f.StringVar(&c.capletHostname, "caplet-hostname", c.capletHostname, "specify the hostname of caplet daemon to lookup, override "+caplet.EnvHostname)
+	f.IntVar(&c.capletPort, "caplet-port", c.capletPort, "specify the port of caplet daemon to connect, override "+caplet.EnvPort)
+	f.StringArrayVarP(&c.endpoints, "caplet-endpoint", "e", []string{""}, "specify the endpoint of caplet daemon to connect, override '--caplet-hostname'")
 
 	return
 }

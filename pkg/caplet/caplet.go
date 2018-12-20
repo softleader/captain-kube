@@ -12,6 +12,15 @@ import (
 	"sync"
 )
 
+const (
+	EnvPort         = "CAPLET_PORT"
+	EnvServe        = "CAPLET_SERVE"
+	EnvHostname     = "CAPLET_HOSTNAME"
+	DefaultPort     = 50051
+	DefaultServe    = "grpc"
+	DefaultHostname = "caplet"
+)
+
 func pullImage(out io.Writer, endpoint string, port int, req *proto.PullImageRequest, timeout int64) error {
 	conn, err := grpc.Dial(fmt.Sprintf("%s:%v", endpoint, port), grpc.WithInsecure())
 	if err != nil {

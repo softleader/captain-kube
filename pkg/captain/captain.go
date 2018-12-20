@@ -10,6 +10,11 @@ import (
 	"io"
 )
 
+const (
+	EnvPort     = "CAPTAIN_PORT"
+	DefaultPort = 8081
+)
+
 func InstallChart(out io.Writer, url string, req *proto.InstallChartRequest, timeout int64) error {
 
 	conn, err := grpc.Dial(url, grpc.WithInsecure())

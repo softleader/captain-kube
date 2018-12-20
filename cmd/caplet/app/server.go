@@ -3,19 +3,11 @@ package app
 import (
 	"fmt"
 	"github.com/softleader/captain-kube/cmd/caplet/app/server"
+	"github.com/softleader/captain-kube/pkg/caplet"
+	"github.com/softleader/captain-kube/pkg/env"
 	"github.com/softleader/captain-kube/pkg/verbose"
 	"github.com/spf13/cobra"
 	"io"
-	"os"
-	"strconv"
-)
-
-const (
-	EnvCapletPort  = "CAPLET_PORT"
-	EnvCapletServe = "CAPLET_SERVE"
-
-	defaultEnvCapletPort  = 50051
-	defaultEnvCapletServe = "grpc"
 )
 
 type capletCmd struct {
@@ -35,16 +27,8 @@ var servers = map[string]Caplet{
 
 func newCapletCmd() (c *capletCmd) {
 	c = &capletCmd{
-		port:  defaultEnvCapletPort,
-		serve: defaultEnvCapletServe,
-	}
-	if v, found := os.LookupEnv(EnvCapletPort); found {
-		if p, err := strconv.Atoi(v); err != nil {
-			c.port = p
-		}
-	}
-	if v, found := os.LookupEnv(EnvCapletServe); found {
-		c.serve = v
+		port:  env.LookupInt(caplet.EnvPort, caplet.DefaultPort),
+		serve: env.Lookup(caplet.EnvServe, caplet.DefaultServe),
 	}
 	return
 }
@@ -62,8 +46,8 @@ func NewCapletCommand() (cmd *cobra.Command) {
 	c.out = cmd.OutOrStdout()
 	f := cmd.Flags()
 	f.BoolVarP(&verbose.Enabled, "verbose", "v", verbose.Enabled, "enable verbose output")
-	f.StringVar(&c.serve, "serve", c.serve, "specify api kind to serve (grpc or rest), override "+EnvCapletServe)
-	f.IntVarP(&c.port, "port", "p", c.port, "specify the port to serve, override "+EnvCapletPort)
+	f.StringVar(&c.serve, "serve", c.serve, "specify api kind to serve (grpc or rest), override "+caplet.EnvServe)
+	f.IntVarP(&c.port, "port", "p", c.port, "specify the port to serve, override "+caplet.EnvPort)
 
 	return
 }

@@ -28,13 +28,13 @@ message GenerateScriptRequest {
 }
 
 message GenerateScriptResponse {
-    string out = 1;
+    bytes out = 1;
 }
 
 service Captain {
     rpc InstallChart (InstallChartRequest) returns (InstallChartResponse) {
     }
-    rpc GenerateScript (GenerateScriptRequest) returns (GenerateScriptResponse) {
+    rpc GenerateScript (GenerateScriptRequest) returns (stream GenerateScriptResponse) {
     }
 }
 

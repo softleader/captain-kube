@@ -18,7 +18,7 @@ docker tag {{ $from }}/{{ $image.Name }} {{ $image.Host }}/{{ $image.Name }}
 
 var saveTemplate = template.Must(template.New("").Parse(saveScript))
 
-func (i *Images) GenerateSaveScript() (buf bytes.Buffer, err error) {
+func (i *Templates) GenerateSaveScript() (buf bytes.Buffer, err error) {
 	data := make(map[string]interface{})
 	data["images"] = i
 	err = saveTemplate.Execute(&buf, data)

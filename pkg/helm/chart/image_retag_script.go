@@ -18,7 +18,7 @@ docker tag {{ $from }}/{{ $image.Name }} {{ $image.Host }}/{{ $image.Name }}
 
 var retagTemplate = template.Must(template.New("").Parse(retagScript))
 
-func (i *Images) GenerateReTagScript(from, to string) (buf bytes.Buffer, err error) {
+func (i *Templates) GenerateReTagScript(from, to string) (buf bytes.Buffer, err error) {
 	var retags map[string][]*Image
 	for src, images := range *i {
 		for _, image := range images {

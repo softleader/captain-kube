@@ -3,33 +3,14 @@ package server
 import (
 	"bytes"
 	"context"
-	"github.com/softleader/captain-kube/pkg/arc"
-	"github.com/softleader/captain-kube/pkg/helm"
 	"github.com/softleader/captain-kube/pkg/helm/chart"
 	"github.com/softleader/captain-kube/pkg/proto"
-	"io/ioutil"
-	"os"
-	"path/filepath"
 	"strings"
 )
 
-const template = "t"
-
 func (s *CaptainServer) GenerateScript(c context.Context, req *proto.GenerateScriptRequest) (resp *proto.GenerateScriptResponse, err error) {
-	path, err := ioutil.TempDir(os.TempDir(), "captain-generate-script")
-	if err != nil {
-		return
-	}
-	chartFile := "" // TODO
-	chartPath := filepath.Join(path, req.GetChart().GetFileName())
-	if err = arc.Extract(s.out, chartFile, chartPath); err != nil {
-		return
-	}
-	tplPath := filepath.Join(chartPath, template)
-	if err = helm.Template(s.out, chartPath, tplPath); err != nil {
-		return
-	}
-	images, err := chart.CollectImages(tplPath)
+	chartFile := req.GetChart().GetFileName() // TODO
+	tpls, err := chart.LoadArchive(s.out, chartFile)
 	if err != nil {
 		return nil, err
 	}
@@ -37,7 +18,7 @@ func (s *CaptainServer) GenerateScript(c context.Context, req *proto.GenerateScr
 	var buf bytes.Buffer
 
 	if from, to := strings.TrimSpace(req.GetRetag().GetFrom()), strings.TrimSpace(req.GetRetag().GetTo()); from != "" && to != "" {
-		script, err := images.GenerateReTagScript(from, to)
+		script, err := tpls.GenerateReTagScript(from, to)
 		if err != nil {
 			return nil, err
 		}
@@ -45,7 +26,7 @@ func (s *CaptainServer) GenerateScript(c context.Context, req *proto.GenerateScr
 	}
 
 	if req.Pull {
-		script, err := images.GeneratePullScript()
+		script, err := tpls.GeneratePullScript()
 		if err != nil {
 			return nil, err
 		}
@@ -53,7 +34,7 @@ func (s *CaptainServer) GenerateScript(c context.Context, req *proto.GenerateScr
 	}
 
 	if req.Load {
-		script, err :=  images.GenerateLoadScript()
+		script, err := tpls.GenerateLoadScript()
 		if err != nil {
 			return nil, err
 		}
@@ -61,7 +42,7 @@ func (s *CaptainServer) GenerateScript(c context.Context, req *proto.GenerateScr
 	}
 
 	if req.Save {
-		script, err := images.GenerateSaveScript()
+		script, err := tpls.GenerateSaveScript()
 		if err != nil {
 			return nil, err
 		}

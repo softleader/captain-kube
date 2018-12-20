@@ -17,7 +17,7 @@ docker pull {{ $image.Host }}/{{ $image.Name }}
 
 var pullTemplate = template.Must(template.New("").Parse(pullScript))
 
-func (i *Images) GeneratePullScript() (buf bytes.Buffer, err error) {
+func (i *Templates) GeneratePullScript() (buf bytes.Buffer, err error) {
 	data := make(map[string]interface{})
 	data["images"] = i
 	err = pullTemplate.Execute(&buf, data)

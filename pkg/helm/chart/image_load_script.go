@@ -18,7 +18,7 @@ docker load -i ./{{ $image.Name }}.tar
 
 var loadTemplate = template.Must(template.New("").Parse(loadScript))
 
-func (i *Images) GenerateLoadScript() (buf bytes.Buffer, err error) {
+func (i *Templates) GenerateLoadScript() (buf bytes.Buffer, err error) {
 	data := make(map[string]interface{})
 	data["images"] = i
 	err = loadTemplate.Execute(&buf, data)

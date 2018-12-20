@@ -15,8 +15,6 @@ import (
 	"net"
 )
 
-var ErrNonCapletDaemonFound = fmt.Errorf("non caplet daemon found")
-
 type CaptainCmd struct {
 	Out            io.Writer
 	Serve          string
@@ -36,14 +34,6 @@ func NewCaptainCommand() (cmd *cobra.Command) {
 		Use:  "captain",
 		Long: "captain is the brain of captain-kube system",
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			if len(c.Endpoints) == 0 {
-				if c.Endpoints, err = net.LookupHost(c.CapletHostname); err != nil {
-					return
-				}
-			}
-			if len(c.Endpoints) == 0 {
-				return ErrNonCapletDaemonFound
-			}
 			return c.Run()
 		},
 	}
@@ -65,7 +55,7 @@ func (c *CaptainCmd) Run() (err error) {
 		return fmt.Errorf("failed to listen: %v", err)
 	}
 	s := grpc.NewServer()
-	proto.RegisterCaptainServer(s, server.NewCaptainServer(c.Out, c.Endpoints, c.CapletPort))
+	proto.RegisterCaptainServer(s, server.NewCaptainServer(c.Out, c.CapletHostname, c.Endpoints, c.CapletPort))
 	reflection.Register(s)
 	verbose.Fprintf(c.Out, "listening and serving GRPC on %v\n", lis.Addr().String())
 	return s.Serve(lis)

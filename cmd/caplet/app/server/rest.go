@@ -6,6 +6,7 @@ import (
 	"github.com/docker/docker/pkg/term"
 	"github.com/gin-gonic/gin"
 	"github.com/softleader/captain-kube/pkg/dockerctl"
+	"github.com/softleader/captain-kube/pkg/helm/chart"
 	"io"
 	"log"
 	"os"
@@ -33,7 +34,7 @@ func (_ Rest) Serve(out io.Writer, port int) error {
 		}
 
 		// pull image
-		out, err := dockerctl.Pull(dockerctl.Image{
+		out, err := dockerctl.Pull(chart.Image{
 			Host: host,
 			Repo: repo,
 			Tag:  tag,

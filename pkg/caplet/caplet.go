@@ -21,19 +21,22 @@ const (
 )
 
 type Endpoint struct {
-	Target  string
-	Port    int
-	Timeout int64
+	Target string
+	Port   int
 }
 
-func (e *Endpoint) PullImage(out io.Writer, req *proto.PullImageRequest) error {
-	conn, err := grpc.Dial(fmt.Sprintf("%s:%v", e.Target, e.Port), grpc.WithInsecure())
+func (e *Endpoint) connect() (*grpc.ClientConn, error) {
+	return grpc.Dial(fmt.Sprintf("%s:%v", e.Target, e.Port), grpc.WithInsecure())
+}
+
+func (e *Endpoint) PullImage(out io.Writer, req *proto.PullImageRequest, timeout int64) error {
+	conn, err := e.connect()
 	if err != nil {
 		return fmt.Errorf("did not connect: %v", err)
 	}
 	defer conn.Close()
 	c := proto.NewCapletClient(conn)
-	ctx, cancel := context.WithTimeout(context.Background(), dur.Deadline(e.Timeout))
+	ctx, cancel := context.WithTimeout(context.Background(), dur.Deadline(timeout))
 	defer cancel()
 	stream, err := c.PullImage(ctx, req)
 	if err != nil {
@@ -52,15 +55,15 @@ func (e *Endpoint) PullImage(out io.Writer, req *proto.PullImageRequest) error {
 	return nil
 }
 
-func PullImage(out io.Writer, endpoints []*Endpoint, req *proto.PullImageRequest) error {
+func PullImage(out io.Writer, endpoints []*Endpoint, req *proto.PullImageRequest, timeout int64) error {
 	ch := make(chan error, len(endpoints))
 	var wg sync.WaitGroup
 	for _, ep := range endpoints {
 		wg.Add(1)
-		go func(out io.Writer, endpoint *Endpoint, req *proto.PullImageRequest) {
+		go func(out io.Writer, endpoint *Endpoint, req *proto.PullImageRequest, timeout int64) {
 			defer wg.Done()
-			ch <- ep.PullImage(out, req)
-		}(out, ep, req)
+			ch <- ep.PullImage(out, req, timeout)
+		}(out, ep, req, timeout)
 	}
 	wg.Wait()
 	close(ch)

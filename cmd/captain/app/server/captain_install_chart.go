@@ -19,7 +19,7 @@ func (s *CaptainServer) InstallChart(c context.Context, req *proto.InstallChartR
 		if err != nil {
 			return nil, err
 		}
-		caplet.PullImage(s.out, endpoints, newPullImageRequest(tpls), req.GetTimeout())
+		caplet.PullImage(s.out, endpoints, newPullImageRequest(tpls, req.GetRegistryAuth()), req.GetTimeout())
 	}
 
 	// TODO: how to get caplet out?
@@ -29,8 +29,10 @@ func (s *CaptainServer) InstallChart(c context.Context, req *proto.InstallChartR
 	return
 }
 
-func newPullImageRequest(tpls chart.Templates) (req *proto.PullImageRequest) {
-	req = &proto.PullImageRequest{}
+func newPullImageRequest(tpls chart.Templates, auth *proto.RegistryAuth) (req *proto.PullImageRequest) {
+	req = &proto.PullImageRequest{
+		RegistryAuth: auth,
+	}
 	for _, tpl := range tpls {
 		for _, img := range tpl {
 			req.Images = append(req.Images, &proto.Image{

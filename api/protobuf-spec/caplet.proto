@@ -2,20 +2,17 @@ syntax = "proto3";
 
 package proto;
 
+import "registry.proto";
+
 message PullImageRequest {
     repeated Image images = 1;
+    RegistryAuth registryAuth = 4;
 }
 
 message Image {
     string host = 1;
     string repo = 2;
     string tag = 3;
-    RegistryAuth registryAuth = 4;
-}
-
-message RegistryAuth {
-    string username = 1;
-    string password = 2;
 }
 
 message PullImageResponse {

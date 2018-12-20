@@ -15,7 +15,6 @@ const (
 )
 
 func InstallChart(out io.Writer, url string, req *proto.InstallChartRequest, verbose bool, timeout int64) error {
-
 	conn, err := grpc.Dial(url, grpc.WithInsecure())
 	if err != nil {
 		return fmt.Errorf("did not connect: %v\n", err)
@@ -36,7 +35,6 @@ func InstallChart(out io.Writer, url string, req *proto.InstallChartRequest, ver
 }
 
 func GenerateScript(out io.Writer, url string, req *proto.GenerateScriptRequest, timeout int64) error {
-
 	conn, err := grpc.Dial(url, grpc.WithInsecure())
 	if err != nil {
 		return fmt.Errorf("did not connect: %v\n", err)

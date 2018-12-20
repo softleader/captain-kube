@@ -4,6 +4,7 @@ package proto;
 
 import "retag.proto";
 import "chart.proto";
+import "registry.proto";
 
 message InstallChartRequest {
     Chart chart = 1;
@@ -11,6 +12,7 @@ message InstallChartRequest {
     int64 timeout = 2;
     // sync forces all node to pull image
     bool sync = 3;
+    RegistryAuth registryAuth = 4;
 }
 
 message InstallChartResponse {

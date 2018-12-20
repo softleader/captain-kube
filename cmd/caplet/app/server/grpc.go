@@ -32,14 +32,14 @@ func (s *streamWriter) Write(p []byte) (n int, err error) {
 func (g *server) PullImage(req *proto.PullImageRequest, stream proto.Caplet_PullImageServer) error {
 	for _, image := range req.Images {
 		sw := &streamWriter{stream}
-		if err := pull(sw, image); err != nil {
+		if err := pull(sw, image, req.GetRegistryAuth()); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-func pull(sw *streamWriter, image *proto.Image) error {
+func pull(sw *streamWriter, image *proto.Image, auth *proto.RegistryAuth) error {
 	if tag := image.GetTag(); len(tag) == 0 {
 		image.Tag = "latest"
 	}
@@ -47,7 +47,7 @@ func pull(sw *streamWriter, image *proto.Image) error {
 		Host: image.Host,
 		Repo: image.Repo,
 		Tag:  image.Tag,
-	}, image.GetRegistryAuth())
+	}, auth)
 	if err != nil {
 		return err
 	}

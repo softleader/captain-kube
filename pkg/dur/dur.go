@@ -8,5 +8,5 @@ func Deadline(timeout int64) time.Duration {
 	if timeout <= 0 {
 		timeout = DefaultDeadlineSecond
 	}
-	return time.Duration(timeout)
+	return time.Duration(timeout) * time.Second
 }

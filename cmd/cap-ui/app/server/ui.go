@@ -50,12 +50,12 @@ func Ui(cfg *config) (err error) {
 			fmt.Fprintln(c.Writer, "loading form file error:", err)
 			return
 		} else {
-			fmt.Fprintln(c.Writer, "file.header:", header)
 			fmt.Fprintln(c.Writer, "file:", file)
 
 			buf := bytes.NewBuffer(nil)
 			if readed, err := io.Copy(buf, file); err != nil {
 				fmt.Fprintln(c.Writer, "reading file failed:", err)
+				return
 			} else {
 				fmt.Fprintln(c.Writer, "readed ", readed, " bytes")
 			}
@@ -67,7 +67,7 @@ func Ui(cfg *config) (err error) {
 					FileSize: header.Size,
 				},
 			}
-			if err := captain.InstallChart(c.Writer, cfg.DefaultValue.CaptainUrl, &request, 300); err != nil {
+			if err := captain.InstallChart(c.Writer, cfg.DefaultValue.CaptainUrl, &request, 30*1000); err != nil {
 				fmt.Fprintln(c.Writer, "call captain InstallChart failed:", err)
 			}
 		}
@@ -93,12 +93,12 @@ func Ui(cfg *config) (err error) {
 			fmt.Fprintln(c.Writer, "loading form file error:", err)
 			return
 		} else {
-			fmt.Fprintln(c.Writer, "file.header:", header)
 			fmt.Fprintln(c.Writer, "file:", file)
 
 			buf := bytes.NewBuffer(nil)
 			if readed, err := io.Copy(buf, file); err != nil {
 				fmt.Fprintln(c.Writer, "reading file failed:", err)
+				return
 			} else {
 				fmt.Fprintln(c.Writer, "readed ", readed, " bytes")
 			}
@@ -109,6 +109,13 @@ func Ui(cfg *config) (err error) {
 					Content:  buf.Bytes(),
 					FileSize: header.Size,
 				},
+				Pull: contains(request.Tags, "p"),
+				Retag: &proto.ReTag{
+					From: request.SourceRegistry,
+					To:   request.Registry,
+				},
+				Save: contains(request.Tags, "s"),
+				Load: contains(request.Tags, "l"),
 			}
 
 			if err := captain.GenerateScript(c.Writer, cfg.DefaultValue.CaptainUrl, &request, 300); err != nil {

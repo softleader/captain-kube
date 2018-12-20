@@ -33,7 +33,11 @@ func (_ Rest) Serve(out io.Writer, port int) error {
 		}
 
 		// pull image
-		out, err := dockerctl.Pull(host, repo, tag)
+		out, err := dockerctl.Pull(dockerctl.Image{
+			Host: host,
+			Repo: repo,
+			Tag:  tag,
+		})
 		if err != nil {
 			c.AbortWithError(500, err)
 			return

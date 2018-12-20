@@ -5,6 +5,7 @@ import (
 	"github.com/docker/docker/cli/command"
 	"github.com/docker/docker/pkg/jsonmessage"
 	"github.com/softleader/captain-kube/pkg/dockerctl"
+	"github.com/softleader/captain-kube/pkg/helm/chart"
 	"github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/verbose"
 	"google.golang.org/grpc"
@@ -42,7 +43,11 @@ func pull(sw *streamWriter, image *proto.Image) error {
 	if tag := image.GetTag(); len(tag) == 0 {
 		image.Tag = "latest"
 	}
-	out, err := dockerctl.Pull(image.GetHost(), image.GetRepo(), image.GetTag())
+	out, err := dockerctl.Pull(chart.Image{
+		Host: image.Host,
+		Repo: image.Repo,
+		Tag:  image.Tag,
+	})
 	if err != nil {
 		return err
 	}

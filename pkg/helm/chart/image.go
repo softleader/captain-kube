@@ -1,12 +1,19 @@
 package chart
 
-import "strings"
+import (
+	"fmt"
+	"strings"
+)
 
 type Image struct {
 	Host string // e.g. hub.softleader.com.tw
 	Name string // e.g. captain-kube:latest
 	Repo string // e.g. captain-kube
 	Tag  string // latest
+}
+
+func (i *Image) String() string {
+	return fmt.Sprintf("%s/%s:%s", i.Host, i.Repo, i.Tag)
 }
 
 func newImage(img string) (i *Image) {
@@ -23,8 +30,6 @@ func newImage(img string) (i *Image) {
 	}
 	return
 }
-
-
 
 func (i *Image) ReTag(from, to string) {
 	if from != "" && to != "" && i.Host == from {

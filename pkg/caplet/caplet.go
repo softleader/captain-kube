@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/softleader/captain-kube/pkg/dur"
 	"github.com/softleader/captain-kube/pkg/proto"
-	"github.com/softleader/captain-kube/pkg/verbose"
 	"google.golang.org/grpc"
 	"io"
 	"strings"
@@ -21,36 +20,47 @@ const (
 	DefaultHostname = "caplet"
 )
 
-func pullImage(out io.Writer, endpoint string, port int, req *proto.PullImageRequest, timeout int64) error {
-	conn, err := grpc.Dial(fmt.Sprintf("%s:%v", endpoint, port), grpc.WithInsecure())
+type Endpoint struct {
+	Target  string
+	Port    int
+	Timeout int64
+}
+
+func (e *Endpoint) PullImage(out io.Writer, req *proto.PullImageRequest) error {
+	conn, err := grpc.Dial(fmt.Sprintf("%s:%v", e.Target, e.Port), grpc.WithInsecure())
 	if err != nil {
 		return fmt.Errorf("did not connect: %v", err)
 	}
 	defer conn.Close()
 	c := proto.NewCapletClient(conn)
-	ctx, cancel := context.WithTimeout(context.Background(), dur.Deadline(timeout))
+	ctx, cancel := context.WithTimeout(context.Background(), dur.Deadline(e.Timeout))
 	defer cancel()
-	r, err := c.PullImage(ctx, req)
+	stream, err := c.PullImage(ctx, req)
 	if err != nil {
 		return fmt.Errorf("could not pull image: %v", err)
 	}
-	if verbose.Enabled {
-		for _, i := range r.Images {
-			fmt.Fprintf(out, "pulled %v", i)
+	for {
+		recv, err := stream.Recv()
+		if err == io.EOF {
+			break
 		}
+		if err != nil {
+			fmt.Errorf("%v.PullImage(_) = _, %v", c, err)
+		}
+		out.Write(recv.GetMessage())
 	}
 	return nil
 }
 
-func PullImage(out io.Writer, endpoints []string, port int, req *proto.PullImageRequest, timeout int64) error {
+func PullImage(out io.Writer, endpoints []*Endpoint, req *proto.PullImageRequest) error {
 	ch := make(chan error, len(endpoints))
 	var wg sync.WaitGroup
 	for _, ep := range endpoints {
 		wg.Add(1)
-		go func(out io.Writer, endpoint string, port int, req *proto.PullImageRequest, timeout int64) {
+		go func(out io.Writer, endpoint *Endpoint, req *proto.PullImageRequest) {
 			defer wg.Done()
-			ch <- pullImage(out, endpoint, port, req, timeout)
-		}(out, ep, port, req, timeout)
+			ch <- ep.PullImage(out, req)
+		}(out, ep, req)
 	}
 	wg.Wait()
 	close(ch)

@@ -13,11 +13,10 @@ message Image {
 }
 
 message PullImageResponse {
-    repeated Image images = 1;
-    string message = 2;
+    bytes message = 1;
 }
 
 service Caplet {
-    rpc PullImage (PullImageRequest) returns (PullImageResponse) {
+    rpc PullImage (PullImageRequest) returns (stream PullImageResponse) {
     }
 }

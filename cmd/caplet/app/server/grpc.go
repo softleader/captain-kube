@@ -1,54 +1,53 @@
 package server
 
 import (
-	"bytes"
-	"context"
 	"fmt"
+	"github.com/docker/docker/cli/command"
+	"github.com/docker/docker/pkg/jsonmessage"
 	"github.com/softleader/captain-kube/pkg/dockerctl"
 	"github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/verbose"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"io"
-	"io/ioutil"
 	"net"
-	"strings"
 )
 
 type Grpc struct{}
 type server struct{}
 
-func (g *server) PullImage(_ context.Context, req *proto.PullImageRequest) (*proto.PullImageResponse, error) {
+type streamWriter struct {
+	proto.Caplet_PullImageServer
+}
 
-	var buf bytes.Buffer
-	var errors []string
+func (s *streamWriter) Write(p []byte) (n int, err error) {
+	n = len(p)
+	err = s.Send(&proto.PullImageResponse{
+		Message: p,
+	})
+	return
+}
+
+func (g *server) PullImage(req *proto.PullImageRequest, stream proto.Caplet_PullImageServer) error {
 	for _, image := range req.Images {
-		if out, err := pull(image); err != nil {
-			errors = append(errors, err.Error())
-		} else {
-			if bytes, err := ioutil.ReadAll(out); err != nil { // FIXME: to streaming output
-				errors = append(errors, err.Error())
-			} else {
-				buf.Write(bytes)
-				out.Close()
-			}
+		sw := &streamWriter{stream}
+		if err := pull(sw, image); err != nil {
+			return err
 		}
 	}
-
-	if len(errors) > 0 {
-		return nil, fmt.Errorf(strings.Join(errors, "\n"))
-	}
-
-	return &proto.PullImageResponse{
-		Images:  req.Images,
-		Message: buf.String(),
-	}, nil
+	return nil
 }
-func pull(image *proto.Image) (io.ReadCloser, error) {
+
+func pull(sw *streamWriter, image *proto.Image) error {
 	if tag := image.GetTag(); len(tag) == 0 {
 		image.Tag = "latest"
 	}
-	return dockerctl.Pull(image.GetHost(), image.GetRepo(), image.GetTag())
+	out, err := dockerctl.Pull(image.GetHost(), image.GetRepo(), image.GetTag())
+	if err != nil {
+		return err
+	}
+	defer out.Close()
+	return jsonmessage.DisplayJSONMessagesToStream(out, command.NewOutStream(sw), nil)
 }
 
 func (_ Grpc) Serve(out io.Writer, port int) error {

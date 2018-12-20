@@ -14,7 +14,15 @@ func (s *CaptainServer) InstallChart(c context.Context, req *proto.InstallChartR
 		if tpls, err := chart.LoadArchive(s.out, chartFile); err != nil {
 			return nil, err
 		} else {
-			caplet.PullImage(s.out, s.endpoints, s.port, newPullImageRequest(tpls), req.GetTimeout())
+			var endpoints []*caplet.Endpoint
+			for _, ep := range s.endpoints {
+				endpoints = append(endpoints, &caplet.Endpoint{
+					Target:  ep,
+					Port:    s.port,
+					Timeout: req.GetTimeout(),
+				})
+			}
+			caplet.PullImage(s.out, endpoints, newPullImageRequest(tpls))
 		}
 	}
 

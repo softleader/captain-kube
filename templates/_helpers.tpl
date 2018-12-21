@@ -9,3 +9,7 @@
 {{- define "captain-kube.caplet" -}}
 {{- printf "caplet" -}}
 {{- end -}}
+
+{{- define "captain-kube.config" -}}
+{{- printf "captain-kube-config" -}}
+{{- end -}}

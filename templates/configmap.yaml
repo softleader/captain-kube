@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: captain-kube-config
+  name: {{ template "captain-kube.config" . }}
   labels:
-    app: captain-kube-config
+    app: {{ template "captain-kube.config" . }}
     chart: {{ template "captain-kube.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}

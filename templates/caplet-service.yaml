@@ -12,7 +12,7 @@ spec:
   ports:
     - name: {{ template "captain-kube.caplet" . }}
       protocol: TCP
-      port: 80
+      port: {{ .Values.caplet.port }}
   selector:
     app: {{ template "captain-kube.caplet" . }}
     release: {{ .Release.Name }}

@@ -22,3 +22,6 @@ spec:
         - name: {{ template "captain-kube.captain" . }}
           image: "{{ .Values.captain.image }}:{{ .Values.captain.tag }}"
           imagePullPolicy: {{ .Values.captain.pullPolicy }}
+          envFrom:
+            - configMapRef:
+                name: {{ template "captain-kube.config" . }}

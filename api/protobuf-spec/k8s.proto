@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package proto;
+
+enum K8sVendor {
+    Gcp = 0; // not support yet
+    Icp = 1;
+}
+
+message K8s {
+    K8sVendor vendor = 1;
+    string endpoint = 2;
+}

@@ -17,7 +17,7 @@ const templateDir = "t"
 type Templates map[string][]*Image
 
 func LoadArchive(out io.Writer, archivePath string) (tpls Templates, err error) {
-	path, err := ioutil.TempDir(os.TempDir(), "load-archive")
+	path, err := ioutil.TempDir(os.TempDir(), "load-archive-")
 	if err != nil {
 		return
 	}

@@ -4,18 +4,29 @@ import (
 	"github.com/softleader/captain-kube/pkg/helm/chart"
 	"github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/sio"
+	"io/ioutil"
+	"os"
+	"path/filepath"
 	"strings"
 )
 
 func (s *CaptainServer) GenerateScript(req *proto.GenerateScriptRequest, stream proto.Captain_GenerateScriptServer) error {
+	tmp, err := ioutil.TempDir(os.TempDir(), "generate-script-")
+	if err != nil {
+		return err
+	}
+	chartPath := filepath.Join(tmp, req.GetChart().GetFileName())
+	if err := ioutil.WriteFile(chartPath, req.GetChart().GetContent(), 0644); err != nil {
+		return err
+	}
+
 	sout := sio.NewStreamWriter(func(p []byte) error {
 		return stream.Send(&proto.GenerateScriptResponse{
 			Msg: p,
 		})
 	})
 
-	chartFile := req.GetChart().GetFileName() // TODO
-	tpls, err := chart.LoadArchive(s.out, chartFile)
+	tpls, err := chart.LoadArchive(s.out, chartPath)
 	if err != nil {
 		return err
 	}

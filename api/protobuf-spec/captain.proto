@@ -5,15 +5,16 @@ package proto;
 import "retag.proto";
 import "chart.proto";
 import "registry.proto";
+import "k8s.proto";
 
 message InstallChartRequest {
-    Chart chart = 1;
+    K8s k8s = 1;
+    Chart chart = 2;
     // timeout specifies the max amount of time any caplet can run.
-    int64 timeout = 2;
+    int64 timeout = 3;
     // sync forces all node to pull image
-    bool sync = 3;
-    RegistryAuth registryAuth = 4;
-    bool verbose = 5;
+    bool sync = 4;
+    RegistryAuth registryAuth = 5;
 }
 
 message InstallChartResponse {

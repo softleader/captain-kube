@@ -7,7 +7,6 @@ import "registry.proto";
 message PullImageRequest {
     repeated Image images = 1;
     RegistryAuth registryAuth = 2;
-    bool verbose = 3;
 }
 
 message Image {

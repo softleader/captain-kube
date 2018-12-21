@@ -11,7 +11,7 @@ import (
 func TestLoadArchive(t *testing.T) {
 	out := os.Stdout
 
-	path, err := ioutil.TempDir(os.TempDir(), "load-archive-test")
+	path, err := ioutil.TempDir(os.TempDir(), "test-load-archive-")
 	if err != nil {
 		t.Error(err)
 	}

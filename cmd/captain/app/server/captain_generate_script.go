@@ -26,7 +26,7 @@ func (s *CaptainServer) GenerateScript(req *proto.GenerateScriptRequest, stream 
 		})
 	})
 
-	tpls, err := chart.LoadArchive(s.Out, chartPath)
+	tpls, err := chart.LoadArchive(sout, chartPath)
 	if err != nil {
 		return err
 	}

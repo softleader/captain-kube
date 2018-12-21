@@ -11,4 +11,8 @@ message Chart {
 // Tiller is the Helm Server
 message Tiller {
     string endpoint = 1;
+    string username = 2;
+    string password = 3;
+    string account = 4;
+    bool skipSslValidation = 5;
 }

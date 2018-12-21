@@ -4,6 +4,7 @@ import (
 	"github.com/softleader/captain-kube/pkg/caplet"
 	"github.com/softleader/captain-kube/pkg/helm/chart"
 	"github.com/softleader/captain-kube/pkg/proto"
+	"github.com/softleader/captain-kube/pkg/sio"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -22,7 +23,14 @@ func (s *CaptainServer) InstallChart(req *proto.InstallChartRequest, stream prot
 	if err != nil {
 		return err
 	}
-	if err := i.Install(); err != nil {
+
+	sout := sio.NewStreamWriter(func(p []byte) error {
+		return stream.Send(&proto.ChunkMessage{
+			Msg: p,
+		})
+	})
+
+	if err := i.Install(sout); err != nil {
 		return err
 	}
 

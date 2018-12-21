@@ -11,7 +11,7 @@ func (s *CaptainServer) InstallChart(c context.Context, req *proto.InstallChartR
 	chartFile := req.GetChart().GetFileName() // TODO
 
 	if req.GetSync() {
-		endpoints, err := s.retrieveCaplets()
+		endpoints, err := s.lookupCaplets()
 		if err != nil {
 			return nil, err
 		}

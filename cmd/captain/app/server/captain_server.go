@@ -25,7 +25,7 @@ func NewCaptainServer(out io.Writer, hostname string, endpoints []string, port i
 	}
 }
 
-func (s *CaptainServer) retrieveCaplets() (endpoints []*caplet.Endpoint, err error) {
+func (s *CaptainServer) lookupCaplets() (endpoints []*caplet.Endpoint, err error) {
 	if len(s.endpoints) == 0 {
 		if s.endpoints, err = net.LookupHost(s.hostname); err != nil {
 			return

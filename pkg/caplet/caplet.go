@@ -15,7 +15,7 @@ const (
 	EnvPort         = "CAPLET_PORT"
 	EnvServe        = "CAPLET_SERVE"
 	EnvHostname     = "CAPLET_HOSTNAME"
-	DefaultPort     = 30051
+	DefaultPort     = 50051
 	DefaultServe    = "grpc"
 	DefaultHostname = "caplet"
 )

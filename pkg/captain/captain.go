@@ -12,7 +12,7 @@ import (
 const (
 	EnvPort          = "CAPTAIN_PORT"
 	EnvK8sVendor     = "CAPTAIN_K8S_VENDOR"
-	DefaultPort      = 50052
+	DefaultPort      = 30051
 	DefaultK8sVendor = "icp"
 )
 

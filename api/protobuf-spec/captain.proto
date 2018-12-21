@@ -13,6 +13,7 @@ message InstallChartRequest {
     // sync forces all node to pull image
     bool sync = 3;
     RegistryAuth registryAuth = 4;
+    bool verbose = 5;
 }
 
 message InstallChartResponse {
@@ -25,6 +26,7 @@ message GenerateScriptRequest {
     ReTag retag = 3;
     bool save = 4;
     bool load = 5;
+    bool verbose = 6;
 }
 
 message GenerateScriptResponse {

@@ -7,6 +7,7 @@ import (
 	"github.com/softleader/captain-kube/pkg/dockerctl"
 	"github.com/softleader/captain-kube/pkg/helm/chart"
 	"github.com/softleader/captain-kube/pkg/proto"
+	"github.com/softleader/captain-kube/pkg/sio"
 	"github.com/softleader/captain-kube/pkg/verbose"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -17,21 +18,13 @@ import (
 type Grpc struct{}
 type server struct{}
 
-type streamWriter struct {
-	proto.Caplet_PullImageServer
-}
-
-func (s *streamWriter) Write(p []byte) (n int, err error) {
-	n = len(p)
-	err = s.Send(&proto.PullImageResponse{
-		Msg: p,
-	})
-	return
-}
-
 func (g *server) PullImage(req *proto.PullImageRequest, stream proto.Caplet_PullImageServer) error {
 	for _, image := range req.Images {
-		sw := &streamWriter{stream}
+		sw := sio.NewStreamWriter(func(p []byte) error {
+			return stream.Send(&proto.PullImageResponse{
+				Msg: p,
+			})
+		})
 		if err := pull(sw, image, req.GetRegistryAuth()); err != nil {
 			return err
 		}
@@ -39,11 +32,11 @@ func (g *server) PullImage(req *proto.PullImageRequest, stream proto.Caplet_Pull
 	return nil
 }
 
-func pull(sw *streamWriter, image *proto.Image, auth *proto.RegistryAuth) error {
+func pull(w io.Writer, image *proto.Image, auth *proto.RegistryAuth) error {
 	if tag := image.GetTag(); len(tag) == 0 {
 		image.Tag = "latest"
 	}
-	out, err := dockerctl.Pull(sw, chart.Image{
+	out, err := dockerctl.Pull(w, chart.Image{
 		Host: image.Host,
 		Repo: image.Repo,
 		Tag:  image.Tag,

@@ -7,4 +7,4 @@ ADD captain /app/captain
 
 ENV CAPTAIN_PORT=80
 
-ENTRYPOINT ./captain
+ENTRYPOINT ["./captain"]

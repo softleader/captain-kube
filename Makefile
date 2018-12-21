@@ -2,8 +2,11 @@ HAS_GLIDE := $(shell command -v glide;)
 DIST := $(CURDIR)/_dist
 BUILD := $(CURDIR)/_build
 REGISTRY := softleader
+
 CAPTAIN := captain
 CAPLET := caplet
+UI := cap-ui
+CAPCTL = capctl
 
 .PHONY: test
 test:
@@ -14,18 +17,42 @@ protoc:
 	protoc -I api/protobuf-spec/ --go_out=plugins=grpc:pkg/proto api/protobuf-spec/*.proto
 
 .PHONY: build
-build: clean bootstrap
-	mkdir -p $(BUILD)
-	go build -o $(BUILD)/$(BINARY) ./cmd/$(CAPTAIN)
-	go build -o $(BUILD)/$(BINARY) ./cmd/$(CAPLET)
+build: clean bootstrap build-caplet build-captain build-ui build-capctl
+
+.PHONY: build-caplet
+build-caplet:
+	make build --file ./cmd/$(CAPLET)/Makefile REGISTRY=$(REGISTRY)
+
+.PHONY: build-captain
+build-captain:
+	make build --file ./cmd/$(CAPLET)/Makefile REGISTRY=$(REGISTRY)
+
+.PHONY: build-ui
+build-ui:
+	make build --file ./cmd/$(UI)/Makefile REGISTRY=$(REGISTRY)
+
+.PHONY: build-capctl
+build-capctl:
+	make build --file ./cmd/$(CAPCTL)/Makefile REGISTRY=$(REGISTRY)
 
 .PHONY: dist
-dist:
-	mkdir -p $(DIST)
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o $(DIST)/$(BINARY) -a -tags netgo ./cmd/$(CAPTAIN)
-	docker build -t $(REGISTRY)/$(CAPTAIN) . && docker push $(REGISTRY)/$(CAPTAIN)
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o $(DIST)/$(BINARY) -a -tags netgo ./cmd/$(CAPLET)
-	docker build -t $(REGISTRY)/$(CAPLET) . && docker push $(REGISTRY)/$(CAPLET)
+dist: dist-caplet dist-captain dist-ui dist-calctl
+
+.PHONY: dist-caplet
+dist-caplet:
+	make dist --file ./cmd/$(CAPLET)/Makefile REGISTRY=$(REGISTRY)
+
+.PHONY: dist-captain
+dist-captain:
+	make dist --file ./cmd/$(CAPTAIN)/Makefile REGISTRY=$(REGISTRY)
+
+.PHONY: dist-ui
+dist-ui:
+	make dist --file ./cmd/$(UI)/Makefile REGISTRY=$(REGISTRY)
+
+.PHONY: dist-calctl
+dist-calctl:
+	make dist --file ./cmd/$(CAPCTL)/Makefile REGISTRY=$(REGISTRY)
 
 .PHONY: bootstrap
 bootstrap:

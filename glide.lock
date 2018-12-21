@@ -1,15 +1,28 @@
 hash: 7cd4c14d21530a1b8eb7fe5a74b9b322a84d45de212e22b90a958a05a795465b
-updated: 2018-12-19T18:09:47.1305348+08:00
+updated: 2018-12-21T15:12:16.870753+08:00
 imports:
 - name: github.com/Azure/go-ansiterm
   version: d6e3b3328b783f23731bc4d058875b0371ff8109
   subpackages:
   - winterm
+- name: github.com/beorn7/perks
+  version: 3a771d992973f24aa725d07868b467d1ddfceafb
+  subpackages:
+  - quantile
 - name: github.com/docker/distribution
   version: 40b7b5830a2337bb07627617740c0e39eb92800c
   subpackages:
   - digestset
+  - metrics
   - reference
+  - registry/api/errcode
+  - registry/api/v2
+  - registry/client
+  - registry/client/auth
+  - registry/client/auth/challenge
+  - registry/client/transport
+  - registry/storage/cache
+  - registry/storage/cache/memory
 - name: github.com/docker/docker
   version: 90d35abf7b3535c1c319c872900fbd76374e521c
   subpackages:
@@ -28,25 +41,52 @@ imports:
   - api/types/time
   - api/types/versions
   - api/types/volume
+  - cli/command
+  - cli/config
+  - cli/config/configfile
+  - cli/config/credentials
+  - cli/flags
   - client
+  - dockerversion
+  - opts
+  - pkg/homedir
+  - pkg/httputils
+  - pkg/idtools
   - pkg/ioutils
   - pkg/jsonlog
   - pkg/jsonmessage
   - pkg/longpath
+  - pkg/parsers/kernel
+  - pkg/random
+  - pkg/stringid
   - pkg/system
+  - pkg/tarsum
   - pkg/term
   - pkg/term/windows
   - pkg/tlsconfig
+  - pkg/useragent
+  - registry
+- name: github.com/docker/docker-credential-helpers
+  version: 123ba1b7cd646aaee13ba2e028b7c268db72e2b2
+  subpackages:
+  - client
+  - credentials
 - name: github.com/docker/go-connections
   version: 97c2040d34dfae1d1b1275fa3a78dbdd2f41cf7e
   subpackages:
   - nat
   - sockets
   - tlsconfig
+- name: github.com/docker/go-metrics
+  version: b84716841b82eab644a0c64fc8b42d480e49add5
 - name: github.com/docker/go-units
   version: 2fb04c6466a548a03cb009c5569ee1ab1e35398e
 - name: github.com/docker/libtrust
   version: aabc10ec26b754e797f9028f4589c5b7bd90dc20
+- name: github.com/docker/notary
+  version: 6e8cc6e54bb1fb140c97698993509aa5dfb1b9b8
+  subpackages:
+  - passphrase
 - name: github.com/dsnet/compress
   version: cc9eb1d7ad760af14e8f918698f745e80377af4f
   subpackages:
@@ -74,6 +114,8 @@ imports:
   - ptypes/timestamp
 - name: github.com/golang/snappy
   version: 2e65f85255dbc3072edf28d6b5b8efc472979f5a
+- name: github.com/gorilla/mux
+  version: 6137e193cdcba2725f16de84eaf0db2b769d9668
 - name: github.com/inconshreveable/mousetrap
   version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
 - name: github.com/json-iterator/go
@@ -82,6 +124,12 @@ imports:
   version: 5c8c8bd35d3832f5d134ae1e1e375b69a4d25242
 - name: github.com/mattn/go-isatty
   version: 3fb116b820352b7f0c281308a4d6250c22d94e27
+- name: github.com/mattn/go-shellwords
+  version: 3c0603ff9671145648171317c30371d805656003
+- name: github.com/matttproud/golang_protobuf_extensions
+  version: c12348ce28de40eed0136aa2b644d0ee0650e56c
+  subpackages:
+  - pbutil
 - name: github.com/mholt/archiver
   version: 4e41ad6272dc64198f898f690ad5c4bc3a5189fa
 - name: github.com/Microsoft/go-winio
@@ -96,18 +144,51 @@ imports:
   version: 197ef08ef68c4454ae5970a9c2692d6056ceb8d7
 - name: github.com/opencontainers/go-digest
   version: c9281466c8b2f606084ac71339773efd177436e7
+- name: github.com/opencontainers/image-spec
+  version: e74bb5aed1c876be723e181895359d8dca9b56a6
+  subpackages:
+  - specs-go
+  - specs-go/v1
+- name: github.com/opencontainers/runc
+  version: bbb17efcb4c0ab986407812a31ba333a7450064c
+  subpackages:
+  - libcontainer/user
 - name: github.com/pierrec/lz4
   version: 623b5a2f4d2a41e411730dcdfbfdaeb5c0c4564e
   subpackages:
   - internal/xxh32
 - name: github.com/pkg/errors
   version: 059132a15dd08d6704c67711dae0cf35ab991756
+- name: github.com/prometheus/client_golang
+  version: ec7db558bc4ce351daf4ecd5ac46f145abf62300
+  subpackages:
+  - prometheus
+  - prometheus/internal
+  - prometheus/promhttp
+- name: github.com/prometheus/client_model
+  version: 5c3871d89910bfb32f5fcab2aa4b9ec68e65a99f
+  subpackages:
+  - go
+- name: github.com/prometheus/common
+  version: 67670fe90761d7ff18ec1d640135e53b9198328f
+  subpackages:
+  - expfmt
+  - internal/bitbucket.org/ww/goautoneg
+  - model
+- name: github.com/prometheus/procfs
+  version: 1dc9a6cbc91aacc3e8b2d63db4d2e957a5394ac4
+  subpackages:
+  - internal/util
+  - nfs
+  - xfs
 - name: github.com/Sirupsen/logrus
   version: 2067ea4241cec716fbd0ac90f42f339f963bff92
 - name: github.com/spf13/cobra
   version: ef82de70bb3f60c65fb8eebacbb2d122ef517385
 - name: github.com/spf13/pflag
   version: 916c5bf2d89aff6fd3e10e7811337218dfa81cb5
+- name: github.com/theupdateframework/notary
+  version: 6e8cc6e54bb1fb140c97698993509aa5dfb1b9b8
 - name: github.com/ugorji/go
   version: 772ced7fd4c2f6322c07537a9a93b68d74551fa6
   subpackages:

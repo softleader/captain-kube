@@ -3,7 +3,7 @@ package chart
 import "fmt"
 
 type gcpInstaller struct {
-	chart string
+	endpoint, chart string
 }
 
 func (i *gcpInstaller) Install() error {

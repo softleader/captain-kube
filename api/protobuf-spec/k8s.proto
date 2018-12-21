@@ -3,8 +3,10 @@ syntax = "proto3";
 package proto;
 
 enum K8sVendor {
-    Gcp = 0; // not support yet
-    Icp = 1;
+    Gcp = 0; // Google
+    Icp = 1; // IBM
+    OpenShift = 2; // RedHat
+    Pks = 3; // Pivotal
 }
 
 message K8s {

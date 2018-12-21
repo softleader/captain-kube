@@ -1,23 +1,15 @@
 fullnameOverride: false
 nameOverride: false
 
-nginx: 
-  image: nginx
-  tag: alpine
-  pullPolicy: IfNotPresent
-
-captainKube:
-  image: softleader/captain-kube
+captain: 
+  image: softleader/captain
   tag: latest
   pullPolicy: IfNotPresent
+  k8sVendor: icp
+  ingress:
+    path: /captain
 
-ingress:
-  enabled: true
-  path: /captain-kube
-
-volume:
-  hostPath: /changeit
-
-nodePort:
-  enabled: false
-  port: 30080
+caplet:
+  image: softleader/caplet
+  tag: latest
+  pullPolicy: IfNotPresent

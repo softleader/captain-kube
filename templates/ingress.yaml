@@ -1,12 +1,9 @@
-{{- if .Values.ingress.enabled -}}
-{{- $fullName := include "captain-kube.fullname" . -}}
-{{- $ingressPath := .Values.ingress.path -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ $fullName }}
+  name: {{ template "captain-kube.captain" . }}
   labels:
-    app: {{ template "captain-kube.name" . }}
+    app: {{ template "captain-kube.captain" . }}
     chart: {{ template "captain-kube.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -14,8 +11,7 @@ spec:
   rules:
     - http:
         paths:
-          - path: {{ .Values.ingress.path }}
+          - path: {{ .Values.captain.ingress.path }}
             backend:
-              serviceName: {{ $fullName }}
+              serviceName: {{ template "captain-kube.captain" . }}
               servicePort: 80
-{{- end }}

@@ -1,0 +1,24 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "captain-kube.captain" . }}
+  labels:
+    app: {{ template "captain-kube.captain" . }}
+    chart: {{ template "captain-kube.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "captain-kube.captain" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "captain-kube.captain" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ template "captain-kube.captain" . }}
+          image: "{{ .Values.captain.image }}:{{ .Values.captain.tag }}"
+          imagePullPolicy: {{ .Values.captain.pullPolicy }}

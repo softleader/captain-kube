@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ template "captain-kube.caplet" . }}
+  labels:
+    app: {{ template "captain-kube.caplet" . }}
+    chart: {{ template "captain-kube.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "captain-kube.caplet" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "captain-kube.caplet" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ template "captain-kube.caplet" . }}
+          image: "{{ .Values.caplet.image }}:{{ .Values.caplet.tag }}"
+          imagePullPolicy: {{ .Values.caplet.pullPolicy }}

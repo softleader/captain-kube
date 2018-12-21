@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "captain-kube.captain" . }}
+  labels:
+    app: {{ template "captain-kube.captain" . }}
+    chart: {{ template "captain-kube.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: ClusterIP
+  ports:
+    - name: {{ template "captain-kube.captain" . }}
+      protocol: TCP
+      port: 80
+  selector:
+    app: {{ template "captain-kube.captain" . }}
+    release: {{ .Release.Name }}

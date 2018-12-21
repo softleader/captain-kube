@@ -57,7 +57,7 @@ func (_ Grpc) Serve(out io.Writer, port int) error {
 	}
 
 	s := grpc.NewServer()
-	proto.RegisterCapletServer(s, &server{})
+	proto.RegisterCapletServer(s, &server{out})
 	verbose.Fprintf(out, "registered caplet server\n")
 	reflection.Register(s)
 

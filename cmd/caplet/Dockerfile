@@ -6,5 +6,6 @@ WORKDIR /app
 ADD caplet /app/caplet
 
 ENV GIN_MODE=release
+ENV CAPLET_PORT=50051
 
 ENTRYPOINT ["./caplet"]

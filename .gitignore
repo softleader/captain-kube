@@ -1,4 +1,6 @@
 # Binaries for programs and plugins
+*.exe
+*.exe~
 *.dll
 *.so
 *.dylib
@@ -9,14 +11,8 @@
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
-.idea
-build/
-main
-
-dist/
-.DS_Store
-
-.retry
-*.tgz
-
 vendor/
+_dist/
+_build/
+.idea/
+.DS_Store

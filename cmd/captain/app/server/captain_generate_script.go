@@ -54,10 +54,10 @@ func (s *CaptainServer) GenerateScript(req *proto.GenerateScriptRequest, stream 
 		if err != nil {
 			return err
 		}
-		if err := stream.Send(&proto.GenerateScriptResponse{
-			Msg: script.Bytes(),
-		}); err != nil {
-			return err
+			if err := stream.Send(&proto.GenerateScriptResponse{
+				Msg: script.Bytes(),
+			}); err != nil {
+				return err
 		}
 	}
 

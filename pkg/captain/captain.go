@@ -28,7 +28,7 @@ func InstallChart(out io.Writer, url string, req *proto.InstallChartRequest, ver
 		return fmt.Errorf("could not install chart: %v\n", err)
 	}
 	if verbose {
-		fmt.Fprintf(out, "chart installed %v\n", r.GetOut())
+		fmt.Fprintf(out, "chart installed %v\n", r.GetMsg())
 	}
 	return nil
 

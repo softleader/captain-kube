@@ -16,7 +16,7 @@ message InstallChartRequest {
 }
 
 message InstallChartResponse {
-    string out = 1;
+    string msg = 1;
 }
 
 message GenerateScriptRequest {

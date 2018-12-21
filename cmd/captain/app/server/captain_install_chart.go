@@ -24,7 +24,7 @@ func (s *CaptainServer) InstallChart(c context.Context, req *proto.InstallChartR
 
 	// TODO: how to get caplet out?
 	resp = &proto.InstallChartResponse{
-		Out: "looks good!!?",
+		Msg: "looks good!!?",
 	}
 	return
 }

@@ -34,7 +34,7 @@ func (_ Rest) Serve(out io.Writer, port int) error {
 		}
 
 		// pull image
-		out, err := dockerctl.Pull(chart.Image{
+		rc, err := dockerctl.Pull(out, chart.Image{
 			Host: host,
 			Repo: repo,
 			Tag:  tag,
@@ -43,12 +43,12 @@ func (_ Rest) Serve(out io.Writer, port int) error {
 			c.AbortWithError(500, err)
 			return
 		}
-		defer out.Close()
+		defer rc.Close()
 
 		// log to console and response
 		termFd, isTerm := term.GetFdInfo(os.Stderr)
 		ws := io.MultiWriter(os.Stdout, c.Writer)
-		jsonmessage.DisplayJSONMessagesStream(out, ws, termFd, isTerm, nil)
+		jsonmessage.DisplayJSONMessagesStream(rc, ws, termFd, isTerm, nil)
 		log.Println("pulled image: ", image)
 
 		// response

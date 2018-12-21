@@ -28,7 +28,7 @@ type Endpoint struct {
 func (e *Endpoint) PullImage(out io.Writer, req *proto.PullImageRequest, timeout int64) error {
 	conn, err := grpc.Dial(fmt.Sprintf("%s:%v", e.Target, e.Port), grpc.WithInsecure())
 	if err != nil {
-		return fmt.Errorf("did not connect: %v", err)
+		return fmt.Errorf("[%s] did not connect: %v", e.Target, err)
 	}
 	defer conn.Close()
 	c := proto.NewCapletClient(conn)
@@ -36,7 +36,7 @@ func (e *Endpoint) PullImage(out io.Writer, req *proto.PullImageRequest, timeout
 	defer cancel()
 	stream, err := c.PullImage(ctx, req)
 	if err != nil {
-		return fmt.Errorf("could not pull image: %v", err)
+		return fmt.Errorf("[%s] could not pull image: %v", e.Target, err)
 	}
 	for {
 		recv, err := stream.Recv()

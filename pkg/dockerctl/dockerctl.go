@@ -8,11 +8,11 @@ import (
 	"github.com/docker/docker/client"
 	"github.com/softleader/captain-kube/pkg/helm/chart"
 	"github.com/softleader/captain-kube/pkg/proto"
+	"github.com/softleader/captain-kube/pkg/verbose"
 	"io"
-	"log"
 )
 
-func Pull(image chart.Image, registryAuth *proto.RegistryAuth) (io.ReadCloser, error) {
+func Pull(out io.Writer, image chart.Image, registryAuth *proto.RegistryAuth) (io.ReadCloser, error) {
 	ctx := context.Background()
 
 	// Use DOCKER_HOST to set the url to the docker server.
@@ -21,27 +21,25 @@ func Pull(image chart.Image, registryAuth *proto.RegistryAuth) (io.ReadCloser, e
 	// Use DOCKER_TLS_VERIFY to enable or disable TLS verification, off by default.
 	cli, err := client.NewEnvClient()
 	if err != nil {
-		log.Println("client init failed: ", err.Error())
 		return nil, err
 	}
 
-	log.Println("pulling image: ", image)
+	verbose.Fprintf(out, "pulling image: %s\n", image)
 	opt := types.ImagePullOptions{}
 	if registryAuth != nil {
 		if opt.RegistryAuth, err = encode(registryAuth); err != nil {
 			return nil, err
 		}
 	}
-	out, err := cli.ImagePull(ctx, image.String(), opt)
+	rc, err := cli.ImagePull(ctx, image.String(), opt)
 	if err != nil {
-		log.Println("pull image failed: ", image)
 		return nil, err
 	}
 
-	return out, nil
+	return rc, nil
 }
 
-func ReTag(source chart.Image, target chart.Image, registryAuth *proto.RegistryAuth) (io.ReadCloser, error) {
+func ReTag(out io.Writer, source chart.Image, target chart.Image, registryAuth *proto.RegistryAuth) (io.ReadCloser, error) {
 	ctx := context.Background()
 
 	// Use DOCKER_HOST to set the url to the docker server.
@@ -50,30 +48,27 @@ func ReTag(source chart.Image, target chart.Image, registryAuth *proto.RegistryA
 	// Use DOCKER_TLS_VERIFY to enable or disable TLS verification, off by default.
 	cli, err := client.NewEnvClient()
 	if err != nil {
-		log.Println("client init failed: ", err.Error())
 		return nil, err
 	}
 
-	log.Println("taging image: ", source, " to ", target)
+	verbose.Fprintf(out, "tagging image from %q to %q \n", source, target)
 	if err := cli.ImageTag(ctx, source.String(), target.String()); err != nil {
-		log.Println("tag image failed: ", source, " to ", target)
 		return nil, err
 	}
 
-	log.Println("pushing image: ", target)
+	verbose.Fprintf(out, "pushing image: %s \n", target)
 	opt := types.ImagePushOptions{}
 	if registryAuth != nil {
 		if opt.RegistryAuth, err = encode(registryAuth); err != nil {
 			return nil, err
 		}
 	}
-	out, err := cli.ImagePush(ctx, target.String(), opt)
+	rc, err := cli.ImagePush(ctx, target.String(), opt)
 	if err := cli.ImageTag(ctx, source.String(), target.String()); err != nil {
-		log.Println("push image failed: ", target)
 		return nil, err
 	}
 
-	return out, nil
+	return rc, nil
 }
 
 func encode(ra *proto.RegistryAuth) (string, error) {

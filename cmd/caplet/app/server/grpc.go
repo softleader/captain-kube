@@ -43,7 +43,7 @@ func pull(sw *streamWriter, image *proto.Image, auth *proto.RegistryAuth) error 
 	if tag := image.GetTag(); len(tag) == 0 {
 		image.Tag = "latest"
 	}
-	out, err := dockerctl.Pull(chart.Image{
+	out, err := dockerctl.Pull(sw, chart.Image{
 		Host: image.Host,
 		Repo: image.Repo,
 		Tag:  image.Tag,

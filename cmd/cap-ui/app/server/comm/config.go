@@ -21,6 +21,13 @@ type Config struct {
 		Username string `yaml:"username"`
 		Password string `yaml:"password"`
 	} `yaml:"registryAuth"`
+	Tiller struct {
+		Endpoint          string `yaml:"endpoint"`
+		Username          string `yaml:"username"`
+		Password          string `yaml:"password"`
+		Account           string `yaml:"account"`
+		SkipSslValidation bool   `yaml:"skipSslValidation"`
+	} `yaml:"tiller"`
 }
 
 func GetConfig(configYamlPath string) (c *Config, err error) {

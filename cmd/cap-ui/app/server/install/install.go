@@ -78,6 +78,13 @@ func Serve(path string, r *gin.Engine, cfg *comm.Config) {
 				Username: cfg.RegistryAuth.Username,
 				Password: cfg.RegistryAuth.Password,
 			},
+			Tiller: &proto.Tiller{
+				Endpoint:          cfg.Tiller.Endpoint,
+				Username:          cfg.Tiller.Username,
+				Password:          cfg.Tiller.Password,
+				Account:           cfg.Tiller.Account,
+				SkipSslValidation: cfg.Tiller.SkipSslValidation,
+			},
 		}
 
 		if err := dockerctl.PullAndSync(&sw, &request); err != nil {

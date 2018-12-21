@@ -11,3 +11,9 @@ defaultValue:
 registryAuth:
   username: dev
   password: sleader
+tiller:
+  endpoint: k8s.master.ip:8443
+  username: admin
+  password: admin
+  account: icp Account
+  skipSslValidation: true

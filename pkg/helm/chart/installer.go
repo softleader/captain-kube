@@ -13,7 +13,8 @@ func NewInstaller(k8s *proto.K8S, chart string) (Installer, error) {
 	switch v := k8s.GetVendor(); v {
 	case proto.K8SVendor_Gcp:
 		return &gcpInstaller{
-			chart: chart,
+			endpoint: k8s.GetEndpoint(),
+			chart:    chart,
 		}, nil
 	case proto.K8SVendor_Icp:
 		return &icpInstaller{

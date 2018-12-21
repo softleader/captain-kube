@@ -1,7 +1,7 @@
 package chart
 
 import (
-	"bytes"
+	"io"
 	"text/template"
 )
 
@@ -17,9 +17,8 @@ docker pull {{ $image.Host }}/{{ $image.Name }}
 
 var pullTemplate = template.Must(template.New("").Parse(pullScript))
 
-func (i *Templates) GeneratePullScript() (buf bytes.Buffer, err error) {
+func (i *Templates) GeneratePullScript(out io.Writer) error {
 	data := make(map[string]interface{})
 	data["tpls"] = i
-	err = pullTemplate.Execute(&buf, data)
-	return
+	return pullTemplate.Execute(out, data)
 }

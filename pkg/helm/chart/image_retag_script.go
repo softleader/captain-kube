@@ -1,7 +1,7 @@
 package chart
 
 import (
-	"bytes"
+	"io"
 	"text/template"
 )
 
@@ -18,7 +18,7 @@ docker tag {{ $from }}/{{ $image.Name }} {{ $image.Host }}/{{ $image.Name }} && 
 
 var retagTemplate = template.Must(template.New("").Parse(retagScript))
 
-func (i *Templates) GenerateReTagScript(from, to string) (buf bytes.Buffer, err error) {
+func (i *Templates) GenerateReTagScript(out io.Writer, from, to string) error {
 	var retags map[string][]*Image
 	for src, images := range *i {
 		for _, image := range images {
@@ -31,6 +31,5 @@ func (i *Templates) GenerateReTagScript(from, to string) (buf bytes.Buffer, err 
 	data := make(map[string]interface{})
 	data["from"] = from
 	data["tpls"] = retags
-	err = retagTemplate.Execute(&buf, data)
-	return
+	return retagTemplate.Execute(out, data)
 }

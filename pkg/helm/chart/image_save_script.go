@@ -1,7 +1,7 @@
 package chart
 
 import (
-	"bytes"
+	"io"
 	"text/template"
 )
 
@@ -18,9 +18,8 @@ docker tag {{ $from }}/{{ $image.Name }} {{ $image.Host }}/{{ $image.Name }}
 
 var saveTemplate = template.Must(template.New("").Parse(saveScript))
 
-func (i *Templates) GenerateSaveScript() (buf bytes.Buffer, err error) {
+func (i *Templates) GenerateSaveScript(out io.Writer) error {
 	data := make(map[string]interface{})
 	data["tpls"] = i
-	err = saveTemplate.Execute(&buf, data)
-	return
+	return saveTemplate.Execute(out, data)
 }

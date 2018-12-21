@@ -1,7 +1,7 @@
 package chart
 
 import (
-	"bytes"
+	"io"
 	"text/template"
 )
 
@@ -17,9 +17,8 @@ docker load -i ./{{ $image.Name }}.tar
 
 var loadTemplate = template.Must(template.New("").Parse(loadScript))
 
-func (i *Templates) GenerateLoadScript() (buf bytes.Buffer, err error) {
+func (i *Templates) GenerateLoadScript(out io.Writer) error {
 	data := make(map[string]interface{})
 	data["tpls"] = i
-	err = loadTemplate.Execute(&buf, data)
-	return
+	return loadTemplate.Execute(out, data)
 }

@@ -3,10 +3,17 @@ package server
 import (
 	"github.com/softleader/captain-kube/pkg/helm/chart"
 	"github.com/softleader/captain-kube/pkg/proto"
+	"github.com/softleader/captain-kube/pkg/sio"
 	"strings"
 )
 
 func (s *CaptainServer) GenerateScript(req *proto.GenerateScriptRequest, stream proto.Captain_GenerateScriptServer) error {
+	sout := sio.NewStreamWriter(func(p []byte) error {
+		return stream.Send(&proto.GenerateScriptResponse{
+			Msg: p,
+		})
+	})
+
 	chartFile := req.GetChart().GetFileName() // TODO
 	tpls, err := chart.LoadArchive(s.out, chartFile)
 	if err != nil {
@@ -14,50 +21,26 @@ func (s *CaptainServer) GenerateScript(req *proto.GenerateScriptRequest, stream 
 	}
 
 	if from, to := strings.TrimSpace(req.GetRetag().GetFrom()), strings.TrimSpace(req.GetRetag().GetTo()); from != "" && to != "" {
-		script, err := tpls.GenerateReTagScript(from, to)
-		if err != nil {
-			return err
-		}
-		if err := stream.Send(&proto.GenerateScriptResponse{
-			Msg: script.Bytes(),
-		}); err != nil {
+		if err := tpls.GenerateReTagScript(sout, from, to); err != nil {
 			return err
 		}
 	}
 
 	if req.Pull {
-		script, err := tpls.GeneratePullScript()
-		if err != nil {
-			return err
-		}
-		if err := stream.Send(&proto.GenerateScriptResponse{
-			Msg: script.Bytes(),
-		}); err != nil {
+		if err := tpls.GeneratePullScript(sout); err != nil {
 			return err
 		}
 	}
 
 	if req.Load {
-		script, err := tpls.GenerateLoadScript()
-		if err != nil {
-			return err
-		}
-		if err := stream.Send(&proto.GenerateScriptResponse{
-			Msg: script.Bytes(),
-		}); err != nil {
+		if err := tpls.GenerateLoadScript(sout); err != nil {
 			return err
 		}
 	}
 
 	if req.Save {
-		script, err := tpls.GenerateSaveScript()
-		if err != nil {
+		if err := tpls.GenerateSaveScript(sout); err != nil {
 			return err
-		}
-			if err := stream.Send(&proto.GenerateScriptResponse{
-				Msg: script.Bytes(),
-			}); err != nil {
-				return err
 		}
 	}
 

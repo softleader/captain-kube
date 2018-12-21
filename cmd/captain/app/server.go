@@ -15,20 +15,22 @@ import (
 	"net"
 )
 
-type CaptainCmd struct {
-	Out            io.Writer
-	Serve          string
-	Endpoints      []string
-	Port           int
-	CapletHostname string
-	CapletPort     int
+type captainCmd struct {
+	out            io.Writer
+	serve          string
+	endpoints      []string
+	port           int
+	k8sVendor      string
+	capletHostname string
+	capletPort     int
 }
 
 func NewCaptainCommand() (cmd *cobra.Command) {
-	c := CaptainCmd{
-		Port:           env.LookupInt(captain.EnvPort, captain.DefaultPort),
-		CapletPort:     env.LookupInt(caplet.EnvPort, caplet.DefaultPort),
-		CapletHostname: env.Lookup(caplet.EnvHostname, caplet.DefaultHostname),
+	c := captainCmd{
+		port:           env.LookupInt(captain.EnvPort, captain.DefaultPort),
+		k8sVendor:      env.Lookup(captain.EnvK8sVendor, captain.DefaultK8sVendor),
+		capletPort:     env.LookupInt(caplet.EnvPort, caplet.DefaultPort),
+		capletHostname: env.Lookup(caplet.EnvHostname, caplet.DefaultHostname),
 	}
 	cmd = &cobra.Command{
 		Use:  "captain",
@@ -38,25 +40,32 @@ func NewCaptainCommand() (cmd *cobra.Command) {
 		},
 	}
 
-	c.Out = cmd.OutOrStdout()
+	c.out = cmd.OutOrStdout()
 	f := cmd.Flags()
 	f.BoolVarP(&verbose.Enabled, "verbose", "v", verbose.Enabled, "enable verbose output")
-	f.IntVarP(&c.Port, "port", "p", c.Port, "specify the port of captain, override "+captain.EnvPort)
-	f.StringVar(&c.CapletHostname, "caplet-hostname", c.CapletHostname, "specify the hostname of caplet daemon to lookup, override "+caplet.EnvHostname)
-	f.IntVar(&c.CapletPort, "caplet-port", c.CapletPort, "specify the port of caplet daemon to connect, override "+caplet.EnvPort)
-	f.StringArrayVarP(&c.Endpoints, "caplet-endpoint", "e", []string{""}, "specify the endpoint of caplet daemon to connect, override '--caplet-hostname'")
+	f.IntVarP(&c.port, "port", "p", c.port, "specify the port of captain, override "+captain.EnvPort)
+	f.StringVar(&c.k8sVendor, "k8s-vendor", c.k8sVendor, "specify the vendor of k8s, override "+captain.EnvK8sVendor)
+	f.StringVar(&c.capletHostname, "caplet-hostname", c.capletHostname, "specify the hostname of caplet daemon to lookup, override "+caplet.EnvHostname)
+	f.IntVar(&c.capletPort, "caplet-port", c.capletPort, "specify the port of caplet daemon to connect, override "+caplet.EnvPort)
+	f.StringArrayVarP(&c.endpoints, "caplet-endpoint", "e", []string{""}, "specify the endpoint of caplet daemon to connect, override '--caplet-hostname'")
 
 	return
 }
 
-func (c *CaptainCmd) Run() (err error) {
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%v", c.Port))
+func (c *captainCmd) Run() error {
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%v", c.port))
 	if err != nil {
 		return fmt.Errorf("failed to listen: %v", err)
 	}
 	s := grpc.NewServer()
-	proto.RegisterCaptainServer(s, server.NewCaptainServer(c.Out, c.CapletHostname, c.Endpoints, c.CapletPort))
+	proto.RegisterCaptainServer(s, &server.CaptainServer{
+		Out:       c.out,
+		Hostname:  c.capletHostname,
+		Endpoints: c.endpoints,
+		Port:      c.capletPort,
+		K8s:       c.k8sVendor,
+	})
 	reflection.Register(s)
-	verbose.Fprintf(c.Out, "listening and serving GRPC on %v\n", lis.Addr().String())
+	verbose.Fprintf(c.out, "listening and serving GRPC on %v\n", lis.Addr().String())
 	return s.Serve(lis)
 }

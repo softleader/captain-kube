@@ -22,7 +22,7 @@ type server struct {
 
 func (g *server) PullImage(req *proto.PullImageRequest, stream proto.Caplet_PullImageServer) error {
 	sout := sio.NewStreamWriter(func(p []byte) error {
-		return stream.Send(&proto.PullImageResponse{
+		return stream.Send(&proto.ChunkMessage{
 			Msg: p,
 		})
 	})

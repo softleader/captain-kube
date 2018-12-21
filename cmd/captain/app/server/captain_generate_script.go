@@ -21,12 +21,12 @@ func (s *CaptainServer) GenerateScript(req *proto.GenerateScriptRequest, stream 
 	}
 
 	sout := sio.NewStreamWriter(func(p []byte) error {
-		return stream.Send(&proto.GenerateScriptResponse{
+		return stream.Send(&proto.ChunkMessage{
 			Msg: p,
 		})
 	})
 
-	tpls, err := chart.LoadArchive(s.out, chartPath)
+	tpls, err := chart.LoadArchive(s.Out, chartPath)
 	if err != nil {
 		return err
 	}

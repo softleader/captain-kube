@@ -10,11 +10,13 @@ import (
 )
 
 const (
-	EnvPort     = "CAPTAIN_PORT"
-	DefaultPort = 8081
+	EnvPort          = "CAPTAIN_PORT"
+	EnvK8sVendor     = "CAPTAIN_K8S_VENDOR"
+	DefaultPort      = 8081
+	DefaultK8sVendor = "icp"
 )
 
-func InstallChart(out io.Writer, url string, req *proto.InstallChartRequest, verbose bool, timeout int64) error {
+func InstallChart(out io.Writer, url string, req *proto.InstallChartRequest, timeout int64) error {
 	conn, err := grpc.Dial(url, grpc.WithInsecure())
 	if err != nil {
 		return fmt.Errorf("did not connect: %v\n", err)
@@ -23,12 +25,19 @@ func InstallChart(out io.Writer, url string, req *proto.InstallChartRequest, ver
 	c := proto.NewCaptainClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), dur.Deadline(timeout))
 	defer cancel()
-	r, err := c.InstallChart(ctx, req)
+	stream, err := c.InstallChart(ctx, req)
 	if err != nil {
 		return fmt.Errorf("could not install chart: %v\n", err)
 	}
-	if verbose {
-		fmt.Fprintf(out, "chart installed %v\n", r.GetMsg())
+	for {
+		recv, err := stream.Recv()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			fmt.Errorf("%v.InstallChartToIcp(_) = _, %v", c, err)
+		}
+		out.Write(recv.GetMsg())
 	}
 	return nil
 

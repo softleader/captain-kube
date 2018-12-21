@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package proto;
+
+message Image {
+    string host = 1;
+    string repo = 2;
+    string tag = 3;
+}
+
+message ReTag {
+    string from = 2;
+    string to = 3;
+}
+
+message RegistryAuth {
+    string Username = 1;
+    string Password = 2;
+}

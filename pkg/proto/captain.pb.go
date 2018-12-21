@@ -23,11 +23,9 @@ var _ = math.Inf
 const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 type InstallChartRequest struct {
-	K8S   *K8S   `protobuf:"bytes,1,opt,name=k8s,proto3" json:"k8s,omitempty"`
-	Chart *Chart `protobuf:"bytes,2,opt,name=chart,proto3" json:"chart,omitempty"`
-	// timeout specifies the max amount of time any caplet can run.
-	Timeout int64 `protobuf:"varint,3,opt,name=timeout,proto3" json:"timeout,omitempty"`
-	// sync forces all node to pull image
+	Chart                *Chart        `protobuf:"bytes,1,opt,name=chart,proto3" json:"chart,omitempty"`
+	Tiller               *Tiller       `protobuf:"bytes,2,opt,name=tiller,proto3" json:"tiller,omitempty"`
+	Timeout              int64         `protobuf:"varint,3,opt,name=timeout,proto3" json:"timeout,omitempty"`
 	Sync                 bool          `protobuf:"varint,4,opt,name=sync,proto3" json:"sync,omitempty"`
 	RegistryAuth         *RegistryAuth `protobuf:"bytes,5,opt,name=registryAuth,proto3" json:"registryAuth,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}      `json:"-"`
@@ -60,16 +58,16 @@ func (m *InstallChartRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_InstallChartRequest proto.InternalMessageInfo
 
-func (m *InstallChartRequest) GetK8S() *K8S {
+func (m *InstallChartRequest) GetChart() *Chart {
 	if m != nil {
-		return m.K8S
+		return m.Chart
 	}
 	return nil
 }
 
-func (m *InstallChartRequest) GetChart() *Chart {
+func (m *InstallChartRequest) GetTiller() *Tiller {
 	if m != nil {
-		return m.Chart
+		return m.Tiller
 	}
 	return nil
 }
@@ -95,45 +93,6 @@ func (m *InstallChartRequest) GetRegistryAuth() *RegistryAuth {
 	return nil
 }
 
-type InstallChartResponse struct {
-	Msg                  string   `protobuf:"bytes,1,opt,name=msg,proto3" json:"msg,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *InstallChartResponse) Reset()         { *m = InstallChartResponse{} }
-func (m *InstallChartResponse) String() string { return proto.CompactTextString(m) }
-func (*InstallChartResponse) ProtoMessage()    {}
-func (*InstallChartResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_75f80b18f5aaa93a, []int{1}
-}
-
-func (m *InstallChartResponse) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_InstallChartResponse.Unmarshal(m, b)
-}
-func (m *InstallChartResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_InstallChartResponse.Marshal(b, m, deterministic)
-}
-func (m *InstallChartResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_InstallChartResponse.Merge(m, src)
-}
-func (m *InstallChartResponse) XXX_Size() int {
-	return xxx_messageInfo_InstallChartResponse.Size(m)
-}
-func (m *InstallChartResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_InstallChartResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_InstallChartResponse proto.InternalMessageInfo
-
-func (m *InstallChartResponse) GetMsg() string {
-	if m != nil {
-		return m.Msg
-	}
-	return ""
-}
-
 type GenerateScriptRequest struct {
 	Chart                *Chart   `protobuf:"bytes,1,opt,name=chart,proto3" json:"chart,omitempty"`
 	Pull                 bool     `protobuf:"varint,2,opt,name=pull,proto3" json:"pull,omitempty"`
@@ -150,7 +109,7 @@ func (m *GenerateScriptRequest) Reset()         { *m = GenerateScriptRequest{} }
 func (m *GenerateScriptRequest) String() string { return proto.CompactTextString(m) }
 func (*GenerateScriptRequest) ProtoMessage()    {}
 func (*GenerateScriptRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_75f80b18f5aaa93a, []int{2}
+	return fileDescriptor_75f80b18f5aaa93a, []int{1}
 }
 
 func (m *GenerateScriptRequest) XXX_Unmarshal(b []byte) error {
@@ -213,79 +172,36 @@ func (m *GenerateScriptRequest) GetVerbose() bool {
 	return false
 }
 
-type GenerateScriptResponse struct {
-	Msg                  []byte   `protobuf:"bytes,1,opt,name=msg,proto3" json:"msg,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *GenerateScriptResponse) Reset()         { *m = GenerateScriptResponse{} }
-func (m *GenerateScriptResponse) String() string { return proto.CompactTextString(m) }
-func (*GenerateScriptResponse) ProtoMessage()    {}
-func (*GenerateScriptResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_75f80b18f5aaa93a, []int{3}
-}
-
-func (m *GenerateScriptResponse) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GenerateScriptResponse.Unmarshal(m, b)
-}
-func (m *GenerateScriptResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GenerateScriptResponse.Marshal(b, m, deterministic)
-}
-func (m *GenerateScriptResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GenerateScriptResponse.Merge(m, src)
-}
-func (m *GenerateScriptResponse) XXX_Size() int {
-	return xxx_messageInfo_GenerateScriptResponse.Size(m)
-}
-func (m *GenerateScriptResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_GenerateScriptResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GenerateScriptResponse proto.InternalMessageInfo
-
-func (m *GenerateScriptResponse) GetMsg() []byte {
-	if m != nil {
-		return m.Msg
-	}
-	return nil
-}
-
 func init() {
 	proto.RegisterType((*InstallChartRequest)(nil), "proto.InstallChartRequest")
-	proto.RegisterType((*InstallChartResponse)(nil), "proto.InstallChartResponse")
 	proto.RegisterType((*GenerateScriptRequest)(nil), "proto.GenerateScriptRequest")
-	proto.RegisterType((*GenerateScriptResponse)(nil), "proto.GenerateScriptResponse")
 }
 
 func init() { proto.RegisterFile("captain.proto", fileDescriptor_75f80b18f5aaa93a) }
 
 var fileDescriptor_75f80b18f5aaa93a = []byte{
-	// 364 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x74, 0x92, 0xcf, 0x4e, 0xea, 0x50,
-	0x10, 0xc6, 0xef, 0xb9, 0xe5, 0xef, 0xd0, 0x4b, 0x6e, 0x0e, 0x6a, 0x9a, 0x8a, 0x09, 0xe9, 0xaa,
-	0x71, 0x41, 0x0c, 0x2e, 0x64, 0x6b, 0x58, 0x18, 0xe2, 0xca, 0xa3, 0x2f, 0x70, 0xa8, 0x93, 0xd2,
-	0x50, 0xda, 0x7a, 0xce, 0x29, 0x09, 0x4f, 0xe4, 0x13, 0xb8, 0xf5, 0xd9, 0x4c, 0xa7, 0x2d, 0x82,
-	0xc2, 0xaa, 0x33, 0xf3, 0xcd, 0x4c, 0xbf, 0xdf, 0xb4, 0xf0, 0x2f, 0x90, 0x99, 0x91, 0x51, 0x32,
-	0xce, 0x54, 0x6a, 0x52, 0xde, 0xa4, 0x87, 0xdb, 0x53, 0x68, 0x64, 0x38, 0xae, 0x92, 0x60, 0x29,
-	0x95, 0xa9, 0x92, 0xbe, 0xc2, 0x30, 0xd2, 0x46, 0x6d, 0xab, 0xbc, 0xbb, 0x9a, 0xea, 0x32, 0xf4,
-	0x3e, 0x19, 0x0c, 0xe6, 0x89, 0x36, 0x32, 0x8e, 0x67, 0xc5, 0x84, 0xc0, 0xb7, 0x1c, 0xb5, 0xe1,
-	0x43, 0xb0, 0x56, 0x53, 0xed, 0xb0, 0x11, 0xf3, 0x7b, 0x13, 0x28, 0x9b, 0xc7, 0x8f, 0x53, 0x2d,
-	0x8a, 0x32, 0xf7, 0xa0, 0x49, 0xfb, 0x9d, 0xbf, 0xa4, 0xdb, 0x95, 0x5e, 0x6e, 0x28, 0x25, 0xee,
-	0x40, 0xdb, 0x44, 0x6b, 0x4c, 0x73, 0xe3, 0x58, 0x23, 0xe6, 0x5b, 0xa2, 0x4e, 0x39, 0x87, 0x86,
-	0xde, 0x26, 0x81, 0xd3, 0x18, 0x31, 0xbf, 0x23, 0x28, 0xe6, 0x77, 0x60, 0xd7, 0x26, 0xef, 0x73,
-	0xb3, 0x74, 0x9a, 0xb4, 0x78, 0x50, 0x2d, 0x16, 0x7b, 0x92, 0x38, 0x68, 0xf4, 0x7c, 0x38, 0x3b,
-	0xf4, 0xaf, 0xb3, 0x34, 0xd1, 0xc8, 0xff, 0x83, 0xb5, 0xd6, 0x21, 0x01, 0x74, 0x45, 0x11, 0x7a,
-	0x1f, 0x0c, 0xce, 0x1f, 0x30, 0x41, 0x25, 0x0d, 0x3e, 0x07, 0x2a, 0xca, 0x76, 0xb0, 0x3b, 0x1c,
-	0x76, 0x1a, 0x87, 0x43, 0x23, 0xcb, 0xe3, 0x98, 0x88, 0x3b, 0x82, 0xe2, 0x62, 0x8e, 0x6e, 0x4e,
-	0x80, 0xdf, 0x73, 0x02, 0x5f, 0x64, 0x28, 0x4a, 0x89, 0x60, 0xe5, 0x06, 0x77, 0xb0, 0x72, 0x83,
-	0x45, 0x2d, 0x4e, 0xe5, 0x2b, 0x41, 0x76, 0x04, 0xc5, 0xc5, 0xb9, 0x36, 0xa8, 0x16, 0xa9, 0x46,
-	0xa7, 0x45, 0xe5, 0x3a, 0xf5, 0xae, 0xe1, 0xe2, 0xa7, 0xed, 0xdf, 0x8c, 0x36, 0x31, 0x4e, 0xde,
-	0x19, 0xb4, 0x67, 0xe5, 0xcf, 0xc1, 0xe7, 0x60, 0xef, 0x5f, 0x86, 0xbb, 0x95, 0xbd, 0x23, 0x9f,
-	0xdb, 0xbd, 0x3c, 0xaa, 0x95, 0xaf, 0xf1, 0xfe, 0xf0, 0x27, 0xe8, 0x1f, 0x5a, 0xe0, 0xc3, 0x6a,
-	0xe0, 0xe8, 0x41, 0xdd, 0xab, 0x13, 0x6a, 0xbd, 0xf0, 0x86, 0x2d, 0x5a, 0xd4, 0x71, 0xfb, 0x15,
-	0x00, 0x00, 0xff, 0xff, 0x2a, 0x1f, 0xc2, 0x2f, 0xcc, 0x02, 0x00, 0x00,
+	// 327 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x51, 0xcd, 0x4e, 0xc2, 0x40,
+	0x10, 0x76, 0xe5, 0xd7, 0x05, 0x3c, 0x2c, 0x31, 0xd9, 0x10, 0x0f, 0xa4, 0x89, 0x09, 0x27, 0x62,
+	0xf0, 0xe0, 0xd9, 0x70, 0x20, 0x1e, 0xbc, 0xac, 0xbc, 0xc0, 0x50, 0x27, 0xa5, 0x71, 0x69, 0xeb,
+	0xee, 0x94, 0x84, 0x27, 0xf1, 0x49, 0x7c, 0x06, 0x5f, 0xcb, 0x74, 0xba, 0x20, 0x24, 0x78, 0xf0,
+	0xd4, 0xf9, 0x7e, 0x66, 0xba, 0xdf, 0x8c, 0x1c, 0xc4, 0x50, 0x10, 0xa4, 0xd9, 0xb4, 0x70, 0x39,
+	0xe5, 0xaa, 0xc5, 0x9f, 0x51, 0x2f, 0x5e, 0x83, 0xa3, 0x69, 0x00, 0xe9, 0x06, 0x12, 0x0c, 0xe0,
+	0x6a, 0xe3, 0x93, 0xba, 0x8c, 0xbe, 0x85, 0x1c, 0x3e, 0x67, 0x9e, 0xc0, 0xda, 0x79, 0x65, 0x37,
+	0xf8, 0x51, 0xa2, 0x27, 0x15, 0xc9, 0x16, 0xb7, 0x6b, 0x31, 0x16, 0x93, 0xde, 0xac, 0x5f, 0xdb,
+	0xa7, 0xb5, 0xa7, 0x96, 0xd4, 0x9d, 0x6c, 0x53, 0x6a, 0x2d, 0x3a, 0x7d, 0xc9, 0xa6, 0x41, 0x30,
+	0x2d, 0x99, 0x34, 0x41, 0x54, 0x5a, 0x76, 0x28, 0xdd, 0x60, 0x5e, 0x92, 0x6e, 0x8c, 0xc5, 0xa4,
+	0x61, 0xf6, 0x50, 0x29, 0xd9, 0xf4, 0xbb, 0x2c, 0xd6, 0xcd, 0xb1, 0x98, 0x74, 0x0d, 0xd7, 0xea,
+	0x51, 0xf6, 0x1d, 0x26, 0xa9, 0x27, 0xb7, 0x7b, 0x2a, 0x69, 0xad, 0x5b, 0x3c, 0x7a, 0x18, 0x46,
+	0x9b, 0x23, 0xc9, 0x9c, 0x18, 0xa3, 0x2f, 0x21, 0x6f, 0x16, 0x98, 0xa1, 0x03, 0xc2, 0xd7, 0xd8,
+	0xa5, 0xc5, 0xbf, 0xb2, 0x28, 0xd9, 0x2c, 0x4a, 0x6b, 0x39, 0x49, 0xd7, 0x70, 0x5d, 0xf5, 0x39,
+	0x24, 0x48, 0xf8, 0xd9, 0xbf, 0x7d, 0x06, 0x97, 0x90, 0x98, 0x5a, 0xe2, 0x08, 0xb0, 0xc5, 0x43,
+	0x04, 0xd8, 0x62, 0xc5, 0xd9, 0x1c, 0xde, 0xf8, 0xe9, 0x5d, 0xc3, 0x75, 0xb5, 0x84, 0x2d, 0xba,
+	0x55, 0xee, 0x51, 0xb7, 0x99, 0xde, 0xc3, 0xd9, 0xa7, 0x90, 0x9d, 0x79, 0x7d, 0x3f, 0x35, 0x97,
+	0xfd, 0xe3, 0x63, 0xa8, 0x51, 0xf8, 0xe5, 0x99, 0x0b, 0x8d, 0x86, 0x87, 0x18, 0x65, 0xf6, 0xfe,
+	0x82, 0xde, 0x43, 0x82, 0xd1, 0xc5, 0xbd, 0x50, 0x0b, 0x79, 0x7d, 0xba, 0x07, 0x75, 0x1b, 0xac,
+	0x67, 0xd7, 0xf3, 0xe7, 0xa0, 0x55, 0x9b, 0xf9, 0x87, 0x9f, 0x00, 0x00, 0x00, 0xff, 0xff, 0xc7,
+	0x2f, 0xd1, 0x4b, 0x5f, 0x02, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -300,7 +216,7 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type CaptainClient interface {
-	InstallChart(ctx context.Context, in *InstallChartRequest, opts ...grpc.CallOption) (*InstallChartResponse, error)
+	InstallChart(ctx context.Context, in *InstallChartRequest, opts ...grpc.CallOption) (Captain_InstallChartClient, error)
 	GenerateScript(ctx context.Context, in *GenerateScriptRequest, opts ...grpc.CallOption) (Captain_GenerateScriptClient, error)
 }
 
@@ -312,17 +228,40 @@ func NewCaptainClient(cc *grpc.ClientConn) CaptainClient {
 	return &captainClient{cc}
 }
 
-func (c *captainClient) InstallChart(ctx context.Context, in *InstallChartRequest, opts ...grpc.CallOption) (*InstallChartResponse, error) {
-	out := new(InstallChartResponse)
-	err := c.cc.Invoke(ctx, "/proto.Captain/InstallChart", in, out, opts...)
+func (c *captainClient) InstallChart(ctx context.Context, in *InstallChartRequest, opts ...grpc.CallOption) (Captain_InstallChartClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_Captain_serviceDesc.Streams[0], "/proto.Captain/InstallChart", opts...)
 	if err != nil {
 		return nil, err
 	}
-	return out, nil
+	x := &captainInstallChartClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type Captain_InstallChartClient interface {
+	Recv() (*ChunkMessage, error)
+	grpc.ClientStream
+}
+
+type captainInstallChartClient struct {
+	grpc.ClientStream
+}
+
+func (x *captainInstallChartClient) Recv() (*ChunkMessage, error) {
+	m := new(ChunkMessage)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
 }
 
 func (c *captainClient) GenerateScript(ctx context.Context, in *GenerateScriptRequest, opts ...grpc.CallOption) (Captain_GenerateScriptClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_Captain_serviceDesc.Streams[0], "/proto.Captain/GenerateScript", opts...)
+	stream, err := c.cc.NewStream(ctx, &_Captain_serviceDesc.Streams[1], "/proto.Captain/GenerateScript", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -337,7 +276,7 @@ func (c *captainClient) GenerateScript(ctx context.Context, in *GenerateScriptRe
 }
 
 type Captain_GenerateScriptClient interface {
-	Recv() (*GenerateScriptResponse, error)
+	Recv() (*ChunkMessage, error)
 	grpc.ClientStream
 }
 
@@ -345,8 +284,8 @@ type captainGenerateScriptClient struct {
 	grpc.ClientStream
 }
 
-func (x *captainGenerateScriptClient) Recv() (*GenerateScriptResponse, error) {
-	m := new(GenerateScriptResponse)
+func (x *captainGenerateScriptClient) Recv() (*ChunkMessage, error) {
+	m := new(ChunkMessage)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
@@ -355,7 +294,7 @@ func (x *captainGenerateScriptClient) Recv() (*GenerateScriptResponse, error) {
 
 // CaptainServer is the server API for Captain service.
 type CaptainServer interface {
-	InstallChart(context.Context, *InstallChartRequest) (*InstallChartResponse, error)
+	InstallChart(*InstallChartRequest, Captain_InstallChartServer) error
 	GenerateScript(*GenerateScriptRequest, Captain_GenerateScriptServer) error
 }
 
@@ -363,22 +302,25 @@ func RegisterCaptainServer(s *grpc.Server, srv CaptainServer) {
 	s.RegisterService(&_Captain_serviceDesc, srv)
 }
 
-func _Captain_InstallChart_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(InstallChartRequest)
-	if err := dec(in); err != nil {
-		return nil, err
+func _Captain_InstallChart_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(InstallChartRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
 	}
-	if interceptor == nil {
-		return srv.(CaptainServer).InstallChart(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/proto.Captain/InstallChart",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CaptainServer).InstallChart(ctx, req.(*InstallChartRequest))
-	}
-	return interceptor(ctx, in, info, handler)
+	return srv.(CaptainServer).InstallChart(m, &captainInstallChartServer{stream})
+}
+
+type Captain_InstallChartServer interface {
+	Send(*ChunkMessage) error
+	grpc.ServerStream
+}
+
+type captainInstallChartServer struct {
+	grpc.ServerStream
+}
+
+func (x *captainInstallChartServer) Send(m *ChunkMessage) error {
+	return x.ServerStream.SendMsg(m)
 }
 
 func _Captain_GenerateScript_Handler(srv interface{}, stream grpc.ServerStream) error {
@@ -390,7 +332,7 @@ func _Captain_GenerateScript_Handler(srv interface{}, stream grpc.ServerStream) 
 }
 
 type Captain_GenerateScriptServer interface {
-	Send(*GenerateScriptResponse) error
+	Send(*ChunkMessage) error
 	grpc.ServerStream
 }
 
@@ -398,20 +340,20 @@ type captainGenerateScriptServer struct {
 	grpc.ServerStream
 }
 
-func (x *captainGenerateScriptServer) Send(m *GenerateScriptResponse) error {
+func (x *captainGenerateScriptServer) Send(m *ChunkMessage) error {
 	return x.ServerStream.SendMsg(m)
 }
 
 var _Captain_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "proto.Captain",
 	HandlerType: (*CaptainServer)(nil),
-	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "InstallChart",
-			Handler:    _Captain_InstallChart_Handler,
-		},
-	},
+	Methods:     []grpc.MethodDesc{},
 	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "InstallChart",
+			Handler:       _Captain_InstallChart_Handler,
+			ServerStreams: true,
+		},
 		{
 			StreamName:    "GenerateScript",
 			Handler:       _Captain_GenerateScript_Handler,

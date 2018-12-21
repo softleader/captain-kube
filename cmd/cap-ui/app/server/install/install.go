@@ -79,10 +79,10 @@ func Serve(path string, r *gin.Engine, cfg *comm.Config) {
 			fmt.Fprintln(&sw, "Pull/Sync failed:", err)
 		}
 
-		if err := captain.InstallChart(&sw, cfg.DefaultValue.CaptainUrl, &request, form.Verbose, 30*1000); err != nil {
-			fmt.Fprintln(&sw, "call captain InstallChart failed:", err)
-		} else {
-			fmt.Fprintln(&sw, "InstallChart finish")
+			if err := captain.InstallChart(c.Writer, cfg.DefaultValue.CaptainUrl, &request, 30*1000); err != nil {
+				fmt.Fprintln(c.Writer, "call captain InstallChart failed:", err)
+			}
+			fmt.Fprintln(c.Writer, "InstallChart finish")
 		}
 	})
 }

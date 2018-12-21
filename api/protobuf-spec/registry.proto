@@ -1,8 +1,0 @@
-syntax = "proto3";
-
-package proto;
-
-message RegistryAuth {
-    string Username = 1;
-    string Password = 2;
-}

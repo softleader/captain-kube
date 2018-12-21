@@ -2,25 +2,15 @@ syntax = "proto3";
 
 package proto;
 
-import "registry.proto";
+import "image.proto";
+import "msg.proto";
 
 message PullImageRequest {
     repeated Image images = 1;
     RegistryAuth registryAuth = 2;
 }
 
-message Image {
-    string host = 1;
-    string repo = 2;
-    string tag = 3;
-}
-
-message PullImageResponse {
-    bytes msg = 1;
-    int64 done = 2;
-}
-
 service Caplet {
-    rpc PullImage (PullImageRequest) returns (stream PullImageResponse) {
+    rpc PullImage (PullImageRequest) returns (stream ChunkMessage) {
     }
 }

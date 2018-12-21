@@ -2,24 +2,18 @@ syntax = "proto3";
 
 package proto;
 
-import "retag.proto";
 import "chart.proto";
-import "registry.proto";
-import "k8s.proto";
+import "image.proto";
+import "msg.proto";
 
 message InstallChartRequest {
-    K8s k8s = 1;
-    Chart chart = 2;
-    // timeout specifies the max amount of time any caplet can run.
+    Chart chart = 1;
+    Tiller tiller = 2;
     int64 timeout = 3;
-    // sync forces all node to pull image
     bool sync = 4;
     RegistryAuth registryAuth = 5;
 }
 
-message InstallChartResponse {
-    string msg = 1;
-}
 
 message GenerateScriptRequest {
     Chart chart = 1;
@@ -30,14 +24,10 @@ message GenerateScriptRequest {
     bool verbose = 6;
 }
 
-message GenerateScriptResponse {
-    bytes msg = 1;
-}
-
 service Captain {
-    rpc InstallChart (InstallChartRequest) returns (InstallChartResponse) {
+    rpc InstallChart (InstallChartRequest) returns (stream ChunkMessage) {
     }
-    rpc GenerateScript (GenerateScriptRequest) returns (stream GenerateScriptResponse) {
+    rpc GenerateScript (GenerateScriptRequest) returns (stream ChunkMessage) {
     }
 }
 

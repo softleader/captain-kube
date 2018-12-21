@@ -33,8 +33,8 @@ func Ui(cfg *comm.Config, port int) (err error) {
 	})
 
 	// services
-	install.Serve("install", r, cfg)
-	script.Serve("script", r, cfg)
+	install.Serve("/install", r, cfg)
+	script.Serve("/script", r, cfg)
 
 	r.Run(fmt.Sprintf(":%v", port))
 

@@ -66,8 +66,9 @@ func Serve(path string, r *gin.Engine, cfg *comm.Config) {
 
 			if err := captain.GenerateScript(c.Writer, cfg.DefaultValue.CaptainUrl, &request, 300); err != nil {
 				fmt.Fprintln(c.Writer, "call captain GenerateScript failed:", err)
+			} else {
+				fmt.Fprintln(c.Writer, "GenerateScript finish")
 			}
-			fmt.Fprintln(c.Writer, "GenerateScript finish")
 		}
 
 	})

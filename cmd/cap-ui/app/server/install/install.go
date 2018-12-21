@@ -12,6 +12,7 @@ import (
 	"github.com/softleader/captain-kube/pkg/dockerctl"
 	"github.com/softleader/captain-kube/pkg/helm/chart"
 	"github.com/softleader/captain-kube/pkg/proto"
+	"github.com/softleader/captain-kube/pkg/utils"
 	"github.com/softleader/captain-kube/pkg/utils/strutil"
 	"io"
 	"io/ioutil"
@@ -35,46 +36,61 @@ func Serve(path string, r *gin.Engine, cfg *comm.Config) {
 		})
 	})
 	r.POST(path, func(c *gin.Context) {
-		fmt.Fprintln(c.Writer, "call: POST /install")
+		sw := utils.SSEWriter{GinContext: c}
 
 		var form Request
 		if err := c.Bind(&form); err != nil {
-			fmt.Fprintln(c.Writer, "binding form data error:", err)
+			//sw.WriteStr(fmt.Sprint("binding form data error:", err))
+			fmt.Fprintln(&sw, "binding form data error:", err)
 			return
-		} else {
-			fmt.Fprintln(c.Writer, "form:", form)
 		}
 
-		if file, header, err := c.Request.FormFile("file"); err != nil {
-			fmt.Fprintln(c.Writer, "loading form file error:", err)
+		file, header, err := c.Request.FormFile("file")
+		if err != nil {
+			//sw.WriteStr(fmt.Sprint("loading form file error:", err))
+			fmt.Fprintln(&sw, "loading form file error:", err)
+			return
+		}
+
+		// 在讀完request body後才可以開始response, 否則body會close
+
+		//sw.WriteStr("call: POST /install")
+		fmt.Fprintln(&sw, "call: POST /install")
+
+		//sw.WriteStr(fmt.Sprint("form:", form))
+		fmt.Fprintln(&sw, "form:", form)
+		//sw.WriteStr(fmt.Sprint("file:", file))
+		fmt.Fprintln(&sw, "file:", file)
+
+		buf := bytes.NewBuffer(nil)
+		if readed, err := io.Copy(buf, file); err != nil {
+			//sw.WriteStr(fmt.Sprint("reading file failed:", err))
+			fmt.Fprintln(&sw, "reading file failed:", err)
 			return
 		} else {
-			fmt.Fprintln(c.Writer, "file:", file)
+			//sw.WriteStr(fmt.Sprint("readed ", readed, " bytes"))
+			fmt.Fprintln(&sw, "readed ", readed, " bytes")
+		}
 
-			buf := bytes.NewBuffer(nil)
-			if readed, err := io.Copy(buf, file); err != nil {
-				fmt.Fprintln(c.Writer, "reading file failed:", err)
-				return
-			} else {
-				fmt.Fprintln(c.Writer, "readed ", readed, " bytes")
-			}
+		request := proto.InstallChartRequest{
+			Chart: &proto.Chart{
+				FileName: header.Filename,
+				Content:  buf.Bytes(),
+				FileSize: header.Size,
+			},
+		}
 
-			request := proto.InstallChartRequest{
-				Chart: &proto.Chart{
-					FileName: header.Filename,
-					Content:  buf.Bytes(),
-					FileSize: header.Size,
-				},
-			}
+		if err := pullAndSync(&sw, form, &request); err != nil {
+			//sw.WriteStr(fmt.Sprint("Pull/Sync failed:", err))
+			fmt.Fprintln(&sw, "Pull/Sync failed:", err)
+		}
 
-			if err := pullAndSync(c.Writer, form, &request); err != nil {
-				fmt.Fprintln(c.Writer, "Pull/Sync failed:", err)
-			}
-
-			if err := captain.InstallChart(c.Writer, cfg.DefaultValue.CaptainUrl, &request, form.Verbose, 30*1000); err != nil {
-				fmt.Fprintln(c.Writer, "call captain InstallChart failed:", err)
-			}
-			fmt.Fprintln(c.Writer, "InstallChart finish")
+		if err := captain.InstallChart(&sw, cfg.DefaultValue.CaptainUrl, &request, form.Verbose, 30*1000); err != nil {
+			//sw.WriteStr(fmt.Sprint("call captain InstallChart failed:", err))
+			fmt.Fprintln(&sw, "call captain InstallChart failed:", err)
+		} else {
+			//sw.WriteStr("InstallChart finish")
+			fmt.Fprintln(&sw, "InstallChart finish")
 		}
 	})
 }

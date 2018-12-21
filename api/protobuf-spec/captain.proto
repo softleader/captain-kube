@@ -10,8 +10,11 @@ message InstallChartRequest {
     Chart chart = 1;
     Tiller tiller = 2;
     int64 timeout = 3;
-    bool sync = 4;
-    RegistryAuth registryAuth = 5;
+    bool pull = 4;
+    bool sync = 5;
+    string sourceRegistry = 6;
+    string registry = 7;
+    RegistryAuth registryAuth = 8;
 }
 
 

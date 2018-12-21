@@ -14,7 +14,11 @@ test:
 
 build: protoc
 protoc:
-	protoc -I api/protobuf-spec/ --go_out=plugins=grpc:pkg/proto api/protobuf-spec/*.proto
+	protoc -I api/protobuf-spec/ --go_out=plugins=grpc:pkg/proto api/protobuf-spec/caplet.proto
+	protoc -I api/protobuf-spec/ --go_out=plugins=grpc:pkg/proto api/protobuf-spec/captain.proto
+	protoc -I api/protobuf-spec/ --go_out=plugins=grpc:pkg/proto api/protobuf-spec/chart.proto
+	protoc -I api/protobuf-spec/ --go_out=plugins=grpc:pkg/proto api/protobuf-spec/image.proto
+	protoc -I api/protobuf-spec/ --go_out=plugins=grpc:pkg/proto api/protobuf-spec/msg.proto
 
 .PHONY: build
 build: clean bootstrap build-caplet build-captain build-ui build-capctl

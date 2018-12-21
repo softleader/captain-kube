@@ -2,22 +2,16 @@ package install
 
 import (
 	"bytes"
-	"errors"
 	"fmt"
-	"github.com/docker/docker/cli/command"
-	"github.com/docker/docker/pkg/jsonmessage"
 	"github.com/gin-gonic/gin"
 	"github.com/softleader/captain-kube/cmd/cap-ui/app/server/comm"
 	"github.com/softleader/captain-kube/pkg/captain"
 	"github.com/softleader/captain-kube/pkg/dockerctl"
-	"github.com/softleader/captain-kube/pkg/helm/chart"
 	"github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/utils"
 	"github.com/softleader/captain-kube/pkg/utils/strutil"
 	"io"
-	"io/ioutil"
 	"net/http"
-	"os"
 )
 
 type Request struct {
@@ -52,7 +46,7 @@ func Serve(path string, r *gin.Engine, cfg *comm.Config) {
 			return
 		}
 
-		// 在讀完request body後才可以開始response, 否則body會close
+		// ps. 在讀完request body後才可以開始response, 否則body會close
 
 		fmt.Fprintln(&sw, "call: POST /install")
 
@@ -67,15 +61,24 @@ func Serve(path string, r *gin.Engine, cfg *comm.Config) {
 			fmt.Fprintln(&sw, "readed ", readed, " bytes")
 		}
 
+		// prepare rquest
 		request := proto.InstallChartRequest{
 			Chart: &proto.Chart{
 				FileName: header.Filename,
 				Content:  buf.Bytes(),
 				FileSize: header.Size,
 			},
+			Pull:           strutil.Contains(form.Tags, "p"),
+			Sync:           strutil.Contains(form.Tags, "r"),
+			SourceRegistry: form.SourceRegistry,
+			Registry:       form.Registry,
+			RegistryAuth: &proto.RegistryAuth{
+				Username: cfg.RegistryAuth.Username,
+				Password: cfg.RegistryAuth.Password,
+			},
 		}
 
-		if err := pullAndSync(&sw, form, &request, cfg); err != nil {
+		if err := dockerctl.PullAndSync(&sw, &request); err != nil {
 			fmt.Fprintln(&sw, "Pull/Sync failed:", err)
 		}
 
@@ -84,72 +87,4 @@ func Serve(path string, r *gin.Engine, cfg *comm.Config) {
 		}
 		fmt.Fprintln(c.Writer, "InstallChart finish")
 	})
-}
-
-func pullAndSync(out io.Writer, form Request, request *proto.InstallChartRequest, cfg *comm.Config) error {
-	var tpls chart.Templates
-	var auth proto.RegistryAuth
-	if len(form.Tags) > 0 {
-		// mk temp file
-		tmpFile, err := ioutil.TempFile(os.TempDir(), "capui-*.tgz")
-		if err != nil {
-			return err
-		}
-		defer os.Remove(tmpFile.Name())
-
-		if _, err := tmpFile.Write(request.Chart.Content); err != nil {
-			return err
-		}
-
-		// load chart templates
-		tpls, err = chart.LoadArchive(out, tmpFile.Name())
-		if err != nil {
-			return err
-		}
-
-		auth = proto.RegistryAuth{
-			Username: cfg.RegistryAuth.Username,
-			Password: cfg.RegistryAuth.Password,
-		}
-	}
-
-	if strutil.Contains(form.Tags, "p") {
-		// pull all image from chart
-		for _, tpl := range tpls {
-			for _, image := range tpl {
-				fmt.Fprintln(out, "pulling ", image)
-				result, err := dockerctl.Pull(out, *image, &auth)
-				if err != nil {
-					fmt.Fprintln(out, "pull image failed: ", image, ", error: ", err)
-				}
-				jsonmessage.DisplayJSONMessagesToStream(result, command.NewOutStream(out), nil)
-			}
-		}
-	}
-
-	if strutil.Contains(form.Tags, "r") {
-		if len(form.SourceRegistry) > 0 && len(form.Registry) > 0 {
-			// retag and push all image from chart
-			for _, tpl := range tpls {
-				for _, image := range tpl {
-					if image.Host == form.SourceRegistry {
-						fmt.Fprintln(out, "syncing ", image)
-						result, err := dockerctl.ReTag(out, *image, chart.Image{
-							Host: form.Registry,
-							Repo: image.Repo,
-							Tag:  image.Tag,
-						}, &auth)
-						if err != nil {
-							fmt.Fprintln(out, "sync image failed: ", image, ", error: ", err)
-						}
-						jsonmessage.DisplayJSONMessagesToStream(result, command.NewOutStream(out), nil)
-					}
-				}
-			}
-		} else {
-			return errors.New("Registry and SourceRegistry is required when retag mode")
-		}
-	}
-
-	return nil
 }

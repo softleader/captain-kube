@@ -16,27 +16,29 @@ import (
 )
 
 type Grpc struct{}
-type server struct{}
+type server struct {
+	out io.Writer
+}
 
 func (g *server) PullImage(req *proto.PullImageRequest, stream proto.Caplet_PullImageServer) error {
-	for _, image := range req.Images {
-		sw := sio.NewStreamWriter(func(p []byte) error {
-			return stream.Send(&proto.PullImageResponse{
-				Msg: p,
-			})
+	sout := sio.NewStreamWriter(func(p []byte) error {
+		return stream.Send(&proto.PullImageResponse{
+			Msg: p,
 		})
-		if err := pull(sw, image, req.GetRegistryAuth()); err != nil {
+	})
+	for _, image := range req.Images {
+		if err := pull(g.out, sout, image, req.GetRegistryAuth()); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-func pull(w io.Writer, image *proto.Image, auth *proto.RegistryAuth) error {
+func pull(out io.Writer, sout io.Writer, image *proto.Image, auth *proto.RegistryAuth) error {
 	if tag := image.GetTag(); len(tag) == 0 {
 		image.Tag = "latest"
 	}
-	out, err := dockerctl.Pull(w, chart.Image{
+	rc, err := dockerctl.Pull(out, chart.Image{
 		Host: image.Host,
 		Repo: image.Repo,
 		Tag:  image.Tag,
@@ -44,8 +46,8 @@ func pull(w io.Writer, image *proto.Image, auth *proto.RegistryAuth) error {
 	if err != nil {
 		return err
 	}
-	defer out.Close()
-	return jsonmessage.DisplayJSONMessagesToStream(out, command.NewOutStream(sw), nil)
+	defer rc.Close()
+	return jsonmessage.DisplayJSONMessagesToStream(rc, command.NewOutStream(sout), nil)
 }
 
 func (_ Grpc) Serve(out io.Writer, port int) error {

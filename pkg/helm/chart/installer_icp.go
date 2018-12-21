@@ -1,8 +1,10 @@
 package chart
 
 import (
+	"fmt"
 	"io"
 	"os/exec"
+	"strings"
 )
 
 type icpInstaller struct {
@@ -26,8 +28,15 @@ func (i *icpInstaller) Install(out io.Writer) error {
 	return nil
 }
 
+func format(endpoint string) string {
+	if strings.HasPrefix(endpoint, "http") {
+		return endpoint
+	}
+	return fmt.Sprintf("https://%s:8443", endpoint)
+}
+
 func loginBxPr(out io.Writer, endpoint, username, password, account string, skipSslValidation bool) error {
-	args := []string{"pr", "login", "-a", endpoint, "-u", username, "-p", password, "-c", account}
+	args := []string{"pr", "login", "-a", format(endpoint), "-u", username, "-p", password, "-c", account}
 	if skipSslValidation {
 		args = append(args, "--skip-ssl-validation")
 	}

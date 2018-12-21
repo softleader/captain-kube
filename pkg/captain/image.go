@@ -1,4 +1,4 @@
-package image
+package captain
 
 const (
 	EnvRegistryAuthUsername = "REGISTRY_AUTH_USERNAME"

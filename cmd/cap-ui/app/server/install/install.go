@@ -91,7 +91,7 @@ func Serve(path string, r *gin.Engine, cfg *comm.Config) {
 			fmt.Fprintln(&sw, "Pull/Sync failed:", err)
 		}
 
-		if err := captain.InstallChart(c.Writer, cfg.DefaultValue.CaptainUrl, &request, 30*1000); err != nil {
+		if err := captain.InstallChart(c.Writer, cfg.DefaultValue.CaptainUrl, &request, 300); err != nil {
 			fmt.Fprintln(c.Writer, "call captain InstallChart failed:", err)
 		}
 		fmt.Fprintln(c.Writer, "InstallChart finish")

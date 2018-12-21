@@ -1,5 +1,5 @@
 defaultValue:
-  captainUrl: localhost:8081
+  captainUrl: localhost:30051
   inventory: hosts
   tags:
   - icp
@@ -12,7 +12,7 @@ registryAuth:
   username: dev
   password: sleader
 tiller:
-  endpoint: k8s.master.ip:8443
+  endpoint: k8s.master.vip:8443
   username: admin
   password: admin
   account: icp Account

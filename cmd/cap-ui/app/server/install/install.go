@@ -54,21 +54,16 @@ func Serve(path string, r *gin.Engine, cfg *comm.Config) {
 
 		// 在讀完request body後才可以開始response, 否則body會close
 
-		//sw.WriteStr("call: POST /install")
 		fmt.Fprintln(&sw, "call: POST /install")
 
-		//sw.WriteStr(fmt.Sprint("form:", form))
 		fmt.Fprintln(&sw, "form:", form)
-		//sw.WriteStr(fmt.Sprint("file:", file))
 		fmt.Fprintln(&sw, "file:", file)
 
 		buf := bytes.NewBuffer(nil)
 		if readed, err := io.Copy(buf, file); err != nil {
-			//sw.WriteStr(fmt.Sprint("reading file failed:", err))
 			fmt.Fprintln(&sw, "reading file failed:", err)
 			return
 		} else {
-			//sw.WriteStr(fmt.Sprint("readed ", readed, " bytes"))
 			fmt.Fprintln(&sw, "readed ", readed, " bytes")
 		}
 
@@ -81,15 +76,12 @@ func Serve(path string, r *gin.Engine, cfg *comm.Config) {
 		}
 
 		if err := pullAndSync(&sw, form, &request); err != nil {
-			//sw.WriteStr(fmt.Sprint("Pull/Sync failed:", err))
 			fmt.Fprintln(&sw, "Pull/Sync failed:", err)
 		}
 
 		if err := captain.InstallChart(&sw, cfg.DefaultValue.CaptainUrl, &request, form.Verbose, 30*1000); err != nil {
-			//sw.WriteStr(fmt.Sprint("call captain InstallChart failed:", err))
 			fmt.Fprintln(&sw, "call captain InstallChart failed:", err)
 		} else {
-			//sw.WriteStr("InstallChart finish")
 			fmt.Fprintln(&sw, "InstallChart finish")
 		}
 	})

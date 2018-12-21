@@ -38,15 +38,18 @@
             <div class="form-group" id="registry-group" style="display: none">
                 <label for="registry">Registry</label>
                 <div class="input-group">
-                    <input type="text" class="form-control" name="sourceRegistry" id="sourceRegistry" value="{{ .config.DefaultValue.SourceRegistry }}">
+                    <input type="text" class="form-control" name="sourceRegistry" id="sourceRegistry"
+                           value="{{ .config.DefaultValue.SourceRegistry }}">
                     <div class="input-group-prepend">
                         <span class="input-group-text" id=""><i class="fas fa-angle-double-right"></i></span>
                     </div>
-                    <input type="text" class="form-control" name="registry" id="registry" value="{{ .config.DefaultValue.Registry }}">
+                    <input type="text" class="form-control" name="registry" id="registry"
+                           value="{{ .config.DefaultValue.Registry }}">
                 </div>
             </div>
 
-            <button id="generate" url="/script" type="submit" class="btn btn-outline-primary btn-block" onclick="$(this).parent().attr('action', $(this).attr('url'))">
+            <button id="generate" url="/script" type="submit" class="btn btn-outline-primary btn-block"
+                    onclick="$(this).parent().attr('action', $(this).attr('url'))">
                 Generate Script
             </button>
         </form>
@@ -64,7 +67,9 @@
                     </button>
                 </div>
             </div>
-            <p><pre id="output" class="text-light console-output-font"></pre></p>
+            <p>
+            <pre id="output" class="text-light console-output-font"></pre>
+            </p>
         </div>
     </div>
 </main>
@@ -74,13 +79,14 @@
         <p class="float-right">
             <a href="#" class="text-muted"><i class="fas fa-angle-double-up fa-2x"></i></a>
         </p>
-        <p><a href="https://github.com/softleader" class="text-muted"><i class="fab fa-github"></i></a> <a href="https://www.facebook.com/softleader" class="text-muted"><i class="fab fa-facebook"></i></a></p>
-        <p>Copyright © 2018 <a href="https://www.softleader.com.tw" class="text-muted">SoftLeader Technology Crop</a>. All rights reserved.</p>
+        <p><a href="https://github.com/softleader" class="text-muted"><i class="fab fa-github"></i></a> <a
+                href="https://www.facebook.com/softleader" class="text-muted"><i class="fab fa-facebook"></i></a></p>
+        <p>Copyright © 2018 <a href="https://www.softleader.com.tw" class="text-muted">SoftLeader Technology Crop</a>.
+            All rights reserved.</p>
     </div>
 </footer>
 
-<script src="/static/jquery-3.3.1.min.js"></script>
-<script src="/static/bootstrap-4.1.0-dist/js/bootstrap.bundle.min.js"></script>
+{{ template "tmp_script.html" }}
 <script src="/static/clipboard.min.js"></script>
 
 <script>
@@ -118,30 +124,26 @@
 
             let formData = new FormData($('#dataForm')[0]);
 
-            $.ajax({
-                type: 'POST',
-                url: event.target.action,
-                data: formData,
-                dataType: 'json',
-                processData: false,
-                contentType: false,
-                xhrFields: {
-                    onprogress: function (e) {
-                        $output.text(e.currentTarget.response);
+            fetch(event.target.action, {
+                method: 'POST',
+                body: formData,
+            }).then(response => readSSE(response, {
+                onNext(value) {
+                    $output.append(value + '<br>');
+                },
+                onComplete() {
+                    $btns.prop('disabled', false);
+                    let dl = /generated\s(.+)$/gm.exec($output.text());
+                    if (dl) {
+                        let $a = $("<a></a>").addClass("btn btn-outline-info").append("Download");
+                        $a.attr("href", "/script?file=" + dl[1]);
+                        $a.click(function () {
+                            $(this).remove();
+                        });
+                        $output.append($("<hr/>")).append($a).append($("<p/>"));
                     }
                 }
-            }).always(function () {
-                $btns.prop('disabled', false);
-                let dl = /generated\s(.+)$/gm.exec($output.text());
-                if (dl) {
-                    let $a = $("<a></a>").addClass("btn btn-outline-info").append("Download");
-                    $a.attr("href", "/script?file=" + dl[1]);
-                    $a.click(function () {
-                        $(this).remove();
-                    });
-                    $output.append($("<hr/>")).append($a).append($("<p/>"));
-                }
-            });
+            })).catch(error => $output.append(error + '<br>'));
         });
 
         $(window).on('beforeunload', function () {

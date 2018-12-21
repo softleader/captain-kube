@@ -45,6 +45,9 @@ function readSSE(response, {onNext = (value) => {}, onComplete = () => {}, onErr
             }
           } catch (e) {
             onError(e);
+            onComplete();
+            controller.close();
+            return;
           }
           // Enqueue the next data chunk into our target stream
           controller.enqueue(value);

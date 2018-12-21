@@ -172,23 +172,6 @@
 
             let formData = new FormData($('#dataForm')[0]);
 
-            // $.ajax({
-            //     type: 'post',
-            //     url: event.target.action,
-            //     data: formData,
-            //     dataType: 'json',
-            //     processData: false,
-            //     contentType: false,
-            //     xhrFields: {
-            //         onprogress: function (e) {
-            //             $output.text(e.currentTarget.response);
-            //         }
-            //     }
-            // }).always(function () {
-            //     $btns.prop('disabled', false);
-            // });
-
-
             fetch(event.target.action, {
                 method: 'POST',
                 body: formData,

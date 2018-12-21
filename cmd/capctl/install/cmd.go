@@ -4,29 +4,34 @@ import (
 	"github.com/softleader/captain-kube/pkg/captain"
 	"github.com/softleader/captain-kube/pkg/dockerctl"
 	"github.com/softleader/captain-kube/pkg/env"
+	"github.com/softleader/captain-kube/pkg/image"
 	"github.com/softleader/captain-kube/pkg/proto"
 	"github.com/spf13/cobra"
 	"io"
 )
 
 type installCmd struct {
-	out            io.Writer
-	pull           bool
-	sync           bool
-	k8sVendor      string
-	namespace      string
-	sourceRegistry string
-	registry       string
-	chartPath      string
-	verbose        bool
+	out                  io.Writer
+	pull                 bool
+	sync                 bool
+	k8sVendor            string
+	namespace            string
+	sourceRegistry       string
+	registry             string
+	chartPath            string
+	verbose              bool
+	registryAuthUsername string
+	registryAuthPassword string
 }
 
 func NewCmd(out io.Writer) *cobra.Command {
 	c := installCmd{
-		out:       out,
-		k8sVendor: env.Lookup(captain.EnvK8sVendor, captain.DefaultK8sVendor),
-		namespace: "default",
-		chartPath: "./chart.tgz",
+		out:                  out,
+		k8sVendor:            env.Lookup(captain.EnvK8sVendor, captain.DefaultK8sVendor),
+		namespace:            "default",
+		chartPath:            "./chart.tgz",
+		registryAuthUsername: env.Lookup(image.EnvRegistryAuthUsername, image.DefaultRegistryAuthUsername),
+		registryAuthPassword: env.Lookup(image.EnvRegistryAuthPassword, image.DefaultRegistryAuthPassword),
 	}
 
 	cmd := &cobra.Command{
@@ -46,13 +51,18 @@ func NewCmd(out io.Writer) *cobra.Command {
 	f.StringVar(&c.sourceRegistry, "src", c.sourceRegistry, "specify the host of Retage from, reqiured when Sync")
 	f.StringVar(&c.registry, "tgt", c.registry, "specify the host of Retage to, reqiured when Sync")
 	f.StringVarP(&c.chartPath, "chartPath", "f", c.chartPath, "specify the path of char, must be a tgz file, default: "+c.chartPath)
+	f.StringVar(&c.registryAuthUsername, "user", c.chartPath, "specify the path of char, must be a tgz file, default: "+c.chartPath)
+	f.StringVar(&c.registryAuthPassword, "pass", c.chartPath, "specify the path of char, must be a tgz file, default: "+c.chartPath)
 
 	return cmd
 }
 
 func (c *installCmd) run() error {
 
-	dockerctl.PullAndSync(c.out, &proto.InstallChartRequest{})
+	dockerctl.PullAndSync(c.out, &proto.InstallChartRequest{
+		Pull: c.pull,
+		Sync: c.sync,
+	})
 
 	return nil
 }

@@ -114,14 +114,14 @@ func PullAndSync(out io.Writer, request *proto.InstallChartRequest) error {
 	}
 
 	if request.Sync {
-		if len(request.SourceRegistry) > 0 && len(request.Registry) > 0 {
+		if len(request.Retag.From) > 0 && len(request.Retag.To) > 0 {
 			// retag and push all image from chart
 			for _, tpl := range tpls {
 				for _, image := range tpl {
-					if image.Host == request.SourceRegistry {
+					if image.Host == request.Retag.From {
 						fmt.Fprintln(out, "syncing ", image)
 						result, err := ReTag(out, *image, chart.Image{
-							Host: request.Registry,
+							Host: request.Retag.To,
 							Repo: image.Repo,
 							Tag:  image.Tag,
 						}, request.RegistryAuth)

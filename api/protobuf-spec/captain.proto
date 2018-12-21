@@ -12,9 +12,8 @@ message InstallChartRequest {
     int64 timeout = 3;
     bool pull = 4;
     bool sync = 5;
-    string sourceRegistry = 6;
-    string registry = 7;
-    RegistryAuth registryAuth = 8;
+    ReTag retag = 6;
+    RegistryAuth registryAuth = 7;
 }
 
 

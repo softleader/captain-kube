@@ -68,10 +68,12 @@ func Serve(path string, r *gin.Engine, cfg *comm.Config) {
 				Content:  buf.Bytes(),
 				FileSize: header.Size,
 			},
-			Pull:           strutil.Contains(form.Tags, "p"),
-			Sync:           strutil.Contains(form.Tags, "r"),
-			SourceRegistry: form.SourceRegistry,
-			Registry:       form.Registry,
+			Pull: strutil.Contains(form.Tags, "p"),
+			Sync: strutil.Contains(form.Tags, "r"),
+			Retag: &proto.ReTag{
+				From: form.SourceRegistry,
+				To:   form.Registry,
+			},
 			RegistryAuth: &proto.RegistryAuth{
 				Username: cfg.RegistryAuth.Username,
 				Password: cfg.RegistryAuth.Password,

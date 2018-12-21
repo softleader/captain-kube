@@ -17,6 +17,10 @@ type Config struct {
 		SourceRegistry string   `yaml:"sourceRegistry"`
 		Registry       string   `yaml:"registry"`
 	} `yaml:"defaultValue"`
+	RegistryAuth struct {
+		Username string `yaml:"username"`
+		Password string `yaml:"password"`
+	} `yaml:"registryAuth"`
 }
 
 func GetConfig(configYamlPath string) (c *Config, err error) {

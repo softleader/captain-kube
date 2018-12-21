@@ -75,7 +75,7 @@ func Serve(path string, r *gin.Engine, cfg *comm.Config) {
 			},
 		}
 
-		if err := pullAndSync(&sw, form, &request); err != nil {
+		if err := pullAndSync(&sw, form, &request, cfg); err != nil {
 			fmt.Fprintln(&sw, "Pull/Sync failed:", err)
 		}
 
@@ -87,8 +87,9 @@ func Serve(path string, r *gin.Engine, cfg *comm.Config) {
 	})
 }
 
-func pullAndSync(out io.Writer, form Request, request *proto.InstallChartRequest) error {
+func pullAndSync(out io.Writer, form Request, request *proto.InstallChartRequest, cfg *comm.Config) error {
 	var tpls chart.Templates
+	var auth proto.RegistryAuth
 	if len(form.Tags) > 0 {
 		// mk temp file
 		tmpFile, err := ioutil.TempFile(os.TempDir(), "capui-*.tgz")
@@ -106,6 +107,11 @@ func pullAndSync(out io.Writer, form Request, request *proto.InstallChartRequest
 		if err != nil {
 			return err
 		}
+
+		auth = proto.RegistryAuth{
+			Username: cfg.RegistryAuth.Username,
+			Password: cfg.RegistryAuth.Password,
+		}
 	}
 
 	if strutil.Contains(form.Tags, "p") {
@@ -113,7 +119,7 @@ func pullAndSync(out io.Writer, form Request, request *proto.InstallChartRequest
 		for _, tpl := range tpls {
 			for _, image := range tpl {
 				fmt.Fprintln(out, "pulling ", image)
-				result, err := dockerctl.Pull(out, *image, nil) // TODO: get RegistryAuth from config
+				result, err := dockerctl.Pull(out, *image, &auth)
 				if err != nil {
 					fmt.Fprintln(out, "pull image failed: ", image, ", error: ", err)
 				}
@@ -133,7 +139,7 @@ func pullAndSync(out io.Writer, form Request, request *proto.InstallChartRequest
 							Host: form.Registry,
 							Repo: image.Repo,
 							Tag:  image.Tag,
-						}, nil) // TODO: get RegistryAuth from config
+						}, &auth)
 						if err != nil {
 							fmt.Fprintln(out, "sync image failed: ", image, ", error: ", err)
 						}

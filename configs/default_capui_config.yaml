@@ -8,3 +8,6 @@ defaultValue:
   verbose: false
   sourceRegistry: changeit
   registry:
+registryAuth:
+  username: dev
+  password: sleader

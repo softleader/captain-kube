@@ -1,10 +1,7 @@
-fullnameOverride: false
-nameOverride: false
-
-captain: 
+captain:
   image: softleader/captain
   tag: latest
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
   k8sVendor: icp
   ingress:
     path: /captain
@@ -12,4 +9,4 @@ captain:
 caplet:
   image: softleader/caplet
   tag: latest
-  pullPolicy: IfNotPresent
+  pullPolicy: Always

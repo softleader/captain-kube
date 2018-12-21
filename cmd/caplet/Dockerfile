@@ -5,4 +5,6 @@ RUN apk update && apk add ca-certificates && rm -rf /var/cache/apk/*
 WORKDIR /app
 ADD caplet /app/calpet
 
+ENV GIN_MODE=release
+
 ENTRYPOINT ./caplet

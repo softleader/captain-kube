@@ -3,10 +3,10 @@ captain:
   tag: latest
   pullPolicy: Always
   k8sVendor: icp
-  ingress:
-    path: /captain
+  port: 30051
 
 caplet:
   image: softleader/caplet
   tag: latest
   pullPolicy: Always
+  port: 50051

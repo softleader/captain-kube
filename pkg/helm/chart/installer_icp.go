@@ -15,23 +15,31 @@ type icpInstaller struct {
 }
 
 func (i *icpInstaller) Install(out io.Writer) error {
-	args := []string{"pr", "login", "-a", i.endpoint, "-u", i.username, "-p", i.password, "-c", i.account}
-	if i.skipSslValidation {
+	if err := loginBxPr(out, i.endpoint, i.username, i.password, i.account, i.skipSslValidation); err != nil {
+		return err
+	}
+
+	if err := loadHelmChart(out, i.chart); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func loginBxPr(out io.Writer, endpoint, username, password, account string, skipSslValidation bool) error {
+	args := []string{"pr", "login", "-a", endpoint, "-u", username, "-p", password, "-c", account}
+	if skipSslValidation {
 		args = append(args, "--skip-ssl-validation")
 	}
 	cmd := exec.Command("bx", args...)
 	cmd.Stdout = out
 	cmd.Stderr = out
-	if err := cmd.Run(); err != nil {
-		return err
-	}
+	return cmd.Run()
+}
 
-	cmd = exec.Command("bx", "pr", "load-helm-char", "--archive", i.chart)
+func loadHelmChart(out io.Writer, chart string) error {
+	cmd := exec.Command("bx", "pr", "load-helm-chart", "--archive", chart)
 	cmd.Stdout = out
 	cmd.Stderr = out
-	if err := cmd.Run(); err != nil {
-		return err
-	}
-
-	return nil
+	return cmd.Run()
 }

@@ -36,7 +36,9 @@ func NewCaptainCommand() (cmd *cobra.Command) {
 		Use:  "captain",
 		Long: "captain is the brain of captain-kube system",
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			c.log = logger.New(cmd.OutOrStdout()).WithVerbose(verbose)
+			c.log = logger.New(cmd.OutOrStdout()).
+				WithFormatter(logger.NewTextFormatter()).
+				WithVerbose(verbose)
 			return c.Run()
 		},
 	}

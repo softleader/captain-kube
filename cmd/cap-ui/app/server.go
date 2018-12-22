@@ -20,7 +20,9 @@ func NewCapuiCommand() (cmd *cobra.Command) {
 		Use:  "capui",
 		Long: "capui is a web interface for captain",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			c.log = logger.New(cmd.OutOrStdout()).WithVerbose(verbose)
+			c.log = logger.New(cmd.OutOrStdout()).
+				WithFormatter(logger.NewTextFormatter()).
+				WithVerbose(verbose)
 			return c.run()
 		},
 	}

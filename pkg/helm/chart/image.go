@@ -1,6 +1,7 @@
 package chart
 
 import (
+	"bytes"
 	"fmt"
 	"strings"
 )
@@ -13,18 +14,25 @@ type Image struct {
 }
 
 func (i *Image) String() string {
-	return fmt.Sprintf("%s/%s:%s", i.Host, i.Repo, i.Tag)
+	var buf bytes.Buffer
+	if i.Host != "" {
+		buf.WriteString(fmt.Sprintf("%s/", i.Host))
+	}
+	buf.WriteString(i.Name)
+	return buf.String()
 }
 
 func newImage(img string) (i *Image) {
-	i = &Image{
-		Host: before(img, "/"),
-		Name: after(img, "/"),
+	i = &Image{}
+	if strings.ContainsAny(img, "/") {
+		i.Host = before(img, "/")
+		i.Name = after(img, "/")
+	} else {
+		i.Name = img
 	}
 	if n := i.Name; strings.ContainsAny(n, ":") {
-		s := strings.Split(n, ":")
-		i.Repo = s[0]
-		i.Tag = s[1]
+		i.Repo = before(n, ":")
+		i.Tag = after(n, ":")
 	} else {
 		i.Repo = n
 	}

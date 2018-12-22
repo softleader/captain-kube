@@ -11,6 +11,7 @@ type TextFormatter struct {
 	TimestampLayout string
 	Prefix          string
 	Buffer          *bytes.Buffer
+	Level           bool
 }
 
 func NewTextFormatter() *TextFormatter {
@@ -32,6 +33,11 @@ func (f *TextFormatter) WithTimestampLayout(layout string) *TextFormatter {
 
 func (f *TextFormatter) WithPrefix(prefix string) *TextFormatter {
 	f.Prefix = prefix
+	return f
+}
+
+func (f *TextFormatter) WithLevel(level bool) *TextFormatter {
+	f.Level = level
 	return f
 }
 
@@ -57,8 +63,10 @@ func (f *TextFormatter) Format(lv Level, b []byte) ([]byte, error) {
 			return b, err
 		}
 	}
-	if _, err := buf.WriteString(fmt.Sprintf("%s: ", lv.String())); err != nil {
-		return b, err
+	if f.Level {
+		if _, err := buf.WriteString(fmt.Sprintf("%s ", lv.String())); err != nil {
+			return b, err
+		}
 	}
 	if _, err := buf.Write(b); err != nil {
 		return b, err

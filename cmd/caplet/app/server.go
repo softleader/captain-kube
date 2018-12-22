@@ -54,7 +54,7 @@ func (c *capletCmd) run() error {
 	}
 
 	s := grpc.NewServer()
-	proto.RegisterCapletServer(s, &server.CaptainServer{})
+	proto.RegisterCapletServer(s, server.NewCapletServer(c.log))
 	c.log.Printf("registered caplet server\n")
 	reflection.Register(s)
 

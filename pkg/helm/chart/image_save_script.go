@@ -6,12 +6,11 @@ import (
 )
 
 const saveScript = `
-{{ $from := index . "from" }}
-{{- range $path, $images := index . "tpls" }}
+{{- range $path, $images := index . "images" }}
 ##---
 # Source: {{ $path }}
 {{- range $key, $image := $images }}
-docker tag {{ $from }}/{{ $image.Name }} {{ $image.Host }}/{{ $image.Name }}
+docker save -o ./{{ $image.Name }}.tar {{ $image.String }}
 {{- end }}
 {{- end }}
 `

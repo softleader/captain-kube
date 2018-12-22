@@ -18,6 +18,12 @@ func (s *CaptainServer) GenerateScript(req *proto.GenerateScriptRequest, stream 
 		})
 	})).WithVerbose(req.GetVerbose())
 
+	log.Debugf("chart: %s\n", req.GetChart().GetFileName())
+	log.Debugf("retag: %+v\n", req.GetRetag())
+	log.Debugf("pull: %+v\n", req.GetPull())
+	log.Debugf("load: %+v\n", req.GetLoad())
+	log.Debugf("save: %+v\n", req.GetSave())
+
 	tmp, err := ioutil.TempDir(os.TempDir(), "generate-script-")
 	if err != nil {
 		return err
@@ -33,6 +39,7 @@ func (s *CaptainServer) GenerateScript(req *proto.GenerateScriptRequest, stream 
 	if err != nil {
 		return err
 	}
+	log.Debugf("%v template(s) loaded\n", len(tpls))
 
 	if from, to := strings.TrimSpace(req.GetRetag().GetFrom()), strings.TrimSpace(req.GetRetag().GetTo()); from != "" && to != "" {
 		if err := tpls.GenerateReTagScript(log, from, to); err != nil {

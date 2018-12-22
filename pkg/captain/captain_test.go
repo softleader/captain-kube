@@ -44,8 +44,9 @@ func TestGenerateScript(t *testing.T) {
 		Pull: true,
 		Retag: &proto.ReTag{
 		},
-		Save: true,
-		Load: true,
+		Save:    true,
+		Load:    true,
+		Verbose: true,
 	}, dur.DefaultDeadlineSecond)
 	if err != nil {
 		t.Error(err)

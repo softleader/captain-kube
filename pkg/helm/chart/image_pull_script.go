@@ -10,7 +10,7 @@ const pullScript = `
 ##---
 # Source: {{ $path }}
 {{- range $key, $image := $images }}
-docker pull {{ $image.Host }}/{{ $image.Name }}
+docker pull {{ $image.String }}
 {{- end }}
 {{- end }}
 `

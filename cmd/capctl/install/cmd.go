@@ -5,15 +5,15 @@ import (
 	"github.com/softleader/captain-kube/pkg/captain"
 	"github.com/softleader/captain-kube/pkg/dockerctl"
 	"github.com/softleader/captain-kube/pkg/env"
+	"github.com/softleader/captain-kube/pkg/logger"
 	"github.com/softleader/captain-kube/pkg/proto"
 	"github.com/spf13/cobra"
-	"io"
 	"io/ioutil"
 	"strconv"
 )
 
 type installCmd struct {
-	out            io.Writer
+	log            *logger.Logger
 	pull           bool
 	sync           bool
 	k8sVendor      string
@@ -36,9 +36,9 @@ type installCmd struct {
 	captainUrl string
 }
 
-func NewCmd(out io.Writer) *cobra.Command {
+func NewCmd(log *logger.Logger) *cobra.Command {
 	c := installCmd{
-		out:       out,
+		log:       log,
 		k8sVendor: env.Lookup(captain.EnvK8sVendor, captain.DefaultK8sVendor),
 		namespace: "default",
 		chartPath: "./chart.tgz",
@@ -121,11 +121,11 @@ func (c *installCmd) run() error {
 		Timeout: c.timeout,
 	}
 
-	if err := dockerctl.PullAndSync(c.out, &request); err != nil {
+	if err := dockerctl.PullAndSync(c.log, &request); err != nil {
 		return err
 	}
 
-	if err := captain.InstallChart(c.out, c.captainUrl, &request, 300); err != nil {
+	if err := captain.InstallChart(c.log, c.captainUrl, &request, 300); err != nil {
 		return err
 	}
 

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"github.com/softleader/captain-kube/pkg/arc"
 	"github.com/softleader/captain-kube/pkg/helm"
+	"github.com/softleader/captain-kube/pkg/logger"
 	"gopkg.in/yaml.v2"
-	"io"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -16,14 +16,14 @@ const templateDir = "t"
 
 type Templates map[string][]*Image
 
-func LoadArchive(out io.Writer, archivePath string) (tpls Templates, err error) {
+func LoadArchive(log *logger.Logger, archivePath string) (tpls Templates, err error) {
 	path, err := ioutil.TempDir(os.TempDir(), "load-archive-")
 	if err != nil {
 		return
 	}
 	defer os.RemoveAll(path)
 	extractPath := filepath.Join(path, filepath.Base(archivePath))
-	if err = arc.Extract(out, archivePath, extractPath); err != nil {
+	if err = arc.Extract(log, archivePath, extractPath); err != nil {
 		return
 	}
 	chartDir, err := findFirstDir(extractPath)
@@ -31,10 +31,10 @@ func LoadArchive(out io.Writer, archivePath string) (tpls Templates, err error) 
 		return
 	}
 	tplPath := filepath.Join(chartDir, templateDir)
-	if err = helm.Template(out, chartDir, tplPath); err != nil {
+	if err = helm.Template(log, chartDir, tplPath); err != nil {
 		return
 	}
-	tpls, err = LoadDir(out, tplPath)
+	tpls, err = LoadDir(log, tplPath)
 	return
 }
 
@@ -51,7 +51,7 @@ func findFirstDir(path string) (string, error) {
 	return "", fmt.Errorf("no dir found in %q", path)
 }
 
-func LoadDir(_ io.Writer, chartPath string) (tpls Templates, err error) {
+func LoadDir(_ *logger.Logger, chartPath string) (tpls Templates, err error) {
 	tpls = make(map[string][]*Image)
 	err = filepath.Walk(chartPath, func(path string, info os.FileInfo, err error) error {
 		i, err := image(path, info)

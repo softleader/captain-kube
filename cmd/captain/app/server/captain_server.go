@@ -4,15 +4,15 @@ import (
 	"fmt"
 	"github.com/softleader/captain-kube/pkg/caplet"
 	"github.com/softleader/captain-kube/pkg/helm/chart"
+	"github.com/softleader/captain-kube/pkg/logger"
 	"github.com/softleader/captain-kube/pkg/proto"
-	"io"
 	"net"
 )
 
 var ErrNonCapletDaemonFound = fmt.Errorf("non caplet daemon found")
 
 type CaptainServer struct {
-	Out       io.Writer
+	Log       *logger.Logger
 	Hostname  string
 	Endpoints []string
 	Port      int

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/softleader/captain-kube/pkg/dur"
+	"github.com/softleader/captain-kube/pkg/logger"
 	"github.com/softleader/captain-kube/pkg/proto"
 	"google.golang.org/grpc"
 	"io"
@@ -16,7 +17,7 @@ const (
 	DefaultK8sVendor = "icp"
 )
 
-func InstallChart(out io.Writer, url string, req *proto.InstallChartRequest, timeout int64) error {
+func InstallChart(log *logger.Logger, url string, req *proto.InstallChartRequest, timeout int64) error {
 	conn, err := grpc.Dial(url, grpc.WithInsecure())
 	if err != nil {
 		return fmt.Errorf("did not connect: %v\n", err)
@@ -37,13 +38,13 @@ func InstallChart(out io.Writer, url string, req *proto.InstallChartRequest, tim
 		if err != nil {
 			fmt.Errorf("%v.InstallChartToIcp(_) = _, %v", c, err)
 		}
-		out.Write(recv.GetMsg())
+		log.Print(recv.GetMsg())
 	}
 	return nil
 
 }
 
-func GenerateScript(out io.Writer, url string, req *proto.GenerateScriptRequest, timeout int64) error {
+func GenerateScript(log *logger.Logger, url string, req *proto.GenerateScriptRequest, timeout int64) error {
 	conn, err := grpc.Dial(url, grpc.WithInsecure())
 	if err != nil {
 		return fmt.Errorf("did not connect: %v\n", err)
@@ -64,7 +65,7 @@ func GenerateScript(out io.Writer, url string, req *proto.GenerateScriptRequest,
 		if err != nil {
 			fmt.Errorf("%v.GenerateScript(_) = _, %v", c, err)
 		}
-		out.Write(recv.GetMsg())
+		log.Print(recv.GetMsg())
 	}
 	return nil
 

@@ -3,17 +3,16 @@ package arc
 import (
 	"fmt"
 	"github.com/mholt/archiver"
-	"github.com/softleader/captain-kube/pkg/verbose"
-	"io"
+	"github.com/softleader/captain-kube/pkg/logger"
 	"os"
 )
 
-func Extract(out io.Writer, source, destination string) (err error) {
+func Extract(log *logger.Logger, source, destination string) (err error) {
 	if err = ensureDirEmpty(destination); err != nil {
 		return
 	}
 
-	verbose.Fprintf(out, "extracting archive to %q", destination)
+	log.Debugf("extracting archive to %q", destination)
 
 	if err = archiver.Unarchive(source, destination); err != nil { // find Unarchiver by header
 		var arc interface{}

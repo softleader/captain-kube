@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/softleader/captain-kube/pkg/dur"
+	"github.com/softleader/captain-kube/pkg/logger"
 	"github.com/softleader/captain-kube/pkg/proto"
 	"google.golang.org/grpc"
 	"io"
@@ -13,10 +14,8 @@ import (
 
 const (
 	EnvPort         = "CAPLET_PORT"
-	EnvServe        = "CAPLET_SERVE"
 	EnvHostname     = "CAPLET_HOSTNAME"
 	DefaultPort     = 50051
-	DefaultServe    = "grpc"
 	DefaultHostname = "caplet"
 )
 
@@ -25,7 +24,7 @@ type Endpoint struct {
 	Port   int
 }
 
-func (e *Endpoint) PullImage(out io.Writer, req *proto.PullImageRequest, timeout int64) error {
+func (e *Endpoint) PullImage(log *logger.Logger, req *proto.PullImageRequest, timeout int64) error {
 	conn, err := grpc.Dial(fmt.Sprintf("%s:%v", e.Target, e.Port), grpc.WithInsecure())
 	if err != nil {
 		return fmt.Errorf("[%s] did not connect: %v", e.Target, err)
@@ -46,20 +45,20 @@ func (e *Endpoint) PullImage(out io.Writer, req *proto.PullImageRequest, timeout
 		if err != nil {
 			fmt.Errorf("%v.PullImage(_) = _, %v", c, err)
 		}
-		out.Write(recv.GetMsg())
+		log.Print(recv.GetMsg())
 	}
 	return nil
 }
 
-func PullImage(out io.Writer, endpoints []*Endpoint, req *proto.PullImageRequest, timeout int64) error {
+func PullImage(log *logger.Logger, endpoints []*Endpoint, req *proto.PullImageRequest, timeout int64) error {
 	ch := make(chan error, len(endpoints))
 	var wg sync.WaitGroup
 	for _, ep := range endpoints {
 		wg.Add(1)
-		go func(out io.Writer, endpoint *Endpoint, req *proto.PullImageRequest, timeout int64) {
+		go func(log *logger.Logger, endpoint *Endpoint, req *proto.PullImageRequest, timeout int64) {
 			defer wg.Done()
-			ch <- ep.PullImage(out, req, timeout)
-		}(out, ep, req, timeout)
+			ch <- ep.PullImage(log, req, timeout)
+		}(log, ep, req, timeout)
 	}
 	wg.Wait()
 	close(ch)

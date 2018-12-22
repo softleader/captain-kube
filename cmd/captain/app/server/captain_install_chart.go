@@ -3,6 +3,7 @@ package server
 import (
 	"github.com/softleader/captain-kube/pkg/caplet"
 	"github.com/softleader/captain-kube/pkg/helm/chart"
+	"github.com/softleader/captain-kube/pkg/logger"
 	"github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/sio"
 	"io/ioutil"
@@ -11,12 +12,18 @@ import (
 )
 
 func (s *CaptainServer) InstallChart(req *proto.InstallChartRequest, stream proto.Captain_InstallChartServer) error {
+	log := logger.New(sio.NewStreamWriter(func(p []byte) error {
+		return stream.Send(&proto.ChunkMessage{
+			Msg: p,
+		})
+	})).WithVerbose(req.GetVerbose())
+
 	tmp, err := ioutil.TempDir(os.TempDir(), "install-chart-icp-")
 	if err != nil {
 		return err
 	}
 	os.RemoveAll(tmp)
-	
+
 	chartPath := filepath.Join(tmp, req.GetChart().GetFileName())
 	if err := ioutil.WriteFile(chartPath, req.GetChart().GetContent(), 0644); err != nil {
 		return err
@@ -26,13 +33,7 @@ func (s *CaptainServer) InstallChart(req *proto.InstallChartRequest, stream prot
 		return err
 	}
 
-	sout := sio.NewStreamWriter(func(p []byte) error {
-		return stream.Send(&proto.ChunkMessage{
-			Msg: p,
-		})
-	})
-
-	if err := i.Install(sout); err != nil {
+	if err := i.Install(log); err != nil {
 		return err
 	}
 
@@ -41,11 +42,11 @@ func (s *CaptainServer) InstallChart(req *proto.InstallChartRequest, stream prot
 		if err != nil {
 			return err
 		}
-		tpls, err := chart.LoadArchive(s.Out, chartPath)
+		tpls, err := chart.LoadArchive(log, chartPath)
 		if err != nil {
 			return err
 		}
-		caplet.PullImage(s.Out, endpoints, newPullImageRequest(tpls, req.GetRegistryAuth()), req.GetTimeout())
+		caplet.PullImage(log, endpoints, newPullImageRequest(tpls, req.GetRegistryAuth()), req.GetTimeout())
 	}
 	return nil
 }

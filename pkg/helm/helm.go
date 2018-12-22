@@ -2,18 +2,20 @@ package helm
 
 import (
 	"fmt"
-	"io"
+	"github.com/softleader/captain-kube/pkg/logger"
 	"os"
 	"os/exec"
 )
 
-func Template(out io.Writer, chart, outputDir string) (err error) {
+func Template(log *logger.Logger, chart, outputDir string) (err error) {
 	if err = ensureDirExist(outputDir); err != nil {
 		return
 	}
 	cmd := exec.Command("helm", "template", "--output-dir", outputDir, chart)
-	cmd.Stdout = out
-	cmd.Stderr = out
+	if log.IsLevelEnabled(logger.DebugLevel) {
+		cmd.Stdout = log.GetOutput()
+		cmd.Stderr = log.GetOutput()
+	}
 	err = cmd.Run()
 	return
 }

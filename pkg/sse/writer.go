@@ -1,8 +1,14 @@
-package utils
+package sse
 
 import (
 	"github.com/gin-gonic/gin"
 )
+
+func NewWriter(c *gin.Context) *SSEWriter {
+	return &SSEWriter{
+		GinContext: c,
+	}
+}
 
 type SSEWriter struct {
 	GinContext *gin.Context

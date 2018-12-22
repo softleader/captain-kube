@@ -1,6 +1,7 @@
 package chart
 
 import (
+	"github.com/softleader/captain-kube/pkg/logger"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -9,7 +10,7 @@ import (
 )
 
 func TestLoadArchive(t *testing.T) {
-	out := os.Stdout
+	log := logger.New(os.Stdout)
 
 	path, err := ioutil.TempDir(os.TempDir(), "test-load-archive-")
 	if err != nil {
@@ -29,7 +30,7 @@ func TestLoadArchive(t *testing.T) {
 		t.Error(err)
 	}
 
-	tpls, err := LoadArchive(out, filepath.Join(path, "foo-0.1.0.tgz"))
+	tpls, err := LoadArchive(log, filepath.Join(path, "foo-0.1.0.tgz"))
 	if err != nil {
 		t.Error(err)
 	}

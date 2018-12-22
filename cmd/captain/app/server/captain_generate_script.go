@@ -2,6 +2,7 @@ package server
 
 import (
 	"github.com/softleader/captain-kube/pkg/helm/chart"
+	"github.com/softleader/captain-kube/pkg/logger"
 	"github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/sio"
 	"io/ioutil"
@@ -11,6 +12,12 @@ import (
 )
 
 func (s *CaptainServer) GenerateScript(req *proto.GenerateScriptRequest, stream proto.Captain_GenerateScriptServer) error {
+	log := logger.New(sio.NewStreamWriter(func(p []byte) error {
+		return stream.Send(&proto.ChunkMessage{
+			Msg: p,
+		})
+	})).WithVerbose(req.GetVerbose())
+
 	tmp, err := ioutil.TempDir(os.TempDir(), "generate-script-")
 	if err != nil {
 		return err
@@ -22,37 +29,31 @@ func (s *CaptainServer) GenerateScript(req *proto.GenerateScriptRequest, stream 
 		return err
 	}
 
-	sout := sio.NewStreamWriter(func(p []byte) error {
-		return stream.Send(&proto.ChunkMessage{
-			Msg: p,
-		})
-	})
-
-	tpls, err := chart.LoadArchive(sout, chartPath)
+	tpls, err := chart.LoadArchive(log, chartPath)
 	if err != nil {
 		return err
 	}
 
 	if from, to := strings.TrimSpace(req.GetRetag().GetFrom()), strings.TrimSpace(req.GetRetag().GetTo()); from != "" && to != "" {
-		if err := tpls.GenerateReTagScript(sout, from, to); err != nil {
+		if err := tpls.GenerateReTagScript(log, from, to); err != nil {
 			return err
 		}
 	}
 
 	if req.Pull {
-		if err := tpls.GeneratePullScript(sout); err != nil {
+		if err := tpls.GeneratePullScript(log); err != nil {
 			return err
 		}
 	}
 
 	if req.Load {
-		if err := tpls.GenerateLoadScript(sout); err != nil {
+		if err := tpls.GenerateLoadScript(log); err != nil {
 			return err
 		}
 	}
 
 	if req.Save {
-		if err := tpls.GenerateSaveScript(sout); err != nil {
+		if err := tpls.GenerateSaveScript(log); err != nil {
 			return err
 		}
 	}

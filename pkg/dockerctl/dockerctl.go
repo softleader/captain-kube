@@ -5,20 +5,19 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/cli/command"
 	"github.com/docker/docker/client"
 	"github.com/docker/docker/pkg/jsonmessage"
 	"github.com/softleader/captain-kube/pkg/helm/chart"
+	"github.com/softleader/captain-kube/pkg/logger"
 	"github.com/softleader/captain-kube/pkg/proto"
-	"github.com/softleader/captain-kube/pkg/verbose"
 	"io"
 	"io/ioutil"
 	"os"
 )
 
-func Pull(out io.Writer, image chart.Image, registryAuth *proto.RegistryAuth) (io.ReadCloser, error) {
+func Pull(log *logger.Logger, image chart.Image, registryAuth *proto.RegistryAuth) (io.ReadCloser, error) {
 	ctx := context.Background()
 
 	// Use DOCKER_HOST to set the url to the docker server.
@@ -30,7 +29,7 @@ func Pull(out io.Writer, image chart.Image, registryAuth *proto.RegistryAuth) (i
 		return nil, err
 	}
 
-	verbose.Fprintf(out, "pulling image: %s\n", image)
+	log.Printf("pulling image: %s\n", image)
 	opt := types.ImagePullOptions{}
 	if registryAuth != nil {
 		if opt.RegistryAuth, err = encode(registryAuth); err != nil {
@@ -45,7 +44,7 @@ func Pull(out io.Writer, image chart.Image, registryAuth *proto.RegistryAuth) (i
 	return rc, nil
 }
 
-func ReTag(out io.Writer, source chart.Image, target chart.Image, registryAuth *proto.RegistryAuth) (io.ReadCloser, error) {
+func ReTag(log *logger.Logger, source chart.Image, target chart.Image, registryAuth *proto.RegistryAuth) (io.ReadCloser, error) {
 	ctx := context.Background()
 
 	// Use DOCKER_HOST to set the url to the docker server.
@@ -57,12 +56,12 @@ func ReTag(out io.Writer, source chart.Image, target chart.Image, registryAuth *
 		return nil, err
 	}
 
-	verbose.Fprintf(out, "tagging image from %q to %q \n", source, target)
+	log.Printf("tagging image from %q to %q \n", source, target)
 	if err := cli.ImageTag(ctx, source.String(), target.String()); err != nil {
 		return nil, err
 	}
 
-	verbose.Fprintf(out, "pushing image: %s \n", target)
+	log.Printf("pushing image: %s \n", target)
 	opt := types.ImagePushOptions{}
 	if registryAuth != nil {
 		if opt.RegistryAuth, err = encode(registryAuth); err != nil {
@@ -77,7 +76,7 @@ func ReTag(out io.Writer, source chart.Image, target chart.Image, registryAuth *
 	return rc, nil
 }
 
-func PullAndSync(out io.Writer, request *proto.InstallChartRequest) error {
+func PullAndSync(log *logger.Logger, request *proto.InstallChartRequest) error {
 	var tpls chart.Templates
 	if request.Pull || request.Sync {
 		// mk temp file
@@ -92,7 +91,7 @@ func PullAndSync(out io.Writer, request *proto.InstallChartRequest) error {
 		}
 
 		// load chart templates
-		tpls, err = chart.LoadArchive(out, tmpFile.Name())
+		tpls, err = chart.LoadArchive(log, tmpFile.Name())
 		if err != nil {
 			return err
 		}
@@ -103,12 +102,12 @@ func PullAndSync(out io.Writer, request *proto.InstallChartRequest) error {
 		// pull all image from chart
 		for _, tpl := range tpls {
 			for _, image := range tpl {
-				fmt.Fprintln(out, "pulling ", image)
-				result, err := Pull(out, *image, request.RegistryAuth)
+				log.Println("pulling ", image)
+				result, err := Pull(log, *image, request.RegistryAuth)
 				if err != nil {
-					fmt.Fprintln(out, "pull image failed: ", image, ", error: ", err)
+					log.Println("pull image failed: ", image, ", error: ", err)
 				}
-				jsonmessage.DisplayJSONMessagesToStream(result, command.NewOutStream(out), nil)
+				jsonmessage.DisplayJSONMessagesToStream(result, command.NewOutStream(log.GetOutput()), nil)
 			}
 		}
 	}
@@ -119,16 +118,16 @@ func PullAndSync(out io.Writer, request *proto.InstallChartRequest) error {
 			for _, tpl := range tpls {
 				for _, image := range tpl {
 					if image.Host == request.Retag.From {
-						fmt.Fprintln(out, "syncing ", image)
-						result, err := ReTag(out, *image, chart.Image{
+						log.Println("syncing ", image)
+						result, err := ReTag(log, *image, chart.Image{
 							Host: request.Retag.To,
 							Repo: image.Repo,
 							Tag:  image.Tag,
 						}, request.RegistryAuth)
 						if err != nil {
-							fmt.Fprintln(out, "sync image failed: ", image, ", error: ", err)
+							log.Println( "sync image failed: ", image, ", error: ", err)
 						}
-						jsonmessage.DisplayJSONMessagesToStream(result, command.NewOutStream(out), nil)
+						jsonmessage.DisplayJSONMessagesToStream(result, command.NewOutStream(log.GetOutput()), nil)
 					}
 				}
 			}

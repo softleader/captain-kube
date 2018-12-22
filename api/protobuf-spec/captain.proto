@@ -14,6 +14,7 @@ message InstallChartRequest {
     bool sync = 5;
     ReTag retag = 6;
     RegistryAuth registryAuth = 7;
+    bool verbose = 8;
 }
 
 

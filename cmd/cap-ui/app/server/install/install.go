@@ -7,11 +7,13 @@ import (
 	"github.com/softleader/captain-kube/cmd/cap-ui/app/server/comm"
 	"github.com/softleader/captain-kube/pkg/captain"
 	"github.com/softleader/captain-kube/pkg/dockerctl"
+	"github.com/softleader/captain-kube/pkg/logger"
 	"github.com/softleader/captain-kube/pkg/proto"
-	"github.com/softleader/captain-kube/pkg/utils"
+	"github.com/softleader/captain-kube/pkg/sse"
 	"github.com/softleader/captain-kube/pkg/utils/strutil"
 	"io"
 	"net/http"
+	"strconv"
 )
 
 type Request struct {
@@ -30,35 +32,38 @@ func Serve(path string, r *gin.Engine, cfg *comm.Config) {
 		})
 	})
 	r.POST(path, func(c *gin.Context) {
-		sw := utils.SSEWriter{GinContext: c}
-
 		var form Request
+
+		log := logger.New(sse.NewWriter(c))
+		v, _ := strconv.ParseBool(c.Request.FormValue("verbose"))
+		log.WithVerbose(v)
+
 		if err := c.Bind(&form); err != nil {
 			//sw.WriteStr(fmt.Sprint("binding form data error:", err))
-			fmt.Fprintln(&sw, "binding form data error:", err)
+			log.Println("binding form data error:", err)
 			return
 		}
 
 		file, header, err := c.Request.FormFile("file")
 		if err != nil {
 			//sw.WriteStr(fmt.Sprint("loading form file error:", err))
-			fmt.Fprintln(&sw, "loading form file error:", err)
+			log.Println("loading form file error:", err)
 			return
 		}
 
 		// ps. 在讀完request body後才可以開始response, 否則body會close
 
-		fmt.Fprintln(&sw, "call: POST /install")
+		log.Println( "call: POST /install")
 
-		fmt.Fprintln(&sw, "form:", form)
-		fmt.Fprintln(&sw, "file:", file)
+		log.Println( "form:", form)
+		log.Println("file:", file)
 
 		buf := bytes.NewBuffer(nil)
 		if readed, err := io.Copy(buf, file); err != nil {
-			fmt.Fprintln(&sw, "reading file failed:", err)
+			log.Println( "reading file failed:", err)
 			return
 		} else {
-			fmt.Fprintln(&sw, "readed ", readed, " bytes")
+			log.Println( "readed ", readed, " bytes")
 		}
 
 		// prepare rquest
@@ -87,11 +92,11 @@ func Serve(path string, r *gin.Engine, cfg *comm.Config) {
 			},
 		}
 
-		if err := dockerctl.PullAndSync(&sw, &request); err != nil {
-			fmt.Fprintln(&sw, "Pull/Sync failed:", err)
+		if err := dockerctl.PullAndSync(log, &request); err != nil {
+			log.Println( "Pull/Sync failed:", err)
 		}
 
-		if err := captain.InstallChart(c.Writer, cfg.DefaultValue.CaptainUrl, &request, 300); err != nil {
+		if err := captain.InstallChart(log, cfg.DefaultValue.CaptainUrl, &request, 300); err != nil {
 			fmt.Fprintln(c.Writer, "call captain InstallChart failed:", err)
 		}
 		fmt.Fprintln(c.Writer, "InstallChart finish")

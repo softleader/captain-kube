@@ -2,21 +2,23 @@ package script
 
 import (
 	"bytes"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/softleader/captain-kube/cmd/cap-ui/app/server/comm"
 	"github.com/softleader/captain-kube/pkg/captain"
+	"github.com/softleader/captain-kube/pkg/logger"
 	"github.com/softleader/captain-kube/pkg/proto"
-	"github.com/softleader/captain-kube/pkg/utils"
+	"github.com/softleader/captain-kube/pkg/sse"
 	"github.com/softleader/captain-kube/pkg/utils/strutil"
 	"io"
 	"net/http"
+	"strconv"
 )
 
 type Request struct {
 	Tags           []string `form:"tags"`
 	SourceRegistry string   `form:"sourceRegistry"`
 	Registry       string   `form:"registry"`
+	Verbose        bool     `form:"verbose"`
 }
 
 func Serve(path string, r *gin.Engine, cfg *comm.Config) {
@@ -26,30 +28,32 @@ func Serve(path string, r *gin.Engine, cfg *comm.Config) {
 		})
 	})
 	r.POST(path, func(c *gin.Context) {
-		sw := utils.SSEWriter{GinContext: c}
+		log := logger.New(sse.NewWriter(c))
+		v, _ := strconv.ParseBool(c.Request.FormValue("verbose"))
+		log.WithVerbose(v)
 
 		var form Request
 		if err := c.Bind(&form); err != nil {
-			fmt.Fprintln(&sw, "binding form data error:", err)
+			log.Println("binding form data error:", err)
 			return
 		}
 
 		file, header, err := c.Request.FormFile("file")
 		if err != nil {
-			fmt.Fprintln(&sw, "loading form file error:", err)
+			log.Println("loading form file error:", err)
 			return
 		}
 
-		fmt.Fprintln(&sw, "call: POST /script")
-		fmt.Fprintln(&sw, "form:", form)
-		fmt.Fprintln(&sw, "file:", file)
+		log.Println("call: POST /script")
+		log.Println("form:", form)
+		log.Println("file:", file)
 
 		buf := bytes.NewBuffer(nil)
 		if readed, err := io.Copy(buf, file); err != nil {
-			fmt.Fprintln(&sw, "reading file failed:", err)
+			log.Println("reading file failed:", err)
 			return
 		} else {
-			fmt.Fprintln(&sw, "readed ", readed, " bytes")
+			log.Println("readed ", readed, " bytes")
 		}
 
 		request := proto.GenerateScriptRequest{
@@ -67,10 +71,10 @@ func Serve(path string, r *gin.Engine, cfg *comm.Config) {
 			Load: strutil.Contains(form.Tags, "l"),
 		}
 
-		if err := captain.GenerateScript(&sw, cfg.DefaultValue.CaptainUrl, &request, 300); err != nil {
-			fmt.Fprintln(&sw, "call captain GenerateScript failed:", err)
+		if err := captain.GenerateScript(log, cfg.DefaultValue.CaptainUrl, &request, 300); err != nil {
+			log.Println("call captain GenerateScript failed:", err)
 		} else {
-			fmt.Fprintln(&sw, "GenerateScript finish")
+			log.Println("GenerateScript finish")
 		}
 
 	})

@@ -2,19 +2,19 @@ package script
 
 import (
 	"fmt"
+	"github.com/softleader/captain-kube/pkg/logger"
 	"github.com/spf13/cobra"
-	"io"
 )
 
 type scriptCmd struct {
-	out       io.Writer
+	log       *logger.Logger
 	tags      string
 	chartPath string
 }
 
-func NewCmd(out io.Writer) *cobra.Command {
+func NewCmd(log *logger.Logger) *cobra.Command {
 	c := scriptCmd{
-		out: out,
+		log: log,
 	}
 
 	cmd := &cobra.Command{

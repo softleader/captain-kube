@@ -6,17 +6,16 @@ import (
 	"github.com/softleader/captain-kube/pkg/caplet"
 	"github.com/softleader/captain-kube/pkg/captain"
 	"github.com/softleader/captain-kube/pkg/env"
+	"github.com/softleader/captain-kube/pkg/logger"
 	"github.com/softleader/captain-kube/pkg/proto"
-	"github.com/softleader/captain-kube/pkg/verbose"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
-	"io"
 	"net"
 )
 
 type captainCmd struct {
-	out            io.Writer
+	log            *logger.Logger
 	serve          string
 	endpoints      []string
 	port           int
@@ -26,6 +25,7 @@ type captainCmd struct {
 }
 
 func NewCaptainCommand() (cmd *cobra.Command) {
+	var verbose bool
 	c := captainCmd{
 		port:           env.LookupInt(captain.EnvPort, captain.DefaultPort),
 		k8sVendor:      env.Lookup(captain.EnvK8sVendor, captain.DefaultK8sVendor),
@@ -36,13 +36,13 @@ func NewCaptainCommand() (cmd *cobra.Command) {
 		Use:  "captain",
 		Long: "captain is the brain of captain-kube system",
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			c.log = logger.New(cmd.OutOrStdout()).WithVerbose(verbose)
 			return c.Run()
 		},
 	}
 
-	c.out = cmd.OutOrStdout()
 	f := cmd.Flags()
-	f.BoolVarP(&verbose.Enabled, "verbose", "v", verbose.Enabled, "enable verbose output")
+	f.BoolVarP(&verbose, "verbose", "v", false, "enable verbose output")
 	f.IntVarP(&c.port, "port", "p", c.port, "specify the port of captain, override "+captain.EnvPort)
 	f.StringVar(&c.k8sVendor, "k8s-vendor", c.k8sVendor, "specify the vendor of k8s, override "+captain.EnvK8sVendor)
 	f.StringVar(&c.capletHostname, "caplet-hostname", c.capletHostname, "specify the hostname of caplet daemon to lookup, override "+caplet.EnvHostname)
@@ -59,13 +59,13 @@ func (c *captainCmd) Run() error {
 	}
 	s := grpc.NewServer()
 	proto.RegisterCaptainServer(s, &server.CaptainServer{
-		Out:       c.out,
+		Log:       c.log,
 		Hostname:  c.capletHostname,
 		Endpoints: c.endpoints,
 		Port:      c.capletPort,
 		K8s:       c.k8sVendor,
 	})
 	reflection.Register(s)
-	verbose.Fprintf(c.out, "listening and serving GRPC on %v\n", lis.Addr().String())
+	c.log.Printf("listening and serving GRPC on %v\n", lis.Addr().String())
 	return s.Serve(lis)
 }

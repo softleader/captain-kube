@@ -5,8 +5,9 @@ type StreamWriter struct {
 }
 
 func (s *StreamWriter) Write(p []byte) (n int, err error) {
-	n = len(p)
-	err = s.send(p)
+	if err = s.send(p); err == nil {
+		n = len(p)
+	}
 	return
 }
 

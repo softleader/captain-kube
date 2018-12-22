@@ -15,6 +15,8 @@ func (s *CaptainServer) GenerateScript(req *proto.GenerateScriptRequest, stream 
 	if err != nil {
 		return err
 	}
+	defer os.RemoveAll(tmp)
+
 	chartPath := filepath.Join(tmp, req.GetChart().GetFileName())
 	if err := ioutil.WriteFile(chartPath, req.GetChart().GetContent(), 0644); err != nil {
 		return err

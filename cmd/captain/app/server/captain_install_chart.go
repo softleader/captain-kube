@@ -15,6 +15,8 @@ func (s *CaptainServer) InstallChart(req *proto.InstallChartRequest, stream prot
 	if err != nil {
 		return err
 	}
+	os.RemoveAll(tmp)
+	
 	chartPath := filepath.Join(tmp, req.GetChart().GetFileName())
 	if err := ioutil.WriteFile(chartPath, req.GetChart().GetContent(), 0644); err != nil {
 		return err

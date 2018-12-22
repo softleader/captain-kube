@@ -38,7 +38,7 @@ func InstallChart(log *logger.Logger, url string, req *proto.InstallChartRequest
 		if err != nil {
 			fmt.Errorf("%v.InstallChartToIcp(_) = _, %v", c, err)
 		}
-		log.Print(recv.GetMsg())
+		log.GetOutput().Write(recv.GetMsg())
 	}
 	return nil
 
@@ -65,7 +65,7 @@ func GenerateScript(log *logger.Logger, url string, req *proto.GenerateScriptReq
 		if err != nil {
 			fmt.Errorf("%v.GenerateScript(_) = _, %v", c, err)
 		}
-		log.Print(recv.GetMsg())
+		log.GetOutput().Write(recv.GetMsg())
 	}
 	return nil
 

@@ -45,7 +45,7 @@ func (e *Endpoint) PullImage(log *logger.Logger, req *proto.PullImageRequest, ti
 		if err != nil {
 			fmt.Errorf("%v.PullImage(_) = _, %v", c, err)
 		}
-		log.Print(recv.GetMsg())
+		log.GetOutput().Write(recv.GetMsg())
 	}
 	return nil
 }

@@ -1,7 +1,7 @@
 package chart
 
 import (
-	"io"
+	"github.com/Sirupsen/logrus"
 	"text/template"
 )
 
@@ -17,8 +17,8 @@ docker pull {{ $image.String }}
 
 var pullTemplate = template.Must(template.New("").Parse(pullScript))
 
-func (i *Templates) GeneratePullScript(out io.Writer) error {
+func (i *Templates) GeneratePullScript(log *logrus.Logger) error {
 	data := make(map[string]interface{})
 	data["tpls"] = i
-	return pullTemplate.Execute(out, data)
+	return pullTemplate.Execute(log.WriterLevel(logrus.DebugLevel), data)
 }

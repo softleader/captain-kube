@@ -14,12 +14,11 @@ import (
 
 func (s *CaptainServer) GenerateScript(req *proto.GenerateScriptRequest, stream proto.Captain_GenerateScriptServer) error {
 	log := logrus.New()
-	out := sio.NewStreamWriter(func(p []byte) error {
+	log.SetOutput(sio.NewStreamWriter(func(p []byte) error {
 		return stream.Send(&proto.ChunkMessage{
 			Msg: p,
 		})
-	})
-	log.SetOutput(out)
+	}))
 	log.SetFormatter(&utils.PlainFormatter{})
 	if req.GetVerbose() {
 		log.SetLevel(logrus.DebugLevel)
@@ -49,25 +48,25 @@ func (s *CaptainServer) GenerateScript(req *proto.GenerateScriptRequest, stream 
 	log.Debugf("%v template(s) loaded\n", len(tpls))
 
 	if from, to := strings.TrimSpace(req.GetRetag().GetFrom()), strings.TrimSpace(req.GetRetag().GetTo()); from != "" && to != "" {
-		if err := tpls.GenerateReTagScript(out, from, to); err != nil {
+		if err := tpls.GenerateReTagScript(log, from, to); err != nil {
 			return err
 		}
 	}
 
 	if req.Pull {
-		if err := tpls.GeneratePullScript(out); err != nil {
+		if err := tpls.GeneratePullScript(log); err != nil {
 			return err
 		}
 	}
 
 	if req.Load {
-		if err := tpls.GenerateLoadScript(out); err != nil {
+		if err := tpls.GenerateLoadScript(log); err != nil {
 			return err
 		}
 	}
 
 	if req.Save {
-		if err := tpls.GenerateSaveScript(out); err != nil {
+		if err := tpls.GenerateSaveScript(log); err != nil {
 			return err
 		}
 	}

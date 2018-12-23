@@ -38,6 +38,9 @@ func NewCaptainCommand() (cmd *cobra.Command) {
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			c.log = logrus.New()
 			c.log.SetOutput(cmd.OutOrStdout())
+			c.log.SetFormatter(&logrus.TextFormatter{
+				ForceColors: true,
+			})
 			if verbose {
 				c.log.SetLevel(logrus.DebugLevel)
 			}

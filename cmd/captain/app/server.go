@@ -70,6 +70,6 @@ func (c *captainCmd) Run() error {
 		K8s:       c.k8sVendor,
 	})
 	reflection.Register(s)
-	c.log.Printf("listening and serving GRPC on %v\n", lis.Addr().String())
+	c.log.Printf("listening and serving GRPC on %v", lis.Addr().String())
 	return s.Serve(lis)
 }

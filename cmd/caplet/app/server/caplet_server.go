@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"github.com/Sirupsen/logrus"
 	"github.com/docker/docker/cli/command"
 	"github.com/docker/docker/pkg/jsonmessage"
@@ -8,6 +9,7 @@ import (
 	"github.com/softleader/captain-kube/pkg/helm/chart"
 	"github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/sio"
+	"github.com/softleader/captain-kube/pkg/utils"
 	"os"
 )
 
@@ -21,8 +23,8 @@ func NewCapletServer(log *logrus.Logger) (s *capletServer) {
 		log: log,
 	}
 	hostname, _ := os.Hostname()
-	s.formatter = &HostnameFormatter{
-		Hostname: hostname,
+	s.formatter = &utils.PrefixFormatter{
+		Prefix: fmt.Sprintf("[%s] ", hostname),
 	}
 	return
 }

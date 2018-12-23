@@ -4,6 +4,7 @@ import (
 	"github.com/Sirupsen/logrus"
 	"github.com/softleader/captain-kube/cmd/capctl/install"
 	"github.com/softleader/captain-kube/cmd/capctl/script"
+	"github.com/softleader/captain-kube/pkg/utils"
 	"github.com/spf13/cobra"
 	"os"
 )
@@ -20,6 +21,7 @@ func main() {
 		Run: func(cmd *cobra.Command, args []string) {
 			log = logrus.New()
 			log.SetOutput(cmd.OutOrStdout())
+			log.SetFormatter(&utils.PlainFormatter{})
 			if verbose {
 				log.SetLevel(logrus.DebugLevel)
 			}

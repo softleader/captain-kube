@@ -2,9 +2,9 @@ package chart
 
 import (
 	"fmt"
+	"github.com/Sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/arc"
 	"github.com/softleader/captain-kube/pkg/helm"
-	"github.com/softleader/captain-kube/pkg/logger"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"os"
@@ -16,7 +16,7 @@ const templateDir = "t"
 
 type Templates map[string][]*Image
 
-func LoadArchive(log *logger.Logger, archivePath string) (tpls Templates, err error) {
+func LoadArchive(log *logrus.Logger, archivePath string) (tpls Templates, err error) {
 	path, err := ioutil.TempDir(os.TempDir(), "load-archive-")
 	if err != nil {
 		return
@@ -51,7 +51,7 @@ func findFirstDir(path string) (string, error) {
 	return "", fmt.Errorf("no dir found in %q", path)
 }
 
-func LoadDir(_ *logger.Logger, chartPath string) (tpls Templates, err error) {
+func LoadDir(_ *logrus.Logger, chartPath string) (tpls Templates, err error) {
 	tpls = make(map[string][]*Image)
 	err = filepath.Walk(chartPath, func(path string, info os.FileInfo, err error) error {
 		i, err := image(path, info)

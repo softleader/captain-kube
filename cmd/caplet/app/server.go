@@ -2,10 +2,10 @@ package app
 
 import (
 	"fmt"
+	"github.com/Sirupsen/logrus"
 	"github.com/softleader/captain-kube/cmd/caplet/app/server"
 	"github.com/softleader/captain-kube/pkg/caplet"
 	"github.com/softleader/captain-kube/pkg/env"
-	"github.com/softleader/captain-kube/pkg/logger"
 	"github.com/softleader/captain-kube/pkg/proto"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
@@ -14,7 +14,7 @@ import (
 )
 
 type capletCmd struct {
-	log   *logger.Logger
+	log   *logrus.Logger
 	serve string
 	port  int
 }
@@ -33,9 +33,11 @@ func NewCapletCommand() (cmd *cobra.Command) {
 		Use:  "caplet",
 		Long: "caplet is a daemon run on every kubernetes node",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			c.log = logger.New(cmd.OutOrStdout()).
-				WithFormatter(logger.NewTextFormatter()).
-				WithVerbose(verbose)
+			c.log = logrus.New()
+			c.log.SetOutput(cmd.OutOrStdout())
+			if verbose {
+				c.log.SetLevel(logrus.DebugLevel)
+			}
 			return c.run()
 		},
 	}

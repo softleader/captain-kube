@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/softleader/captain-kube/pkg/dur"
-	"github.com/softleader/captain-kube/pkg/logger"
+	"github.com/Sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/proto"
 	"google.golang.org/grpc"
 	"io"
@@ -24,7 +24,7 @@ type Endpoint struct {
 	Port   int
 }
 
-func (e *Endpoint) PullImage(log *logger.Logger, req *proto.PullImageRequest, timeout int64) error {
+func (e *Endpoint) PullImage(log *logrus.Logger, req *proto.PullImageRequest, timeout int64) error {
 	conn, err := grpc.Dial(fmt.Sprintf("%s:%v", e.Target, e.Port), grpc.WithInsecure())
 	if err != nil {
 		return fmt.Errorf("[%s] did not connect: %v", e.Target, err)
@@ -45,17 +45,17 @@ func (e *Endpoint) PullImage(log *logger.Logger, req *proto.PullImageRequest, ti
 		if err != nil {
 			fmt.Errorf("%v.PullImage(_) = _, %v", c, err)
 		}
-		log.GetOutput().Write(recv.GetMsg())
+		log.Writer().Write(recv.GetMsg())
 	}
 	return nil
 }
 
-func PullImage(log *logger.Logger, endpoints []*Endpoint, req *proto.PullImageRequest, timeout int64) error {
+func PullImage(log *logrus.Logger, endpoints []*Endpoint, req *proto.PullImageRequest, timeout int64) error {
 	ch := make(chan error, len(endpoints))
 	var wg sync.WaitGroup
 	for _, ep := range endpoints {
 		wg.Add(1)
-		go func(log *logger.Logger, endpoint *Endpoint, req *proto.PullImageRequest, timeout int64) {
+		go func(log *logrus.Logger, endpoint *Endpoint, req *proto.PullImageRequest, timeout int64) {
 			defer wg.Done()
 			ch <- ep.PullImage(log, req, timeout)
 		}(log, ep, req, timeout)

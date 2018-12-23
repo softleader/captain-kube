@@ -1,7 +1,7 @@
 package chart
 
 import (
-	"github.com/softleader/captain-kube/pkg/logger"
+	"github.com/Sirupsen/logrus"
 	"text/template"
 )
 
@@ -18,7 +18,7 @@ docker tag {{ $from }}/{{ $image.Name }} {{ $image.Host }}/{{ $image.Name }} && 
 
 var retagTemplate = template.Must(template.New("").Parse(retagScript))
 
-func (i *Templates) GenerateReTagScript(log *logger.Logger, from, to string) error {
+func (i *Templates) GenerateReTagScript(log *logrus.Logger, from, to string) error {
 	var retags map[string][]*Image
 	for src, images := range *i {
 		for _, image := range images {
@@ -31,5 +31,5 @@ func (i *Templates) GenerateReTagScript(log *logger.Logger, from, to string) err
 	data := make(map[string]interface{})
 	data["from"] = from
 	data["tpls"] = retags
-	return retagTemplate.Execute(log.GetOutput(), data)
+	return retagTemplate.Execute(log.Writer(), data)
 }

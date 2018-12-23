@@ -1,8 +1,8 @@
 package captain
 
 import (
+	"github.com/Sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/dur"
-	"github.com/softleader/captain-kube/pkg/logger"
 	"github.com/softleader/captain-kube/pkg/proto"
 	"io/ioutil"
 	"os"
@@ -35,7 +35,7 @@ func TestGenerateScript(t *testing.T) {
 		t.Error(err)
 	}
 
-	log := logger.New(os.Stdout)
+	log := logrus.New()
 	err = GenerateScript(log, "localhost:30051", &proto.GenerateScriptRequest{
 		Chart: &proto.Chart{
 			Content:  chart,

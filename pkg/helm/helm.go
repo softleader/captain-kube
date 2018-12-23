@@ -2,19 +2,19 @@ package helm
 
 import (
 	"fmt"
-	"github.com/softleader/captain-kube/pkg/logger"
+	"github.com/Sirupsen/logrus"
 	"os"
 	"os/exec"
 )
 
-func Template(log *logger.Logger, chart, outputDir string) (err error) {
+func Template(log *logrus.Logger, chart, outputDir string) (err error) {
 	if err = ensureDirExist(outputDir); err != nil {
 		return
 	}
 	cmd := exec.Command("helm", "template", "--output-dir", outputDir, chart)
-	if log.IsLevelEnabled(logger.DebugLevel) {
-		cmd.Stdout = log.GetOutput()
-		cmd.Stderr = log.GetOutput()
+	if log.IsLevelEnabled(logrus.DebugLevel) {
+		cmd.Stdout = log.Writer()
+		cmd.Stderr = log.Writer()
 	}
 	err = cmd.Run()
 	return

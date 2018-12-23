@@ -5,7 +5,7 @@ import (
 	"github.com/softleader/captain-kube/pkg/captain"
 	"github.com/softleader/captain-kube/pkg/dockerctl"
 	"github.com/softleader/captain-kube/pkg/env"
-	"github.com/softleader/captain-kube/pkg/logger"
+	"github.com/Sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/proto"
 	"github.com/spf13/cobra"
 	"io/ioutil"
@@ -13,7 +13,7 @@ import (
 )
 
 type installCmd struct {
-	log            *logger.Logger
+	log            *logrus.Logger
 	pull           bool
 	sync           bool
 	k8sVendor      string
@@ -36,7 +36,7 @@ type installCmd struct {
 	captainUrl string
 }
 
-func NewCmd(log *logger.Logger) *cobra.Command {
+func NewCmd(log *logrus.Logger) *cobra.Command {
 	c := installCmd{
 		log:       log,
 		k8sVendor: env.Lookup(captain.EnvK8sVendor, captain.DefaultK8sVendor),

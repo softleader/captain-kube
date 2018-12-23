@@ -5,19 +5,19 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
+	"github.com/Sirupsen/logrus"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/cli/command"
 	"github.com/docker/docker/client"
 	"github.com/docker/docker/pkg/jsonmessage"
 	"github.com/softleader/captain-kube/pkg/helm/chart"
-	"github.com/softleader/captain-kube/pkg/logger"
 	"github.com/softleader/captain-kube/pkg/proto"
 	"io"
 	"io/ioutil"
 	"os"
 )
 
-func Pull(log *logger.Logger, image chart.Image, registryAuth *proto.RegistryAuth) (io.ReadCloser, error) {
+func Pull(log *logrus.Logger, image chart.Image, registryAuth *proto.RegistryAuth) (io.ReadCloser, error) {
 	ctx := context.Background()
 
 	// Use DOCKER_HOST to set the url to the docker server.
@@ -44,7 +44,7 @@ func Pull(log *logger.Logger, image chart.Image, registryAuth *proto.RegistryAut
 	return rc, nil
 }
 
-func ReTag(log *logger.Logger, source chart.Image, target chart.Image, registryAuth *proto.RegistryAuth) (io.ReadCloser, error) {
+func ReTag(log *logrus.Logger, source chart.Image, target chart.Image, registryAuth *proto.RegistryAuth) (io.ReadCloser, error) {
 	ctx := context.Background()
 
 	// Use DOCKER_HOST to set the url to the docker server.
@@ -76,7 +76,7 @@ func ReTag(log *logger.Logger, source chart.Image, target chart.Image, registryA
 	return rc, nil
 }
 
-func PullAndSync(log *logger.Logger, request *proto.InstallChartRequest) error {
+func PullAndSync(log *logrus.Logger, request *proto.InstallChartRequest) error {
 	var tpls chart.Templates
 	if request.Pull || request.Sync {
 		// mk temp file
@@ -107,7 +107,7 @@ func PullAndSync(log *logger.Logger, request *proto.InstallChartRequest) error {
 				if err != nil {
 					log.Println("pull image failed: ", image, ", error: ", err)
 				}
-				jsonmessage.DisplayJSONMessagesToStream(result, command.NewOutStream(log.GetOutput()), nil)
+				jsonmessage.DisplayJSONMessagesToStream(result, command.NewOutStream(log.Out), nil)
 			}
 		}
 	}
@@ -127,7 +127,7 @@ func PullAndSync(log *logger.Logger, request *proto.InstallChartRequest) error {
 						if err != nil {
 							log.Println( "sync image failed: ", image, ", error: ", err)
 						}
-						jsonmessage.DisplayJSONMessagesToStream(result, command.NewOutStream(log.GetOutput()), nil)
+						jsonmessage.DisplayJSONMessagesToStream(result, command.NewOutStream(log.Writer()), nil)
 					}
 				}
 			}

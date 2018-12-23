@@ -2,12 +2,12 @@ package chart
 
 import (
 	"fmt"
-	"github.com/softleader/captain-kube/pkg/logger"
+	"github.com/Sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/proto"
 )
 
 type Installer interface {
-	Install(log *logger.Logger) error
+	Install(log *logrus.Logger) error
 }
 
 func NewInstaller(k8s string, tiller *proto.Tiller, chart string) (Installer, error) {

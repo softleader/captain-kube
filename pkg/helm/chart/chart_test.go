@@ -1,7 +1,7 @@
 package chart
 
 import (
-	"github.com/softleader/captain-kube/pkg/logger"
+	"github.com/Sirupsen/logrus"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -10,7 +10,7 @@ import (
 )
 
 func TestLoadArchive(t *testing.T) {
-	log := logger.New(os.Stdout)
+	log := logrus.New()
 
 	path, err := ioutil.TempDir(os.TempDir(), "test-load-archive-")
 	if err != nil {

@@ -1,8 +1,8 @@
 package server
 
 import (
+	"github.com/Sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/helm/chart"
-	"github.com/softleader/captain-kube/pkg/logger"
 	"github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/sio"
 	"io/ioutil"
@@ -12,11 +12,15 @@ import (
 )
 
 func (s *CaptainServer) GenerateScript(req *proto.GenerateScriptRequest, stream proto.Captain_GenerateScriptServer) error {
-	log := logger.New(sio.NewStreamWriter(func(p []byte) error {
+	log := logrus.New()
+	log.SetOutput(sio.NewStreamWriter(func(p []byte) error {
 		return stream.Send(&proto.ChunkMessage{
 			Msg: p,
 		})
-	})).WithVerbose(req.GetVerbose())
+	}))
+	if req.GetVerbose() {
+		log.SetLevel(logrus.DebugLevel)
+	}
 
 	log.Debugf("chart: %s\n", req.GetChart().GetFileName())
 	log.Debugf("retag: %+v\n", req.GetRetag())

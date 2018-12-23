@@ -2,7 +2,7 @@ package chart
 
 import (
 	"fmt"
-	"github.com/softleader/captain-kube/pkg/logger"
+	"github.com/Sirupsen/logrus"
 	"os/exec"
 	"strings"
 )
@@ -16,7 +16,7 @@ type icpInstaller struct {
 	skipSslValidation bool
 }
 
-func (i *icpInstaller) Install(log *logger.Logger) error {
+func (i *icpInstaller) Install(log *logrus.Logger) error {
 	if err := loginBxPr(log, i.endpoint, i.username, i.password, i.account, i.skipSslValidation); err != nil {
 		return err
 	}
@@ -35,24 +35,24 @@ func format(endpoint string) string {
 	return fmt.Sprintf("https://%s:8443", endpoint)
 }
 
-func loginBxPr(log *logger.Logger, endpoint, username, password, account string, skipSslValidation bool) error {
+func loginBxPr(log *logrus.Logger, endpoint, username, password, account string, skipSslValidation bool) error {
 	args := []string{"pr", "login", "-a", format(endpoint), "-u", username, "-p", password, "-c", account}
 	if skipSslValidation {
 		args = append(args, "--skip-ssl-validation")
 	}
 	cmd := exec.Command("bx", args...)
-	if log.IsLevelEnabled(logger.DebugLevel) {
-		cmd.Stdout = log.GetOutput()
-		cmd.Stderr = log.GetOutput()
+	if log.IsLevelEnabled(logrus.DebugLevel) {
+		cmd.Stdout = log.Writer()
+		cmd.Stderr = log.Writer()
 	}
 	return cmd.Run()
 }
 
-func loadHelmChart(log *logger.Logger, chart string) error {
+func loadHelmChart(log *logrus.Logger, chart string) error {
 	cmd := exec.Command("bx", "pr", "load-helm-chart", "--archive", chart)
-	if log.IsLevelEnabled(logger.DebugLevel) {
-		cmd.Stdout = log.GetOutput()
-		cmd.Stderr = log.GetOutput()
+	if log.IsLevelEnabled(logrus.DebugLevel) {
+		cmd.Stdout = log.Writer()
+		cmd.Stderr = log.Writer()
 	}
 	return cmd.Run()
 }

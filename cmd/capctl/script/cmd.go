@@ -2,17 +2,17 @@ package script
 
 import (
 	"fmt"
-	"github.com/softleader/captain-kube/pkg/logger"
+	"github.com/Sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
 type scriptCmd struct {
-	log       *logger.Logger
+	log       *logrus.Logger
 	tags      string
 	chartPath string
 }
 
-func NewCmd(log *logger.Logger) *cobra.Command {
+func NewCmd(log *logrus.Logger) *cobra.Command {
 	c := scriptCmd{
 		log: log,
 	}

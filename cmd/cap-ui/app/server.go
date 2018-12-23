@@ -1,14 +1,14 @@
 package app
 
 import (
+	"github.com/Sirupsen/logrus"
 	"github.com/softleader/captain-kube/cmd/cap-ui/app/server"
 	"github.com/softleader/captain-kube/cmd/cap-ui/app/server/comm"
-	"github.com/softleader/captain-kube/pkg/logger"
 	"github.com/spf13/cobra"
 )
 
 type capuiCmd struct {
-	log        *logger.Logger
+	log        *logrus.Logger
 	configPath string
 	port       int
 }
@@ -20,9 +20,11 @@ func NewCapuiCommand() (cmd *cobra.Command) {
 		Use:  "capui",
 		Long: "capui is a web interface for captain",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			c.log = logger.New(cmd.OutOrStdout()).
-				WithFormatter(logger.NewTextFormatter()).
-				WithVerbose(verbose)
+			c.log = logrus.New()
+			c.log.SetOutput(cmd.OutOrStdout())
+			if verbose {
+				c.log.SetLevel(logrus.DebugLevel)
+			}
 			return c.run()
 		},
 	}

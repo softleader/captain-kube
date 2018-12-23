@@ -1,7 +1,7 @@
 package chart
 
 import (
-	"github.com/softleader/captain-kube/pkg/logger"
+	"github.com/Sirupsen/logrus"
 	"text/template"
 )
 
@@ -17,8 +17,8 @@ docker save -o ./{{ $image.Name }}.tar {{ $image.String }}
 
 var saveTemplate = template.Must(template.New("").Parse(saveScript))
 
-func (i *Templates) GenerateSaveScript(log *logger.Logger) error {
+func (i *Templates) GenerateSaveScript(log *logrus.Logger) error {
 	data := make(map[string]interface{})
 	data["tpls"] = i
-	return saveTemplate.Execute(log.GetOutput(), data)
+	return saveTemplate.Execute(log.Writer(), data)
 }

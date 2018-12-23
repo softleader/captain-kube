@@ -1,5 +1,5 @@
-hash: 7cd4c14d21530a1b8eb7fe5a74b9b322a84d45de212e22b90a958a05a795465b
-updated: 2018-12-21T15:12:16.870753+08:00
+hash: df935c0f0345529fb21499ce5c06317dfd29c2b67b29bb1dfb71e7b8f3e9db1c
+updated: 2018-12-23T21:25:58.648795+08:00
 imports:
 - name: github.com/Azure/go-ansiterm
   version: d6e3b3328b783f23731bc4d058875b0371ff8109
@@ -182,7 +182,7 @@ imports:
   - nfs
   - xfs
 - name: github.com/Sirupsen/logrus
-  version: 2067ea4241cec716fbd0ac90f42f339f963bff92
+  version: bcd833dfe83d3cebad139e4a29ed79cb2318bf95
 - name: github.com/spf13/cobra
   version: ef82de70bb3f60c65fb8eebacbb2d122ef517385
 - name: github.com/spf13/pflag

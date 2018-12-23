@@ -2,10 +2,10 @@ package script
 
 import (
 	"bytes"
+	"github.com/Sirupsen/logrus"
 	"github.com/gin-gonic/gin"
 	"github.com/softleader/captain-kube/cmd/cap-ui/app/server/comm"
 	"github.com/softleader/captain-kube/pkg/captain"
-	"github.com/softleader/captain-kube/pkg/logger"
 	"github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/sse"
 	"github.com/softleader/captain-kube/pkg/utils/strutil"
@@ -28,9 +28,11 @@ func Serve(path string, r *gin.Engine, cfg *comm.Config) {
 		})
 	})
 	r.POST(path, func(c *gin.Context) {
-		log := logger.New(sse.NewWriter(c))
-		v, _ := strconv.ParseBool(c.Request.FormValue("verbose"))
-		log.WithVerbose(v)
+		log := logrus.New()
+		log.SetOutput(sse.NewWriter(c))
+		if v, _ := strconv.ParseBool(c.Request.FormValue("verbose")); v {
+			log.SetLevel(logrus.DebugLevel)
+		}
 
 		var form Request
 		if err := c.Bind(&form); err != nil {

@@ -3,11 +3,11 @@ package arc
 import (
 	"fmt"
 	"github.com/mholt/archiver"
-	"github.com/softleader/captain-kube/pkg/logger"
+	"github.com/Sirupsen/logrus"
 	"os"
 )
 
-func Extract(log *logger.Logger, source, destination string) (err error) {
+func Extract(log *logrus.Logger, source, destination string) (err error) {
 	if err = ensureDirEmpty(destination); err != nil {
 		return
 	}

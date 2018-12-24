@@ -37,16 +37,15 @@ func (s *Install) View(c *gin.Context) {
 	})
 }
 
-func (s *Install) Chart(c *gin.Context) { //(path string, r *gin.Engine, cfg *comm.Config) {
-	var form InstallRequest
-
-	log := logrus.New()
+func (s *Install) Chart(c *gin.Context) {
+	log := logrus.New() // 這個是這次請求要往前吐的 log
 	log.SetFormatter(&utils.PlainFormatter{})
 	log.SetOutput(sse.NewWriter(c))
 	if v, _ := strconv.ParseBool(c.Request.FormValue("verbose")); v {
 		log.SetLevel(logrus.DebugLevel)
 	}
 
+	var form InstallRequest
 	if err := c.Bind(&form); err != nil {
 		//sw.WriteStr(fmt.Sprint("binding form data error:", err))
 		log.Println("binding form data error:", err)

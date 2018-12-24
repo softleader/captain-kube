@@ -34,7 +34,7 @@ func (s *Script) View(c *gin.Context) {
 }
 
 func (s *Script) Generate(c *gin.Context) {
-	log := logrus.New()
+	log := logrus.New() // 這個是這次請求要往前吐的 log
 	log.SetOutput(sse.NewWriter(c))
 	log.SetFormatter(&utils.PlainFormatter{})
 	if v, _ := strconv.ParseBool(c.Request.FormValue("verbose")); v {

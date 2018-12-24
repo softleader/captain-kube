@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-{{ template "tmp_head.html" }}
+    {{ template "tmp_head.html" }}
 </head>
 <body>
 {{ template "tmp_navi.html" . }}
@@ -48,6 +48,17 @@
                 </div>
             </div>
 
+            <div class="form-group">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="verbose" id="verbose" value="true"
+                           {{ if .config.DefaultValue.Verbose }}checked{{ end }}>
+                    <label class="form-check-label" for="verbose">
+                        Verbose mode
+                    </label>
+                </div>
+            </div>
+
+
             <button id="generate" url="/script" type="submit" class="btn btn-outline-primary btn-block"
                     onclick="$(this).parent().attr('action', $(this).attr('url'))">
                 Generate Script
@@ -91,73 +102,73 @@
 
 <script>
 
-    $(function () {
-        new ClipboardJS('.btn');
+  $(function () {
+    new ClipboardJS('.btn');
 
-        // 核取框必須為任一勾選
-        let tags = $('#dataForm').find('input:checkbox[name="tags"]');
-        tags.on('change', e => {
-            let noAnyChecked = tags.not(':checked').length >= 4;
-            tags.prop('required', noAnyChecked)
-        });
+    // 核取框必須為任一勾選
+    let tags = $('#dataForm').find('input:checkbox[name="tags"]');
+    tags.on('change', e => {
+      let noAnyChecked = tags.not(':checked').length >= 4;
+      tags.prop('required', noAnyChecked)
+    });
 
-        // 有勾選retag 才可以使用Registry區塊
-        $("#image-retag").on('change', e => {
-            let isRetag = $(e.target).prop('checked');
-            $('#registry').prop('disabled', !isRetag);
-            $('#sourceRegistry').prop('disabled', !isRetag);
-            if (isRetag) {
-                $('#registry-group').show()
-            } else {
-                $('#registry-group').hide()
-            }
-        });
+    // 有勾選retag 才可以使用Registry區塊
+    $("#image-retag").on('change', e => {
+      let isRetag = $(e.target).prop('checked');
+      $('#registry').prop('disabled', !isRetag);
+      $('#sourceRegistry').prop('disabled', !isRetag);
+      if (isRetag) {
+        $('#registry-group').show()
+      } else {
+        $('#registry-group').hide()
+      }
+    });
 
-        $("form").submit(function (event) {
-            event.preventDefault();
+    $("form").submit(function (event) {
+      event.preventDefault();
 
-            let $btns = $("button");
-            $btns.prop('disabled', true);
+      let $btns = $("button");
+      $btns.prop('disabled', true);
 
-            let $outputBLock = $('#output_block');
-            let $output = $("#output");
-            $output.empty();
+      let $outputBLock = $('#output_block');
+      let $output = $("#output");
+      $output.empty();
 
-            let formData = new FormData($('#dataForm')[0]);
+      let formData = new FormData($('#dataForm')[0]);
 
-            $([document.documentElement, document.body]).animate({
-                scrollTop: $output.offset().top
-            }, 1000);
+      $([document.documentElement, document.body]).animate({
+        scrollTop: $output.offset().top
+      }, 1000);
 
-            fetch(event.target.action, {
-                method: 'POST',
-                body: formData,
-            }).then(response => readSSE(response, {
-                onNext(value) {
-                    $output.append(value + '<br>');
-                    $outputBLock.scrollTop($outputBLock[0].scrollHeight);
-                },
-                onComplete() {
-                    $btns.prop('disabled', false);
-                    let dl = /generated\s(.+)$/gm.exec($output.text());
-                    if (dl) {
-                        let $a = $("<a></a>").addClass("btn btn-outline-info").append("Download");
-                        $a.attr("href", "/script?file=" + dl[1]);
-                        $a.click(function () {
-                            $(this).remove();
-                        });
-                        $output.append($("<hr/>")).append($a).append($("<p/>"));
-                    }
-                }
-            })).catch(error => $output.append(error + '<br>'));
-        });
+      fetch(event.target.action, {
+        method: 'POST',
+        body: formData,
+      }).then(response => readSSE(response, {
+        onNext(value) {
+          $output.append(value + '<br>');
+          $outputBLock.scrollTop($outputBLock[0].scrollHeight);
+        },
+        onComplete() {
+          $btns.prop('disabled', false);
+          let dl = /generated\s(.+)$/gm.exec($output.text());
+          if (dl) {
+            let $a = $("<a></a>").addClass("btn btn-outline-info").append("Download");
+            $a.attr("href", "/script?file=" + dl[1]);
+            $a.click(function () {
+              $(this).remove();
+            });
+            $output.append($("<hr/>")).append($a).append($("<p/>"));
+          }
+        }
+      })).catch(error => $output.append(error + '<br>'));
+    });
 
-        $(window).on('beforeunload', function () {
-            if ($('form button:submit').is(':disabled')) {
-                return "Are you sure you want to leave this page while drafting release?";
-            }
-        });
-    })
+    $(window).on('beforeunload', function () {
+      if ($('form button:submit').is(':disabled')) {
+        return "Are you sure you want to leave this page while drafting release?";
+      }
+    });
+  })
 </script>
 
 </body>

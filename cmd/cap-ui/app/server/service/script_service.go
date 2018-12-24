@@ -43,26 +43,29 @@ func (s *Script) Generate(c *gin.Context) {
 
 	var form ScriptRequest
 	if err := c.Bind(&form); err != nil {
-		log.Println("binding form data error:", err)
+		log.Errorln("binding form data error:", err)
+		s.Log.Errorln("binding form data error:", err)
 		return
 	}
 
 	file, header, err := c.Request.FormFile("file")
 	if err != nil {
-		log.Println("loading form file error:", err)
+		log.Errorln("loading form file error:", err)
+		s.Log.Errorln("loading form file error:", err)
 		return
 	}
 
-	log.Println("call: POST /script")
-	log.Println("form:", form)
-	log.Println("file:", file)
+	log.Debugln("call: POST /script")
+	log.Debugln("form:", form)
+	log.Debugln("file:", file)
 
 	buf := bytes.NewBuffer(nil)
 	if readed, err := io.Copy(buf, file); err != nil {
-		log.Println("reading file failed:", err)
+		log.Errorln("reading file failed:", err)
+		s.Log.Errorln("reading file failed:", err)
 		return
 	} else {
-		log.Println("readed ", readed, " bytes")
+		log.Debugln("readed ", readed, " bytes")
 	}
 
 	request := proto.GenerateScriptRequest{
@@ -81,8 +84,9 @@ func (s *Script) Generate(c *gin.Context) {
 	}
 
 	if err := captain.GenerateScript(log, s.Cfg.DefaultValue.CaptainUrl, &request, 300); err != nil {
-		log.Println("call captain GenerateScript failed:", err)
+		log.Errorln("call captain GenerateScript failed:", err)
+		s.Log.Errorln("call captain GenerateScript failed:", err)
 	} else {
-		log.Println("GenerateScript finish")
+		log.Debugln("GenerateScript finish")
 	}
 }

@@ -2,7 +2,6 @@ package service
 
 import (
 	"bytes"
-	"fmt"
 	"github.com/Sirupsen/logrus"
 	"github.com/gin-gonic/gin"
 	"github.com/softleader/captain-kube/cmd/cap-ui/app/server/comm"
@@ -48,30 +47,32 @@ func (s *Install) Chart(c *gin.Context) {
 	var form InstallRequest
 	if err := c.Bind(&form); err != nil {
 		//sw.WriteStr(fmt.Sprint("binding form data error:", err))
-		log.Println("binding form data error:", err)
+		log.Errorln("binding form data error:", err)
+		s.Log.Errorln("binding form data error:", err)
 		return
 	}
 
 	file, header, err := c.Request.FormFile("file")
 	if err != nil {
 		//sw.WriteStr(fmt.Sprint("loading form file error:", err))
-		log.Println("loading form file error:", err)
+		log.Errorln("loading form file error:", err)
+		s.Log.Errorln("loading form file error:", err)
 		return
 	}
 
 	// ps. 在讀完request body後才可以開始response, 否則body會close
 
-	log.Println("call: POST /install")
-
-	log.Println("form:", form)
-	log.Println("file:", file)
+	log.Debugln("call: POST /install")
+	log.Debugln("form:", form)
+	log.Debugln("file:", file)
 
 	buf := bytes.NewBuffer(nil)
 	if readed, err := io.Copy(buf, file); err != nil {
-		log.Println("reading file failed:", err)
+		log.Errorln("reading file failed:", err)
+		s.Log.Errorln("reading file failed:", err)
 		return
 	} else {
-		log.Println("readed ", readed, " bytes")
+		log.Debugln("readed ", readed, " bytes")
 	}
 
 	// prepare rquest
@@ -101,11 +102,13 @@ func (s *Install) Chart(c *gin.Context) {
 	}
 
 	if err := dockerctl.PullAndSync(log, &request); err != nil {
-		log.Println("Pull/Sync failed:", err)
+		log.Errorln("Pull/Sync failed:", err)
+		s.Log.Errorln("Pull/Sync failed:", err)
 	}
 
 	if err := captain.InstallChart(log, s.Cfg.DefaultValue.CaptainUrl, &request, 300); err != nil {
-		fmt.Fprintln(c.Writer, "call captain InstallChart failed:", err)
+		log.Errorln("call captain InstallChart failed:", err)
+		s.Log.Errorln("call captain InstallChart failed:", err)
 	}
-	fmt.Fprintln(c.Writer, "InstallChart finish")
+	log.Debugln("InstallChart finish")
 }

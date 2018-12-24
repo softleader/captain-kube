@@ -2,7 +2,6 @@ package server
 
 import (
 	"fmt"
-	"github.com/Sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/caplet"
 	"github.com/softleader/captain-kube/pkg/helm/chart"
 	"github.com/softleader/captain-kube/pkg/proto"
@@ -12,7 +11,6 @@ import (
 var ErrNonCapletDaemonFound = fmt.Errorf("non caplet daemon found")
 
 type CaptainServer struct {
-	Log       *logrus.Logger
 	Hostname  string
 	Endpoints []string
 	Port      int

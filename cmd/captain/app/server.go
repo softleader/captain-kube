@@ -12,11 +12,9 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"net"
-	"os"
 )
 
 type captainCmd struct {
-	log            *logrus.Logger
 	serve          string
 	endpoints      []string
 	port           int
@@ -37,13 +35,12 @@ func NewCaptainCommand() (cmd *cobra.Command) {
 		Use:  "captain",
 		Long: "captain is the brain of captain-kube system",
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			c.log = logrus.New()
-			c.log.Out = os.Stdout
-			c.log.SetFormatter(&logrus.TextFormatter{
+			logrus.SetOutput(cmd.OutOrStdout())
+			logrus.SetFormatter(&logrus.TextFormatter{
 				ForceColors: true,
 			})
 			if verbose {
-				c.log.SetLevel(logrus.DebugLevel)
+				logrus.SetLevel(logrus.DebugLevel)
 			}
 			return c.Run()
 		},
@@ -67,13 +64,12 @@ func (c *captainCmd) Run() error {
 	}
 	s := grpc.NewServer()
 	proto.RegisterCaptainServer(s, &server.CaptainServer{
-		Log:       c.log,
 		Hostname:  c.capletHostname,
 		Endpoints: c.endpoints,
 		Port:      c.capletPort,
 		K8s:       c.k8sVendor,
 	})
 	reflection.Register(s)
-	c.log.Printf("listening and serving GRPC on %v", lis.Addr().String())
+	logrus.Printf("listening and serving GRPC on %v", lis.Addr().String())
 	return s.Serve(lis)
 }

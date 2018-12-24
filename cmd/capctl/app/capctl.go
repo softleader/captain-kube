@@ -8,9 +8,9 @@ import (
 
 func NewRootCmd(args []string) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:          "cap",
-		Short:        "captain cli",
-		Long:         "command intrface for captain",
+		Use:          "capctl",
+		Short:        "captain-kube cli",
+		Long:         "The command line interface for captain-kube system",
 		SilenceUsage: true,
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			logrus.SetOutput(cmd.OutOrStdout())

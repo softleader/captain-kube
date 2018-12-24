@@ -103,11 +103,13 @@ func (s *Install) Chart(c *gin.Context) {
 	if err := dockerd.PullAndSync(log, &request); err != nil {
 		log.Errorln("Pull/Sync failed:", err)
 		logrus.Errorln("Pull/Sync failed:", err)
+		return
 	}
 
 	if err := captain.InstallChart(log, s.Cfg.DefaultValue.CaptainUrl, &request, 300); err != nil {
 		log.Errorln("call captain InstallChart failed:", err)
 		logrus.Errorln("call captain InstallChart failed:", err)
+		return
 	}
 	log.Debugln("InstallChart finish")
 }

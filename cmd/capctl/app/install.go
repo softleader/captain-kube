@@ -1,7 +1,6 @@
 package app
 
 import (
-	"fmt"
 	"github.com/Sirupsen/logrus"
 	"github.com/pkg/errors"
 	"github.com/softleader/captain-kube/pkg/captain"
@@ -31,8 +30,7 @@ type installCmd struct {
 	tillerAccount           string // helm tiller 的帳號
 	tillerSkipSslValidation bool
 
-	endpoint     string // captain 的 endpoint ip
-	endpointPort int    // captain 的 endpoint port
+	endpoint *endpoint // captain 的 endpoint ip
 }
 
 func newInstallCmd() *cobra.Command {
@@ -47,8 +45,6 @@ func newInstallCmd() *cobra.Command {
 		tillerPassword:          env.Lookup(captain.EnvTillerPassword, captain.DefaultTillerPassword),
 		tillerAccount:           env.Lookup(captain.EnvTillerAccount, captain.DefaultTillerAccount),
 		tillerSkipSslValidation: env.LookupBool(captain.EnvTillerSkipSslValidation, captain.DefaultTillerSkipSslValidation),
-
-		endpointPort: captain.DefaultPort,
 	}
 
 	cmd := &cobra.Command{
@@ -60,12 +56,12 @@ func newInstallCmd() *cobra.Command {
 				return errors.New("chart path is required")
 			}
 			// do some validation check
-			if e := strings.TrimSpace(c.endpoint); len(e) == 0 {
-				return errors.New("endpoint is required")
+			if err := c.endpoint.validate(); err != nil {
+				return err
 			}
 			// apply some default value
 			if te := strings.TrimSpace(c.tillerEndpoint); len(te) == 0 {
-				c.tillerEndpoint = c.endpoint
+				c.tillerEndpoint = c.endpoint.host
 			}
 			return c.run()
 		},
@@ -90,8 +86,7 @@ func newInstallCmd() *cobra.Command {
 	f.StringVar(&c.tillerAccount, "tiller-account", c.tillerAccount, "specify the account of helm tiller")
 	f.BoolVar(&c.tillerSkipSslValidation, "tiller-skip-ssl", c.tillerSkipSslValidation, "specify skip ssl validation of helm tiller")
 
-	f.StringVarP(&c.endpoint, "endpoint", "e", "", "specify the captain endpoint")
-	f.IntVar(&c.endpointPort, "endpoint-port", captain.DefaultPort, "specify the port of captain endpoint")
+	c.endpoint = addEndpointFlags(f)
 
 	return cmd
 }
@@ -144,7 +139,7 @@ func run(c *installCmd, path string) error {
 		return err
 	}
 
-	if err := captain.InstallChart(logrus.StandardLogger(), fmt.Sprintf("%s:%v", c.endpoint, c.endpointPort), &request, settings.timeout); err != nil {
+	if err := captain.InstallChart(logrus.StandardLogger(), c.endpoint.String(), &request, settings.timeout); err != nil {
 		return err
 	}
 

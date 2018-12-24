@@ -27,6 +27,7 @@ func NewRootCmd(args []string) *cobra.Command {
 	cmd.AddCommand(
 		newInstallCmd(),
 		newScriptCmd(),
+		newPruneCmd(),
 	)
 
 	flags.Parse(args)

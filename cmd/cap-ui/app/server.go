@@ -9,7 +9,6 @@ import (
 )
 
 type capUiCmd struct {
-	log        *logrus.Logger
 	configPath string
 	port       int
 }
@@ -21,13 +20,12 @@ func NewCapUiCommand() (cmd *cobra.Command) {
 		Use:  "capui",
 		Long: "capui is a web interface for captain",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			c.log = logrus.New()
-			c.log.SetOutput(cmd.OutOrStdout())
-			c.log.SetFormatter(&logrus.TextFormatter{
+			logrus.SetOutput(cmd.OutOrStdout())
+			logrus.SetFormatter(&logrus.TextFormatter{
 				ForceColors: true,
 			})
 			if verbose {
-				c.log.SetLevel(logrus.DebugLevel)
+				logrus.SetLevel(logrus.DebugLevel)
 			}
 			return c.run()
 		},
@@ -45,7 +43,7 @@ func (cmd *capUiCmd) run() error {
 	if c, err := comm.GetConfig(cmd.configPath); err != nil {
 		return err
 	} else {
-		server := server.NewCapUiServer(cmd.log, c)
+		server := server.NewCapUiServer(c)
 		return server.Run(fmt.Sprintf(":%v", cmd.port))
 	}
 }

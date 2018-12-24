@@ -1,7 +1,6 @@
 package server
 
 import (
-	"github.com/Sirupsen/logrus"
 	"github.com/gin-gonic/gin"
 	"github.com/softleader/captain-kube/cmd/cap-ui/app/server/comm"
 	"github.com/softleader/captain-kube/cmd/cap-ui/app/server/service"
@@ -10,7 +9,7 @@ import (
 	"net/http"
 )
 
-func NewCapUiServer(log *logrus.Logger, cfg *comm.Config) (r *gin.Engine) {
+func NewCapUiServer(cfg *comm.Config) (r *gin.Engine) {
 	r = gin.Default()
 
 	r.SetFuncMap(template.FuncMap{
@@ -34,7 +33,6 @@ func NewCapUiServer(log *logrus.Logger, cfg *comm.Config) (r *gin.Engine) {
 	installRoute := r.Group("/install")
 	{
 		install := &service.Install{
-			Log: log,
 			Cfg: cfg,
 		}
 		installRoute.GET("/", install.View)
@@ -44,7 +42,6 @@ func NewCapUiServer(log *logrus.Logger, cfg *comm.Config) (r *gin.Engine) {
 	scriptRoute := r.Group("/script")
 	{
 		script := &service.Script{
-			Log: log,
 			Cfg: cfg,
 		}
 		scriptRoute.GET("/", script.View)

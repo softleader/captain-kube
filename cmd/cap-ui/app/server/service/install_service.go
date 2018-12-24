@@ -26,7 +26,6 @@ type InstallRequest struct {
 }
 
 type Install struct {
-	Log *logrus.Logger // 這個是 server 自己的 log
 	Cfg *comm.Config
 }
 
@@ -48,7 +47,7 @@ func (s *Install) Chart(c *gin.Context) {
 	if err := c.Bind(&form); err != nil {
 		//sw.WriteStr(fmt.Sprint("binding form data error:", err))
 		log.Errorln("binding form data error:", err)
-		s.Log.Errorln("binding form data error:", err)
+		logrus.Errorln("binding form data error:", err)
 		return
 	}
 
@@ -56,7 +55,7 @@ func (s *Install) Chart(c *gin.Context) {
 	if err != nil {
 		//sw.WriteStr(fmt.Sprint("loading form file error:", err))
 		log.Errorln("loading form file error:", err)
-		s.Log.Errorln("loading form file error:", err)
+		logrus.Errorln("loading form file error:", err)
 		return
 	}
 
@@ -69,7 +68,7 @@ func (s *Install) Chart(c *gin.Context) {
 	buf := bytes.NewBuffer(nil)
 	if readed, err := io.Copy(buf, file); err != nil {
 		log.Errorln("reading file failed:", err)
-		s.Log.Errorln("reading file failed:", err)
+		logrus.Errorln("reading file failed:", err)
 		return
 	} else {
 		log.Debugln("readed ", readed, " bytes")
@@ -103,12 +102,12 @@ func (s *Install) Chart(c *gin.Context) {
 
 	if err := dockerd.PullAndSync(log, &request); err != nil {
 		log.Errorln("Pull/Sync failed:", err)
-		s.Log.Errorln("Pull/Sync failed:", err)
+		logrus.Errorln("Pull/Sync failed:", err)
 	}
 
 	if err := captain.InstallChart(log, s.Cfg.DefaultValue.CaptainUrl, &request, 300); err != nil {
 		log.Errorln("call captain InstallChart failed:", err)
-		s.Log.Errorln("call captain InstallChart failed:", err)
+		logrus.Errorln("call captain InstallChart failed:", err)
 	}
 	log.Debugln("InstallChart finish")
 }

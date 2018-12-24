@@ -18,7 +18,7 @@ const saveScript = `
 {{- if eq $len 0 -}}
 # no images found in source
 {{- else -}}
-{{- range $key, $image := $images -}}
+{{- range $key, $image := $images }}
 docker save -o ./{{ $image.Name }}.tar {{ $image.String }}
 {{- end -}}
 {{- end -}}

@@ -4,6 +4,7 @@ import (
 	"github.com/Sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/dur"
 	"github.com/softleader/captain-kube/pkg/proto"
+	"github.com/softleader/captain-kube/pkg/utils"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -36,6 +37,7 @@ func TestGenerateScript(t *testing.T) {
 	}
 
 	log := logrus.New()
+	log.SetFormatter(&utils.PlainFormatter{})
 	err = GenerateScript(log, "localhost:30051", &proto.GenerateScriptRequest{
 		Chart: &proto.Chart{
 			Content:  chart,
@@ -46,7 +48,7 @@ func TestGenerateScript(t *testing.T) {
 		},
 		Save:    true,
 		Load:    true,
-		Verbose: false,
+		Verbose: true,
 	}, dur.DefaultDeadlineSecond)
 	if err != nil {
 		t.Error(err)

@@ -18,7 +18,7 @@ const loadScript = `
 {{- if eq $len 0 -}}
 # no images found in source
 {{- else -}}
-{{- range $key, $image := $images -}}
+{{- range $key, $image := $images }}
 docker load -i ./{{ $image.Name }}.tar
 {{- end -}}
 {{- end -}}

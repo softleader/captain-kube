@@ -1,18 +1,17 @@
 package server
 
 import (
-	"fmt"
+	"github.com/Sirupsen/logrus"
 	"github.com/gin-gonic/gin"
 	"github.com/softleader/captain-kube/cmd/cap-ui/app/server/comm"
-	"github.com/softleader/captain-kube/cmd/cap-ui/app/server/install"
-	"github.com/softleader/captain-kube/cmd/cap-ui/app/server/script"
+	"github.com/softleader/captain-kube/cmd/cap-ui/app/server/service"
 	"github.com/softleader/captain-kube/pkg/utils/strutil"
 	"html/template"
 	"net/http"
 )
 
-func Ui(cfg *comm.Config, port int) (err error) {
-	r := gin.Default()
+func NewCapUiServer(log *logrus.Logger, cfg *comm.Config) (r *gin.Engine) {
+	r = gin.Default()
 
 	r.SetFuncMap(template.FuncMap{
 		"Contains": strutil.Contains,
@@ -28,15 +27,29 @@ func Ui(cfg *comm.Config, port int) (err error) {
 	// index
 	r.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.html", gin.H{
-			"config": &cfg,
+			"config": cfg,
 		})
 	})
 
-	// services
-	install.Serve("/install", r, cfg)
-	script.Serve("/script", r, cfg)
+	installRoute := r.Group("/install")
+	{
+		install := &service.Install{
+			Log: log,
+			Cfg: cfg,
+		}
+		installRoute.GET("/", install.View)
+		installRoute.POST("/", install.Chart)
+	}
 
-	r.Run(fmt.Sprintf(":%v", port))
+	scriptRoute := r.Group("/script")
+	{
+		script := &service.Script{
+			Log: log,
+			Cfg: cfg,
+		}
+		scriptRoute.GET("/", script.View)
+		scriptRoute.POST("/", script.Generate)
+	}
 
 	return
 }

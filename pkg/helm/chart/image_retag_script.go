@@ -19,7 +19,7 @@ const retagScript = `
 {{- if eq $len 0 -}}
 # no images found in source
 {{- else -}}
-{{- range $key, $image := $images -}}
+{{- range $key, $image := $images }}
 docker tag {{ $from }}/{{ $image.Name }} {{ $image.Host }}/{{ $image.Name }} && docker push {{ $image.Host }}/{{ $image.Name }}
 {{- end -}}
 {{- end -}}

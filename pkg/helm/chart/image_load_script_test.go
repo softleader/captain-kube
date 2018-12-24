@@ -11,6 +11,9 @@ import (
 )
 
 func TestTemplates_GenerateLoadScript(t *testing.T) {
+	log := logrus.New()
+	log.SetOutput(os.Stdout)
+
 	path, err := ioutil.TempDir(os.TempDir(), "test-generate-script-")
 	if err != nil {
 		t.Error(err)
@@ -29,18 +32,19 @@ func TestTemplates_GenerateLoadScript(t *testing.T) {
 		t.Error(err)
 	}
 
-	log := logrus.New()
-	log.SetOutput(os.Stdout)
-	log.SetFormatter(&utils.PlainFormatter{})
-	log.SetLevel(logrus.DebugLevel)
-
-	log.Debugf("ddddddug")
-
-	tpl, err := LoadDir(log, filepath.Join(path, "foo-0.1.0.tgz"))
+	tpl, err := LoadArchive(log, filepath.Join(path, "foo-0.1.0.tgz"))
 	if err != nil {
 		t.Error(err)
 	}
-	if err = tpl.GenerateLoadScript(log); err != nil {
+
+	another := logrus.New()
+	another.SetOutput(os.Stdout)
+	another.SetFormatter(&utils.PlainFormatter{})
+	another.SetLevel(logrus.DebugLevel)
+
+	if err = tpl.GenerateLoadScript(another); err != nil {
 		t.Error(err)
 	}
 }
+
+

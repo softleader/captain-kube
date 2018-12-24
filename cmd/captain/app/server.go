@@ -12,6 +12,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"net"
+	"os"
 )
 
 type captainCmd struct {
@@ -37,7 +38,7 @@ func NewCaptainCommand() (cmd *cobra.Command) {
 		Long: "captain is the brain of captain-kube system",
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			c.log = logrus.New()
-			c.log.SetOutput(cmd.OutOrStdout())
+			c.log.Out = os.Stdout
 			c.log.SetFormatter(&logrus.TextFormatter{
 				ForceColors: true,
 			})

@@ -56,8 +56,9 @@ func findFirstDir(path string) (string, error) {
 	return "", fmt.Errorf("no dir found in %q", path)
 }
 
-func LoadDir(_ *logrus.Logger, chartPath string) (tpls Templates, err error) {
+func LoadDir(log *logrus.Logger, chartPath string) (tpls Templates, err error) {
 	tpls = make(map[string][]*Image)
+	log.Debugf("loading helm template: %s", chartPath)
 	err = filepath.Walk(chartPath, func(path string, info os.FileInfo, err error) error {
 		i, err := image(path, info)
 		if len(i) > 0 {

@@ -24,7 +24,7 @@ func Prune(log *logrus.Logger) error {
 		for _, del := range cp.ContainersDeleted {
 			log.Info(del)
 		}
-		log.Infof("total reclaimed space: %s", cp.SpaceReclaimed)
+		log.Infof("total reclaimed space: %v", cp.SpaceReclaimed)
 	}
 
 	if ip, err := cli.ImagesPrune(ctx, args); err != nil {
@@ -34,7 +34,7 @@ func Prune(log *logrus.Logger) error {
 		for _, del := range ip.ImagesDeleted {
 			log.Info(del)
 		}
-		log.Infof("total reclaimed space: %s", ip.SpaceReclaimed)
+		log.Infof("total reclaimed space: %v", ip.SpaceReclaimed)
 	}
 
 	if np, err := cli.NetworksPrune(ctx, args); err != nil {

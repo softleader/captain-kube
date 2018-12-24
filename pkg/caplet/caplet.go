@@ -41,4 +41,5 @@ func (endpoints Endpoints) Each(consumer func(e *Endpoint) error) error {
 	if len(errors) > 0 {
 		return fmt.Errorf(strings.Join(errors, "\n"))
 	}
+	return nil
 }

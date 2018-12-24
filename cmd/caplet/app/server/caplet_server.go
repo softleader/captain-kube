@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"github.com/Sirupsen/logrus"
 	"github.com/docker/docker/cli/command"
 	"github.com/docker/docker/pkg/jsonmessage"
@@ -9,23 +8,20 @@ import (
 	"github.com/softleader/captain-kube/pkg/helm/chart"
 	"github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/sio"
-	"github.com/softleader/captain-kube/pkg/utils"
 	"os"
 )
 
 type capletServer struct {
-	log       *logrus.Logger
-	formatter logrus.Formatter
+	log    *logrus.Logger
+	fields logrus.Fields
 }
 
 func NewCapletServer(log *logrus.Logger) (s *capletServer) {
 	s = &capletServer{
 		log: log,
 	}
-	hostname, _ := os.Hostname()
-	s.formatter = &utils.PrefixFormatter{
-		Prefix: fmt.Sprintf("[%s] ", hostname),
-	}
+	s.fields = make(logrus.Fields)
+	s.fields["hostname"], _ = os.Hostname()
 	return
 }
 
@@ -36,7 +32,7 @@ func (s *capletServer) PullImage(req *proto.PullImageRequest, stream proto.Caple
 			Msg: p,
 		})
 	}))
-	log.SetFormatter(s.formatter)
+	log.WithFields(s.fields)
 	if req.GetVerbose() {
 		log.SetLevel(logrus.DebugLevel)
 	}

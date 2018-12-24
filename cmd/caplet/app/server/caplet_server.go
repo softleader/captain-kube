@@ -8,20 +8,17 @@ import (
 	"github.com/softleader/captain-kube/pkg/helm/chart"
 	"github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/sio"
-	"os"
+	"github.com/softleader/captain-kube/pkg/utils"
 )
 
 type capletServer struct {
-	log    *logrus.Logger
-	fields logrus.Fields
+	log *logrus.Logger
 }
 
 func NewCapletServer(log *logrus.Logger) (s *capletServer) {
 	s = &capletServer{
 		log: log,
 	}
-	s.fields = make(logrus.Fields)
-	s.fields["hostname"], _ = os.Hostname()
 	return
 }
 
@@ -32,7 +29,7 @@ func (s *capletServer) PullImage(req *proto.PullImageRequest, stream proto.Caple
 			Msg: p,
 		})
 	}))
-	log.WithFields(s.fields)
+	log.SetFormatter(&utils.PlainFormatter{})
 	if req.GetVerbose() {
 		log.SetLevel(logrus.DebugLevel)
 	}

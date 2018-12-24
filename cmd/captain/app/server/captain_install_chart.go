@@ -6,6 +6,7 @@ import (
 	"github.com/softleader/captain-kube/pkg/helm/chart"
 	"github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/sio"
+	"github.com/softleader/captain-kube/pkg/utils"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -18,6 +19,7 @@ func (s *CaptainServer) InstallChart(req *proto.InstallChartRequest, stream prot
 			Msg: p,
 		})
 	}))
+	log.SetFormatter(&utils.PlainFormatter{})
 	if req.GetVerbose() {
 		log.SetLevel(logrus.DebugLevel)
 	}
@@ -50,7 +52,9 @@ func (s *CaptainServer) InstallChart(req *proto.InstallChartRequest, stream prot
 		if err != nil {
 			return err
 		}
-		caplet.PullImage(log, endpoints, newPullImageRequest(tpls, req.GetRegistryAuth()), req.GetTimeout())
+		endpoints.Each(func(e *caplet.Endpoint) error {
+			return e.PullImage(log, newPullImageRequest(tpls, req.GetRegistryAuth()), req.GetTimeout())
+		})
 	}
 	return nil
 }

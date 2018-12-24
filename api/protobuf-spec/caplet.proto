@@ -4,6 +4,7 @@ package proto;
 
 import "image.proto";
 import "msg.proto";
+import "prune.proto";
 
 message PullImageRequest {
     repeated Image images = 1;
@@ -13,5 +14,7 @@ message PullImageRequest {
 
 service Caplet {
     rpc PullImage (PullImageRequest) returns (stream ChunkMessage) {
+    }
+    rpc Prune (PruneRequest) returns (stream ChunkMessage) {
     }
 }

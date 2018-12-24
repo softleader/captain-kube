@@ -2,9 +2,9 @@ package server
 
 import (
 	"fmt"
+	"github.com/Sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/caplet"
 	"github.com/softleader/captain-kube/pkg/helm/chart"
-	"github.com/Sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/proto"
 	"net"
 )
@@ -19,7 +19,7 @@ type CaptainServer struct {
 	K8s       string
 }
 
-func (s *CaptainServer) lookupCaplets() (endpoints []*caplet.Endpoint, err error) {
+func (s *CaptainServer) lookupCaplets() (endpoints caplet.Endpoints, err error) {
 	if len(s.Endpoints) == 0 {
 		if s.Endpoints, err = net.LookupHost(s.Hostname); err != nil {
 			return

@@ -5,6 +5,7 @@ package proto;
 import "chart.proto";
 import "image.proto";
 import "msg.proto";
+import "prune.proto";
 
 message InstallChartRequest {
     Chart chart = 1;
@@ -16,7 +17,6 @@ message InstallChartRequest {
     RegistryAuth registryAuth = 7;
     bool verbose = 8;
 }
-
 
 message GenerateScriptRequest {
     Chart chart = 1;
@@ -32,5 +32,6 @@ service Captain {
     }
     rpc GenerateScript (GenerateScriptRequest) returns (stream ChunkMessage) {
     }
+    rpc Prune (PruneRequest) returns (stream ChunkMessage) {
+    }
 }
-

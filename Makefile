@@ -1,4 +1,4 @@
-HAS_GLIDE := $(shell command -v glide;)
+HAS_DEP := $(shell command -v dep;)
 DIST := $(CURDIR)/_dist
 BUILD := $(CURDIR)/_build
 REGISTRY := softleader
@@ -19,6 +19,7 @@ protoc:
 	protoc -I api/protobuf-spec/ --go_out=plugins=grpc:pkg/proto api/protobuf-spec/chart.proto
 	protoc -I api/protobuf-spec/ --go_out=plugins=grpc:pkg/proto api/protobuf-spec/image.proto
 	protoc -I api/protobuf-spec/ --go_out=plugins=grpc:pkg/proto api/protobuf-spec/msg.proto
+	protoc -I api/protobuf-spec/ --go_out=plugins=grpc:pkg/proto api/protobuf-spec/prune.proto
 
 .PHONY: build
 build: clean bootstrap build-caplet build-captain build-ui build-capctl
@@ -60,13 +61,13 @@ dist-calctl:
 
 .PHONY: bootstrap
 bootstrap:
-ifndef HAS_GLIDE
-	go get -u github.com/Masterminds/glide
+ifndef HAS_DEP
+	go get -u github.com/golang/dep/cmd/dep
 endif
 ifeq (,$(wildcard ./glide.yaml))
 	glide init
 endif
-	glide install --strip-vendor
+	dep ensure
 
 .PHONY: clean
 clean:

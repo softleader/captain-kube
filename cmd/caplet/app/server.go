@@ -14,7 +14,6 @@ import (
 )
 
 type capletCmd struct {
-	log   *logrus.Logger
 	serve string
 	port  int
 }
@@ -33,13 +32,12 @@ func NewCapletCommand() (cmd *cobra.Command) {
 		Use:  "caplet",
 		Long: "caplet is a daemon run on every kubernetes node",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			c.log = logrus.New()
-			c.log.SetOutput(cmd.OutOrStdout())
-			c.log.SetFormatter(&logrus.TextFormatter{
+			logrus.SetOutput(cmd.OutOrStdout())
+			logrus.SetFormatter(&logrus.TextFormatter{
 				ForceColors: true,
 			})
 			if verbose {
-				c.log.SetLevel(logrus.DebugLevel)
+				logrus.SetLevel(logrus.DebugLevel)
 			}
 			return c.run()
 		},
@@ -59,10 +57,10 @@ func (c *capletCmd) run() error {
 	}
 
 	s := grpc.NewServer()
-	proto.RegisterCapletServer(s, server.NewCapletServer(c.log))
-	c.log.Printf("registered caplet server\n")
+	proto.RegisterCapletServer(s, server.NewCapletServer())
+	logrus.Printf("registered caplet server\n")
 	reflection.Register(s)
 
-	c.log.Printf("listening and serving GRPC on %v\n", lis.Addr().String())
+	logrus.Printf("listening and serving GRPC on %v\n", lis.Addr().String())
 	return s.Serve(lis)
 }

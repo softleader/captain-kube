@@ -3,7 +3,7 @@ package install
 import (
 	"fmt"
 	"github.com/softleader/captain-kube/pkg/captain"
-	"github.com/softleader/captain-kube/pkg/dockerctl"
+	"github.com/softleader/captain-kube/pkg/dockerd"
 	"github.com/softleader/captain-kube/pkg/env"
 	"github.com/Sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/proto"
@@ -121,7 +121,7 @@ func (c *installCmd) run() error {
 		Timeout: c.timeout,
 	}
 
-	if err := dockerctl.PullAndSync(c.log, &request); err != nil {
+	if err := dockerd.PullAndSync(c.log, &request); err != nil {
 		return err
 	}
 

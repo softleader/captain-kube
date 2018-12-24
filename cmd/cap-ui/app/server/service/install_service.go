@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/softleader/captain-kube/cmd/cap-ui/app/server/comm"
 	"github.com/softleader/captain-kube/pkg/captain"
-	"github.com/softleader/captain-kube/pkg/dockerctl"
+	"github.com/softleader/captain-kube/pkg/dockerd"
 	"github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/sse"
 	"github.com/softleader/captain-kube/pkg/utils"
@@ -101,7 +101,7 @@ func (s *Install) Chart(c *gin.Context) {
 		},
 	}
 
-	if err := dockerctl.PullAndSync(log, &request); err != nil {
+	if err := dockerd.PullAndSync(log, &request); err != nil {
 		log.Errorln("Pull/Sync failed:", err)
 		s.Log.Errorln("Pull/Sync failed:", err)
 	}

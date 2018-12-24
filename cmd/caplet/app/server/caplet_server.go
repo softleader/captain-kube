@@ -4,7 +4,7 @@ import (
 	"github.com/Sirupsen/logrus"
 	"github.com/docker/docker/cli/command"
 	"github.com/docker/docker/pkg/jsonmessage"
-	"github.com/softleader/captain-kube/pkg/dockerctl"
+	"github.com/softleader/captain-kube/pkg/dockerd"
 	"github.com/softleader/captain-kube/pkg/helm/chart"
 	"github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/sio"
@@ -45,7 +45,7 @@ func pull(log *logrus.Logger, image *proto.Image, auth *proto.RegistryAuth) erro
 	if tag := image.GetTag(); len(tag) == 0 {
 		image.Tag = "latest"
 	}
-	rc, err := dockerctl.Pull(log, chart.Image{
+	rc, err := dockerd.Pull(log, chart.Image{
 		Host: image.Host,
 		Repo: image.Repo,
 		Tag:  image.Tag,

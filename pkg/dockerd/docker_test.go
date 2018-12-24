@@ -1,4 +1,4 @@
-package dockerctl
+package dockerd
 
 import (
 	"github.com/softleader/captain-kube/pkg/proto"

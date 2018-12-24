@@ -46,7 +46,7 @@ func TestGenerateScript(t *testing.T) {
 		},
 		Save:    true,
 		Load:    true,
-		Verbose: true,
+		Verbose: false,
 	}, dur.DefaultDeadlineSecond)
 	if err != nil {
 		t.Error(err)

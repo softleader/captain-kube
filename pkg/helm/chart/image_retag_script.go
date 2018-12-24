@@ -6,21 +6,32 @@ import (
 )
 
 const retagScript = `
-{{ $from := index . "from" }}
-{{- range $path, $images := index . "tpls" }}
+{{- $from := index . "from" -}}
+{{- $tpls := index . "tpls" -}}
+{{- $len := len $tpls -}} 
+{{- if eq $len 0 -}}
+# no sources found in template
+{{- else -}}
+{{- range $path, $images := $tpls -}}
 ##---
 # Source: {{ $path }}
-{{- range $key, $image := $images }}
+{{- $len = len $images -}} 
+{{- if eq $len 0 -}}
+# no images found in source
+{{- else -}}
+{{- range $key, $image := $images -}}
 docker tag {{ $from }}/{{ $image.Name }} {{ $image.Host }}/{{ $image.Name }} && docker push {{ $image.Host }}/{{ $image.Name }}
-{{- end }}
-{{- end }}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
 `
 
 var retagTemplate = template.Must(template.New("").Parse(retagScript))
 
-func (i *Templates) GenerateReTagScript(log *logrus.Logger, from, to string) error {
+func (t *Templates) GenerateReTagScript(log *logrus.Logger, from, to string) error {
 	var retags map[string][]*Image
-	for src, images := range *i {
+	for src, images := range *t {
 		for _, image := range images {
 			if image.Host == from {
 				image.ReTag(from, to)
@@ -31,5 +42,7 @@ func (i *Templates) GenerateReTagScript(log *logrus.Logger, from, to string) err
 	data := make(map[string]interface{})
 	data["from"] = from
 	data["tpls"] = retags
-	return retagTemplate.Execute(log.WriterLevel(logrus.DebugLevel), data)
+	out := log.Writer()
+	defer out.Close()
+	return retagTemplate.Execute(out, data)
 }

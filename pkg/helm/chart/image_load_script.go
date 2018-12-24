@@ -6,19 +6,32 @@ import (
 )
 
 const loadScript = `
-{{- range $path, $images := index . "tpls" }}
+{{- $tpls := index . "tpls" -}}
+{{- $len := len $tpls -}} 
+{{- if eq $len 0 -}}
+# no sources found in template
+{{- else -}}
+{{- range $path, $images := $tpls -}}
 ##---
 # Source: {{ $path }}
-{{- range $key, $image := $images }}
+{{- $len = len $images -}} 
+{{- if eq $len 0 -}}
+# no images found in source
+{{- else -}}
+{{- range $key, $image := $images -}}
 docker load -i ./{{ $image.Name }}.tar
-{{- end }}
-{{- end }}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
 `
 
 var loadTemplate = template.Must(template.New("").Parse(loadScript))
 
-func (i *Templates) GenerateLoadScript(log *logrus.Logger) error {
+func (t *Templates) GenerateLoadScript(log *logrus.Logger) error {
 	data := make(map[string]interface{})
-	data["tpls"] = i
-	return loadTemplate.Execute(log.WriterLevel(logrus.DebugLevel), data)
+	data["tpls"] = t
+	out := log.Writer()
+	defer out.Close()
+	return loadTemplate.Execute(out, data)
 }

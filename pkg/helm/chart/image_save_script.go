@@ -6,19 +6,32 @@ import (
 )
 
 const saveScript = `
-{{- range $path, $images := index . "images" }}
+{{- $tpls := index . "tpls" -}}
+{{- $len := len $tpls -}} 
+{{- if eq $len 0 -}}
+# no sources found in template
+{{- else -}}
+{{- range $path, $images := $tpls -}}
 ##---
 # Source: {{ $path }}
-{{- range $key, $image := $images }}
+{{- $len = len $images -}} 
+{{- if eq $len 0 -}}
+# no images found in source
+{{- else -}}
+{{- range $key, $image := $images -}}
 docker save -o ./{{ $image.Name }}.tar {{ $image.String }}
-{{- end }}
-{{- end }}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
 `
 
 var saveTemplate = template.Must(template.New("").Parse(saveScript))
 
-func (i *Templates) GenerateSaveScript(log *logrus.Logger) error {
+func (t *Templates) GenerateSaveScript(log *logrus.Logger) error {
 	data := make(map[string]interface{})
-	data["tpls"] = i
-	return saveTemplate.Execute(log.WriterLevel(logrus.DebugLevel), data)
+	data["tpls"] = t
+	out := log.Writer()
+	defer out.Close()
+	return saveTemplate.Execute(out, data)
 }

@@ -6,19 +6,32 @@ import (
 )
 
 const pullScript = `
-{{ range $path, $images := index . "tpls" }}
+{{- $tpls := index . "tpls" -}}
+{{- $len := len $tpls -}} 
+{{- if eq $len 0 -}}
+# no sources found in template
+{{- else -}}
+{{- range $path, $images := $tpls -}}
 ##---
 # Source: {{ $path }}
-{{- range $key, $image := $images }}
-docker pull {{ $image.String }}
-{{- end }}
-{{- end }}
+{{- $len = len $images -}} 
+{{- if eq $len 0 -}}
+# no images found in source
+{{- else -}}
+{{- range $key, $image := $images -}}
+docker pull {{ $image.String -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
 `
 
 var pullTemplate = template.Must(template.New("").Parse(pullScript))
 
-func (i *Templates) GeneratePullScript(log *logrus.Logger) error {
+func (t *Templates) GeneratePullScript(log *logrus.Logger) error {
 	data := make(map[string]interface{})
-	data["tpls"] = i
-	return pullTemplate.Execute(log.WriterLevel(logrus.DebugLevel), data)
+	data["tpls"] = t
+	out := log.Writer()
+	defer out.Close()
+	return pullTemplate.Execute(out, data)
 }

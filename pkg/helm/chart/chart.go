@@ -9,12 +9,17 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"reflect"
 	"strings"
 )
 
 const templateDir = "t"
 
 type Templates map[string][]*Image
+
+func (t *Templates) Size() int {
+	return len(reflect.ValueOf(t).MapKeys())
+}
 
 func LoadArchive(log *logrus.Logger, archivePath string) (tpls Templates, err error) {
 	path, err := ioutil.TempDir(os.TempDir(), "load-archive-")

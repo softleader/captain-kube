@@ -7,7 +7,6 @@ const (
 	EnvTillerAccount           = "TILLER_ACCOUNT"
 	EnvTillerSkipSslValidation = "TILLER_SKIP_SSL_VALIDATION"
 
-	DefaultTillerEndpoint          = "k8s.master.vip:8443"
 	DefaultTillerUsername          = "admin"
 	DefaultTillerPassword          = "admin"
 	DefaultTillerAccount           = "icp Account"

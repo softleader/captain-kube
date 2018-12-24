@@ -1,4 +1,4 @@
-package script
+package cmd
 
 import (
 	"fmt"
@@ -8,13 +8,15 @@ import (
 
 type scriptCmd struct {
 	log       *logrus.Logger
+	verbose   bool
 	tags      string
 	chartPath string
 }
 
-func NewCmd(log *logrus.Logger) *cobra.Command {
+func NewScriptCmd(log *logrus.Logger, verbose bool) *cobra.Command {
 	c := scriptCmd{
-		log: log,
+		log:     log,
+		verbose: verbose,
 	}
 
 	cmd := &cobra.Command{

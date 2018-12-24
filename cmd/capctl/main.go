@@ -2,18 +2,18 @@ package main
 
 import (
 	"github.com/Sirupsen/logrus"
-	"github.com/softleader/captain-kube/cmd/capctl/install"
-	"github.com/softleader/captain-kube/cmd/capctl/script"
+	"github.com/softleader/captain-kube/cmd/capctl/cmd"
 	"github.com/softleader/captain-kube/pkg/utils"
 	"github.com/spf13/cobra"
 	"os"
+	"strconv"
 )
 
 func main() {
 	var log *logrus.Logger
-	var verbose bool
+	verbose, _ := strconv.ParseBool(os.Getenv("SL_VERBOSE"))
 
-	cmd := &cobra.Command{
+	rootCmd := &cobra.Command{
 		Use:          "cap",
 		Short:        "captain cli",
 		Long:         "command intrface for captain",
@@ -28,15 +28,15 @@ func main() {
 		},
 	}
 
-	f := cmd.Flags()
-	f.BoolVarP(&verbose, "verbose", "v", false, "enable verbose output")
+	pf := rootCmd.PersistentFlags()
+	pf.BoolVarP(&verbose, "verbose", "v", verbose, "enable verbose output")
 
-	cmd.AddCommand(
-		install.NewCmd(log),
-		script.NewCmd(log),
+	rootCmd.AddCommand(
+		cmd.NewInstallCmd(log, verbose),
+		cmd.NewScriptCmd(log, verbose),
 	)
 
-	if err := cmd.Execute(); err != nil {
+	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)
 	}
 

@@ -54,5 +54,5 @@ func Prune(log *logrus.Logger) error {
 			log.Info(del)
 		}
 	}
-	return
+	return nil
 }

@@ -30,7 +30,7 @@ docker tag {{ $from }}/{{ $image.Name }} {{ $image.Host }}/{{ $image.Name }} && 
 var retagTemplate = template.Must(template.New("").Parse(retagScript))
 
 func (t *Templates) GenerateReTagScript(log *logrus.Logger, from, to string) error {
-	var retags map[string][]*Image
+	retags := make(map[string][]*Image)
 	for src, images := range *t {
 		for _, image := range images {
 			if image.Host == from {

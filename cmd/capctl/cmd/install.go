@@ -21,7 +21,7 @@ type installCmd struct {
 	namespace      string
 	sourceRegistry string
 	registry       string
-	chartPath      string
+	charts         []string
 	verbose        bool
 	timeout        int64
 
@@ -58,16 +58,12 @@ func NewInstallCmd(log *logrus.Logger, verbose bool) *cobra.Command {
 	}
 
 	cmd := &cobra.Command{
-		Use:   "install [CHART]",
+		Use:   "install [CHART...]",
 		Short: "install /path/to/chart.tgz",
 		Long:  "install helm chart",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			if l := len(args); l == 0 {
+			if c.charts = args; len(c.charts) == 0 {
 				return errors.New("chart path is required")
-			} else if l > 2 {
-				return errors.New("the command only accept 1 argument")
-			} else {
-				c.chartPath = args[0]
 			}
 			// do some validation check
 			if e := strings.TrimSpace(c.endpoint); len(e) == 0 {
@@ -109,7 +105,16 @@ func NewInstallCmd(log *logrus.Logger, verbose bool) *cobra.Command {
 }
 
 func (c *installCmd) run() error {
-	abs, err := filepath.Abs(c.chartPath)
+	for _, chart := range c.charts {
+		if err := run(c, chart); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func run(c *installCmd, path string) error {
+	abs, err := filepath.Abs(path)
 	if err != nil {
 		return err
 	}

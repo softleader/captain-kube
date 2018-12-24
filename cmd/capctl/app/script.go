@@ -1,22 +1,17 @@
-package cmd
+package app
 
 import (
 	"fmt"
-	"github.com/Sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
 type scriptCmd struct {
-	log       *logrus.Logger
-	verbose   bool
 	tags      string
 	chartPath string
 }
 
-func NewScriptCmd(log *logrus.Logger, verbose bool) *cobra.Command {
+func newScriptCmd() *cobra.Command {
 	c := scriptCmd{
-		log:     log,
-		verbose: verbose,
 	}
 
 	cmd := &cobra.Command{

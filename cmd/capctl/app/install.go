@@ -1,4 +1,4 @@
-package cmd
+package app
 
 import (
 	"fmt"
@@ -15,15 +15,12 @@ import (
 )
 
 type installCmd struct {
-	log            *logrus.Logger
 	pull           bool
 	sync           bool
 	namespace      string
 	sourceRegistry string
 	registry       string
 	charts         []string
-	verbose        bool
-	timeout        int64
 
 	registryAuthUsername string // docker registry 的帳號
 	registryAuthPassword string // docker registry 的密碼
@@ -38,12 +35,9 @@ type installCmd struct {
 	endpointPort int    // captain 的 endpoint port
 }
 
-func NewInstallCmd(log *logrus.Logger, verbose bool) *cobra.Command {
+func newInstallCmd() *cobra.Command {
 	c := installCmd{
-		log:       log,
-		verbose:   verbose,
 		namespace: "default",
-		timeout:   300,
 
 		registryAuthUsername: env.Lookup(captain.EnvRegistryAuthUsername, captain.DefaultRegistryAuthUsername),
 		registryAuthPassword: env.Lookup(captain.EnvRegistryAuthPassword, captain.DefaultRegistryAuthPassword),
@@ -59,7 +53,7 @@ func NewInstallCmd(log *logrus.Logger, verbose bool) *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "install [CHART...]",
-		Short: "install /path/to/chart.tgz",
+		Short: "install helm-chart",
 		Long:  "install helm chart",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if c.charts = args; len(c.charts) == 0 {
@@ -86,8 +80,6 @@ func NewInstallCmd(log *logrus.Logger, verbose bool) *cobra.Command {
 
 	f.StringVarP(&c.sourceRegistry, "retag-from", "f", c.sourceRegistry, "specify the host of re-tag from, required when Sync")
 	f.StringVarP(&c.registry, "retag-to", "t", c.registry, "specify the host of re-tag to, required when Sync")
-
-	f.Int64Var(&c.timeout, "timeout", c.timeout, "seconds of captain run timeout")
 
 	f.StringVar(&c.registryAuthUsername, "reg-user", c.registryAuthUsername, "specify the registryAuthUsername, reqiured when Pull&Sync")
 	f.StringVar(&c.registryAuthPassword, "reg-pass", c.registryAuthPassword, "specify the registryAuthPassword, reqiured when Pull&Sync")
@@ -146,14 +138,13 @@ func run(c *installCmd, path string) error {
 			Username: c.registryAuthUsername,
 			Password: c.registryAuthPassword,
 		},
-		Timeout: c.timeout,
 	}
 
-	if err := dockerd.PullAndSync(c.log, &request); err != nil {
+	if err := dockerd.PullAndSync(logrus.StandardLogger(), &request); err != nil {
 		return err
 	}
 
-	if err := captain.InstallChart(c.log, fmt.Sprintf("%s:%v", c.endpoint, c.endpointPort), &request, c.timeout); err != nil {
+	if err := captain.InstallChart(logrus.StandardLogger(), fmt.Sprintf("%s:%v", c.endpoint, c.endpointPort), &request, settings.timeout); err != nil {
 		return err
 	}
 

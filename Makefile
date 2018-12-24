@@ -64,8 +64,8 @@ bootstrap:
 ifndef HAS_DEP
 	go get -u github.com/golang/dep/cmd/dep
 endif
-ifeq (,$(wildcard ./glide.yaml))
-	glide init
+ifeq (,$(wildcard ./Gopkg.toml))
+	dep init
 endif
 	dep ensure
 

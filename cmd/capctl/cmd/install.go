@@ -11,6 +11,7 @@ import (
 	"github.com/spf13/cobra"
 	"io/ioutil"
 	"path/filepath"
+	"strings"
 )
 
 type installCmd struct {
@@ -68,6 +69,14 @@ func NewInstallCmd(log *logrus.Logger, verbose bool) *cobra.Command {
 			} else {
 				c.chartPath = args[0]
 			}
+			// do some validation check
+			if e := strings.TrimSpace(c.endpoint); len(e) == 0 {
+				return errors.New("endpoint is required")
+			}
+			// apply some default value
+			if te := strings.TrimSpace(c.tillerEndpoint); len(te) == 0 {
+				c.tillerEndpoint = c.endpoint
+			}
 			return c.run()
 		},
 	}
@@ -77,21 +86,21 @@ func NewInstallCmd(log *logrus.Logger, verbose bool) *cobra.Command {
 	f.BoolVarP(&c.pull, "pull", "p", c.pull, "pull images in Chart")
 	f.BoolVarP(&c.sync, "sync", "s", c.sync, "re-tag images & sync to all kubernetes nodes")
 
-	f.StringVar(&c.namespace, "namespace", c.namespace, "specify the namespace of gcp, not available now")
+	f.StringVarP(&c.namespace, "namespace", "n", c.namespace, "specify the namespace of gcp, not available now")
 
-	f.StringVar(&c.sourceRegistry, "retag-from", c.sourceRegistry, "specify the host of re-tag from, required when Sync")
-	f.StringVar(&c.registry, "retag-to", c.registry, "specify the host of re-tag to, required when Sync")
+	f.StringVarP(&c.sourceRegistry, "retag-from", "f", c.sourceRegistry, "specify the host of re-tag from, required when Sync")
+	f.StringVarP(&c.registry, "retag-to", "t", c.registry, "specify the host of re-tag to, required when Sync")
 
-	f.Int64VarP(&c.timeout, "timeout", "t", c.timeout, "seconds of captain run timeout")
+	f.Int64Var(&c.timeout, "timeout", c.timeout, "seconds of captain run timeout")
 
 	f.StringVar(&c.registryAuthUsername, "reg-user", c.registryAuthUsername, "specify the registryAuthUsername, reqiured when Pull&Sync")
 	f.StringVar(&c.registryAuthPassword, "reg-pass", c.registryAuthPassword, "specify the registryAuthPassword, reqiured when Pull&Sync")
 
-	f.StringVar(&c.tillerEndpoint, "tiller", c.tillerEndpoint, "specify the tillerEndpoint")
-	f.StringVar(&c.tillerUsername, "tiller-user", c.tillerUsername, "specify the tillerUsername")
-	f.StringVar(&c.tillerPassword, "tiller-pass", c.tillerPassword, "specify the tillerPassword")
-	f.StringVar(&c.tillerAccount, "tiller-account", c.tillerAccount, "specify the tillerAccount")
-	f.BoolVar(&c.tillerSkipSslValidation, "tiller-skip-ssl", c.tillerSkipSslValidation, "specify the tillerSkipSslValidation")
+	f.StringVar(&c.tillerEndpoint, "tiller", c.tillerEndpoint, "specify the endpoint of helm tiller")
+	f.StringVar(&c.tillerUsername, "tiller-user", c.tillerUsername, "specify the username of helm tiller")
+	f.StringVar(&c.tillerPassword, "tiller-pass", c.tillerPassword, "specify the password of helm tiller")
+	f.StringVar(&c.tillerAccount, "tiller-account", c.tillerAccount, "specify the account of helm tiller")
+	f.BoolVar(&c.tillerSkipSslValidation, "tiller-skip-ssl", c.tillerSkipSslValidation, "specify skip ssl validation of helm tiller")
 
 	f.StringVarP(&c.endpoint, "endpoint", "e", "", "specify the captain endpoint")
 	f.IntVar(&c.endpointPort, "endpoint-port", captain.DefaultPort, "specify the port of captain endpoint")

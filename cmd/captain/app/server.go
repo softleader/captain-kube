@@ -35,7 +35,6 @@ func NewCaptainCommand() (cmd *cobra.Command) {
 		Use:  "captain",
 		Long: "captain is the brain of captain-kube system",
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			logrus.SetOutput(cmd.OutOrStdout())
 			logrus.SetFormatter(&logrus.TextFormatter{
 				ForceColors: true,
 			})

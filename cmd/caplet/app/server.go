@@ -32,7 +32,6 @@ func NewCapletCommand() (cmd *cobra.Command) {
 		Use:  "caplet",
 		Long: "caplet is a daemon run on every kubernetes node",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			logrus.SetOutput(cmd.OutOrStdout())
 			logrus.SetFormatter(&logrus.TextFormatter{
 				ForceColors: true,
 			})

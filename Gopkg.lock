@@ -66,7 +66,7 @@
   version = "v2.7.0"
 
 [[projects]]
-  digest = "1:6fdf01a9a1006c0360a8a53ca60570e126e524a51baded06a10057c11b4349f2"
+  digest = "1:5cfe5235948cd397339690c8569099948365ad478de48b462837061c5db31d7f"
   name = "github.com/docker/docker"
   packages = [
     "api",
@@ -206,7 +206,7 @@
   version = "v1.3.0"
 
 [[projects]]
-  digest = "1:66c4f0faff05a23bbb921be3f21838d7d58e69f4d102e23347ea8080675d1efa"
+  digest = "1:c825b6eaa1b2d1f9df831f668d682db879a8e4885827168b2894ba967e6e0dc9"
   name = "github.com/golang/protobuf"
   packages = [
     "proto",
@@ -292,7 +292,7 @@
   version = "v1.0.1"
 
 [[projects]]
-  digest = "1:a5c8cc27e0515bc754d4417cf191eefc6c480626ee302f80eebe7c747cfec3e7"
+  digest = "1:bc091abbfb295b6606c8279052ae4d3e6757b5e0cdc2b133433596b552f66aa4"
   name = "github.com/mholt/archiver"
   packages = ["."]
   pruneopts = ""
@@ -607,7 +607,9 @@
     "github.com/gin-gonic/gin",
     "github.com/golang/protobuf/proto",
     "github.com/mholt/archiver",
+    "github.com/pkg/errors",
     "github.com/spf13/cobra",
+    "github.com/spf13/pflag",
     "google.golang.org/grpc",
     "google.golang.org/grpc/reflection",
     "gopkg.in/yaml.v2",

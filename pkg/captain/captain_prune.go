@@ -26,6 +26,7 @@ func Prune(log *logrus.Logger, url string, req *proto.PruneRequest, timeout int6
 	for {
 		recv, err := stream.Recv()
 		if err == io.EOF {
+			log.Println("### EOF ###")
 			break
 		}
 		if err != nil {

@@ -26,6 +26,7 @@ func GenerateScript(log *logrus.Logger, url string, req *proto.GenerateScriptReq
 	for {
 		recv, err := stream.Recv()
 		if err == io.EOF {
+			log.Println("### EOF ###")
 			break
 		}
 		if err != nil {

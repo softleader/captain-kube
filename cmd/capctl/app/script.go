@@ -64,7 +64,7 @@ func newScriptCmd() *cobra.Command {
 
 func (c *scriptCmd) run() error {
 	for _, chart := range c.charts {
-		logrus.Println("running", chart)
+		logrus.Println("### chart:", chart, "###")
 		if err := runScript(c, chart); err != nil {
 			return err
 		}

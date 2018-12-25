@@ -93,7 +93,7 @@ func newInstallCmd() *cobra.Command {
 
 func (c *installCmd) run() error {
 	for _, chart := range c.charts {
-		logrus.Println("running", chart)
+		logrus.Println("### chart:", chart, "###")
 		if err := runInstall(c, chart); err != nil {
 			return err
 		}

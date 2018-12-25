@@ -29,6 +29,7 @@ func Version(log *logrus.Logger, url string, short bool, timeout int64) error {
 	for {
 		recv, err := stream.Recv()
 		if err == io.EOF {
+			log.Println("### EOF ###")
 			break
 		}
 		if err != nil {

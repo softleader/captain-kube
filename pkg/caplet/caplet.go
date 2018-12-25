@@ -15,6 +15,7 @@ const (
 type Endpoint struct {
 	Target string
 	Port   int
+	Color  func(string) string
 }
 
 func (e *Endpoint) String() string {

@@ -44,7 +44,7 @@ func (s *CaptainServer) InstallChart(req *proto.InstallChartRequest, stream prot
 	}
 
 	if req.GetSync() {
-		endpoints, err := s.lookupInstances()
+		endpoints, err := s.lookupCaplet()
 		if err != nil {
 			return err
 		}

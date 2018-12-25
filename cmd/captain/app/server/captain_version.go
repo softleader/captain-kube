@@ -20,7 +20,7 @@ func (s *CaptainServer) Version(req *proto.VersionRequest, stream proto.Captain_
 
 	log.Println(fmt.Sprintf(`Captain: %s`, s.Metadata.String(req.GetShort())))
 
-	endpoints, err := s.lookupInstances()
+	endpoints, err := s.lookupCaplet()
 	if err != nil {
 		return err
 	}
@@ -30,7 +30,11 @@ func (s *CaptainServer) Version(req *proto.VersionRequest, stream proto.Captain_
 		if r, err := e.Version(req.GetShort(), req.GetTimeout()); err != nil {
 			log.Error(err)
 		} else {
-			log.Println(fmt.Sprintf(`Caplet %s: %s`, r.GetHostname(), r.GetVersion()))
+			msg := fmt.Sprintf(`Caplet %s: %s`, r.GetHostname(), r.GetVersion())
+			if req.GetColored() {
+				msg = e.Color(msg)
+			}
+			log.Println(msg)
 		}
 	})
 

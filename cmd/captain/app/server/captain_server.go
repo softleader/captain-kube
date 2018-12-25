@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/caplet"
+	"github.com/softleader/captain-kube/pkg/color"
 	"github.com/softleader/captain-kube/pkg/helm/chart"
 	"github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/version"
@@ -20,7 +21,7 @@ type CaptainServer struct {
 	K8s       string
 }
 
-func (s *CaptainServer) lookupInstances() (endpoints caplet.Endpoints, err error) {
+func (s *CaptainServer) lookupCaplet() (endpoints caplet.Endpoints, err error) {
 	if len(s.Endpoints) > 0 {
 		logrus.Debugf("server has specified endpoint(s) for %q, skip dynamically lookup", s.Endpoints)
 	} else {
@@ -37,6 +38,9 @@ func (s *CaptainServer) lookupInstances() (endpoints caplet.Endpoints, err error
 			Target: ep,
 			Port:   s.Port,
 		})
+	}
+	for i, color := range color.Pick(len(endpoints)) {
+		endpoints[i].Color = color
 	}
 	logrus.Debugf("found %v caplet(s) daemon:", len(endpoints))
 	if logrus.IsLevelEnabled(logrus.DebugLevel) {

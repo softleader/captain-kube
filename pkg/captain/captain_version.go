@@ -10,7 +10,7 @@ import (
 	"io"
 )
 
-func Version(log *logrus.Logger, url string, short bool, timeout int64) error {
+func Version(log *logrus.Logger, url string, short, colored bool, timeout int64) error {
 	conn, err := grpc.Dial(url, grpc.WithInsecure())
 	if err != nil {
 		return fmt.Errorf("did not connect: %v\n", err)
@@ -21,6 +21,7 @@ func Version(log *logrus.Logger, url string, short bool, timeout int64) error {
 	defer cancel()
 	stream, err := c.Version(ctx, &proto.VersionRequest{
 		Short:   short,
+		Colored: colored,
 		Timeout: timeout,
 	})
 	if err != nil {

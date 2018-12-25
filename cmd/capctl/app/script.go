@@ -41,6 +41,9 @@ func newScriptCmd() *cobra.Command {
 			if c.charts = args; len(c.charts) == 0 {
 				return errors.New("chart path is required")
 			}
+			if err := c.endpoint.validate(); err != nil {
+				return err
+			}
 			return c.run()
 		},
 	}

@@ -1,17 +1,38 @@
 package color
 
-import "testing"
+import (
+	"fmt"
+	"github.com/mgutz/ansi"
+	"strconv"
+	"testing"
+)
 
 func TestPick(t *testing.T) {
-	n := 10
+	n := 999
 	picked := Pick(n)
 	if l := len(picked); l != n {
 		t.Errorf("expected pick %v color but got %v", n, l)
 	}
-
-	if unique := countUnique(picked); unique != n {
-		t.Errorf("expected pick %v UNIQUE color but got %v", n, unique)
+	expectedUnique := picked[0:len(colors)]
+	if c := countUnique(expectedUnique); c != len(colors) {
+		t.Errorf("expected first %v of picked color should be UNIQUE", len(colors))
 	}
+	for i := 0; i < len(expectedUnique); i++ {
+		fmt.Println(expectedUnique[i](strconv.Itoa(i)))
+	}
+}
+
+func TestColor(t *testing.T) {
+	phosphorize := ansi.ColorFunc("green+h:black")
+	fmt.Println(phosphorize("Bring back the 80s!"))
+
+	lime := ansi.ColorCode("green+h:black")
+	reset := ansi.ColorCode("reset")
+	fmt.Println(lime, "Bring back the 80s!", reset)
+
+	//fmt.Println(ansi.ColorCode(ansi.Cyan))
+	//ansi.LightBlue("Sad")
+	//fmt.Println(ansi.ColorFunc(ansi.LightBlue)("sadfg"))
 }
 
 func countUnique(s []func(string) string) (count int) {

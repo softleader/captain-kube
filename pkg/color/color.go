@@ -3,30 +3,43 @@ package color
 import (
 	"github.com/mgutz/ansi"
 	"math/rand"
-	"strconv"
 	"time"
 )
 
-func Pick(n int) (colors []func(string) string) {
-	picked := make(map[int]func(string) string)
+var colors = []string{
+	"black",
+	"red",
+	"green",
+	"yellow",
+	"blue",
+	"magenta",
+	"cyan",
+	"white",
+	//"black+h",
+	"red+h",
+	"green+h",
+	"yellow+h",
+	"blue+h",
+	"magenta+h",
+	"cyan+h",
+	//"white+h",
+}
 
-	for {
-		if len(picked) == n {
-			break
-		}
-		color := random(0, 255)
-		if _, found := picked[color]; found {
-			continue
-		}
-		picked[color] = ansi.ColorFunc(strconv.Itoa(color))
-	}
-	for _, color := range picked {
-		colors = append(colors, color)
+func Pick(n int) (c []func(string) string) {
+	shuffled := shuffle(colors)
+	d := len(shuffled)
+	for i := 0; i < n; i++ {
+		code := shuffled[i%d]
+		c = append(c, ansi.ColorFunc(code))
 	}
 	return
 }
 
-func random(min, max int) int {
-	rand.Seed(time.Now().Unix())
-	return rand.Intn(max-min) + min
+func shuffle(a []string) (b []string) {
+	rand.Seed(time.Now().UTC().UnixNano())
+	b = append(a[:0:0], a...)
+	rand.Shuffle(len(b), func(i, j int) {
+		b[i], b[j] = b[j], b[i]
+	})
+	return
 }

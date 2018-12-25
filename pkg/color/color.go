@@ -11,14 +11,14 @@ func Pick(n int) (colors []func(string) string) {
 	picked := make(map[int]func(string) string)
 
 	for {
-		color := random(0, 255)
-		if _, found := picked[n]; found {
-			continue
-		}
-		picked[n] = ansi.ColorFunc(strconv.Itoa(color))
-		if len(picked)+1 == n {
+		if len(picked) == n {
 			break
 		}
+		color := random(0, 255)
+		if _, found := picked[color]; found {
+			continue
+		}
+		picked[color] = ansi.ColorFunc(strconv.Itoa(color))
 	}
 	for _, color := range picked {
 		colors = append(colors, color)

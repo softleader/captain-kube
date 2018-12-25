@@ -18,7 +18,6 @@ func countUnique(s []func(string) string) (count int) {
 	unique := make(map[interface{}]bool)
 	for v := range s {
 		if _, found := unique[v]; !found {
-			unique[v] = true
 			count++
 		}
 	}

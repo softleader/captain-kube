@@ -1,4 +1,4 @@
-package ver
+package version
 
 import (
 	"fmt"
@@ -22,13 +22,13 @@ func NewBuildMetadata(version, commit, date string) (b *BuildMetadata) {
 		GitCommit:  unknown,
 		BuildDate:  unknown,
 	}
-	if version = strings.TrimSpace(version); version == "" {
+	if version = strings.TrimSpace(version); version != "" {
 		b.GitVersion = version
 	}
-	if commit = strings.TrimSpace(commit); commit == "" {
+	if commit = strings.TrimSpace(commit); commit != "" {
 		b.GitCommit = commit
 	}
-	if date = strings.TrimSpace(date); date == "" {
+	if date = strings.TrimSpace(date); date != "" {
 		b.BuildDate = date
 	}
 	return

@@ -20,12 +20,16 @@ func (s *CaptainServer) Prune(req *proto.PruneRequest, stream proto.Captain_Prun
 		log.SetLevel(logrus.DebugLevel)
 	}
 
-	endpoints, err := s.lookupCaplets()
+	endpoints, err := s.lookupInstances()
 	if err != nil {
-		return nil
+		return err
 	}
 
-	return endpoints.Each(func(e *caplet.Endpoint) error {
-		return e.Prune(log, req, req.GetTimeout())
+	log.SetNoLock()
+	endpoints.Each(func(e *caplet.Endpoint) {
+		if err := e.Prune(log, req, req.GetTimeout()); err != nil {
+			log.Error(err)
+		}
 	})
+	return nil
 }

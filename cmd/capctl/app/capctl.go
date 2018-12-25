@@ -3,15 +3,15 @@ package app
 import (
 	"github.com/Sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/utils"
-	"github.com/softleader/captain-kube/pkg/ver"
+	"github.com/softleader/captain-kube/pkg/version"
 	"github.com/spf13/cobra"
 )
 
-func NewRootCmd(args []string, metadata *ver.BuildMetadata) *cobra.Command {
+func NewRootCmd(args []string, metadata *version.BuildMetadata) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:          "capctl",
-		Short:        "captain-kube cli",
-		Long:         "The command line interface for captain-kube system",
+		Short:        "the Captain-Kube command line interface",
+		Long:         "The command line interface against Captain-Kube services",
 		SilenceUsage: true,
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			logrus.SetFormatter(&utils.PlainFormatter{})

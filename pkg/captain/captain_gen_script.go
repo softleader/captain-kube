@@ -29,7 +29,7 @@ func GenerateScript(log *logrus.Logger, url string, req *proto.GenerateScriptReq
 			break
 		}
 		if err != nil {
-			fmt.Errorf("%v.GenerateScript(_) = _, %v", c, err)
+			return fmt.Errorf("%v.GenerateScript(_) = _, %v", c, err)
 		}
 		log.Writer().Write(recv.GetMsg())
 	}

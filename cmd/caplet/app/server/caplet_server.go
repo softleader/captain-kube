@@ -1,16 +1,16 @@
 package server
 
 import (
-	"github.com/softleader/captain-kube/pkg/ver"
+	"github.com/softleader/captain-kube/pkg/version"
 	"os"
 )
 
 type CapletServer struct {
-	metadata *ver.BuildMetadata
+	metadata *version.BuildMetadata
 	hostname string
 }
 
-func NewCapletServer(metadata *ver.BuildMetadata) (s *CapletServer) {
+func NewCapletServer(metadata *version.BuildMetadata) (s *CapletServer) {
 	s = &CapletServer{
 		metadata: metadata,
 	}

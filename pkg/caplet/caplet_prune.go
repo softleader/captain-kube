@@ -11,7 +11,7 @@ import (
 )
 
 func (e *Endpoint) Prune(log *logrus.Logger, req *proto.PruneRequest, timeout int64) error {
-	conn, err := grpc.Dial(fmt.Sprintf("%s:%v", e.Target, e.Port), grpc.WithInsecure())
+	conn, err := grpc.Dial(e.String(), grpc.WithInsecure())
 	if err != nil {
 		return fmt.Errorf("[%s] did not connect: %v", e.Target, err)
 	}

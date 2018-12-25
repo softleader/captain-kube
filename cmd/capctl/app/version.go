@@ -3,22 +3,25 @@ package app
 import (
 	"github.com/Sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/captain"
-	"github.com/softleader/captain-kube/pkg/ver"
+	"github.com/softleader/captain-kube/pkg/version"
 	"github.com/spf13/cobra"
 )
 
-func newVersionCmd(metadata *ver.BuildMetadata) *cobra.Command {
+func newVersionCmd(metadata *version.BuildMetadata) *cobra.Command {
 	var endpoint *endpoint
 	var short bool
 	cmd := &cobra.Command{
 		Use:   "version",
 		Short: "print capctl, captain, and caplet version",
 		Long:  "print capctl, captain, and caplet version",
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			logrus.Infoln(metadata.String(short))
 			if endpoint.specified() {
-				captain.Version(logrus.StandardLogger(), endpoint.String(), short, settings.timeout)
+				if err := captain.Version(logrus.StandardLogger(), endpoint.String(), short, settings.timeout); err != nil {
+					return err
+				}
 			}
+			return nil
 		},
 	}
 

@@ -9,7 +9,7 @@ import (
 )
 
 func (e *Endpoint) Version(short bool, timeout int64) (*proto.VersionResponse, error) {
-	conn, err := grpc.Dial(fmt.Sprintf("%s:%v", e.Target, e.Port), grpc.WithInsecure())
+	conn, err := grpc.Dial(e.String(), grpc.WithInsecure())
 	if err != nil {
 		return nil, fmt.Errorf("[%s] did not connect: %v", e.Target, err)
 	}

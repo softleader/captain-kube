@@ -44,7 +44,7 @@ func (s *CaptainServer) InstallChart(req *proto.InstallChartRequest, stream prot
 	}
 
 	if req.GetSync() {
-		endpoints, err := s.lookupCaplets()
+		endpoints, err := s.lookupInstances()
 		if err != nil {
 			return err
 		}
@@ -52,8 +52,11 @@ func (s *CaptainServer) InstallChart(req *proto.InstallChartRequest, stream prot
 		if err != nil {
 			return err
 		}
-		endpoints.Each(func(e *caplet.Endpoint) error {
-			return e.PullImage(log, newPullImageRequest(tpls, req.GetRegistryAuth()), req.GetTimeout())
+		log.SetNoLock()
+		endpoints.Each(func(e *caplet.Endpoint) {
+			if err := e.PullImage(log, newPullImageRequest(tpls, req.GetRegistryAuth()), req.GetTimeout()); err != nil {
+				log.Error(err)
+			}
 		})
 	}
 	return nil

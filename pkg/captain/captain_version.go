@@ -32,7 +32,7 @@ func Version(log *logrus.Logger, url string, short bool, timeout int64) error {
 			break
 		}
 		if err != nil {
-			fmt.Errorf("%v.Version(_) = _, %v", c, err)
+			return fmt.Errorf("%v.Version(_) = _, %v", c, err)
 		}
 		log.Writer().Write(recv.GetMsg())
 	}

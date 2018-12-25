@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/softleader/captain-kube/cmd/captain/app"
-	"github.com/softleader/captain-kube/pkg/ver"
+	ver "github.com/softleader/captain-kube/pkg/version"
 	"os"
 )
 
@@ -12,7 +12,6 @@ var (
 	commit  string
 	date    string
 )
-
 
 func main() {
 	metadata := ver.NewBuildMetadata(version, commit, date)

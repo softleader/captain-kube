@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/softleader/captain-kube/cmd/capctl/app"
-	"github.com/softleader/captain-kube/pkg/ver"
+	ver "github.com/softleader/captain-kube/pkg/version"
 	"os"
 )
 

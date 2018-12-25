@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/softleader/captain-kube/cmd/caplet/app"
-	"github.com/softleader/captain-kube/pkg/ver"
+	ver "github.com/softleader/captain-kube/pkg/version"
 	"os"
 )
 

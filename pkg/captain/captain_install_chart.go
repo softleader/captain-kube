@@ -29,7 +29,7 @@ func InstallChart(log *logrus.Logger, url string, req *proto.InstallChartRequest
 			break
 		}
 		if err != nil {
-			fmt.Errorf("%v.InstallChartToIcp(_) = _, %v", c, err)
+			return fmt.Errorf("%v.InstallChartToIcp(_) = _, %v", c, err)
 		}
 		log.Writer().Write(recv.GetMsg())
 	}

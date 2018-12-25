@@ -1,8 +1,8 @@
 package app
 
 import (
-	"github.com/sirupsen/logrus"
 	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/captain"
 	"github.com/softleader/captain-kube/pkg/dockerd"
 	"github.com/softleader/captain-kube/pkg/env"
@@ -93,14 +93,15 @@ func newInstallCmd() *cobra.Command {
 
 func (c *installCmd) run() error {
 	for _, chart := range c.charts {
-		if err := run(c, chart); err != nil {
+		logrus.Println("running", chart)
+		if err := runInstall(c, chart); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-func run(c *installCmd, path string) error {
+func runInstall(c *installCmd, path string) error {
 	abs, err := filepath.Abs(path)
 	if err != nil {
 		return err

@@ -8,7 +8,7 @@ import (
 	"github.com/softleader/captain-kube/pkg/utils"
 )
 
-func (s *capletServer) Prune(req *proto.PruneRequest, stream proto.Caplet_PruneServer) error {
+func (s *CapletServer) Prune(req *proto.PruneRequest, stream proto.Caplet_PruneServer) error {
 	log := logrus.New()
 	log.SetOutput(sio.NewStreamWriter(func(p []byte) error {
 		return stream.Send(&proto.ChunkMessage{

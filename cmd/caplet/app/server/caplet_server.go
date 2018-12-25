@@ -5,13 +5,13 @@ import (
 	"os"
 )
 
-type capletServer struct {
+type CapletServer struct {
 	metadata *ver.BuildMetadata
 	hostname string
 }
 
-func NewCapletServer(metadata *ver.BuildMetadata) (s *capletServer) {
-	s = &capletServer{
+func NewCapletServer(metadata *ver.BuildMetadata) (s *CapletServer) {
+	s = &CapletServer{
 		metadata: metadata,
 	}
 	s.hostname, _ = os.Hostname()

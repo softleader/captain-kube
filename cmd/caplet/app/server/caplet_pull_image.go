@@ -12,7 +12,7 @@ import (
 )
 
 
-func (s *capletServer) PullImage(req *proto.PullImageRequest, stream proto.Caplet_PullImageServer) error {
+func (s *CapletServer) PullImage(req *proto.PullImageRequest, stream proto.Caplet_PullImageServer) error {
 	log := logrus.New()
 	log.SetOutput(sio.NewStreamWriter(func(p []byte) error {
 		return stream.Send(&proto.ChunkMessage{

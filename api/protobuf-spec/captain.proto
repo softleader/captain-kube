@@ -5,6 +5,7 @@ package proto;
 import "chart.proto";
 import "image.proto";
 import "msg.proto";
+import "version.proto";
 import "prune.proto";
 
 message InstallChartRequest {
@@ -33,5 +34,7 @@ service Captain {
     rpc GenerateScript (GenerateScriptRequest) returns (stream ChunkMessage) {
     }
     rpc Prune (PruneRequest) returns (stream ChunkMessage) {
+    }
+    rpc Version (VersionRequest) returns (stream ChunkMessage) {
     }
 }

@@ -7,6 +7,7 @@ import (
 	"github.com/softleader/captain-kube/pkg/caplet"
 	"github.com/softleader/captain-kube/pkg/env"
 	"github.com/softleader/captain-kube/pkg/proto"
+	"github.com/softleader/captain-kube/pkg/ver"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -14,20 +15,17 @@ import (
 )
 
 type capletCmd struct {
-	serve string
-	port  int
+	metadata *ver.BuildMetadata
+	serve    string
+	port     int
 }
 
-func newCapletCmd() (c *capletCmd) {
-	c = &capletCmd{
-		port: env.LookupInt(caplet.EnvPort, caplet.DefaultPort),
-	}
-	return
-}
-
-func NewCapletCommand() (cmd *cobra.Command) {
+func NewCapletCommand(metadata *ver.BuildMetadata) (cmd *cobra.Command) {
 	var verbose bool
-	c := newCapletCmd()
+	c := &capletCmd{
+		metadata: metadata,
+		port:     env.LookupInt(caplet.EnvPort, caplet.DefaultPort),
+	}
 	cmd = &cobra.Command{
 		Use:  "caplet",
 		Long: "caplet is a daemon run on every kubernetes node",
@@ -56,7 +54,7 @@ func (c *capletCmd) run() error {
 	}
 
 	s := grpc.NewServer()
-	proto.RegisterCapletServer(s, server.NewCapletServer())
+	proto.RegisterCapletServer(s, server.NewCapletServer(c.metadata))
 	logrus.Printf("registered caplet server\n")
 	reflection.Register(s)
 

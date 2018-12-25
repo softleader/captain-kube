@@ -8,6 +8,7 @@ import (
 	"github.com/softleader/captain-kube/pkg/captain"
 	"github.com/softleader/captain-kube/pkg/env"
 	"github.com/softleader/captain-kube/pkg/proto"
+	"github.com/softleader/captain-kube/pkg/ver"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -15,6 +16,7 @@ import (
 )
 
 type captainCmd struct {
+	metadata       *ver.BuildMetadata
 	serve          string
 	endpoints      []string
 	port           int
@@ -23,9 +25,10 @@ type captainCmd struct {
 	capletPort     int
 }
 
-func NewCaptainCommand() (cmd *cobra.Command) {
+func NewCaptainCommand(metadata *ver.BuildMetadata) (cmd *cobra.Command) {
 	var verbose bool
 	c := captainCmd{
+		metadata:       metadata,
 		port:           env.LookupInt(captain.EnvPort, captain.DefaultPort),
 		k8sVendor:      env.Lookup(captain.EnvK8sVendor, captain.DefaultK8sVendor),
 		capletPort:     env.LookupInt(caplet.EnvPort, caplet.DefaultPort),
@@ -63,6 +66,7 @@ func (c *captainCmd) Run() error {
 	}
 	s := grpc.NewServer()
 	proto.RegisterCaptainServer(s, &server.CaptainServer{
+		Metadata:  c.metadata,
 		Hostname:  c.capletHostname,
 		Endpoints: c.endpoints,
 		Port:      c.capletPort,

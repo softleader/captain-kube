@@ -3,10 +3,11 @@ package app
 import (
 	"github.com/Sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/utils"
+	"github.com/softleader/captain-kube/pkg/ver"
 	"github.com/spf13/cobra"
 )
 
-func NewRootCmd(args []string) *cobra.Command {
+func NewRootCmd(args []string, metadata *ver.BuildMetadata) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:          "capctl",
 		Short:        "captain-kube cli",
@@ -27,6 +28,7 @@ func NewRootCmd(args []string) *cobra.Command {
 		newInstallCmd(),
 		newScriptCmd(),
 		newPruneCmd(),
+		newVersionCmd(metadata),
 	)
 
 	flags.Parse(args)

@@ -20,6 +20,7 @@ protoc:
 	protoc -I api/protobuf-spec/ --go_out=plugins=grpc:pkg/proto api/protobuf-spec/image.proto
 	protoc -I api/protobuf-spec/ --go_out=plugins=grpc:pkg/proto api/protobuf-spec/msg.proto
 	protoc -I api/protobuf-spec/ --go_out=plugins=grpc:pkg/proto api/protobuf-spec/prune.proto
+	protoc -I api/protobuf-spec/ --go_out=plugins=grpc:pkg/proto api/protobuf-spec/version.proto
 
 .PHONY: build
 build: clean bootstrap build-caplet build-captain build-ui build-capctl

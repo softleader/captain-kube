@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package proto;
+
+message VersionRequest {
+    bool short = 1;
+    int64 timeout = 2;
+}
+
+message VersionResponse {
+    string hostname = 1;
+    string version = 2;
+}

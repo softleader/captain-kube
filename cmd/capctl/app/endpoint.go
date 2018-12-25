@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/softleader/captain-kube/pkg/captain"
 	"github.com/spf13/pflag"
-	"strings"
 )
 
 type endpoint struct {
@@ -17,8 +16,12 @@ func (e *endpoint) String() string {
 	return fmt.Sprintf("%s:%v", e.host, e.port)
 }
 
+func (e *endpoint) specified() bool {
+	return len(e.host) > 0 && e.port > 0
+}
+
 func (e *endpoint) validate() error {
-	if e := strings.TrimSpace(e.host); len(e) == 0 {
+	if !e.specified() {
 		return errors.New("endpoint is required")
 	}
 	return nil

@@ -1,7 +1,7 @@
 package chart
 
 import (
-	"github.com/Sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/utils"
 	"io/ioutil"
 	"os"

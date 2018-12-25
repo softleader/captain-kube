@@ -2,7 +2,7 @@ package utils
 
 import (
 	"bytes"
-	"github.com/Sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 )
 
 // 什麼都不 format 的 formatter

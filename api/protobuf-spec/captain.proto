@@ -17,6 +17,7 @@ message InstallChartRequest {
     ReTag retag = 6;
     RegistryAuth registryAuth = 7;
     bool verbose = 8;
+    bool colored = 9;
 }
 
 message GenerateScriptRequest {

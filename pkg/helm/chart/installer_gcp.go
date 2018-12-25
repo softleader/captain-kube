@@ -2,7 +2,7 @@ package chart
 
 import (
 	"fmt"
-	"github.com/Sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 )
 
 type gcpInstaller struct {

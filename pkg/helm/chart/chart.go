@@ -2,7 +2,7 @@ package chart
 
 import (
 	"fmt"
-	"github.com/Sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/arc"
 	"github.com/softleader/captain-kube/pkg/helm"
 	"gopkg.in/yaml.v2"

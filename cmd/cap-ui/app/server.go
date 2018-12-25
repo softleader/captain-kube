@@ -2,7 +2,8 @@ package app
 
 import (
 	"fmt"
-	"github.com/Sirupsen/logrus"
+	"github.com/sirupsen/logrus"
+	"github.com/mattn/go-colorable"
 	"github.com/softleader/captain-kube/cmd/cap-ui/app/server"
 	"github.com/softleader/captain-kube/cmd/cap-ui/app/server/comm"
 	"github.com/spf13/cobra"
@@ -23,6 +24,7 @@ func NewCapUiCommand() (cmd *cobra.Command) {
 			logrus.SetFormatter(&logrus.TextFormatter{
 				ForceColors: true,
 			})
+			logrus.SetOutput(colorable.NewColorableStdout()) // for windows color output
 			if verbose {
 				logrus.SetLevel(logrus.DebugLevel)
 			}

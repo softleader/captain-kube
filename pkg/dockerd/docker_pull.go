@@ -2,7 +2,7 @@ package dockerd
 
 import (
 	"context"
-	"github.com/Sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
 	"github.com/softleader/captain-kube/pkg/helm/chart"

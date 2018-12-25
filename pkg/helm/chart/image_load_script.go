@@ -1,7 +1,7 @@
 package chart
 
 import (
-	"github.com/Sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 	"text/template"
 )
 

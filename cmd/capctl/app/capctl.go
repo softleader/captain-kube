@@ -1,7 +1,8 @@
 package app
 
 import (
-	"github.com/Sirupsen/logrus"
+	"github.com/sirupsen/logrus"
+	"github.com/mattn/go-colorable"
 	"github.com/softleader/captain-kube/pkg/utils"
 	"github.com/softleader/captain-kube/pkg/version"
 	"github.com/spf13/cobra"
@@ -15,6 +16,7 @@ func NewRootCmd(args []string, metadata *version.BuildMetadata) *cobra.Command {
 		SilenceUsage: true,
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			logrus.SetFormatter(&utils.PlainFormatter{})
+			logrus.SetOutput(colorable.NewColorableStdout()) // for windows color output
 			if settings.verbose {
 				logrus.SetLevel(logrus.DebugLevel)
 			}

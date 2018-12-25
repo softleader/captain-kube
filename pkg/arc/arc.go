@@ -3,7 +3,7 @@ package arc
 import (
 	"fmt"
 	"github.com/mholt/archiver"
-	"github.com/Sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 	"os"
 )
 

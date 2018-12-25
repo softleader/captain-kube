@@ -1,7 +1,7 @@
 package app
 
 import (
-	"github.com/Sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/captain"
 	"github.com/softleader/captain-kube/pkg/proto"
 	"github.com/spf13/cobra"

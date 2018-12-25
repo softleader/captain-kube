@@ -31,7 +31,12 @@ func (e *Endpoint) Prune(log *logrus.Logger, req *proto.PruneRequest, timeout in
 		if err != nil {
 			fmt.Errorf("%v.PullImage(_) = _, %v", c, err)
 		}
-		log.Writer().Write(recv.GetMsg())
+		msg := recv.GetMsg()
+		if req.GetColor() {
+			log.Out.Write([]byte(e.Color(string(msg))))
+		} else {
+			log.Out.Write(msg)
+		}
 	}
 	return nil
 }

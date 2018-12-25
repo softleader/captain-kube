@@ -3,7 +3,6 @@ package app
 import (
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/captain"
-	"github.com/softleader/captain-kube/pkg/proto"
 	"github.com/spf13/cobra"
 )
 
@@ -33,8 +32,5 @@ func newPruneCmd() *cobra.Command {
 }
 
 func (c *pruneCmd) run() error {
-	return captain.Prune(logrus.StandardLogger(), c.endpoint.String(), &proto.PruneRequest{
-		Verbose: settings.verbose,
-		Timeout: settings.timeout,
-	}, settings.timeout)
+	return captain.Prune(logrus.StandardLogger(), c.endpoint.String(), settings.verbose, settings.color, settings.timeout)
 }

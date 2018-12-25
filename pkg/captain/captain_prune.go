@@ -10,7 +10,7 @@ import (
 	"io"
 )
 
-func Prune(log *logrus.Logger, url string, req *proto.PruneRequest, timeout int64) error {
+func Prune(log *logrus.Logger, url string, verbose, color bool, timeout int64) error {
 	conn, err := grpc.Dial(url, grpc.WithInsecure())
 	if err != nil {
 		return fmt.Errorf("did not connect: %v\n", err)
@@ -19,7 +19,11 @@ func Prune(log *logrus.Logger, url string, req *proto.PruneRequest, timeout int6
 	c := proto.NewCaptainClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), dur.Deadline(timeout))
 	defer cancel()
-	stream, err := c.Prune(ctx, req)
+	stream, err := c.Prune(ctx, &proto.PruneRequest{
+		Verbose: verbose,
+		Timeout: timeout,
+		Color:   color,
+	})
 	if err != nil {
 		return fmt.Errorf("could not prune: %v\n", err)
 	}

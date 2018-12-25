@@ -31,7 +31,7 @@ func (s *CaptainServer) Version(req *proto.VersionRequest, stream proto.Captain_
 			log.Error(err)
 		} else {
 			msg := fmt.Sprintf(`Caplet %s: %s`, r.GetHostname(), r.GetVersion())
-			if req.GetColored() {
+			if req.GetColor() {
 				msg = e.Color(msg)
 			}
 			log.Println(msg)

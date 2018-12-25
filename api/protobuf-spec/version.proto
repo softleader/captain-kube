@@ -5,7 +5,7 @@ package proto;
 message VersionRequest {
     bool short = 1;
     int64 timeout = 2;
-    bool colored = 3;
+    bool color = 3;
 }
 
 message VersionResponse {

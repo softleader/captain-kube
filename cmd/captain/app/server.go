@@ -54,7 +54,7 @@ func NewCaptainCommand(metadata *version.BuildMetadata) (cmd *cobra.Command) {
 	f.StringVar(&c.k8sVendor, "k8s-vendor", c.k8sVendor, "specify the vendor of k8s, override "+captain.EnvK8sVendor)
 	f.StringVar(&c.capletHostname, "caplet-hostname", c.capletHostname, "specify the hostname of caplet daemon to lookup, override "+caplet.EnvHostname)
 	f.IntVar(&c.capletPort, "caplet-port", c.capletPort, "specify the port of caplet daemon to connect, override "+caplet.EnvPort)
-	f.StringArrayVarP(&c.endpoints, "caplet-endpoint", "e", []string{""}, "specify the endpoint of caplet daemon to connect, override '--caplet-hostname'")
+	f.StringArrayVarP(&c.endpoints, "caplet-endpoint", "e", []string{}, "specify the endpoint of caplet daemon to connect, override '--caplet-hostname'")
 
 	return
 }

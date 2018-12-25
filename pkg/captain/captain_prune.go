@@ -26,13 +26,12 @@ func Prune(log *logrus.Logger, url string, req *proto.PruneRequest, timeout int6
 	for {
 		recv, err := stream.Recv()
 		if err == io.EOF {
-			log.Println("### EOF ###")
 			break
 		}
 		if err != nil {
-			return fmt.Errorf("%v.GenerateScript(_) = _, %v", c, err)
+			return fmt.Errorf("%v.Prune(_) = _, %v", c, err)
 		}
-		log.Writer().Write(recv.GetMsg())
+		log.Out.Write(recv.GetMsg())
 	}
 	return nil
 

@@ -26,13 +26,12 @@ func InstallChart(log *logrus.Logger, url string, req *proto.InstallChartRequest
 	for {
 		recv, err := stream.Recv()
 		if err == io.EOF {
-			log.Println("### EOF ###")
 			break
 		}
 		if err != nil {
-			return fmt.Errorf("%v.InstallChartToIcp(_) = _, %v", c, err)
+			return fmt.Errorf("%v.InstallChart(_) = _, %v", c, err)
 		}
-		log.Writer().Write(recv.GetMsg())
+		log.Out.Write(recv.GetMsg())
 	}
 	return nil
 

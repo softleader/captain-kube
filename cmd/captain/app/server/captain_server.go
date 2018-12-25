@@ -22,7 +22,7 @@ type CaptainServer struct {
 
 func (s *CaptainServer) lookupInstances() (endpoints caplet.Endpoints, err error) {
 	if len(s.Endpoints) > 0 {
-		logrus.Debugf("server has specified endpoint %q, skip dynamically lookup", s.Endpoints)
+		logrus.Debugf("server has specified endpoint(s) for %q, skip dynamically lookup", s.Endpoints)
 	} else {
 		logrus.Debugf("nslookup %q", s.Hostname)
 		if s.Endpoints, err = net.LookupHost(s.Hostname); err != nil {

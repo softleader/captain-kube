@@ -3,8 +3,6 @@ package dockerd
 import (
 	"errors"
 	"github.com/sirupsen/logrus"
-	"github.com/docker/docker/cli/command"
-	"github.com/docker/docker/pkg/jsonmessage"
 	"github.com/softleader/captain-kube/pkg/helm/chart"
 	"github.com/softleader/captain-kube/pkg/proto"
 	"io/ioutil"
@@ -38,11 +36,10 @@ func PullAndSync(log *logrus.Logger, request *proto.InstallChartRequest) error {
 		for _, tpl := range tpls {
 			for _, image := range tpl {
 				log.Println("pulling ", image)
-				result, err := Pull(log, *image, request.RegistryAuth)
+				err := Pull(log, *image, request.RegistryAuth)
 				if err != nil {
 					log.Println("pull image failed: ", image, ", error: ", err)
 				}
-				jsonmessage.DisplayJSONMessagesToStream(result, command.NewOutStream(log.Out), nil)
 			}
 		}
 	}
@@ -54,7 +51,7 @@ func PullAndSync(log *logrus.Logger, request *proto.InstallChartRequest) error {
 				for _, image := range tpl {
 					if image.Host == request.Retag.From {
 						log.Println("syncing ", image)
-						result, err := ReTag(log, *image, chart.Image{
+						err := ReTag(log, *image, chart.Image{
 							Host: request.Retag.To,
 							Repo: image.Repo,
 							Tag:  image.Tag,
@@ -62,7 +59,6 @@ func PullAndSync(log *logrus.Logger, request *proto.InstallChartRequest) error {
 						if err != nil {
 							log.Println("sync image failed: ", image, ", error: ", err)
 						}
-						jsonmessage.DisplayJSONMessagesToStream(result, command.NewOutStream(log.Writer()), nil)
 					}
 				}
 			}

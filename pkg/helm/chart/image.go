@@ -13,6 +13,15 @@ type Image struct {
 	Tag  string // latest
 }
 
+func (i *Image) HostRepo() string {
+	var buf bytes.Buffer
+	if i.Host != "" {
+		buf.WriteString(fmt.Sprintf("%s/", i.Host))
+	}
+	buf.WriteString(i.Repo)
+	return buf.String()
+}
+
 func (i *Image) String() string {
 	var buf bytes.Buffer
 	if i.Host != "" {

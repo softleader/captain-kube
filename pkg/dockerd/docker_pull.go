@@ -2,37 +2,42 @@ package dockerd
 
 import (
 	"context"
+	"github.com/fsouza/go-dockerclient"
 	"github.com/sirupsen/logrus"
-	"github.com/docker/docker/api/types"
-	"github.com/docker/docker/client"
 	"github.com/softleader/captain-kube/pkg/helm/chart"
 	"github.com/softleader/captain-kube/pkg/proto"
-	"io"
 )
 
-func Pull(log *logrus.Logger, image chart.Image, registryAuth *proto.RegistryAuth) (io.ReadCloser, error) {
+func Pull(log *logrus.Logger, image chart.Image, registryAuth *proto.RegistryAuth) error {
 	ctx := context.Background()
 
 	// Use DOCKER_HOST to set the url to the docker server.
 	// Use DOCKER_API_VERSION to set the version of the API to reach, leave empty for latest.
 	// Use DOCKER_CERT_PATH to load the TLS certificates from.
 	// Use DOCKER_TLS_VERIFY to enable or disable TLS verification, off by default.
-	cli, err := client.NewEnvClient()
+	cli, err := docker.NewClientFromEnv()
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	log.Printf("pulling image: %s\n", image)
-	opt := types.ImagePullOptions{}
+
+	var auth docker.AuthConfiguration
 	if registryAuth != nil {
-		if opt.RegistryAuth, err = encode(registryAuth); err != nil {
-			return nil, err
+		auth = docker.AuthConfiguration{
+			Username: registryAuth.Username,
+			Password: registryAuth.Password,
 		}
 	}
-	rc, err := cli.ImagePull(ctx, image.String(), opt)
-	if err != nil {
-		return nil, err
+
+	if err := cli.PullImage(docker.PullImageOptions{
+		Context:      ctx,
+		Tag:          image.Tag,
+		Repository:   image.HostRepo(),
+		OutputStream: log.Writer(),
+	}, auth); err != nil {
+		return err
 	}
 
-	return rc, nil
+	return nil
 }

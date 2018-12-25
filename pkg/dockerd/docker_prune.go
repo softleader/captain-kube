@@ -2,22 +2,18 @@ package dockerd
 
 import (
 	"context"
+	"github.com/fsouza/go-dockerclient"
 	"github.com/sirupsen/logrus"
-	"github.com/docker/docker/api/types/filters"
-	"github.com/docker/docker/client"
 )
 
 func Prune(log *logrus.Logger) error {
 	ctx := context.Background()
-
-	cli, err := client.NewEnvClient()
+	cli, err := docker.NewClientFromEnv()
 	if err != nil {
 		return err
 	}
 
-	args := filters.NewArgs()
-
-	if cp, err := cli.ContainersPrune(ctx, args); err != nil {
+	if cp, err := cli.PruneContainers(docker.PruneContainersOptions{Context: ctx}); err != nil {
 		return err
 	} else {
 		log.Info("deleted containers:")
@@ -27,7 +23,7 @@ func Prune(log *logrus.Logger) error {
 		log.Infof("total reclaimed space: %v", cp.SpaceReclaimed)
 	}
 
-	if ip, err := cli.ImagesPrune(ctx, args); err != nil {
+	if ip, err := cli.PruneImages(docker.PruneImagesOptions{Context: ctx}); err != nil {
 		return err
 	} else {
 		log.Info("deleted images:")
@@ -37,7 +33,7 @@ func Prune(log *logrus.Logger) error {
 		log.Infof("total reclaimed space: %v", ip.SpaceReclaimed)
 	}
 
-	if np, err := cli.NetworksPrune(ctx, args); err != nil {
+	if np, err := cli.PruneNetworks(docker.PruneNetworksOptions{Context: ctx}); err != nil {
 		return err
 	} else {
 		log.Info("deleted networks:")
@@ -46,7 +42,7 @@ func Prune(log *logrus.Logger) error {
 		}
 	}
 
-	if vp, err := cli.VolumesPrune(ctx, args); err != nil {
+	if vp, err := cli.PruneVolumes(docker.PruneVolumesOptions{Context: ctx}); err != nil {
 		return err
 	} else {
 		log.Info("deleted volumes:")

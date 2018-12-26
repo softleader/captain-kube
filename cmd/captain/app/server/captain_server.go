@@ -21,11 +21,11 @@ type CaptainServer struct {
 	K8s       string
 }
 
-func (s *CaptainServer) lookupCaplet(colored bool) (endpoints caplet.Endpoints, err error) {
+func (s *CaptainServer) lookupCaplet(log *logrus.Logger, colored bool) (endpoints caplet.Endpoints, err error) {
 	if len(s.Endpoints) > 0 {
-		logrus.Debugf("server has specified endpoint(s) for %q, skip dynamically lookup", s.Endpoints)
+		log.Debugf("server has specified endpoint(s) for %q, skip dynamically lookup", s.Endpoints)
 	} else {
-		logrus.Debugf("nslookup %q", s.Hostname)
+		log.Debugf("looking up %q", s.Hostname)
 		if s.Endpoints, err = net.LookupHost(s.Hostname); err != nil {
 			return
 		}
@@ -41,10 +41,10 @@ func (s *CaptainServer) lookupCaplet(colored bool) (endpoints caplet.Endpoints, 
 			endpoints[i].Color = color
 		}
 	}
-	logrus.Debugf("found %v caplet(s) daemon:", len(endpoints))
-	if logrus.IsLevelEnabled(logrus.DebugLevel) {
+	log.Debugf("found %v caplet(s) daemon:", len(endpoints))
+	if log.IsLevelEnabled(logrus.DebugLevel) {
 		for _, e := range endpoints {
-			logrus.Debugln(e.String())
+			log.Debugln(e.String())
 		}
 	}
 	return

@@ -2,6 +2,7 @@ package server
 
 import (
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/caplet"
 	"github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/sio"
@@ -16,7 +17,7 @@ func (s *CaptainServer) Version(req *proto.VersionRequest, stream proto.Captain_
 
 	out.Write([]byte(fmt.Sprintln("Captain: " + s.Metadata.String(req.GetShort()))))
 
-	endpoints, err := s.lookupCaplet(req.GetColor())
+	endpoints, err := s.lookupCaplet(logrus.StandardLogger(), req.GetColor())
 	if err != nil {
 		return err
 	}

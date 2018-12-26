@@ -54,6 +54,7 @@ func format(chunk *proto.ChunkMessage) []byte {
 	}
 	var buf bytes.Buffer
 	buf.WriteString(fmt.Sprintf("%s | ", chunk.GetHostname()))
-	buf.Write(msg)
+	buf.Write(bytes.Split(msg, []byte{'\n'})[0])
+	buf.WriteByte('\n')
 	return buf.Bytes()
 }

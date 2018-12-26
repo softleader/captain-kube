@@ -2,8 +2,9 @@ package service
 
 import (
 	"bytes"
-	"github.com/sirupsen/logrus"
+	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 	"github.com/softleader/captain-kube/cmd/cap-ui/app/server/comm"
 	"github.com/softleader/captain-kube/pkg/captain"
 	"github.com/softleader/captain-kube/pkg/dockerd"
@@ -12,6 +13,7 @@ import (
 	"github.com/softleader/captain-kube/pkg/utils"
 	"github.com/softleader/captain-kube/pkg/utils/strutil"
 	"io"
+	"mime/multipart"
 	"net/http"
 	"strconv"
 )
@@ -51,15 +53,35 @@ func (s *Install) Chart(c *gin.Context) {
 		return
 	}
 
-	file, header, err := c.Request.FormFile("file")
+	mForm, err := c.MultipartForm()
 	if err != nil {
 		//sw.WriteStr(fmt.Sprint("loading form file error:", err))
-		log.Errorln("loading form file error:", err)
-		logrus.Errorln("loading form file error:", err)
+		log.Errorln("loading form files error:", err)
+		logrus.Errorln("loading form files error:", err)
 		return
 	}
 
 	// ps. 在讀完request body後才可以開始response, 否則body會close
+	files := mForm.File["files"]
+	for _, file := range files {
+		filename := file.Filename
+		log.Println("### Chart:", filename, "###")
+		if err := doInstall(log, s, &form, file); err != nil {
+			log.Errorln("### [ERROR]", filename, err)
+			logrus.Errorln(filename, err)
+		}
+		log.Println("### Finish:", filename, "###")
+		log.Println("#")
+		log.Println("#")
+	}
+
+}
+
+func doInstall(log *logrus.Logger, s *Install, form *InstallRequest, fileHeader *multipart.FileHeader) error {
+	file, err := fileHeader.Open()
+	if err != nil {
+		return fmt.Errorf("open file stream failed: %s", err)
+	}
 
 	log.Debugln("call: POST /install")
 	log.Debugln("form:", form)
@@ -67,9 +89,7 @@ func (s *Install) Chart(c *gin.Context) {
 
 	buf := bytes.NewBuffer(nil)
 	if readed, err := io.Copy(buf, file); err != nil {
-		log.Errorln("reading file failed:", err)
-		logrus.Errorln("reading file failed:", err)
-		return
+		return fmt.Errorf("reading file failed: %s", err)
 	} else {
 		log.Debugln("readed ", readed, " bytes")
 	}
@@ -77,9 +97,9 @@ func (s *Install) Chart(c *gin.Context) {
 	// prepare rquest
 	request := proto.InstallChartRequest{
 		Chart: &proto.Chart{
-			FileName: header.Filename,
+			FileName: fileHeader.Filename,
 			Content:  buf.Bytes(),
-			FileSize: header.Size,
+			FileSize: fileHeader.Size,
 		},
 		Pull: strutil.Contains(form.Tags, "p"),
 		Sync: strutil.Contains(form.Tags, "r"),
@@ -101,15 +121,13 @@ func (s *Install) Chart(c *gin.Context) {
 	}
 
 	if err := dockerd.PullAndSync(log, &request); err != nil {
-		log.Errorln("Pull/Sync failed:", err)
-		logrus.Errorln("Pull/Sync failed:", err)
-		return
+		return fmt.Errorf("Pull/Sync failed: %s", err)
 	}
 
 	if err := captain.InstallChart(log, s.Cfg.DefaultValue.CaptainUrl, &request, 300); err != nil {
-		log.Errorln("call captain InstallChart failed:", err)
-		logrus.Errorln("call captain InstallChart failed:", err)
-		return
+		return fmt.Errorf("call captain InstallChart failed: %s", err)
 	}
+
 	log.Debugln("InstallChart finish")
+	return nil
 }

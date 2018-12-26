@@ -47,14 +47,18 @@ func (endpoints Endpoints) Each(consumer func(e *Endpoint)) {
 	wg.Wait()
 }
 
-func format(chunk *proto.ChunkMessage) []byte {
+func format(last, chunk *proto.ChunkMessage) []byte {
 	msg := chunk.GetMsg()
 	if msg == nil || len(msg) == 0 {
 		return msg
 	}
+	if last != nil { // 如果上一次的訊息沒有斷行符號, 這次就不要加上 hostname 吧
+		if lastMsg := last.GetMsg(); lastMsg != nil && !bytes.ContainsAny(lastMsg, "\n") {
+			return msg
+		}
+	}
 	var buf bytes.Buffer
 	buf.WriteString(fmt.Sprintf("%s | ", chunk.GetHostname()))
-	buf.Write(bytes.Split(msg, []byte{'\n'})[0])
-	buf.WriteByte('\n')
+	buf.Write(msg)
 	return buf.Bytes()
 }

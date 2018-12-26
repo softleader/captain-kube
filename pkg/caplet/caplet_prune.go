@@ -23,6 +23,7 @@ func (e *Endpoint) Prune(log *logrus.Logger, req *proto.PruneRequest, timeout in
 	if err != nil {
 		return fmt.Errorf("[%s] could not pull image: %v", e.Target, err)
 	}
+	var last *proto.ChunkMessage
 	for {
 		recv, err := stream.Recv()
 		if err == io.EOF {
@@ -31,7 +32,8 @@ func (e *Endpoint) Prune(log *logrus.Logger, req *proto.PruneRequest, timeout in
 		if err != nil {
 			return fmt.Errorf("%v.PullImage(_) = _, %v", c, err)
 		}
-		log.Out.Write(e.Color(format(recv)))
+		log.Out.Write(e.Color(format(last, recv)))
+		last = recv
 	}
 	return nil
 }

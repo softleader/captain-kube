@@ -1,6 +1,7 @@
 package app
 
 import (
+	"github.com/mitchellh/go-homedir"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/captain"
@@ -102,6 +103,7 @@ func (c *installCmd) run() error {
 }
 
 func runInstall(c *installCmd, path string) error {
+	path, _ = homedir.Expand(path)
 	abs, err := filepath.Abs(path)
 	if err != nil {
 		return err

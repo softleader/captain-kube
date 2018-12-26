@@ -2,6 +2,7 @@ package app
 
 import (
 	"errors"
+	"github.com/mitchellh/go-homedir"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/captain"
 	"github.com/softleader/captain-kube/pkg/env"
@@ -73,6 +74,7 @@ func (c *scriptCmd) run() error {
 }
 
 func runScript(c *scriptCmd, path string) error {
+	path, _ = homedir.Expand(path)
 	abs, err := filepath.Abs(path)
 	if err != nil {
 		return err

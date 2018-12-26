@@ -1,4 +1,4 @@
-FROM alpine:3.8
+FROM docker:18
 
 RUN apk update && apk add ca-certificates && rm -rf /var/cache/apk/*
 

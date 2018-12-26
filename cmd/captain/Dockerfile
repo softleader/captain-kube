@@ -1,10 +1,16 @@
-FROM alpine:3.8
+FROM ubuntu:xenial
 
-RUN apk update && \
-    apk add curl openssl ca-certificates && \
-    rm -rf /var/cache/apk/* && \
-	curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | sh && \
-	helm init -c
+RUN apt-get update && \
+    apt-get install -y curl && \
+    apt-get autoclean && \
+	curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | bash && \
+	helm init -c && \
+	curl -fsSL https://clis.ng.bluemix.net/install/linux | bash
+
+COPY icp-linux-amd64.tgz /tmp
+RUN tar -C /tmp -xzf /tmp/icp-linux-amd64.tgz && \
+	bx plugin install /tmp/icp-linux-amd64 && \
+	rm -rf /tmp/*
 
 WORKDIR /app
 ADD captain /app/captain

@@ -35,10 +35,9 @@ func ReTag(log *logrus.Logger, source chart.Image, target chart.Image, registryA
 	// 參數準備
 	options := docker.PushImageOptions{
 		Context:      ctx,
-		Registry:     target.Host,
-		Name:         target.Repo,
+		Name:         target.HostRepo(),
 		Tag:          target.Tag,
-		OutputStream: log.Writer(),
+		OutputStream: log.Out,
 	}
 
 	// 第一此採用沒有帳密的方式, 若失敗則重試第二次, 第二次採用帳密

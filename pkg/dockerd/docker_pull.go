@@ -27,7 +27,7 @@ func Pull(log *logrus.Logger, image chart.Image, registryAuth *proto.RegistryAut
 		Context:      ctx,
 		Tag:          image.Tag,
 		Repository:   image.HostRepo(),
-		OutputStream: log.Writer(),
+		OutputStream: log.Out,
 	}
 
 	// 第一此採用沒有帳密的方式, 若失敗則重試第二次, 第二次採用帳密

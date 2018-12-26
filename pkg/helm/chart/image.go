@@ -25,7 +25,7 @@ func (i *Image) Name() string {
 	var buf bytes.Buffer
 	buf.WriteString(i.Repo)
 	if i.Tag != "" {
-		buf.WriteString(fmt.Sprintf("/%s", i.Tag))
+		buf.WriteString(fmt.Sprintf(":%s", i.Tag))
 	}
 	return buf.String()
 }

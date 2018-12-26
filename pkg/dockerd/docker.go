@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"github.com/fsouza/go-dockerclient"
 	"github.com/softleader/captain-kube/pkg/proto"
-	"strings"
 )
 
 func encode(ra *proto.RegistryAuth) (string, error) {
@@ -18,8 +17,9 @@ func encode(ra *proto.RegistryAuth) (string, error) {
 
 func isDockerUnauthorized(err error) bool {
 	if err != nil {
-		if derr, ok := err.(*docker.Error); ok {
-			return derr.Status == 500 && strings.HasSuffix(derr.Message, "no basic auth credentials")
+		if _, ok := err.(*docker.Error); ok {
+			return true
+			// return derr.Status == 500 && strings.HasSuffix(derr.Message, "no basic auth credentials")
 		}
 	}
 	return false

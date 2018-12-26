@@ -70,9 +70,6 @@ func NewCapUiCommand() (cmd *cobra.Command) {
 		Use:  "capui",
 		Long: "capui is a web interface for captain",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			logrus.SetFormatter(&logrus.TextFormatter{
-				ForceColors: true,
-			})
 			logrus.SetOutput(colorable.NewColorableStdout()) // for windows color output
 			if verbose {
 				logrus.SetLevel(logrus.DebugLevel)

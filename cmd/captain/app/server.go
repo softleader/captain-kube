@@ -39,9 +39,6 @@ func NewCaptainCommand(metadata *version.BuildMetadata) (cmd *cobra.Command) {
 		Use:  "captain",
 		Long: "captain is the brain of captain-kube system",
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			logrus.SetFormatter(&logrus.TextFormatter{
-				ForceColors: true,
-			})
 			logrus.SetOutput(colorable.NewColorableStdout()) // for windows color output
 			if verbose {
 				logrus.SetLevel(logrus.DebugLevel)

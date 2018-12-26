@@ -1,7 +1,7 @@
 package chart
 
 import (
-	"github.com/sirupsen/logrus"
+	"bytes"
 	"text/template"
 )
 
@@ -28,10 +28,12 @@ docker load -i ./{{ $image.Name }}.tar
 
 var loadTemplate = template.Must(template.New("").Parse(loadScript))
 
-func (t *Templates) GenerateLoadScript(log *logrus.Logger) error {
+func (t *Templates) GenerateLoadScript() ([]byte, error) {
 	data := make(map[string]interface{})
 	data["tpls"] = t
-	out := log.Writer()
-	defer out.Close()
-	return loadTemplate.Execute(out, data)
+	var buf bytes.Buffer
+	if err := loadTemplate.Execute(&buf, data); err != nil {
+		return nil, nil
+	}
+	return buf.Bytes(), nil
 }

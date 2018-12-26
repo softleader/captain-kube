@@ -1,7 +1,7 @@
 package chart
 
 import (
-	"github.com/sirupsen/logrus"
+	"bytes"
 	"text/template"
 )
 
@@ -28,10 +28,12 @@ docker pull {{ $image.String -}}
 
 var pullTemplate = template.Must(template.New("").Parse(pullScript))
 
-func (t *Templates) GeneratePullScript(log *logrus.Logger) error {
+func (t *Templates) GeneratePullScript() ([]byte, error) {
 	data := make(map[string]interface{})
 	data["tpls"] = t
-	out := log.Writer()
-	defer out.Close()
-	return pullTemplate.Execute(out, data)
+	var buf bytes.Buffer
+	if err := pullTemplate.Execute(&buf, data); err != nil {
+		return nil, nil
+	}
+	return buf.Bytes(), nil
 }

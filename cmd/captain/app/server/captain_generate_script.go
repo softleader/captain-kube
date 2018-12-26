@@ -48,26 +48,34 @@ func (s *CaptainServer) GenerateScript(req *proto.GenerateScriptRequest, stream 
 	log.Debugf("%v template(s) loaded\n", len(tpls))
 
 	if from, to := strings.TrimSpace(req.GetRetag().GetFrom()), strings.TrimSpace(req.GetRetag().GetTo()); from != "" && to != "" {
-		if err := tpls.GenerateReTagScript(log, from, to); err != nil {
+		if b, err := tpls.GenerateReTagScript(from, to); err != nil {
 			return err
+		} else {
+			log.Out.Write(b)
 		}
 	}
 
 	if req.Pull {
-		if err := tpls.GeneratePullScript(log); err != nil {
+		if b, err := tpls.GeneratePullScript(); err != nil {
 			return err
+		} else {
+			log.Out.Write(b)
 		}
 	}
 
 	if req.Load {
-		if err := tpls.GenerateLoadScript(log); err != nil {
+		if b, err := tpls.GenerateLoadScript(); err != nil {
 			return err
+		} else {
+			log.Out.Write(b)
 		}
 	}
 
 	if req.Save {
-		if err := tpls.GenerateSaveScript(log); err != nil {
+		if b, err := tpls.GenerateSaveScript(); err != nil {
 			return err
+		} else {
+			log.Out.Write(b)
 		}
 	}
 

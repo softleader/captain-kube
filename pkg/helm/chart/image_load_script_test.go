@@ -2,7 +2,6 @@ package chart
 
 import (
 	"github.com/sirupsen/logrus"
-	"github.com/softleader/captain-kube/pkg/utils"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -37,14 +36,9 @@ func TestTemplates_GenerateLoadScript(t *testing.T) {
 		t.Error(err)
 	}
 
-	another := logrus.New()
-	another.SetOutput(os.Stdout)
-	another.SetFormatter(&utils.PlainFormatter{})
-	another.SetLevel(logrus.DebugLevel)
-
-	if err = tpl.GenerateLoadScript(another); err != nil {
+	if b, err := tpl.GenerateLoadScript(); err != nil {
 		t.Error(err)
+	} else {
+		os.Stdout.Write(b)
 	}
 }
-
-

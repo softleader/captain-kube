@@ -20,7 +20,7 @@ func ReTag(log *logrus.Logger, source chart.Image, target chart.Image, registryA
 		return err
 	}
 
-	log.Printf("tagging image from %q to %q \n", source, target)
+	log.Printf("tagging image from %q to %q \n", source.String(), target.String())
 	if err := cli.TagImage(source.String(), docker.TagImageOptions{
 		Context: ctx,
 		Force:   true,
@@ -30,7 +30,7 @@ func ReTag(log *logrus.Logger, source chart.Image, target chart.Image, registryA
 		return err
 	}
 
-	log.Printf("pushing image: %s \n", target)
+	log.Printf("pushing image: %s \n", target.String())
 	var auth docker.AuthConfiguration
 	if registryAuth != nil {
 		auth = docker.AuthConfiguration{

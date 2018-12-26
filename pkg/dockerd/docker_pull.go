@@ -20,7 +20,7 @@ func Pull(log *logrus.Logger, image chart.Image, registryAuth *proto.RegistryAut
 		return err
 	}
 
-	log.Printf("pulling image: %s\n", image)
+	log.Printf("pulling image: %s\n", image.String())
 
 	var auth docker.AuthConfiguration
 	if registryAuth != nil {

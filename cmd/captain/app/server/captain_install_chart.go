@@ -54,7 +54,7 @@ func (s *CaptainServer) InstallChart(req *proto.InstallChartRequest, stream prot
 		}
 		log.SetNoLock()
 		endpoints.Each(func(e *caplet.Endpoint) {
-			if err := e.PullImage(log, newPullImageRequest(tpls, req.GetRegistryAuth()), req.GetTimeout()); err != nil {
+			if err := e.PullImage(log, newPullImageRequest(tpls, req.GetRetag(), req.GetRegistryAuth()), req.GetTimeout()); err != nil {
 				log.Error(err)
 			}
 		})

@@ -50,17 +50,21 @@ func (s *CaptainServer) lookupCaplet(colored bool) (endpoints caplet.Endpoints, 
 	return
 }
 
-func newPullImageRequest(tpls chart.Templates, auth *proto.RegistryAuth) (req *proto.PullImageRequest) {
+func newPullImageRequest(tpls chart.Templates, retag *proto.ReTag, auth *proto.RegistryAuth) (req *proto.PullImageRequest) {
 	req = &proto.PullImageRequest{
 		RegistryAuth: auth,
 	}
 	for _, tpl := range tpls {
 		for _, img := range tpl {
-			req.Images = append(req.Images, &proto.Image{
+			i := &proto.Image{
 				Host: img.Host,
 				Repo: img.Repo,
 				Tag:  img.Tag,
-			})
+			}
+			if i.Host == retag.From {
+				i.Host = retag.To
+			}
+			req.Images = append(req.Images, i)
 		}
 	}
 	return

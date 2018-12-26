@@ -6,11 +6,12 @@ import (
 
 const ctxHelp = `Switch between Captain-Kubes back and forth
 
-	ctx                    : list the contexts with args
-	ctx <NAME>             : switch to context <NAME>
-	ctx -                  : switch to the previous context
-	ctx -d <NAME>          : delete context <NAME> ('.' for current-context)
-	ctx -a <NAME> <ARGS..> : add context <NAME> with <ARGS...>
+	ctx ls                  : list the contexts
+	ctx ls -a               : list the contexts with args
+	ctx <NAME>              : switch to context <NAME>
+	ctx -                   : switch to the previous context
+	ctx rm <NAME>           : delete context <NAME> ('.' for current-context)
+	ctx add <NAME> <ARGS..> : add context <NAME> with <ARGS...>
 `
 
 type ctxCmd struct {

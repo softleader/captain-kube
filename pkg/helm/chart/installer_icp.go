@@ -21,7 +21,7 @@ func (i *icpInstaller) Install(log *logrus.Logger) error {
 		return err
 	}
 
-	if err := loadHelmChart(log, i.chart); err != nil {
+	if err := loadHelmChart(log, i.endpoint, i.chart); err != nil {
 		return err
 	}
 
@@ -41,18 +41,27 @@ func loginBxPr(log *logrus.Logger, endpoint, username, password, account string,
 		args = append(args, "--skip-ssl-validation")
 	}
 	cmd := exec.Command("bx", args...)
+
 	if log.IsLevelEnabled(logrus.DebugLevel) {
-		cmd.Stdout = log.Writer()
-		cmd.Stderr = log.Writer()
+		log.Out.Write([]byte(strings.Join(cmd.Args, " ")))
+		cmd.Stdout = log.Out
+		cmd.Stderr = log.Out
 	}
-	return cmd.Run()
+	if err := cmd.Start(); err != nil {
+		return err
+	}
+	return cmd.Wait()
 }
 
-func loadHelmChart(log *logrus.Logger, chart string) error {
-	cmd := exec.Command("bx", "pr", "load-helm-chart", "--archive", chart)
+func loadHelmChart(log *logrus.Logger, endpoint, chart string) error {
+	cmd := exec.Command("bx", "pr", "load-helm-chart", "--archive", chart, "--clustername", endpoint)
 	if log.IsLevelEnabled(logrus.DebugLevel) {
-		cmd.Stdout = log.Writer()
-		cmd.Stderr = log.Writer()
+		log.Out.Write([]byte(strings.Join(cmd.Args, " ")))
+		cmd.Stdout = log.Out
+		cmd.Stderr = log.Out
 	}
-	return cmd.Run()
+	if err := cmd.Start(); err != nil {
+		return err
+	}
+	return cmd.Wait()
 }

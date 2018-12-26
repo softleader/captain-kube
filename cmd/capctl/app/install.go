@@ -116,6 +116,7 @@ func runInstall(c *installCmd, path string) error {
 	}
 
 	request := proto.InstallChartRequest{
+		Verbose: settings.verbose,
 		Chart: &proto.Chart{
 			FileName: filepath.Base(abs),
 			Content:  bytes,

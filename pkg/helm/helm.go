@@ -5,6 +5,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"os"
 	"os/exec"
+	"strings"
 )
 
 func Template(log *logrus.Logger, chart, outputDir string) (err error) {
@@ -13,11 +14,14 @@ func Template(log *logrus.Logger, chart, outputDir string) (err error) {
 	}
 	cmd := exec.Command("helm", "template", "--output-dir", outputDir, chart)
 	if log.IsLevelEnabled(logrus.DebugLevel) {
-		cmd.Stdout = log.Writer()
-		cmd.Stderr = log.Writer()
+		log.Out.Write([]byte(strings.Join(cmd.Args, " ")))
+		cmd.Stdout = log.Out
+		cmd.Stderr = log.Out
 	}
-	err = cmd.Run()
-	return
+	if err := cmd.Start(); err != nil {
+		return err
+	}
+	return cmd.Wait()
 }
 
 func ensureDirExist(path string) error {

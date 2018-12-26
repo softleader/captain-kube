@@ -14,7 +14,7 @@ const (
 	EnvTillerSkipSslValidation     = "TILLER_SKIP_SSL_VALIDATION"
 	DefaultTillerUsername          = "admin"
 	DefaultTillerPassword          = "admin"
-	DefaultTillerAccount           = "icp Account"
+	DefaultTillerAccount           = "mycluster Account"
 	DefaultTillerSkipSslValidation = true
 
 	// hub.softleader.com.tw

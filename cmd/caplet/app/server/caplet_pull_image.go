@@ -13,6 +13,7 @@ func (s *CapletServer) PullImage(req *proto.PullImageRequest, stream proto.Caple
 	log := logrus.New()
 	log.SetOutput(sio.NewStreamWriter(func(p []byte) error {
 		return stream.Send(&proto.ChunkMessage{
+			Hostname: s.hostname,
 			Msg: p,
 		})
 	}))

@@ -8,7 +8,7 @@ import (
 )
 
 var colors = []string{
-	ansi.Black,
+	//ansi.Black,
 	ansi.Red,
 	ansi.Green,
 	ansi.Yellow,

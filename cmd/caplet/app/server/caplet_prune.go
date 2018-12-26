@@ -12,7 +12,8 @@ func (s *CapletServer) Prune(req *proto.PruneRequest, stream proto.Caplet_PruneS
 	log := logrus.New()
 	log.SetOutput(sio.NewStreamWriter(func(p []byte) error {
 		return stream.Send(&proto.ChunkMessage{
-			Msg: p,
+			Hostname: s.hostname,
+			Msg:      p,
 		})
 	}))
 	log.SetFormatter(&utils.PlainFormatter{})

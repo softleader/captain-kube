@@ -1,8 +1,10 @@
 package caplet
 
 import (
+	"bytes"
 	"fmt"
 	"github.com/softleader/captain-kube/pkg/color"
+	"github.com/softleader/captain-kube/pkg/proto"
 	"sync"
 )
 
@@ -43,4 +45,15 @@ func (endpoints Endpoints) Each(consumer func(e *Endpoint)) {
 		}(ep)
 	}
 	wg.Wait()
+}
+
+func format(chunk *proto.ChunkMessage) []byte {
+	msg := chunk.GetMsg()
+	if msg == nil || len(msg) == 0 {
+		return msg
+	}
+	var buf bytes.Buffer
+	buf.WriteString(fmt.Sprintf("%s | ", chunk.GetHostname()))
+	buf.Write(msg)
+	return buf.Bytes()
 }

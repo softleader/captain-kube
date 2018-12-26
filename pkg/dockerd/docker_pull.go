@@ -20,8 +20,6 @@ func Pull(log *logrus.Logger, image chart.Image, registryAuth *proto.RegistryAut
 		return err
 	}
 
-	log.Printf("pulling image: %s\n", image.String())
-
 	// 參數準備
 	options := docker.PullImageOptions{
 		Context:      ctx,

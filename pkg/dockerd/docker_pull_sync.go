@@ -35,7 +35,7 @@ func PullAndSync(log *logrus.Logger, request *proto.InstallChartRequest) error {
 		// pull all image from chart
 		for _, tpl := range tpls {
 			for _, image := range tpl {
-				log.Println("pulling ", image)
+				log.Debugln("pulling image:", image.String())
 				err := Pull(log, *image, request.RegistryAuth)
 				if err != nil {
 					log.Println("pull image failed: ", image, ", error: ", err)

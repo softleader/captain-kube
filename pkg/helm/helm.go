@@ -14,7 +14,7 @@ func Template(log *logrus.Logger, chart, outputDir string) (err error) {
 	}
 	cmd := exec.Command("helm", "template", "--output-dir", outputDir, chart)
 	if log.IsLevelEnabled(logrus.DebugLevel) {
-		log.Out.Write([]byte(strings.Join(cmd.Args, " ")))
+		log.Out.Write([]byte(fmt.Sprintln(strings.Join(cmd.Args, " "))))
 		cmd.Stdout = log.Out
 		cmd.Stderr = log.Out
 	}

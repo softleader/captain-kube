@@ -43,7 +43,7 @@ func loginBxPr(log *logrus.Logger, endpoint, username, password, account string,
 	cmd := exec.Command("bx", args...)
 
 	if log.IsLevelEnabled(logrus.DebugLevel) {
-		log.Out.Write([]byte(strings.Join(cmd.Args, " ")))
+		log.Out.Write([]byte(fmt.Sprintln(strings.Join(cmd.Args, " "))))
 		cmd.Stdout = log.Out
 		cmd.Stderr = log.Out
 	}
@@ -56,7 +56,7 @@ func loginBxPr(log *logrus.Logger, endpoint, username, password, account string,
 func loadHelmChart(log *logrus.Logger, endpoint, chart string) error {
 	cmd := exec.Command("bx", "pr", "load-helm-chart", "--archive", chart, "--clustername", endpoint)
 	if log.IsLevelEnabled(logrus.DebugLevel) {
-		log.Out.Write([]byte(strings.Join(cmd.Args, " ")))
+		log.Out.Write([]byte(fmt.Sprintln(strings.Join(cmd.Args, " "))))
 		cmd.Stdout = log.Out
 		cmd.Stderr = log.Out
 	}

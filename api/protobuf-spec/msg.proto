@@ -3,5 +3,6 @@ syntax = "proto3";
 package proto;
 
 message ChunkMessage {
-    bytes msg = 1;
+    string hostname = 1;
+    bytes msg = 2;
 }

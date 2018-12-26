@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: docker-socket
+  labels:
+    app: {{ template "captain-kube.caplet" . }}
+    chart: {{ template "captain-kube.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  capacity:
+    storage: 1Ki
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/var/run/docker.sock"

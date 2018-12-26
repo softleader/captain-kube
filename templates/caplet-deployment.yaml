@@ -18,10 +18,17 @@ spec:
         app: {{ template "captain-kube.caplet" . }}
         release: {{ .Release.Name }}
     spec:
+      volumes:
+      - name: docker-socket
+        persistentVolumeClaim:
+          claimName: docker-socket-claim
       containers:
         - name: {{ template "captain-kube.caplet" . }}
           image: "{{ .Values.caplet.image }}:{{ .Values.caplet.tag }}"
           imagePullPolicy: {{ .Values.caplet.pullPolicy }}
+          volumeMounts:
+            - mountPath: "/var/run/docker.sock"
+              name: docker-socket
           envFrom:
             - configMapRef:
                 name: {{ template "captain-kube.config" . }}

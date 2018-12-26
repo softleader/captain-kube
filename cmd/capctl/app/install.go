@@ -30,7 +30,7 @@ type installCmd struct {
 	tillerAccount           string // helm tiller 的帳號
 	tillerSkipSslValidation bool
 
-	endpoint *endpoint // captain 的 endpoint ip
+	endpoint *captain.Endpoint // captain 的 endpoint ip
 }
 
 func newInstallCmd() *cobra.Command {
@@ -86,7 +86,7 @@ func newInstallCmd() *cobra.Command {
 	f.StringVar(&c.tillerAccount, "tiller-account", c.tillerAccount, "specify the account of helm tiller")
 	f.BoolVar(&c.tillerSkipSslValidation, "tiller-skip-ssl", c.tillerSkipSslValidation, "specify skip ssl validation of helm tiller")
 
-	c.endpoint = addEndpointFlags(f)
+	c.endpoint = captain.AddEndpointFlags(f)
 
 	return cmd
 }

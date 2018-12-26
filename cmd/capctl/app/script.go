@@ -24,7 +24,7 @@ type scriptCmd struct {
 	registryAuthUsername string // docker registry 的帳號
 	registryAuthPassword string // docker registry 的密碼
 
-	endpoint *endpoint // captain 的 endpoint ip
+	endpoint *captain.Endpoint // captain 的 endpoint ip
 }
 
 func newScriptCmd() *cobra.Command {
@@ -57,7 +57,7 @@ func newScriptCmd() *cobra.Command {
 	f.StringVarP(&c.sourceRegistry, "retag-from", "f", c.sourceRegistry, "specify the host of re-tag from, required when Sync")
 	f.StringVarP(&c.registry, "retag-to", "t", c.registry, "specify the host of re-tag to, required when Sync")
 
-	c.endpoint = addEndpointFlags(f)
+	c.endpoint = captain.AddEndpointFlags(f)
 
 	return cmd
 }

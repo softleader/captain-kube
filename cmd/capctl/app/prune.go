@@ -26,7 +26,7 @@ func newPruneCmd() *cobra.Command {
 	}
 
 	f := cmd.Flags()
-	c.endpoint = addEndpointFlags(f)
+	c.endpoint = captain.AddEndpointFlags(f)
 
 	return cmd
 }

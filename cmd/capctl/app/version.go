@@ -27,7 +27,7 @@ func newVersionCmd(metadata *version.BuildMetadata) *cobra.Command {
 
 	f := cmd.Flags()
 	f.BoolVarP(&short, "short", "s", false, "print only the version number plus first 7 digits of the commit hash")
-	endpoint = addEndpointFlags(f)
+	endpoint = captain.AddEndpointFlags(f)
 
 	return cmd
 }

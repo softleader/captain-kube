@@ -35,5 +35,10 @@ func newCtxCmd() *cobra.Command {
 }
 
 func (c *ctxCmd) run() error {
+
+	// os.Lookup("SL_PLUGIN_MOUNT") 可以取得從 slctl 傳入的 plugin 資料儲存位置
+	// 如果沒有發現 $SL_PLUGIN_MOUNT 這個 command 應該就要中斷
+	// 反之 ctx 就可以儲存在那 $SL_PLUGIN_MOUNT 目錄下
+
 	return nil
 }

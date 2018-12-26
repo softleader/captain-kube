@@ -28,7 +28,8 @@ func Prune(log *logrus.Logger) error {
 	} else {
 		log.Info("deleted images:")
 		for _, del := range ip.ImagesDeleted {
-			log.Info(del)
+			log.Info("deleted:", del.Deleted)
+			log.Info("untagged:", del.Untagged)
 		}
 		log.Infof("total reclaimed space: %v", ip.SpaceReclaimed)
 	}

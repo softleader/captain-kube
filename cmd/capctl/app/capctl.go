@@ -31,6 +31,7 @@ func NewRootCmd(args []string, metadata *version.BuildMetadata) *cobra.Command {
 		newScriptCmd(),
 		newPruneCmd(),
 		newVersionCmd(metadata),
+		newCtxCmd()
 	)
 
 	flags.Parse(args)

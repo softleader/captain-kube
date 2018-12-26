@@ -1,4 +1,3 @@
-HAS_DEP := $(shell command -v dep;)
 DIST := $(CURDIR)/_dist
 BUILD := $(CURDIR)/_build
 REGISTRY := softleader
@@ -12,7 +11,7 @@ CAPCTL = capctl
 test:
 	go test ./... -v
 
-build: protoc
+.PHONY: protoc
 protoc:
 	protoc -I api/protobuf-spec/ --go_out=plugins=grpc:pkg/proto api/protobuf-spec/caplet.proto
 	protoc -I api/protobuf-spec/ --go_out=plugins=grpc:pkg/proto api/protobuf-spec/captain.proto
@@ -62,13 +61,7 @@ dist-calctl:
 
 .PHONY: bootstrap
 bootstrap:
-ifndef HAS_DEP
-	go get -u github.com/golang/dep/cmd/dep
-endif
-ifeq (,$(wildcard ./Gopkg.toml))
-	dep init
-endif
-	dep ensure
+	go mod tidy
 
 .PHONY: clean
 clean:

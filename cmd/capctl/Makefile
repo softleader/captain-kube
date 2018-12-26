@@ -13,7 +13,7 @@ test:
 	go test ./... -v
 
 .PHONY: build
-build: clean bootstrap
+build: clean
 	mkdir -p $(BUILD)
 	go build -o $(BUILD)/$(BINARY) .
 

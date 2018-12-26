@@ -56,12 +56,12 @@ func newInstallCmd() *cobra.Command {
 				return errors.New("chart path is required")
 			}
 			// do some validation check
-			if err := c.endpoint.validate(); err != nil {
+			if err := c.endpoint.Validate(); err != nil {
 				return err
 			}
 			// apply some default value
 			if te := strings.TrimSpace(c.tillerEndpoint); len(te) == 0 {
-				c.tillerEndpoint = c.endpoint.host
+				c.tillerEndpoint = c.endpoint.Host
 			}
 			return c.run()
 		},

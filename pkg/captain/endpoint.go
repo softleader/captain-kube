@@ -7,20 +7,20 @@ import (
 )
 
 type Endpoint struct {
-	host string
-	port int
+	Host string
+	Port int
 }
 
 func (e *Endpoint) String() string {
-	return fmt.Sprintf("%s:%v", e.host, e.port)
+	return fmt.Sprintf("%s:%v", e.Host, e.Port)
 }
 
-func (e *Endpoint) specified() bool {
-	return len(e.host) > 0 && e.port > 0
+func (e *Endpoint) Specified() bool {
+	return len(e.Host) > 0 && e.Port > 0
 }
 
-func (e *Endpoint) validate() error {
-	if !e.specified() {
+func (e *Endpoint) Validate() error {
+	if !e.Specified() {
 		return errors.New("endpoint is required")
 	}
 	return nil
@@ -28,7 +28,7 @@ func (e *Endpoint) validate() error {
 
 func AddEndpointFlags(f *pflag.FlagSet) (e *Endpoint) {
 	e = &Endpoint{}
-	f.StringVarP(&e.host, "endpoint", "e", "", "specify the host of captain endpoint")
-	f.IntVar(&e.port, "endpoint-port", DefaultPort, "specify the port of captain endpoint")
+	f.StringVarP(&e.Host, "endpoint", "e", "", "specify the host of captain endpoint")
+	f.IntVar(&e.Port, "endpoint-port", DefaultPort, "specify the port of captain endpoint")
 	return
 }

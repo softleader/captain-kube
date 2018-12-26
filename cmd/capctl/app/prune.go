@@ -7,7 +7,7 @@ import (
 )
 
 type pruneCmd struct {
-	endpoint *endpoint
+	endpoint *captain.Endpoint
 }
 
 func newPruneCmd() *cobra.Command {
@@ -18,7 +18,7 @@ func newPruneCmd() *cobra.Command {
 		Short: "docker system prune to all node",
 		Long:  "docker system prune to all node",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			if err := c.endpoint.validate(); err != nil {
+			if err := c.endpoint.Validate(); err != nil {
 				return err
 			}
 			return c.run()

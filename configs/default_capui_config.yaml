@@ -1,6 +1,5 @@
 defaultValue:
   captainUrl: localhost:30051
-  inventory: hosts
   tags:
   - icp
   namespace: default

@@ -8,7 +8,7 @@ import (
 )
 
 func newVersionCmd(metadata *version.BuildMetadata) *cobra.Command {
-	var endpoint *endpoint
+	var endpoint *captain.Endpoint
 	var short bool
 	cmd := &cobra.Command{
 		Use:   "version",
@@ -16,7 +16,7 @@ func newVersionCmd(metadata *version.BuildMetadata) *cobra.Command {
 		Long:  "print capctl, captain, and caplet version",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			logrus.Infoln(metadata.String(short))
-			if endpoint.specified() {
+			if endpoint.Specified() {
 				if err := captain.Version(logrus.StandardLogger(), endpoint.String(), short, settings.color, settings.timeout); err != nil {
 					return err
 				}

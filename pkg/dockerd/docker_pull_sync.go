@@ -28,7 +28,7 @@ func PullAndSync(log *logrus.Logger, request *proto.InstallChartRequest) error {
 		if err != nil {
 			return err
 		}
-
+		log.Debugf("%v template(s) loaded\n", len(tpls))
 	}
 
 	if request.Pull {

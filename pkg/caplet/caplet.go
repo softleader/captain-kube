@@ -2,6 +2,7 @@ package caplet
 
 import (
 	"fmt"
+	"github.com/softleader/captain-kube/pkg/color"
 	"sync"
 )
 
@@ -15,7 +16,15 @@ const (
 type Endpoint struct {
 	Target string
 	Port   int
-	Color  func(string) string
+	Color  func([]byte) []byte // output 塗色
+}
+
+func NewEndpoint(target string, port int) *Endpoint {
+	return &Endpoint{
+		Target: target,
+		Port:   port,
+		Color:  color.Plain,
+	}
 }
 
 func (e *Endpoint) String() string {

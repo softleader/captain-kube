@@ -20,7 +20,7 @@ func (s *CaptainServer) Prune(req *proto.PruneRequest, stream proto.Captain_Prun
 		log.SetLevel(logrus.DebugLevel)
 	}
 
-	endpoints, err := s.lookupCaplet()
+	endpoints, err := s.lookupCaplet(req.GetColor())
 	if err != nil {
 		return err
 	}

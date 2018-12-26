@@ -18,7 +18,7 @@ func TestPick(t *testing.T) {
 		t.Errorf("expected first %v of picked color should be UNIQUE", len(colors))
 	}
 	for i := 0; i < len(expectedUnique); i++ {
-		fmt.Println(expectedUnique[i](strconv.Itoa(i)))
+		fmt.Println(string(expectedUnique[i]([]byte(strconv.Itoa(i)))))
 	}
 }
 
@@ -29,13 +29,9 @@ func TestColor(t *testing.T) {
 	lime := ansi.ColorCode("green+h:black")
 	reset := ansi.ColorCode("reset")
 	fmt.Println(lime, "Bring back the 80s!", reset)
-
-	//fmt.Println(ansi.ColorCode(ansi.Cyan))
-	//ansi.LightBlue("Sad")
-	//fmt.Println(ansi.ColorFunc(ansi.LightBlue)("sadfg"))
 }
 
-func countUnique(s []func(string) string) (count int) {
+func countUnique(s []func([]byte) []byte) (count int) {
 	unique := make(map[interface{}]bool)
 	for v := range s {
 		if _, found := unique[v]; !found {

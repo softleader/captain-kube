@@ -31,12 +31,7 @@ func (e *Endpoint) PullImage(log *logrus.Logger, req *proto.PullImageRequest, ti
 		if err != nil {
 			return fmt.Errorf("%v.PullImage(_) = _, %v", c, err)
 		}
-		msg := recv.GetMsg()
-		if req.GetColor() {
-			log.Out.Write([]byte(e.Color(string(msg))))
-		} else {
-			log.Out.Write(msg)
-		}
+		log.Out.Write(e.Color(recv.GetMsg()))
 	}
 	return nil
 }

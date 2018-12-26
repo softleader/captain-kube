@@ -1,36 +1,50 @@
 package color
 
 import (
+	"bytes"
 	"github.com/mgutz/ansi"
 	"math/rand"
 	"time"
 )
 
 var colors = []string{
-	"black",
-	"red",
-	"green",
-	"yellow",
-	"blue",
-	"magenta",
-	"cyan",
-	"white",
-	//"black+h",
-	"red+h",
-	"green+h",
-	"yellow+h",
-	"blue+h",
-	"magenta+h",
-	"cyan+h",
-	//"white+h",
+	ansi.Black,
+	ansi.Red,
+	ansi.Green,
+	ansi.Yellow,
+	ansi.Blue,
+	ansi.Magenta,
+	ansi.Cyan,
+	ansi.White,
+	//ansi.LightBlack,
+	ansi.LightRed,
+	ansi.LightGreen,
+	ansi.LightYellow,
+	ansi.LightBlue,
+	ansi.LightMagenta,
+	ansi.LightCyan,
+	// ansi.LightWhite,
 }
 
-func Pick(n int) (c []func(string) string) {
+// 什麼都不上色
+var Plain = func(b [] byte) []byte {
+	return b
+}
+
+func Pick(n int) (c []func([] byte) []byte) {
 	shuffled := shuffle(colors)
 	d := len(shuffled)
 	for i := 0; i < n; i++ {
-		code := shuffled[i%d]
-		c = append(c, ansi.ColorFunc(code))
+		style := shuffled[i%d]
+		c = append(c, func(b []byte) []byte {
+			if len(b) == 0 {
+				return b
+			}
+			buf := bytes.NewBufferString(style)
+			buf.Write(b)
+			buf.WriteString(ansi.Reset)
+			return buf.Bytes()
+		})
 	}
 	return
 }

@@ -21,7 +21,7 @@ type CaptainServer struct {
 	K8s       string
 }
 
-func (s *CaptainServer) lookupCaplet() (endpoints caplet.Endpoints, err error) {
+func (s *CaptainServer) lookupCaplet(colored bool) (endpoints caplet.Endpoints, err error) {
 	if len(s.Endpoints) > 0 {
 		logrus.Debugf("server has specified endpoint(s) for %q, skip dynamically lookup", s.Endpoints)
 	} else {
@@ -34,13 +34,12 @@ func (s *CaptainServer) lookupCaplet() (endpoints caplet.Endpoints, err error) {
 		return nil, ErrNonCapletDaemonFound
 	}
 	for _, ep := range s.Endpoints {
-		endpoints = append(endpoints, &caplet.Endpoint{
-			Target: ep,
-			Port:   s.Port,
-		})
+		endpoints = append(endpoints, caplet.NewEndpoint(ep, s.Port))
 	}
-	for i, color := range color.Pick(len(endpoints)) {
-		endpoints[i].Color = color
+	if colored {
+		for i, color := range color.Pick(len(endpoints)) {
+			endpoints[i].Color = color
+		}
 	}
 	logrus.Debugf("found %v caplet(s) daemon:", len(endpoints))
 	if logrus.IsLevelEnabled(logrus.DebugLevel) {

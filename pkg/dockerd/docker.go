@@ -3,7 +3,9 @@ package dockerd
 import (
 	"encoding/base64"
 	"encoding/json"
+	"github.com/fsouza/go-dockerclient"
 	"github.com/softleader/captain-kube/pkg/proto"
+	"strings"
 )
 
 func encode(ra *proto.RegistryAuth) (string, error) {
@@ -12,4 +14,13 @@ func encode(ra *proto.RegistryAuth) (string, error) {
 		return "", nil
 	}
 	return base64.URLEncoding.EncodeToString(b), nil
+}
+
+func isDockerUnauthorized(err error) bool {
+	if err != nil {
+		if derr, ok := err.(*docker.Error); ok {
+			return derr.Status == 500 && strings.HasSuffix(derr.Message, "no basic auth credentials")
+		}
+	}
+	return false
 }

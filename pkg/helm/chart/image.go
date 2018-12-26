@@ -8,9 +8,8 @@ import (
 
 type Image struct {
 	Host string // e.g. hub.softleader.com.tw
-	Name string // e.g. captain-kube:latest
 	Repo string // e.g. captain-kube
-	Tag  string // latest
+	Tag  string // e.g. latest
 }
 
 func (i *Image) HostRepo() string {
@@ -22,28 +21,38 @@ func (i *Image) HostRepo() string {
 	return buf.String()
 }
 
+func (i *Image) Name() string {
+	var buf bytes.Buffer
+	buf.WriteString(i.Repo)
+	if i.Tag != "" {
+		buf.WriteString(fmt.Sprintf("/%s", i.Tag))
+	}
+	return buf.String()
+}
+
 func (i *Image) String() string {
 	var buf bytes.Buffer
 	if i.Host != "" {
 		buf.WriteString(fmt.Sprintf("%s/", i.Host))
 	}
-	buf.WriteString(i.Name)
+	buf.WriteString(i.Name())
 	return buf.String()
 }
 
 func newImage(img string) (i *Image) {
+	var name string
 	i = &Image{}
 	if strings.ContainsAny(img, "/") {
 		i.Host = before(img, "/")
-		i.Name = after(img, "/")
+		name = after(img, "/")
 	} else {
-		i.Name = img
+		name = img
 	}
-	if n := i.Name; strings.ContainsAny(n, ":") {
-		i.Repo = before(n, ":")
-		i.Tag = after(n, ":")
+	if strings.ContainsAny(name, ":") {
+		i.Repo = before(name, ":")
+		i.Tag = after(name, ":")
 	} else {
-		i.Repo = n
+		i.Repo = name
 	}
 	return
 }

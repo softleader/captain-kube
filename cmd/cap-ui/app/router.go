@@ -1,15 +1,13 @@
-package server
+package app
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/softleader/captain-kube/cmd/cap-ui/app/server/comm"
-	"github.com/softleader/captain-kube/cmd/cap-ui/app/server/service"
 	"github.com/softleader/captain-kube/pkg/utils/strutil"
 	"html/template"
 	"net/http"
 )
 
-func NewCapUiServer(cfg *comm.Config) (r *gin.Engine) {
+func NewCapUiServer(cmd *capUiCmd) (r *gin.Engine) {
 	r = gin.Default()
 
 	r.SetFuncMap(template.FuncMap{
@@ -26,14 +24,14 @@ func NewCapUiServer(cfg *comm.Config) (r *gin.Engine) {
 	// index
 	r.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.html", gin.H{
-			"config": cfg,
+			"config": cmd,
 		})
 	})
 
 	installRoute := r.Group("/install")
 	{
-		install := &service.Install{
-			Cfg: cfg,
+		install := &Install{
+			Cmd: cmd,
 		}
 		installRoute.GET("/", install.View)
 		installRoute.POST("/", install.Chart)
@@ -41,8 +39,8 @@ func NewCapUiServer(cfg *comm.Config) (r *gin.Engine) {
 
 	scriptRoute := r.Group("/script")
 	{
-		script := &service.Script{
-			Cfg: cfg,
+		script := &Script{
+			Cmd: cmd,
 		}
 		scriptRoute.GET("/", script.View)
 		scriptRoute.POST("/", script.Generate)

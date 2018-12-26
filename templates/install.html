@@ -15,30 +15,24 @@
                 <div class="form-check">
                     <label class="form-check-label">
                         <input class="form-check-input" type="radio" name="platform" value="helm"
-                               {{ if Contains .config.DefaultValue.Tags "helm" }}checked{{ end }}>
+                               {{ if eq .config.DefaultValue.Plaform "helm" }}checked{{ end }}>
                         Google Helm
                     </label>
                 </div>
                 <div class="form-check">
                     <label class="form-check-label">
                         <input class="form-check-input" type="radio" name="platform" value="icp"
-                               {{ if Contains .config.DefaultValue.Tags "icp" }}checked{{ end }}>
+                               {{ if eq .config.DefaultValue.Plaform "icp" }}checked{{ end }}>
                         IBM Cloud Private
                     </label>
                 </div>
-            {{/*<div class="form-check disabled">*/}}
-            {{/*<label class="form-check-label text-muted">*/}}
-            {{/*<input class="form-check-input" type="radio" name="platform" value="openshift" {{ if Contains .config.DefaultValue.Tags "openshift" }}checked{{ end }} disabled>*/}}
-            {{/*Red Hat OpenShift*/}}
-            {{/*</label>*/}}
-            {{/*</div>*/}}
             </div>
 
             <div class="form-group">
                 <label for="namespace">Namespace</label>
                 <input type="text" class="form-control" name="namespace" id="namespace"
                        value="{{ .config.DefaultValue.Namespace }}"
-                       {{ if NotContains .config.DefaultValue.Tags "helm" }}disabled{{ end }}>
+                       {{ if ne .config.DefaultValue.Plaform "helm" }}disabled{{ end }}>
             </div>
 
             <div class="form-group">
@@ -46,23 +40,16 @@
                 <input type="file" class="form-control" name="files" required multiple>
             </div>
 
-        {{/*<div class="form-group">*/}}
-        {{/*<label for="version">Version</label>*/}}
-        {{/*<input type="text" class="form-control" id="version" value="{{ .config.DefaultValue.Version }}">*/}}
-        {{/*</div>*/}}
-
             <div class="form-group">
                 <label for="tags">Pre-Procedures</label>
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="tags" value="p" id="tags-pull"
-                           {{ if Contains .config.DefaultValue.Tags "pull" }}checked{{ end }}>
+                    <input class="form-check-input" type="checkbox" name="tags" value="p" id="tags-pull">
                     <label class="form-check-label" for="tags-pull">
                         Pull images in Chart
                     </label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="tags" value="r" id="tags-retag"
-                           {{ if Contains .config.DefaultValue.Tags "retag" }}checked{{ end }}>
+                    <input class="form-check-input" type="checkbox" name="tags" value="r" id="tags-retag">
                     <label class="form-check-label" for="tags-retag">
                         Retag images & Sync to install nodes
                     </label>
@@ -73,14 +60,12 @@
                 <label for="registry">Registry</label>
                 <div class="input-group">
                     <input type="text" class="form-control" name="sourceRegistry" id="sourceRegistry"
-                           value="{{ .config.DefaultValue.SourceRegistry }}"
-                           {{ if NotContains .config.DefaultValue.Tags "retag" }}disabled{{ end }} required>
+                           value="{{ .config.DefaultValue.ReTag.From }}" required>
                     <div class="input-group-prepend">
                         <span class="input-group-text" id=""><i class="fas fa-angle-double-right"></i></span>
                     </div>
                     <input type="text" class="form-control" name="registry" id="registry"
-                           value="{{ .config.DefaultValue.Registry }}"
-                           {{ if NotContains .config.DefaultValue.Tags "retag" }}disabled{{ end }} required>
+                           value="{{ .config.DefaultValue.ReTag.To }}" required>
                 </div>
             </div>
 
@@ -97,7 +82,6 @@
                     <input id="level" type="text"
                            data-provide="slider"
                            data-slider-ticks="[1, 2, 3, 4]"
-                    {{/*data-slider-ticks-labels='["less log", "", "", "more log"]'*/}}
                            data-slider-step="1"
                            data-slider-value="3"
                            data-slider-tooltip="hide"

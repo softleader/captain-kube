@@ -36,7 +36,6 @@ func pull(log *logrus.Logger, image *proto.Image, auth *proto.RegistryAuth) erro
 		Host: image.Host,
 		Repo: image.Repo,
 		Tag:  image.Tag,
-		Name: image.Repo + ":" + image.Tag,
 	}, auth)
 	if err != nil {
 		return err

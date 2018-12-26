@@ -31,7 +31,6 @@ func TestPull(t *testing.T) {
 		Host: "library",
 		Repo: "ubuntu",
 		Tag:  "xenial",
-		Name: "ubuntu:xenial",
 	}, &proto.RegistryAuth{
 		Username: "dev",
 		Password: "sleader",
@@ -43,7 +42,6 @@ func TestPull(t *testing.T) {
 		Host: "hub.softleader.com.tw",
 		Repo: "softleader-common-mail-rpc",
 		Tag:  "latest",
-		Name: "softleader-common-mail-rpc:latest",
 	}, &proto.RegistryAuth{
 		Username: "dev",
 		Password: "sleader",

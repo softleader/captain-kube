@@ -74,7 +74,9 @@ func (c *scriptCmd) run() error {
 }
 
 func runScript(c *scriptCmd, path string) error {
-	path, _ = homedir.Expand(path)
+	if expanded, err := homedir.Expand(path); err != nil {
+		path = expanded
+	}
 	abs, err := filepath.Abs(path)
 	if err != nil {
 		return err

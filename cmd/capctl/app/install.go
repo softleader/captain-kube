@@ -103,7 +103,9 @@ func (c *installCmd) run() error {
 }
 
 func runInstall(c *installCmd, path string) error {
-	path, _ = homedir.Expand(path)
+	if expanded, err := homedir.Expand(path); err != nil {
+		path = expanded
+	}
 	abs, err := filepath.Abs(path)
 	if err != nil {
 		return err

@@ -1,6 +1,7 @@
 package app
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/gosuri/uitable"
 	"github.com/sirupsen/logrus"
@@ -11,18 +12,19 @@ import (
 const (
 	ctxHelp = `Switch between Captain-Kubes back and forth
 
-	ctx                    : list the contexts
-	ctx                    : list the contexts with args
-	ctx <NAME>             : switch to context <NAME>
-	ctx -                  : switch to the previous context
-	ctx -d <NAME>          : delete context <NAME> ('.' for current-context)
-	ctx -a <NAME> <ARGS..> : add context <NAME> with <ARGS...>
+	ctx                       : 列出所有 context
+	ctx --width 0             : 列出所有 context 並顯示所有 args
+	ctx <NAME>                : 切換 context 到 <NAME>
+	ctx -                     : 切換到前一個 context
+	ctx -d <NAME>             : 刪除 context <NAME> ('.' 為當前的 context)
+	ctx -a <NAME> -- <ARGS..> : 新增 context <NAME>
 
-	參數的讀取順序為: 當前 flags > ctx > os.LookupEnv
+參數的讀取順序為: 當前 flags > ctx > os.LookupEnv
 `
 )
 
 type ctxCmd struct {
+	width  int
 	add    string
 	delete string
 	args   []string
@@ -34,11 +36,11 @@ func newCtxCmd(ctxs *ctx.Contexts) *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "ctx",
-		Short: "switch between Captain-Kubes back and forth",
+		Short: "switch between captain-kubes back and forth",
 		Long:  ctxHelp,
 		Args: func(cmd *cobra.Command, args []string) error {
 			if ctxs == ctx.PlainContexts {
-				return ctx.ErrMountEnvNotExist
+				return ctx.ErrMountVolumeNotExist
 			}
 			if len(c.add) > 0 && len(c.delete) > 0 {
 				return fmt.Errorf("can not add and delete at the same time")
@@ -64,30 +66,37 @@ func newCtxCmd(ctxs *ctx.Contexts) *cobra.Command {
 	f := cmd.Flags()
 	f.StringVarP(&c.add, "add", "a", "", "add context <NAME> with <ARGS...>")
 	f.StringVarP(&c.delete, "delete", "d", "", "delete context <NAME> ('.' for current-context)")
+	f.IntVar(&c.width, "width", 100, "maximum allowed width for listing context args")
 
 	return cmd
 }
 
 func (c *ctxCmd) run() error {
 	if len(c.add) > 0 {
-		return c.ctxs.Add(c.args[0], c.args[1:])
+		return c.ctxs.Add(c.add, c.args)
 	}
 	if len(c.delete) > 0 {
-		return c.ctxs.Delete(c.args[0])
+		return c.ctxs.Delete(c.delete)
 	}
 	if len(c.args) > 0 {
 		return c.ctxs.Switch(c.args[0])
 	}
 
 	table := uitable.New()
-	for k, ctx := range c.ctxs.Contexts {
+	table.AddRow("", "CONTEXT", "ARGS")
+	table.MaxColWidth = 0
+	for name, ctx := range c.ctxs.Contexts {
 		prefix := " "
-		if k == c.ctxs.Active {
+		if name == c.ctxs.Active {
 			prefix = ">"
-		} else if k == c.ctxs.Previous {
+		} else if name == c.ctxs.Previous {
 			prefix = "-"
 		}
-		table.AddRow(fmt.Sprintf("%s %s", prefix, k), fmt.Sprintf("%+v", ctx))
+		args, err := json.Marshal(ctx)
+		if err != nil {
+			return err
+		}
+		table.AddRow(prefix, name, fmt.Sprintf("%+v", string(args)))
 	}
 	logrus.Println(table)
 	return nil

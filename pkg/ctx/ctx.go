@@ -18,9 +18,9 @@ const (
 )
 
 var (
-	ErrMountEnvNotExist = errors.New(fmt.Sprintf(`%q not exist
-for more details: https://github.com/softleader/slctl/wiki/Plugins-Guide#environment-variables
-`, EnvMountVolume))
+	ErrMountVolumeNotExist = errors.New(`Mount Volumn not exist
+for more details: https://github.com/softleader/slctl/wiki/Plugins-Guide#mount-volume
+`)
 	ErrNoActiveContextPresent = errors.New("no active context present") // 代表當前沒有 active 的 context
 )
 
@@ -67,7 +67,7 @@ func newContext(expandEnv bool) (c *Context) {
 func LoadContextsFromEnv(log *logrus.Logger) (*Contexts, error) {
 	mount, found := os.LookupEnv(EnvMountVolume)
 	if !found {
-		return nil, ErrMountEnvNotExist
+		return nil, ErrMountVolumeNotExist
 	}
 	return LoadContexts(log, filepath.Join(mount, ContextsFile))
 }
@@ -122,6 +122,9 @@ func (c *Contexts) Add(name string, args []string) error {
 }
 
 func (c *Contexts) Delete(name string) error {
+	if name == "." {
+		name = c.Active
+	}
 	if _, found := c.Contexts[name]; !found {
 		return fmt.Errorf("no context exists with name %q", name)
 	}

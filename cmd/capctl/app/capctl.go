@@ -26,7 +26,7 @@ func NewRootCmd(args []string, metadata *version.BuildMetadata) (*cobra.Command,
 
 	ctxs, err := ctx.LoadContextsFromEnv(logrus.StandardLogger())
 	if err != nil {
-		if err != ctx.ErrMountEnvNotExist {
+		if err != ctx.ErrMountVolumeNotExist {
 			return nil, err
 		}
 		ctxs = ctx.PlainContexts

@@ -24,7 +24,7 @@ const (
 )
 
 type ctxCmd struct {
-	width  int
+	width  uint
 	add    string
 	delete string
 	args   []string
@@ -66,7 +66,7 @@ func newCtxCmd(ctxs *ctx.Contexts) *cobra.Command {
 	f := cmd.Flags()
 	f.StringVarP(&c.add, "add", "a", "", "add context <NAME> with <ARGS...>")
 	f.StringVarP(&c.delete, "delete", "d", "", "delete context <NAME> ('.' for current-context)")
-	f.IntVar(&c.width, "width", 100, "maximum allowed width for listing context args")
+	f.UintVar(&c.width, "width", 100, "maximum allowed width for listing context args")
 
 	return cmd
 }
@@ -84,7 +84,7 @@ func (c *ctxCmd) run() error {
 
 	table := uitable.New()
 	table.AddRow("", "CONTEXT", "ARGS")
-	table.MaxColWidth = 0
+	table.MaxColWidth = c.width
 	for name, ctx := range c.ctxs.Contexts {
 		prefix := " "
 		if name == c.ctxs.Active {

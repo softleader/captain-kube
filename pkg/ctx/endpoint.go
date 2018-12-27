@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/softleader/captain-kube/pkg/captain"
+	"github.com/softleader/captain-kube/pkg/env"
 	"github.com/spf13/pflag"
 )
 
@@ -14,6 +15,7 @@ type Endpoint struct {
 
 // 將系統 env 載入
 func (e *Endpoint) ExpandEnv() {
+	e.Host = env.Lookup(captain.EnvEndpoint, "")
 	return
 }
 

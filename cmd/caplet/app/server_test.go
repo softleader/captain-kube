@@ -1,27 +1,34 @@
 package app
 
 import (
+	"github.com/sirupsen/logrus"
+	"github.com/softleader/captain-kube/pkg/caplet"
+	"github.com/softleader/captain-kube/pkg/proto"
+	"github.com/softleader/captain-kube/pkg/utils/tcp"
 	"testing"
 )
 
-func TestGrpc(t *testing.T) {
-	//out := os.Stdout
-	//req := &proto.PullImageRequest{}
-	//req.Images = append(req.Images, &proto.Image{
-	//	Host: "softleader",
-	//	Repo: "helm",
-	//})
-	//
-	//ep := &caplet.Endpoint{
-	//	Target: "localhost",
-	//	Port:   caplet.DefaultPort,
-	//}
+func TestPullImage(t *testing.T) {
+	endpoint := "localhost"
+	port := caplet.DefaultPort
+	if !tcp.Reachable(endpoint, port, 3) {
+		t.Skipf("endpoint %s:%v is not reachable", endpoint, port)
+	}
 
-	//if err := ep.PullImage(out, req); err != nil {
-	//	t.Error(err)
-	//}
+	log := logrus.New()
+	req := &proto.PullImageRequest{}
+	req.Images = append(req.Images, &proto.Image{
+		Host: "softleader",
+		Repo: "helm",
+	})
 
-	//if err := caplet.PullImage(out, []*caplet.Endpoint{ep}, req, dur.DefaultDeadlineSecond); err != nil {
-	//	t.Error(err)
-	//}
+	ep := &caplet.Endpoint{
+		Target: endpoint,
+		Port:   port,
+	}
+
+	if err := ep.PullImage(log, req, 10); err != nil {
+		t.Error(err)
+	}
+
 }

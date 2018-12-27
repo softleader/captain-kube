@@ -13,6 +13,11 @@ type Endpoint struct {
 	Port int
 }
 
+func (e *Endpoint) UnmarshalJSON(value []byte) error {
+
+	return nil
+}
+
 // 將系統 env 載入
 func (e *Endpoint) ExpandEnv() {
 	e.Host = env.Lookup(captain.EnvEndpoint, "")

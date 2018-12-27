@@ -2,6 +2,7 @@ package ctx
 
 import (
 	"fmt"
+	"github.com/imdario/mergo"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -90,11 +91,7 @@ func LoadContexts(log *logrus.Logger, path string) (*Contexts, error) {
 
 func (ctx *Context) expandEnv() (*Context, error) {
 	envCtx := newContext(true)
-	data, err := yaml.Marshal(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return envCtx, yaml.Unmarshal(data, envCtx)
+	return envCtx, mergo.Merge(envCtx, ctx)
 }
 
 func (c *Contexts) GetActive() (*Context, error) {
@@ -124,19 +121,21 @@ func (c *Contexts) Add(name string, args []string) (err error) {
 	return
 }
 
-func (c *Contexts) Delete(name string) (err error) {
-	if name == "." {
-		name = c.Active
-	}
-	if _, found := c.Contexts[name]; !found {
-		return fmt.Errorf("no context exists with name %q", name)
-	}
-	delete(c.Contexts, name)
-	if c.Active == name {
-		c.Active = ""
-	}
-	if err = c.save(); err == nil {
-		c.log.Printf("Context %q deleted.\n", name)
+func (c *Contexts) Delete(names ...string) (err error) {
+	for _, name := range names {
+		if name == "." {
+			name = c.Active
+		}
+		if _, found := c.Contexts[name]; !found {
+			return fmt.Errorf("no context exists with name %q", name)
+		}
+		delete(c.Contexts, name)
+		if c.Active == name {
+			c.Active = ""
+		}
+		if err = c.save(); err == nil {
+			c.log.Printf("Context %q deleted.\n", name)
+		}
 	}
 	return
 }
@@ -151,7 +150,7 @@ func (c *Contexts) Switch(name string) (err error) {
 	c.Previous = c.Active
 	c.Active = name
 	if err = c.save(); err == nil {
-		c.log.Printf("Active context is %q.\n", c.Active)
+		c.log.Printf("Switched to context %q.\n", c.Active)
 	}
 	return
 }
@@ -161,7 +160,7 @@ func (c *Contexts) switchToPrevious() (err error) {
 	c.Previous = c.Active
 	c.Active = last
 	if err = c.save(); err == nil {
-		c.log.Printf("Active context is %q.\n", c.Active)
+		c.log.Printf("Switched to context %q.\n", c.Active)
 	}
 	return
 }

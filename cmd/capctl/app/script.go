@@ -17,16 +17,15 @@ import (
 )
 
 type scriptCmd struct {
-	pull  bool
-	retag bool
-	save  bool
-	load  bool
-	diff  bool
+	pull bool
+	rt   bool
+	save bool
+	load bool
+	diff bool
 
-	sourceRegistry string
-	registry       string
-	charts         []string
+	charts []string
 
+	retag        *ctx.ReTag
 	endpoint     *ctx.Endpoint // captain 的 endpoint ip
 	registryAuth *ctx.RegistryAuth
 }
@@ -35,6 +34,7 @@ func newScriptCmd(activeCtx *ctx.Context) *cobra.Command {
 	c := scriptCmd{
 		endpoint:     activeCtx.Endpoint,
 		registryAuth: activeCtx.RegistryAuth,
+		retag:        activeCtx.ReTag,
 	}
 
 	cmd := &cobra.Command{
@@ -54,16 +54,15 @@ func newScriptCmd(activeCtx *ctx.Context) *cobra.Command {
 
 	f := cmd.Flags()
 	f.BoolVarP(&c.pull, "pull", "p", c.pull, "pull images in Chart")
-	f.BoolVarP(&c.retag, "retag", "r", c.retag, "retag images in Chart")
+	f.BoolVarP(&c.rt, "retag", "r", c.rt, "retag images in Chart")
 	f.BoolVarP(&c.save, "save", "s", c.save, "save images in Chart")
 	f.BoolVarP(&c.load, "load", "l", c.load, "load images in Chart")
 	f.BoolVarP(&c.diff, "diff", "d", c.diff, "show diff of two charts")
 
-	f.StringVarP(&c.sourceRegistry, "retag-from", "f", c.sourceRegistry, "specify the host of re-tag from, required when Sync")
-	f.StringVarP(&c.registry, "retag-to", "t", c.registry, "specify the host of re-tag to, required when Sync")
-
 	c.endpoint.AddFlags(f)
 	c.registryAuth.AddFlags(f)
+	c.retag.AddFlags(f)
+
 	return cmd
 }
 
@@ -130,8 +129,8 @@ func runScript(log *logrus.Logger, c *scriptCmd, path string) error {
 		},
 		Pull: c.pull,
 		Retag: &proto.ReTag{
-			From: c.sourceRegistry,
-			To:   c.registry,
+			From: c.retag.From,
+			To:   c.retag.To,
 		},
 		Save: c.save,
 		Load: c.load,

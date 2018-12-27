@@ -26,7 +26,7 @@ const (
 type ctxCmd struct {
 	width  uint
 	add    string
-	delete string
+	delete []string
 	args   []string
 	ctxs   *ctx.Contexts
 }
@@ -65,7 +65,7 @@ func newCtxCmd(ctxs *ctx.Contexts) *cobra.Command {
 
 	f := cmd.Flags()
 	f.StringVarP(&c.add, "add", "a", "", "add context <NAME> with <ARGS...>")
-	f.StringVarP(&c.delete, "delete", "d", "", "delete context <NAME> ('.' for current-context)")
+	f.StringArrayVarP(&c.delete, "delete", "d", []string{}, "delete context <NAME> ('.' for current-context)")
 	f.UintVar(&c.width, "width", 100, "maximum allowed width for listing context args")
 
 	return cmd
@@ -76,7 +76,7 @@ func (c *ctxCmd) run() error {
 		return c.ctxs.Add(c.add, c.args)
 	}
 	if len(c.delete) > 0 {
-		return c.ctxs.Delete(c.delete)
+		return c.ctxs.Delete(c.delete...)
 	}
 	if len(c.args) > 0 {
 		return c.ctxs.Switch(c.args[0])

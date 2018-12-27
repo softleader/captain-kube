@@ -3,6 +3,7 @@ package ctx
 import (
 	"bufio"
 	"github.com/sirupsen/logrus"
+	"github.com/softleader/captain-kube/pkg/captain"
 	"github.com/softleader/captain-kube/pkg/utils"
 	"io/ioutil"
 	"os"
@@ -146,5 +147,20 @@ func TestLoadContexts(t *testing.T) {
 	if p := actual.Previous; p != "foo" {
 		t.Errorf("previous context should be foo, bot get %s", p)
 		t.FailNow()
+	}
+}
+
+func TestExpandEnv(t *testing.T) {
+	ctx := newContext(false)
+	ctx.Endpoint.Host = "192.168.1.93"
+	newCtx, err := ctx.expandEnv()
+	if err != nil {
+		t.Error(err)
+	}
+	if h := newCtx.Endpoint.Host; h != "192.168.1.93" {
+		t.Errorf("host should be 192.168.1.93, but got %s", h)
+	}
+	if p := newCtx.Endpoint.Port; p != captain.DefaultPort {
+		t.Errorf("host should be %v, but got %v", captain.DefaultPort, p)
 	}
 }

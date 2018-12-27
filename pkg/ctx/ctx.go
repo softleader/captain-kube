@@ -19,7 +19,8 @@ const (
 )
 
 var (
-	ErrMountVolumeNotExist = errors.New(`Mount Volumn not exist
+	ErrMountVolumeNotExist = errors.New(`mount volume not found
+it looks like you are running command outside slctl (https://github.com/softleader/slctl)
 for more details: https://github.com/softleader/slctl/wiki/Plugins-Guide#mount-volume
 `)
 	ErrNoActiveContextPresent = errors.New("no active context present") // 代表當前沒有 active 的 context

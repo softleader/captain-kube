@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	ctxHelp = `Switch between Captain-Kubes back and forth
+	ctxHelp = `Switch between captain-kubes back and forth
 
 	ctx                       : 列出所有 context
 	ctx --width 0             : 列出所有 context 並顯示所有 args

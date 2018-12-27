@@ -2,10 +2,16 @@ package app
 
 import (
 	"fmt"
+	"github.com/gosuri/uitable"
+	"github.com/sirupsen/logrus"
+	"github.com/softleader/captain-kube/pkg/ctx"
 	"github.com/spf13/cobra"
+	"os"
+	"path/filepath"
 )
 
-const ctxHelp = `Switch between Captain-Kubes back and forth
+const (
+	ctxHelp = `Switch between Captain-Kubes back and forth
 
 	ctx                    : list the contexts
 	ctx                    : list the contexts with args
@@ -16,11 +22,14 @@ const ctxHelp = `Switch between Captain-Kubes back and forth
 
 	參數的讀取順序為: 當前 flags > ctx > os.Lookup
 `
+	ctxFile = "contexts.yaml"
+)
 
 type ctxCmd struct {
 	add    string
 	delete string
 	args   []string
+	ctxs   *ctx.Contexts
 }
 
 func newCtxCmd() *cobra.Command {
@@ -40,9 +49,21 @@ func newCtxCmd() *cobra.Command {
 			if len(c.delete) > 0 && len(args) > 0 {
 				return fmt.Errorf("delete context does not accpet arguments")
 			}
+			if len(c.add) == 0 && len(c.delete) == 0 && len(args) > 1 {
+				return fmt.Errorf("list/switch context only accpet max 1 argument")
+			}
 			return nil
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
+			mount, found := os.LookupEnv("SL_PLUGIN_MOUNT")
+			if !found {
+				return fmt.Errorf("the command can only run under slctl: https://github.com/softleader/slctl")
+			}
+			loaded, err := ctx.LoadContexts(logrus.StandardLogger(), filepath.Join(mount, ctxFile))
+			if err != nil {
+				return err
+			}
+			c.ctxs = loaded
 			c.args = args
 			return c.run()
 		},
@@ -56,11 +77,26 @@ func newCtxCmd() *cobra.Command {
 }
 
 func (c *ctxCmd) run() error {
+	if len(c.add) > 0 {
+		return c.ctxs.Add(c.args[0], c.args[1:])
+	}
+	if len(c.delete) > 0 {
+		return c.ctxs.Delete(c.args[0])
+	}
+	if len(c.args) > 0 {
+		return c.ctxs.Switch(c.args[0])
+	}
 
-	// TODO:
-	// os.Lookup("SL_PLUGIN_MOUNT") 可以取得從 slctl 傳入的 plugin 資料儲存位置
-	// 如果沒有發現 $SL_PLUGIN_MOUNT 這個 command 應該就要中斷
-	// 反之 ctx 就可以儲存在那 $SL_PLUGIN_MOUNT 目錄下
-
+	table := uitable.New()
+	for k, ctx := range c.ctxs.Ctxs {
+		prefix := " "
+		if k == c.ctxs.Active {
+			prefix = ">"
+		} else if k == c.ctxs.Previous {
+			prefix = "-"
+		}
+		table.AddRow(fmt.Sprintf("%s %s", prefix, k), fmt.Sprintf("%+v", ctx))
+	}
+	logrus.Println(table)
 	return nil
 }

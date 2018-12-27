@@ -36,11 +36,11 @@ func TestLoadContexts(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	if len(actual.Ctxs) != 1 {
+	if len(actual.Contexts) != 1 {
 		t.Errorf("suppose to have 1 context")
 		t.FailNow()
 	}
-	if foo, found := actual.Ctxs["foo"]; !found {
+	if foo, found := actual.Contexts["foo"]; !found {
 		t.Errorf("suppose to have foo key")
 		t.FailNow()
 	} else if foo.Endpoint == nil {
@@ -58,11 +58,11 @@ func TestLoadContexts(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	if len(actual.Ctxs) != 2 {
+	if len(actual.Contexts) != 2 {
 		t.Errorf("suppose to have 2 context")
 		t.FailNow()
 	}
-	if bar, found := actual.Ctxs["bar"]; !found {
+	if bar, found := actual.Contexts["bar"]; !found {
 		t.Errorf("suppose to have bar key")
 		t.FailNow()
 	} else if bar.Endpoint == nil {
@@ -135,7 +135,7 @@ func TestLoadContexts(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	if len(actual.Ctxs) != 1 {
+	if len(actual.Contexts) != 1 {
 		t.Errorf("suppose to have 1 context")
 		t.FailNow()
 	}

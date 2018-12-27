@@ -6,8 +6,6 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/ctx"
 	"github.com/spf13/cobra"
-	"os"
-	"path/filepath"
 )
 
 const (
@@ -20,9 +18,8 @@ const (
 	ctx -d <NAME>          : delete context <NAME> ('.' for current-context)
 	ctx -a <NAME> <ARGS..> : add context <NAME> with <ARGS...>
 
-	參數的讀取順序為: 當前 flags > ctx > os.Lookup
+	參數的讀取順序為: 當前 flags > ctx > os.LookupEnv
 `
-	ctxFile = "contexts.yaml"
 )
 
 type ctxCmd struct {
@@ -55,11 +52,7 @@ func newCtxCmd() *cobra.Command {
 			return nil
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			mount, found := os.LookupEnv("SL_PLUGIN_MOUNT")
-			if !found {
-				return fmt.Errorf("the command can only run under slctl: https://github.com/softleader/slctl")
-			}
-			loaded, err := ctx.LoadContexts(logrus.StandardLogger(), filepath.Join(mount, ctxFile))
+			loaded, err := ctx.LoadContextsFromEnv(logrus.StandardLogger())
 			if err != nil {
 				return err
 			}
@@ -88,7 +81,7 @@ func (c *ctxCmd) run() error {
 	}
 
 	table := uitable.New()
-	for k, ctx := range c.ctxs.Ctxs {
+	for k, ctx := range c.ctxs.Contexts {
 		prefix := " "
 		if k == c.ctxs.Active {
 			prefix = ">"

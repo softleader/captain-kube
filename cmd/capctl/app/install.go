@@ -5,6 +5,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/captain"
+	"github.com/softleader/captain-kube/pkg/ctx"
 	"github.com/softleader/captain-kube/pkg/dockerd"
 	"github.com/softleader/captain-kube/pkg/env"
 	"github.com/softleader/captain-kube/pkg/proto"
@@ -22,16 +23,9 @@ type installCmd struct {
 	registry       string
 	charts         []string
 
-	registryAuthUsername string // docker registry 的帳號
-	registryAuthPassword string // docker registry 的密碼
-
-	tillerEndpoint          string // helm tiller 的 ip, 若沒改預設為 endpoint
-	tillerUsername          string // helm tiller 的使用者
-	tillerPassword          string // helm tiller 的密碼
-	tillerAccount           string // helm tiller 的帳號
-	tillerSkipSslValidation bool
-
-	endpoint *captain.Endpoint // captain 的 endpoint ip
+	registryAuth *ctx.RegistryAuth // docker registry auth
+	tiller       *ctx.Tiller       // helm tiller
+	endpoint     *ctx.Endpoint     // captain 的 endpoint ip
 }
 
 func newInstallCmd() *cobra.Command {

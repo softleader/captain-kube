@@ -16,6 +16,7 @@ const (
 	ctx --width 0             : 列出所有 context 並顯示完整的 args
 	ctx <NAME>                : 切換 context 到 <NAME>
 	ctx -                     : 切換到前一個 context
+	ctx x                     : 切換成空的 context
 	ctx -d <NAME>             : 刪除 context <NAME> ('.' 為當前的 context)
 	ctx -a <NAME> -- <ARGS..> : 新增 context <NAME>
 

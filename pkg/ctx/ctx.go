@@ -144,6 +144,9 @@ func (c *Contexts) Switch(name string) (err error) {
 	if name == "-" {
 		return c.switchToPrevious()
 	}
+	if name == "x" {
+		return c.switchOff()
+	}
 	if _, found := c.Contexts[name]; !found {
 		return fmt.Errorf("no context exists with name %q", name)
 	}
@@ -151,6 +154,15 @@ func (c *Contexts) Switch(name string) (err error) {
 	c.Active = name
 	if err = c.save(); err == nil {
 		c.log.Printf("Switched to context %q.\n", c.Active)
+	}
+	return
+}
+
+func (c *Contexts) switchOff() (err error) {
+	c.Previous = c.Active
+	c.Active = ""
+	if err = c.save(); err == nil {
+		c.log.Printf("Switched off the context.\n", c.Active)
 	}
 	return
 }

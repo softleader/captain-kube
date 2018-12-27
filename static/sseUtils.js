@@ -21,7 +21,7 @@ function readSSE(response, {onNext = (value) => {}, onComplete = () => {}, onErr
               // 此處的Value受限於Uint8Array大小，每65536會截斷一次
               valueTxStore += DEFAULT_TEXT_DECODER.decode(value);
 
-              let regexp = /data:(?<data>.*)\n(\n|data:)/g;
+              let regexp = /data:(?<data>.*)\n(?=\n|(data:))/g;
               let matcher = regexp.exec(valueTxStore);
               let lastIndex = 0;
               while (matcher) {

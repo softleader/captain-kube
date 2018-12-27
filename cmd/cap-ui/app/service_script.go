@@ -14,6 +14,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 type ScriptRequest struct {
@@ -35,8 +36,9 @@ func (s *Script) View(c *gin.Context) {
 }
 
 func (s *Script) Generate(c *gin.Context) {
+	sseWriter := *sse.NewWriter(c)
 	log := logrus.New() // 這個是這次請求要往前吐的 log
-	log.SetOutput(sse.NewWriter(c))
+	log.SetOutput(&sseWriter)
 	log.SetFormatter(&utils.PlainFormatter{})
 	if v, _ := strconv.ParseBool(c.Request.FormValue("verbose")); v {
 		log.SetLevel(logrus.DebugLevel)
@@ -45,7 +47,7 @@ func (s *Script) Generate(c *gin.Context) {
 	var form ScriptRequest
 	if err := c.Bind(&form); err != nil {
 		log.Errorln("binding form data error:", err)
-		s.Log.Errorln("binding form data error:", err)
+		logrus.Errorln("binding form data error:", err)
 		return
 	}
 
@@ -59,6 +61,23 @@ func (s *Script) Generate(c *gin.Context) {
 
 	// ps. 在讀完request body後才可以開始response, 否則body會close
 	files := mForm.File["files"]
+
+	// diff validate
+	var buf *bytes.Buffer
+	var scripts []string
+	diffMode := strutil.Contains(form.Tags, "d")
+	if diffMode {
+		if len(files) != 2 {
+			log.Errorln("diff mode must have two files")
+			logrus.Errorln("diff mode must have two files")
+			return
+		} else {
+			buf = &bytes.Buffer{}
+			//log.SetOutput(io.MultiWriter(&sseWriter, buf))
+			log.SetOutput(buf)
+		}
+	}
+
 	for _, file := range files {
 		filename := file.Filename
 		log.Println("### Chart:", filename, "###")
@@ -66,9 +85,22 @@ func (s *Script) Generate(c *gin.Context) {
 			log.Errorln("### [ERROR]", filename, err)
 			logrus.Errorln(filename, err)
 		}
+		log.Println("")
 		log.Println("### Finish:", filename, "###")
 		log.Println("#")
 		log.Println("#")
+
+		if buf != nil {
+			scripts = append(scripts, buf.String())
+			buf.Reset()
+		}
+	}
+
+	if len(scripts) == 2 {
+		log.Println("### Diffs: ###")
+		log.SetOutput(&sseWriter)
+		lines := strutil.DiffNewLines(scripts[0], scripts[1])
+		log.Println(strings.Join(lines, "\n"))
 	}
 
 }

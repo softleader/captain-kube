@@ -28,6 +28,10 @@
                     <input class="form-check-input" type="checkbox" name="tags" id="image-load" value="l" required>
                     <label class="form-check-label" for="image-load">Load</label>
                 </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" name="tags" id="image-diff" value="d" required>
+                    <label class="form-check-label" for="image-diff">Diff</label>
+                </div>
             </div>
 
             <div class="form-group">
@@ -110,7 +114,8 @@
     // 核取框必須為任一勾選
     let tags = $('#dataForm').find('input:checkbox[name="tags"]');
     tags.on('change', e => {
-      let noAnyChecked = tags.not(':checked').length >= 4;
+      // 除了diff為必選一
+      let noAnyChecked = tags.not(':checked').not('[value="d"]').length >= 4;
       tags.prop('required', noAnyChecked)
     });
 

@@ -1,8 +1,8 @@
 package app
 
 import (
-	"github.com/sirupsen/logrus"
 	"github.com/mattn/go-colorable"
+	"github.com/sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/utils"
 	"github.com/softleader/captain-kube/pkg/version"
 	"github.com/spf13/cobra"
@@ -31,7 +31,7 @@ func NewRootCmd(args []string, metadata *version.BuildMetadata) *cobra.Command {
 		newScriptCmd(),
 		newPruneCmd(),
 		newVersionCmd(metadata),
-		newCtxCmd()
+		newCtxCmd(),
 	)
 
 	flags.Parse(args)

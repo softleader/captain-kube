@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strconv"
 	"testing"
 )
 
@@ -152,15 +153,25 @@ func TestLoadContexts(t *testing.T) {
 
 func TestExpandEnv(t *testing.T) {
 	ctx := newContext(false)
-	ctx.Endpoint.Host = "192.168.1.93"
-	newCtx, err := ctx.expandEnv()
-	if err != nil {
+	ctx.HelmTiller.Endpoint = "192.168.1.93"
+	ctx.HelmTiller.Account = "hello-tiller"
+	ctx.HelmTiller.Password = "secret"
+	os.Setenv(captain.DefaultTillerPassword, "surprised")
+	os.Setenv(captain.EnvPort, strconv.Itoa(captain.DefaultPort))
+
+	if err := ctx.expandEnv(); err != nil {
 		t.Error(err)
 	}
-	if h := newCtx.Endpoint.Host; h != "192.168.1.93" {
-		t.Errorf("host should be 192.168.1.93, but got %s", h)
+	if e := ctx.HelmTiller.Endpoint; e != "192.168.1.93" {
+		t.Errorf("new endpoint should be 192.168.1.93, but got %s", e)
 	}
-	if p := newCtx.Endpoint.Port; p != captain.DefaultPort {
-		t.Errorf("host should be %v, but got %v", captain.DefaultPort, p)
+	if a := ctx.HelmTiller.Account; a != "hello-tiller" {
+		t.Errorf("new account should be hello-tiller, but got %s", a)
+	}
+	if p := ctx.HelmTiller.Password; p != "secret" {
+		t.Errorf("new endpoint should be secret, but got %s", p)
+	}
+	if p := ctx.Endpoint.Port; p != captain.DefaultPort {
+		t.Errorf("new endpoint port should be %v, but got %v", captain.DefaultPort, p)
 	}
 }

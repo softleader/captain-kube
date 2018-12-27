@@ -33,6 +33,7 @@ type Context struct {
 	RegistryAuth *RegistryAuth
 	ReTag        *ReTag
 	addAllFlags  func(f *pflag.FlagSet)
+	clone        func() *Context
 }
 
 type Contexts struct {
@@ -41,6 +42,10 @@ type Contexts struct {
 	Contexts map[string]*Context
 	Active   string // 當前
 	Previous string // 上一個
+}
+
+func NewContextFromEnv() (c *Context) {
+	return newContext(true)
 }
 
 func newContext(expandEnv bool) (c *Context) {
@@ -89,19 +94,19 @@ func LoadContexts(log *logrus.Logger, path string) (*Contexts, error) {
 	return ctx, yaml.Unmarshal(data, ctx)
 }
 
-func (ctx *Context) expandEnv() (*Context, error) {
-	envCtx := newContext(true)
-	return envCtx, mergo.Merge(envCtx, ctx)
+func (ctx *Context) expandEnv() error {
+	defaultCtx := newContext(true)
+	return mergo.Merge(ctx, defaultCtx)
 }
 
-func (c *Contexts) GetActive() (*Context, error) {
+func (c *Contexts) GetActiveExpandEnv() (*Context, error) {
 	if c.Active == "" {
-		return newContext(true), ErrNoActiveContextPresent
+		return nil, ErrNoActiveContextPresent
 	}
 	if ctx, found := c.Contexts[c.Active]; !found {
 		return nil, fmt.Errorf("no active context exists with name %q", c.Active)
 	} else {
-		return ctx.expandEnv()
+		return ctx, ctx.expandEnv()
 	}
 }
 
@@ -162,7 +167,7 @@ func (c *Contexts) switchOff() (err error) {
 	c.Previous = c.Active
 	c.Active = ""
 	if err = c.save(); err == nil {
-		c.log.Printf("Switched off the context.\n", c.Active)
+		c.log.Print("Switched off the context.\n")
 	}
 	return
 }

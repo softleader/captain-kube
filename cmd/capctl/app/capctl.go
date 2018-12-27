@@ -31,9 +31,12 @@ func NewRootCmd(args []string, metadata *version.BuildMetadata) (*cobra.Command,
 		}
 		ctxs = ctx.PlainContexts
 	}
-	activeCtx, err := ctxs.GetActive()
-	if err != nil && err != ctx.ErrNoActiveContextPresent {
-		return nil, err
+	activeCtx, err := ctxs.GetActiveExpandEnv()
+	if err != nil {
+		if err != ctx.ErrNoActiveContextPresent {
+			return nil, err
+		}
+		activeCtx = ctx.NewContextFromEnv()
 	}
 
 	flags := cmd.PersistentFlags()

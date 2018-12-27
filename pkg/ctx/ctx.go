@@ -70,11 +70,7 @@ func (ctx *Context) MergeFromEnv() (*Context, error) {
 	if err != nil {
 		return nil, err
 	}
-	if err := yaml.Unmarshal(data, envCtx); err != nil {
-		return nil, err
-	}
-	addFlags(envCtx, f)
-	return envCtx, nil
+	return envCtx, yaml.Unmarshal(data, envCtx)
 }
 
 func (c *Contexts) GetActive() (*Context, error) {

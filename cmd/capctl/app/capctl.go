@@ -12,7 +12,7 @@ import (
 func NewRootCmd(args []string, metadata *version.BuildMetadata) (*cobra.Command, error) {
 	cmd := &cobra.Command{
 		Use:          "capctl",
-		Short:        "the Captain-Kube command line interface",
+		Short:        "the captain-kube command line interface",
 		Long:         "The command line interface against Captain-Kube services",
 		SilenceUsage: true,
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {

@@ -41,22 +41,34 @@ build-capctl:
 	make build --file ./cmd/$(CAPCTL)/Makefile REGISTRY=$(REGISTRY)
 
 .PHONY: dist
-dist: dist-caplet dist-captain dist-ui dist-calctl
+dist: dist-caplet dist-captain dist-ui dist-capctl
 
 .PHONY: dist-caplet
 dist-caplet:
+ifneq ($(strip $(VERSION)),)
+	$(error VERSION is not set)
+endif
 	make dist --file ./cmd/$(CAPLET)/Makefile REGISTRY=$(REGISTRY)
 
 .PHONY: dist-captain
 dist-captain:
+ifneq ($(strip $(VERSION)),)
+	$(error VERSION is not set)
+endif
 	make dist --file ./cmd/$(CAPTAIN)/Makefile REGISTRY=$(REGISTRY)
 
 .PHONY: dist-ui
 dist-ui:
+ifneq ($(strip $(VERSION)),)
+	$(error VERSION is not set)
+endif
 	make dist --file ./cmd/$(UI)/Makefile REGISTRY=$(REGISTRY)
 
-.PHONY: dist-calctl
-dist-calctl:
+.PHONY: dist-capctl
+dist-capctl:
+ifeq ($(strip $(VERSION)),)
+	$(error VERSION is not set)
+endif
 	make dist --file ./cmd/$(CAPCTL)/Makefile REGISTRY=$(REGISTRY)
 
 .PHONY: bootstrap

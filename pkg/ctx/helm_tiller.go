@@ -29,6 +29,5 @@ func (t *HelmTiller) AddFlags(f *pflag.FlagSet) {
 	f.StringVar(&t.Password, "tiller-pass", t.Password, "specify the password of helm tiller")
 	f.StringVar(&t.Account, "tiller-account", t.Account, "specify the account of helm tiller")
 	f.BoolVar(&t.SkipSslValidation, "tiller-skip-ssl", t.SkipSslValidation, "specify skip ssl validation of helm tiller")
-
 	return
 }

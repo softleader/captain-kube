@@ -88,7 +88,7 @@ func LoadContexts(log *logrus.Logger, path string) (*Contexts, error) {
 	return ctx, yaml.Unmarshal(data, ctx)
 }
 
-func (ctx *Context) MergeFromEnv() (*Context, error) {
+func (ctx *Context) expandEnv() (*Context, error) {
 	envCtx := newContext(true)
 	data, err := yaml.Marshal(ctx)
 	if err != nil {
@@ -104,11 +104,11 @@ func (c *Contexts) GetActive() (*Context, error) {
 	if ctx, found := c.Contexts[c.Active]; !found {
 		return nil, fmt.Errorf("no active context exists with name %q", c.Active)
 	} else {
-		return ctx, nil
+		return ctx.expandEnv()
 	}
 }
 
-func (c *Contexts) Add(name string, args []string) error {
+func (c *Contexts) Add(name string, args []string) (err error) {
 	if _, found := c.Contexts[name]; found {
 		return fmt.Errorf("context %q already exists", name)
 	}
@@ -118,10 +118,13 @@ func (c *Contexts) Add(name string, args []string) error {
 	ctx.addAllFlags(f)
 	c.Contexts[name] = ctx
 	cmd.ParseFlags(args)
-	return c.save()
+	if err = c.save(); err == nil {
+		c.log.Printf("Context %q added.\n", name)
+	}
+	return
 }
 
-func (c *Contexts) Delete(name string) error {
+func (c *Contexts) Delete(name string) (err error) {
 	if name == "." {
 		name = c.Active
 	}
@@ -132,10 +135,13 @@ func (c *Contexts) Delete(name string) error {
 	if c.Active == name {
 		c.Active = ""
 	}
-	return c.save()
+	if err = c.save(); err == nil {
+		c.log.Printf("Context %q deleted.\n", name)
+	}
+	return
 }
 
-func (c *Contexts) Switch(name string) error {
+func (c *Contexts) Switch(name string) (err error) {
 	if name == "-" {
 		return c.switchToPrevious()
 	}
@@ -144,16 +150,20 @@ func (c *Contexts) Switch(name string) error {
 	}
 	c.Previous = c.Active
 	c.Active = name
-	c.log.Printf("Active context is %q.\n", c.Active)
-	return c.save()
+	if err = c.save(); err == nil {
+		c.log.Printf("Active context is %q.\n", c.Active)
+	}
+	return
 }
 
-func (c *Contexts) switchToPrevious() error {
+func (c *Contexts) switchToPrevious() (err error) {
 	last := c.Previous
 	c.Previous = c.Active
 	c.Active = last
-	c.log.Printf("Active context is %q.\n", c.Active)
-	return c.save()
+	if err = c.save(); err == nil {
+		c.log.Printf("Active context is %q.\n", c.Active)
+	}
+	return
 }
 
 func (c *Contexts) save() error {

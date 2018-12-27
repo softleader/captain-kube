@@ -29,7 +29,7 @@ type ctxCmd struct {
 	ctxs   *ctx.Contexts
 }
 
-func newCtxCmd() *cobra.Command {
+func newCtxCmd(ctxs *ctx.Contexts) *cobra.Command {
 	c := ctxCmd{}
 
 	cmd := &cobra.Command{
@@ -52,11 +52,7 @@ func newCtxCmd() *cobra.Command {
 			return nil
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			loaded, err := ctx.LoadContextsFromEnv(logrus.StandardLogger())
-			if err != nil {
-				return err
-			}
-			c.ctxs = loaded
+			c.ctxs = ctxs
 			c.args = args
 			return c.run()
 		},

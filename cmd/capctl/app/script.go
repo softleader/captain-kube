@@ -5,7 +5,7 @@ import (
 	"github.com/mitchellh/go-homedir"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/captain"
-	"github.com/softleader/captain-kube/pkg/env"
+	"github.com/softleader/captain-kube/pkg/ctx"
 	"github.com/softleader/captain-kube/pkg/proto"
 	"github.com/spf13/cobra"
 	"io/ioutil"
@@ -22,16 +22,14 @@ type scriptCmd struct {
 	registry       string
 	charts         []string
 
-	registryAuthUsername string // docker registry 的帳號
-	registryAuthPassword string // docker registry 的密碼
-
-	endpoint *captain.Endpoint // captain 的 endpoint ip
+	endpoint     *ctx.Endpoint // captain 的 endpoint ip
+	registryAuth *ctx.RegistryAuth
 }
 
-func newScriptCmd() *cobra.Command {
+func newScriptCmd(activeCtx *ctx.Context) *cobra.Command {
 	c := scriptCmd{
-		registryAuthUsername: env.Lookup(captain.EnvRegistryAuthUsername, captain.DefaultRegistryAuthUsername),
-		registryAuthPassword: env.Lookup(captain.EnvRegistryAuthPassword, captain.DefaultRegistryAuthPassword),
+		endpoint:     activeCtx.Endpoint,
+		registryAuth: activeCtx.RegistryAuth,
 	}
 
 	cmd := &cobra.Command{
@@ -58,8 +56,8 @@ func newScriptCmd() *cobra.Command {
 	f.StringVarP(&c.sourceRegistry, "retag-from", "f", c.sourceRegistry, "specify the host of re-tag from, required when Sync")
 	f.StringVarP(&c.registry, "retag-to", "t", c.registry, "specify the host of re-tag to, required when Sync")
 
-	c.endpoint = captain.AddEndpointFlags(f)
-
+	c.endpoint.AddFlags(f)
+	c.registryAuth.AddFlags(f)
 	return cmd
 }
 

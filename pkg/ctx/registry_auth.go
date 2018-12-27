@@ -11,14 +11,14 @@ type RegistryAuth struct {
 	Password string // docker registry 的密碼
 }
 
-func newRegistryAuthFromEnv() (ra *RegistryAuth) {
-	ra = &RegistryAuth{}
+// 將系統 env 載入
+func (ra *RegistryAuth) ExpandEnv() {
 	ra.Username = env.Lookup(captain.EnvRegistryAuthUsername, captain.DefaultRegistryAuthUsername)
 	ra.Password = env.Lookup(captain.EnvRegistryAuthPassword, captain.DefaultRegistryAuthPassword)
-	return
 }
 
-
-func (e *RegistryAuth) AddFlags(f *pflag.FlagSet) {
+func (ra *RegistryAuth) AddFlags(f *pflag.FlagSet) {
+	f.StringVar(&ra.Username, "reg-user", ra.Username, "specify username of basic-auth for docker registry")
+	f.StringVar(&ra.Password, "reg-pass", ra.Password, "specify password of basic-auth for docker registry")
 	return
 }

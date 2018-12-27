@@ -7,7 +7,6 @@ import (
 	"github.com/softleader/captain-kube/pkg/captain"
 	"github.com/softleader/captain-kube/pkg/ctx"
 	"github.com/softleader/captain-kube/pkg/dockerd"
-	"github.com/softleader/captain-kube/pkg/env"
 	"github.com/softleader/captain-kube/pkg/proto"
 	"github.com/spf13/cobra"
 	"io/ioutil"
@@ -24,22 +23,16 @@ type installCmd struct {
 	charts         []string
 
 	registryAuth *ctx.RegistryAuth // docker registry auth
-	tiller       *ctx.Tiller       // helm tiller
+	helmTiller   *ctx.HelmTiller   // helm tiller
 	endpoint     *ctx.Endpoint     // captain 的 endpoint ip
 }
 
-func newInstallCmd() *cobra.Command {
+func newInstallCmd(activeCtx *ctx.Context) *cobra.Command {
 	c := installCmd{
-		namespace: "default",
-
-		registryAuthUsername: env.Lookup(captain.EnvRegistryAuthUsername, captain.DefaultRegistryAuthUsername),
-		registryAuthPassword: env.Lookup(captain.EnvRegistryAuthPassword, captain.DefaultRegistryAuthPassword),
-
-		tillerEndpoint:          env.Lookup(captain.EnvTillerEndpoint, ""),
-		tillerUsername:          env.Lookup(captain.EnvTillerUsername, captain.DefaultTillerUsername),
-		tillerPassword:          env.Lookup(captain.EnvTillerPassword, captain.DefaultTillerPassword),
-		tillerAccount:           env.Lookup(captain.EnvTillerAccount, captain.DefaultTillerAccount),
-		tillerSkipSslValidation: env.LookupBool(captain.EnvTillerSkipSslValidation, captain.DefaultTillerSkipSslValidation),
+		namespace:    "default",
+		endpoint:     activeCtx.Endpoint,
+		registryAuth: activeCtx.RegistryAuth,
+		helmTiller:   activeCtx.HelmTiller,
 	}
 
 	cmd := &cobra.Command{
@@ -55,8 +48,8 @@ func newInstallCmd() *cobra.Command {
 				return err
 			}
 			// apply some default value
-			if te := strings.TrimSpace(c.tillerEndpoint); len(te) == 0 {
-				c.tillerEndpoint = c.endpoint.Host
+			if te := strings.TrimSpace(c.helmTiller.Endpoint); len(te) == 0 {
+				c.helmTiller.Endpoint = c.endpoint.Host
 			}
 			return c.run()
 		},
@@ -72,16 +65,9 @@ func newInstallCmd() *cobra.Command {
 	f.StringVarP(&c.sourceRegistry, "retag-from", "f", c.sourceRegistry, "specify the host of re-tag from, required when Sync")
 	f.StringVarP(&c.registry, "retag-to", "t", c.registry, "specify the host of re-tag to, required when Sync")
 
-	f.StringVar(&c.registryAuthUsername, "reg-user", c.registryAuthUsername, "specify the registryAuthUsername, reqiured when Pull&Sync")
-	f.StringVar(&c.registryAuthPassword, "reg-pass", c.registryAuthPassword, "specify the registryAuthPassword, reqiured when Pull&Sync")
-
-	f.StringVar(&c.tillerEndpoint, "tiller", c.tillerEndpoint, "specify the endpoint of helm tiller")
-	f.StringVar(&c.tillerUsername, "tiller-user", c.tillerUsername, "specify the username of helm tiller")
-	f.StringVar(&c.tillerPassword, "tiller-pass", c.tillerPassword, "specify the password of helm tiller")
-	f.StringVar(&c.tillerAccount, "tiller-account", c.tillerAccount, "specify the account of helm tiller")
-	f.BoolVar(&c.tillerSkipSslValidation, "tiller-skip-ssl", c.tillerSkipSslValidation, "specify skip ssl validation of helm tiller")
-
-	c.endpoint = captain.AddEndpointFlags(f)
+	c.endpoint.AddFlags(f)
+	c.registryAuth.AddFlags(f)
+	c.helmTiller.AddFlags(f)
 
 	return cmd
 }
@@ -125,15 +111,15 @@ func runInstall(c *installCmd, path string) error {
 			To:   c.registry,
 		},
 		Tiller: &proto.Tiller{
-			Endpoint:          c.tillerEndpoint,
-			Username:          c.tillerUsername,
-			Password:          c.tillerPassword,
-			Account:           c.tillerAccount,
-			SkipSslValidation: c.tillerSkipSslValidation,
+			Endpoint:          c.helmTiller.Endpoint,
+			Username:          c.helmTiller.Username,
+			Password:          c.helmTiller.Password,
+			Account:           c.helmTiller.Account,
+			SkipSslValidation: c.helmTiller.SkipSslValidation,
 		},
 		RegistryAuth: &proto.RegistryAuth{
-			Username: c.registryAuthUsername,
-			Password: c.registryAuthPassword,
+			Username: c.registryAuth.Username,
+			Password: c.registryAuth.Password,
 		},
 	}
 

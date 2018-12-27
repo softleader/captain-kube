@@ -3,12 +3,13 @@ package app
 import (
 	"github.com/mattn/go-colorable"
 	"github.com/sirupsen/logrus"
+	"github.com/softleader/captain-kube/pkg/ctx"
 	"github.com/softleader/captain-kube/pkg/utils"
 	"github.com/softleader/captain-kube/pkg/version"
 	"github.com/spf13/cobra"
 )
 
-func NewRootCmd(args []string, metadata *version.BuildMetadata) *cobra.Command {
+func NewRootCmd(args []string, metadata *version.BuildMetadata) (*cobra.Command, error) {
 	cmd := &cobra.Command{
 		Use:          "capctl",
 		Short:        "the Captain-Kube command line interface",
@@ -23,18 +24,27 @@ func NewRootCmd(args []string, metadata *version.BuildMetadata) *cobra.Command {
 		},
 	}
 
+	ctxs, err := ctx.LoadContextsFromEnv(logrus.StandardLogger())
+	if err != nil {
+		return nil, err
+	}
+	activeCtx, err := ctxs.GetActive()
+	if err != nil && err != ctx.ErrNoActiveContextPresent {
+		return nil, err
+	}
+
 	flags := cmd.PersistentFlags()
 	addGlobalFlags(flags)
 
 	cmd.AddCommand(
-		newInstallCmd(),
-		newScriptCmd(),
-		newPruneCmd(),
-		newVersionCmd(metadata),
-		newCtxCmd(),
+		newInstallCmd(activeCtx),
+		newScriptCmd(activeCtx),
+		newPruneCmd(activeCtx),
+		newVersionCmd(activeCtx, metadata),
+		newCtxCmd(ctxs),
 	)
 
 	flags.Parse(args)
 
-	return cmd
+	return cmd, nil
 }

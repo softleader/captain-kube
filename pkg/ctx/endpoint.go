@@ -12,8 +12,14 @@ type Endpoint struct {
 	Port int
 }
 
-func newEndpointFromEnv() (e *Endpoint) {
-	e = &Endpoint{}
+// 將系統 env 載入
+func (e *Endpoint) ExpandEnv() {
+	return
+}
+
+func (e *Endpoint) AddFlags(f *pflag.FlagSet) {
+	f.StringVarP(&e.Host, "endpoint", "e", "", "specify the host of captain endpoint")
+	f.IntVar(&e.Port, "endpoint-port", captain.DefaultPort, "specify the port of captain endpoint")
 	return
 }
 
@@ -30,10 +36,4 @@ func (e *Endpoint) Validate() error {
 		return errors.New("endpoint is required")
 	}
 	return nil
-}
-
-func (e *Endpoint) AddFlags(f *pflag.FlagSet) {
-	f.StringVarP(&e.Host, "endpoint", "e", "", "specify the host of captain endpoint")
-	f.IntVar(&e.Port, "endpoint-port", captain.DefaultPort, "specify the port of captain endpoint")
-	return
 }

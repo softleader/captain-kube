@@ -3,15 +3,18 @@ package app
 import (
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/captain"
+	"github.com/softleader/captain-kube/pkg/ctx"
 	"github.com/spf13/cobra"
 )
 
 type pruneCmd struct {
-	endpoint *captain.Endpoint
+	endpoint *ctx.Endpoint
 }
 
-func newPruneCmd() *cobra.Command {
-	c := pruneCmd{}
+func newPruneCmd(activeCtx *ctx.Context) *cobra.Command {
+	c := pruneCmd{
+		endpoint: activeCtx.Endpoint,
+	}
 
 	cmd := &cobra.Command{
 		Use:   "prune",
@@ -26,7 +29,7 @@ func newPruneCmd() *cobra.Command {
 	}
 
 	f := cmd.Flags()
-	c.endpoint = captain.AddEndpointFlags(f)
+	c.endpoint.AddFlags(f)
 
 	return cmd
 }

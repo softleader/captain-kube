@@ -3,12 +3,13 @@ package app
 import (
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/captain"
+	"github.com/softleader/captain-kube/pkg/ctx"
 	"github.com/softleader/captain-kube/pkg/version"
 	"github.com/spf13/cobra"
 )
 
-func newVersionCmd(metadata *version.BuildMetadata) *cobra.Command {
-	var endpoint *captain.Endpoint
+func newVersionCmd(activeCtx *ctx.Context, metadata *version.BuildMetadata) *cobra.Command {
+	endpoint := activeCtx.Endpoint
 	var short bool
 	cmd := &cobra.Command{
 		Use:   "version",
@@ -27,7 +28,7 @@ func newVersionCmd(metadata *version.BuildMetadata) *cobra.Command {
 
 	f := cmd.Flags()
 	f.BoolVarP(&short, "short", "s", false, "print only the version number plus first 7 digits of the commit hash")
-	endpoint = captain.AddEndpointFlags(f)
+	endpoint.AddFlags(f)
 
 	return cmd
 }

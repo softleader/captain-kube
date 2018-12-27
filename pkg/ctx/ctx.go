@@ -5,6 +5,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"os"
@@ -25,8 +26,10 @@ for more details: https://github.com/softleader/slctl/wiki/Plugins-Guide#environ
 
 type Context struct {
 	Endpoint     *Endpoint
-	Tiller       *Tiller
+	HelmTiller   *HelmTiller
 	RegistryAuth *RegistryAuth
+	ReTag        *ReTag
+	addAllFlags  func(f *pflag.FlagSet)
 }
 
 type Contexts struct {
@@ -35,6 +38,28 @@ type Contexts struct {
 	Contexts map[string]*Context
 	Active   string // 當前
 	Previous string // 上一個
+}
+
+func newContext(expandEnv bool) (c *Context) {
+	c = &Context{
+		Endpoint:     &Endpoint{},
+		HelmTiller:   &HelmTiller{},
+		RegistryAuth: &RegistryAuth{},
+		ReTag:        &ReTag{},
+	}
+	if expandEnv {
+		c.Endpoint.ExpandEnv()
+		c.RegistryAuth.ExpandEnv()
+		c.HelmTiller.ExpandEnv()
+		c.ReTag.ExpandEnv()
+	}
+	c.addAllFlags = func(f *pflag.FlagSet) {
+		c.Endpoint.AddFlags(f)
+		c.RegistryAuth.AddFlags(f)
+		c.HelmTiller.AddFlags(f)
+		c.ReTag.AddFlags(f)
+	}
+	return
 }
 
 func LoadContextsFromEnv(log *logrus.Logger) (*Contexts, error) {
@@ -62,10 +87,7 @@ func LoadContexts(log *logrus.Logger, path string) (*Contexts, error) {
 }
 
 func (ctx *Context) MergeFromEnv() (*Context, error) {
-	envCtx := &Context{}
-	envCtx.Endpoint = newEndpointFromEnv()
-	envCtx.RegistryAuth = newRegistryAuthFromEnv()
-	envCtx.Tiller = newTillerFromEnv()
+	envCtx := newContext(true)
 	data, err := yaml.Marshal(ctx)
 	if err != nil {
 		return nil, err
@@ -75,7 +97,7 @@ func (ctx *Context) MergeFromEnv() (*Context, error) {
 
 func (c *Contexts) GetActive() (*Context, error) {
 	if c.Active == "" {
-		return nil, ErrNoActiveContextPresent
+		return newContext(false), ErrNoActiveContextPresent
 	}
 	if ctx, found := c.Contexts[c.Active]; !found {
 		return nil, fmt.Errorf("no active context exists with name %q", c.Active)
@@ -90,8 +112,8 @@ func (c *Contexts) Add(name string, args []string) error {
 	}
 	cmd := &cobra.Command{}
 	f := cmd.Flags()
-	ctx := &Context{}
-	addFlags(ctx, f)
+	ctx := newContext(false)
+	ctx.addAllFlags(f)
 	c.Contexts[name] = ctx
 	cmd.ParseFlags(args)
 	return c.save()

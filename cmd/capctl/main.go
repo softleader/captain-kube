@@ -14,8 +14,12 @@ var (
 
 func main() {
 	metadata := ver.NewBuildMetadata(version, commit, date)
-	command := app.NewRootCmd(os.Args[1:], metadata)
-	if err := command.Execute(); err != nil {
-		os.Exit(1)
+	if command, err := app.NewRootCmd(os.Args[1:], metadata); err != nil {
+		panic(err)
+	} else {
+		if err := command.Execute(); err != nil {
+			os.Exit(1)
+		}
 	}
+
 }

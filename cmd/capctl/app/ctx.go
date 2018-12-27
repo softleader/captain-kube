@@ -83,7 +83,7 @@ func (c *ctxCmd) run() error {
 	}
 
 	table := uitable.New()
-	table.AddRow("", "CONTEXT", "ARGS")
+	table.AddRow("CONTEXT", "ARGS")
 	table.MaxColWidth = c.width
 	for name, ctx := range c.ctxs.Contexts {
 		prefix := " "
@@ -96,7 +96,7 @@ func (c *ctxCmd) run() error {
 		if err != nil {
 			return err
 		}
-		table.AddRow(prefix, name, fmt.Sprintf("%+v", string(args)))
+		table.AddRow(fmt.Sprintf("%s %s", prefix, name), fmt.Sprintf("%+v", string(args)))
 	}
 	logrus.Println(table)
 	return nil

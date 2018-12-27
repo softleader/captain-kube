@@ -1,19 +1,19 @@
 DIST := $(CURDIR)/_dist
 BUILD := $(CURDIR)/_build
 REGISTRY := softleader
-BINARY = ui
+BINARY = cap-ui
 
 .PHONY: build
 build:
-	mkdir -p $(BUILD)
+	mkdir $(BUILD)
 	go build -o $(BUILD)/$(BINARY) ./cmd/$(BINARY)
 
 .PHONY: dist
 dist:
-	mkdir -p $(DIST)
+	mkdir "$(DIST)"
 	cp ./cmd/$(BINARY)/Dockerfile $(DIST)
-	cp ./templates $(DIST)
-	cp ./configs $(DIST)
-	cp ./static $(DIST)
+	cp -r ./templates $(DIST)
+	cp -r ./static $(DIST)
+	cp ./cmd/$(BINARY)/docker-compose.yml $(DIST)
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o $(DIST)/$(BINARY) -a -tags netgo ./cmd/$(BINARY)
 	docker build -t $(REGISTRY)/$(BINARY) $(DIST) && docker push $(REGISTRY)/$(BINARY)

@@ -1,6 +1,7 @@
 package captain
 
 const (
+	EnvEndpoint      = "CAPTAIN_ENDPOINT"
 	EnvPort          = "CAPTAIN_PORT"
 	EnvK8sVendor     = "CAPTAIN_K8S_VENDOR"
 	DefaultPort      = 30051

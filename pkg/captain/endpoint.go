@@ -32,3 +32,8 @@ func AddEndpointFlags(f *pflag.FlagSet) (e *Endpoint) {
 	f.IntVar(&e.Port, "endpoint-port", DefaultPort, "specify the port of captain endpoint")
 	return
 }
+func AddEndpointFlagsWithDefault(f *pflag.FlagSet, e *Endpoint) *Endpoint {
+	f.StringVarP(&e.Host, "endpoint", "e", e.Host, "specify the host of captain endpoint")
+	f.IntVar(&e.Port, "endpoint-port", e.Port, "specify the port of captain endpoint")
+	return e
+}

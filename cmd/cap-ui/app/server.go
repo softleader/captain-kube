@@ -64,6 +64,11 @@ func NewCapUiCommand() (cmd *cobra.Command) {
 			Account:           env.Lookup(captain.EnvTillerAccount, captain.DefaultTillerAccount),
 			SkipSslValidation: env.LookupBool(captain.EnvTillerSkipSslValidation, captain.DefaultTillerSkipSslValidation),
 		},
+
+		Endpoint: &captain.Endpoint{
+			Host: env.Lookup(captain.EnvEndpoint, ""),
+			Port: env.LookupInt(captain.EnvPort, captain.DefaultPort),
+		},
 	}
 
 	cmd = &cobra.Command{
@@ -102,7 +107,7 @@ func NewCapUiCommand() (cmd *cobra.Command) {
 	f.StringVar(&c.Tiller.Account, "tiller-account", c.Tiller.Account, "specify the account of helm tiller")
 	f.BoolVar(&c.Tiller.SkipSslValidation, "tiller-skip-ssl", c.Tiller.SkipSslValidation, "specify skip ssl validation of helm tiller")
 
-	c.Endpoint = captain.AddEndpointFlags(f)
+	c.Endpoint = captain.AddEndpointFlagsWithDefault(f, c.Endpoint)
 
 	return
 }

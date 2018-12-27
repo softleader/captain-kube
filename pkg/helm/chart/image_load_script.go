@@ -33,7 +33,7 @@ func (t *Templates) GenerateLoadScript() ([]byte, error) {
 	data["tpls"] = t
 	var buf bytes.Buffer
 	if err := loadTemplate.Execute(&buf, data); err != nil {
-		return nil, nil
+		return nil, err
 	}
 	return buf.Bytes(), nil
 }

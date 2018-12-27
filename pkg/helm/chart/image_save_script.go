@@ -2,6 +2,7 @@ package chart
 
 import (
 	"bytes"
+	"strings"
 	"text/template"
 )
 
@@ -19,21 +20,25 @@ const saveScript = `
 # no images found in source
 {{- else -}}
 {{- range $key, $image := $images }}
-docker save -o ./{{ $image.Name }}.tar {{ $image.String }}
+docker save -o ./{{ replace $image.Name ":" "_" -1 }}.tar {{ $image.String }}
 {{- end -}}
 {{- end -}}
 {{- end -}}
 {{- end -}}
 `
 
-var saveTemplate = template.Must(template.New("").Parse(saveScript))
+var saveFuncMap = template.FuncMap{
+	"replace": strings.Replace,
+}
+
+var saveTemplate = template.Must(template.New("").Funcs(saveFuncMap).Parse(saveScript))
 
 func (t *Templates) GenerateSaveScript() ([]byte, error) {
 	data := make(map[string]interface{})
 	data["tpls"] = t
 	var buf bytes.Buffer
 	if err := saveTemplate.Execute(&buf, data); err != nil {
-		return nil, nil
+		return nil, err
 	}
 	return buf.Bytes(), nil
 }

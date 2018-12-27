@@ -44,7 +44,7 @@ func (t *Templates) GenerateReTagScript(from, to string) ([]byte, error) {
 	data["tpls"] = retags
 	var buf bytes.Buffer
 	if err := retagTemplate.Execute(&buf, data); err != nil {
-		return nil, nil
+		return nil, err
 	}
 	return buf.Bytes(), nil
 }

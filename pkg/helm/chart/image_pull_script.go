@@ -33,7 +33,7 @@ func (t *Templates) GeneratePullScript() ([]byte, error) {
 	data["tpls"] = t
 	var buf bytes.Buffer
 	if err := pullTemplate.Execute(&buf, data); err != nil {
-		return nil, nil
+		return nil, err
 	}
 	return buf.Bytes(), nil
 }

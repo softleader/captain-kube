@@ -37,6 +37,9 @@ func newCtxCmd(ctxs *ctx.Contexts) *cobra.Command {
 		Short: "switch between Captain-Kubes back and forth",
 		Long:  ctxHelp,
 		Args: func(cmd *cobra.Command, args []string) error {
+			if ctxs == ctx.PlainContexts {
+				return ctx.ErrMountEnvNotExist
+			}
 			if len(c.add) > 0 && len(c.delete) > 0 {
 				return fmt.Errorf("can not add and delete at the same time")
 			}

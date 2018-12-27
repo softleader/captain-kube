@@ -15,13 +15,12 @@ import (
 )
 
 type installCmd struct {
-	pull           bool
-	sync           bool
-	namespace      string
-	sourceRegistry string
-	registry       string
-	charts         []string
+	pull      bool
+	sync      bool
+	namespace string
+	charts    []string
 
+	retag        *ctx.ReTag
 	registryAuth *ctx.RegistryAuth // docker registry auth
 	helmTiller   *ctx.HelmTiller   // helm tiller
 	endpoint     *ctx.Endpoint     // captain 的 endpoint ip
@@ -30,6 +29,7 @@ type installCmd struct {
 func newInstallCmd(activeCtx *ctx.Context) *cobra.Command {
 	c := installCmd{
 		namespace:    "default",
+		retag:        activeCtx.ReTag,
 		endpoint:     activeCtx.Endpoint,
 		registryAuth: activeCtx.RegistryAuth,
 		helmTiller:   activeCtx.HelmTiller,
@@ -62,9 +62,7 @@ func newInstallCmd(activeCtx *ctx.Context) *cobra.Command {
 
 	f.StringVarP(&c.namespace, "namespace", "n", c.namespace, "specify the namespace of gcp, not available now")
 
-	f.StringVarP(&c.sourceRegistry, "retag-from", "f", c.sourceRegistry, "specify the host of re-tag from, required when Sync")
-	f.StringVarP(&c.registry, "retag-to", "t", c.registry, "specify the host of re-tag to, required when Sync")
-
+	c.retag.AddFlags(f)
 	c.endpoint.AddFlags(f)
 	c.registryAuth.AddFlags(f)
 	c.helmTiller.AddFlags(f)
@@ -107,8 +105,8 @@ func runInstall(c *installCmd, path string) error {
 		Pull: c.pull,
 		Sync: c.sync,
 		Retag: &proto.ReTag{
-			From: c.sourceRegistry,
-			To:   c.registry,
+			From: c.retag.From,
+			To:   c.retag.To,
 		},
 		Tiller: &proto.Tiller{
 			Endpoint:          c.helmTiller.Endpoint,

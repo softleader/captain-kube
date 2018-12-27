@@ -26,7 +26,10 @@ func NewRootCmd(args []string, metadata *version.BuildMetadata) (*cobra.Command,
 
 	ctxs, err := ctx.LoadContextsFromEnv(logrus.StandardLogger())
 	if err != nil {
-		return nil, err
+		if err != ctx.ErrMountEnvNotExist {
+			return nil, err
+		}
+		ctxs = ctx.PlainContexts
 	}
 	activeCtx, err := ctxs.GetActive()
 	if err != nil && err != ctx.ErrNoActiveContextPresent {

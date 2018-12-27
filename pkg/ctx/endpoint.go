@@ -16,12 +16,13 @@ type Endpoint struct {
 // 將系統 env 載入
 func (e *Endpoint) ExpandEnv() {
 	e.Host = env.Lookup(captain.EnvEndpoint, "")
+	e.Port = env.LookupInt(captain.EnvPort, captain.DefaultPort)
 	return
 }
 
 func (e *Endpoint) AddFlags(f *pflag.FlagSet) {
-	f.StringVarP(&e.Host, "endpoint", "e", "", "specify the host of captain endpoint")
-	f.IntVar(&e.Port, "endpoint-port", captain.DefaultPort, "specify the port of captain endpoint")
+	f.StringVarP(&e.Host, "endpoint", "e", e.Host, "specify the host of captain endpoint")
+	f.IntVar(&e.Port, "endpoint-port", e.Port, "specify the port of captain endpoint")
 	return
 }
 

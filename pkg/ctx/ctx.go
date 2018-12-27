@@ -24,6 +24,8 @@ for more details: https://github.com/softleader/slctl/wiki/Plugins-Guide#environ
 	ErrNoActiveContextPresent = errors.New("no active context present") // 代表當前沒有 active 的 context
 )
 
+var PlainContexts = new(Contexts)
+
 type Context struct {
 	Endpoint     *Endpoint
 	HelmTiller   *HelmTiller
@@ -97,7 +99,7 @@ func (ctx *Context) MergeFromEnv() (*Context, error) {
 
 func (c *Contexts) GetActive() (*Context, error) {
 	if c.Active == "" {
-		return newContext(false), ErrNoActiveContextPresent
+		return newContext(true), ErrNoActiveContextPresent
 	}
 	if ctx, found := c.Contexts[c.Active]; !found {
 		return nil, fmt.Errorf("no active context exists with name %q", c.Active)
@@ -152,6 +154,9 @@ func (c *Contexts) switchToPrevious() error {
 }
 
 func (c *Contexts) save() error {
+	if c == PlainContexts {
+		return errors.New("plain contexts is not able to save")
+	}
 	data, err := yaml.Marshal(c)
 	if err != nil {
 		return err

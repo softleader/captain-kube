@@ -7,18 +7,18 @@ import (
 )
 
 type ReTag struct {
-	from string
-	to   string
+	From string
+	To   string
 }
 
 // 將系統 env 載入
 func (rt *ReTag) ExpandEnv() {
-	rt.from = env.Lookup(capui.EnvReTagFrom, capui.DefaultReTagFrom)
-	rt.to = env.Lookup(capui.EnvReTagTo, capui.DefaultReTagTo)
+	rt.From = env.Lookup(capui.EnvReTagFrom, capui.DefaultReTagFrom)
+	rt.To = env.Lookup(capui.EnvReTagTo, capui.DefaultReTagTo)
 }
 
 func (rt *ReTag) AddFlags(f *pflag.FlagSet) {
-	f.StringVarP(&rt.from, "retag-from", "f", rt.from, "specify re-tagging image host from")
-	f.StringVarP(&rt.to, "retag-to", "t", rt.to, "specify re-tagging image host to")
+	f.StringVarP(&rt.From, "retag-from", "f", rt.From, "specify re-tagging image host from")
+	f.StringVarP(&rt.To, "retag-to", "t", rt.To, "specify re-tagging image host to")
 	return
 }

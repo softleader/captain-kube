@@ -65,8 +65,7 @@ func (s *Script) Generate(c *gin.Context) {
 	// diff validate
 	var buf *bytes.Buffer
 	var scripts []string
-	diffMode := strutil.Contains(form.Tags, "d")
-	if diffMode {
+	if strutil.Contains(form.Tags, "d") {
 		if len(files) != 2 {
 			log.Errorln("diff mode must have two files")
 			logrus.Errorln("diff mode must have two files")
@@ -90,6 +89,7 @@ func (s *Script) Generate(c *gin.Context) {
 		log.Println("#")
 		log.Println("#")
 
+		// 如果buf裡面有存東西，則append到暫存裡面
 		if buf != nil {
 			scripts = append(scripts, buf.String())
 			buf.Reset()
@@ -97,8 +97,8 @@ func (s *Script) Generate(c *gin.Context) {
 	}
 
 	if len(scripts) == 2 {
-		log.Println("### Diffs: ###")
 		log.SetOutput(&sseWriter)
+		log.Println("### Diffs: ###")
 		lines := strutil.DiffNewLines(scripts[0], scripts[1])
 		log.Println(strings.Join(lines, "\n"))
 	}

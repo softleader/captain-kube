@@ -1,15 +1,19 @@
 package app
 
 import (
+	"bytes"
 	"errors"
 	"github.com/mitchellh/go-homedir"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/captain"
 	"github.com/softleader/captain-kube/pkg/ctx"
 	"github.com/softleader/captain-kube/pkg/proto"
+	"github.com/softleader/captain-kube/pkg/utils"
+	"github.com/softleader/captain-kube/pkg/utils/strutil"
 	"github.com/spf13/cobra"
 	"io/ioutil"
 	"path/filepath"
+	"strings"
 )
 
 type scriptCmd struct {
@@ -17,6 +21,7 @@ type scriptCmd struct {
 	retag bool
 	save  bool
 	load  bool
+	diff  bool
 
 	sourceRegistry string
 	registry       string
@@ -52,6 +57,7 @@ func newScriptCmd(activeCtx *ctx.Context) *cobra.Command {
 	f.BoolVarP(&c.retag, "retag", "r", c.retag, "retag images in Chart")
 	f.BoolVarP(&c.save, "save", "s", c.save, "save images in Chart")
 	f.BoolVarP(&c.load, "load", "l", c.load, "load images in Chart")
+	f.BoolVarP(&c.diff, "diff", "d", c.diff, "show diff of two charts")
 
 	f.StringVarP(&c.sourceRegistry, "retag-from", "f", c.sourceRegistry, "specify the host of re-tag from, required when Sync")
 	f.StringVarP(&c.registry, "retag-to", "t", c.registry, "specify the host of re-tag to, required when Sync")
@@ -62,16 +68,48 @@ func newScriptCmd(activeCtx *ctx.Context) *cobra.Command {
 }
 
 func (c *scriptCmd) run() error {
+
+	var buf *bytes.Buffer
+	var scripts []string
+	var log *logrus.Logger
+	if c.diff {
+		if len(c.charts) != 2 {
+			return errors.New("diff mode must have two files")
+		} else {
+			log = logrus.New() // 這個是這次請求要往前吐的 log
+			buf = &bytes.Buffer{}
+			//log.SetOutput(io.MultiWriter(&sseWriter, buf))
+			log.SetOutput(buf)
+			log.SetFormatter(&utils.PlainFormatter{})
+		}
+	} else {
+		log = logrus.StandardLogger()
+	}
+
 	for _, chart := range c.charts {
 		logrus.Println("### chart:", chart, "###")
-		if err := runScript(c, chart); err != nil {
+		if err := runScript(log, c, chart); err != nil {
 			return err
 		}
+
+		// 如果buf裡面有存東西，則append到暫存裡面
+		if buf != nil {
+			scripts = append(scripts, buf.String())
+			buf.Reset()
+		}
 	}
+
+	// 如果暫存結果有存在，則進行差異比較
+	if len(scripts) == 2 {
+		logrus.Println("### Diffs: ###")
+		lines := strutil.DiffNewLines(scripts[0], scripts[1])
+		logrus.Println(strings.Join(lines, "\n"))
+	}
+
 	return nil
 }
 
-func runScript(c *scriptCmd, path string) error {
+func runScript(log *logrus.Logger, c *scriptCmd, path string) error {
 	if expanded, err := homedir.Expand(path); err != nil {
 		path = expanded
 	}
@@ -99,7 +137,7 @@ func runScript(c *scriptCmd, path string) error {
 		Load: c.load,
 	}
 
-	if err := captain.GenerateScript(logrus.StandardLogger(), c.endpoint.String(), &request, settings.timeout); err != nil {
+	if err := captain.GenerateScript(log, c.endpoint.String(), &request, settings.timeout); err != nil {
 		return err
 	}
 

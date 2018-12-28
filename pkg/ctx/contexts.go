@@ -1,12 +1,10 @@
 package ctx
 
 import (
+	"errors"
 	"fmt"
-	"github.com/imdario/mergo"
-	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"github.com/spf13/pflag"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"os"
@@ -24,18 +22,8 @@ It looks like you are running the command outside slctl (https://github.com/soft
 For more details: https://github.com/softleader/slctl/wiki/Plugins-Guide#mount-volume
 `)
 	ErrNoActiveContextPresent = errors.New("no active context present") // 代表當前沒有 active 的 context
+	PlainContexts             = new(Contexts)
 )
-
-var PlainContexts = new(Contexts)
-
-type Context struct {
-	Endpoint     *Endpoint
-	HelmTiller   *HelmTiller
-	RegistryAuth *RegistryAuth
-	ReTag        *ReTag
-	addAllFlags  func(f *pflag.FlagSet)
-	clone        func() *Context
-}
 
 type Contexts struct {
 	log      *logrus.Logger
@@ -43,32 +31,6 @@ type Contexts struct {
 	Contexts map[string]*Context
 	Active   string // 當前
 	Previous string // 上一個
-}
-
-func NewContextFromEnv() (c *Context) {
-	return newContext(true)
-}
-
-func newContext(expandEnv bool) (c *Context) {
-	c = &Context{
-		Endpoint:     &Endpoint{},
-		HelmTiller:   &HelmTiller{},
-		RegistryAuth: &RegistryAuth{},
-		ReTag:        &ReTag{},
-	}
-	if expandEnv {
-		c.Endpoint.ExpandEnv()
-		c.RegistryAuth.ExpandEnv()
-		c.HelmTiller.ExpandEnv()
-		c.ReTag.ExpandEnv()
-	}
-	c.addAllFlags = func(f *pflag.FlagSet) {
-		c.Endpoint.AddFlags(f)
-		c.RegistryAuth.AddFlags(f)
-		c.HelmTiller.AddFlags(f)
-		c.ReTag.AddFlags(f)
-	}
-	return
 }
 
 func LoadContextsFromEnv(log *logrus.Logger) (*Contexts, error) {
@@ -95,11 +57,6 @@ func LoadContexts(log *logrus.Logger, path string) (*Contexts, error) {
 	return ctx, yaml.Unmarshal(data, ctx)
 }
 
-func (ctx *Context) expandEnv() error {
-	defaultCtx := newContext(true)
-	return mergo.Merge(ctx, defaultCtx)
-}
-
 func (c *Contexts) GetActiveExpandEnv() (*Context, error) {
 	if c.Active == "" {
 		return nil, ErrNoActiveContextPresent
@@ -117,8 +74,8 @@ func (c *Contexts) Add(name string, args []string) (err error) {
 	}
 	cmd := &cobra.Command{}
 	f := cmd.Flags()
-	ctx := newContext(false)
-	ctx.addAllFlags(f)
+	ctx := newContext()
+	addFlags(ctx, f)
 	c.Contexts[name] = ctx
 	cmd.ParseFlags(args)
 	if err = c.save(); err == nil {

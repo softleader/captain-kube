@@ -11,10 +11,12 @@ type ReTag struct {
 	To   string
 }
 
-// 將系統 env 載入
-func (rt *ReTag) ExpandEnv() {
-	rt.From = env.Lookup(capui.EnvReTagFrom, capui.DefaultReTagFrom)
-	rt.To = env.Lookup(capui.EnvReTagTo, capui.DefaultReTagTo)
+func newReTagFromEnv() (rt *ReTag) {
+	rt = &ReTag{
+		From: env.Lookup(capui.EnvReTagFrom, capui.DefaultReTagFrom),
+		To:   env.Lookup(capui.EnvReTagTo, capui.DefaultReTagTo),
+	}
+	return
 }
 
 func (rt *ReTag) AddFlags(f *pflag.FlagSet) {

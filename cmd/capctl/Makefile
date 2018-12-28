@@ -28,8 +28,8 @@ endif
 	tar -C $(DIST) -zcvf $(DIST)/$(BINARY)-linux-$(VERSION).tgz $(BINARY) metadata.yaml README.md LICENSE
 	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -o $(DIST)/$(BINARY) -a -tags netgo ./cmd/$(BINARY)
 	tar -C $(DIST) -zcvf $(DIST)/$(BINARY)-darwin-$(VERSION).tgz $(BINARY) metadata.yaml README.md LICENSE
-	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -o $(DIST)/$(BINARY) -a -tags netgo ./cmd/$(BINARY)
-	tar -C $(DIST) -zcvf $(DIST)/$(BINARY)-windows-$(VERSION).tgz $(BINARY) metadata.yaml README.md LICENSE
+	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -o $(DIST)/$(BINARY).exe -a -tags netgo ./cmd/$(BINARY)
+	tar -C $(DIST) -zcvf $(DIST)/$(BINARY)-windows-$(VERSION).tgz $(BINARY).exe metadata.yaml README.md LICENSE
 
 .PHONY: clean
 clean:

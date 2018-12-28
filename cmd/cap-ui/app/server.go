@@ -27,23 +27,18 @@ type DefaultValue struct {
 
 func NewCapUiCommand() (cmd *cobra.Command) {
 	var verbose bool
-
+	envCtx := ctx.NewContextFromEnv()
 	c := capUiCmd{
 		DefaultValue: DefaultValue{
 			Plaform:   env.Lookup(capui.EnvPlaform, capui.DefaultPlaform),
 			Namespace: env.Lookup(capui.EnvNamespace, capui.DefaultNamespace),
-			ReTag:     &ctx.ReTag{},
+			ReTag:     envCtx.ReTag,
 		},
 
-		RegistryAuth: &ctx.RegistryAuth{},
-		Tiller:       &ctx.HelmTiller{},
-		Endpoint:     &ctx.Endpoint{},
+		RegistryAuth: envCtx.RegistryAuth,
+		Tiller:       envCtx.HelmTiller,
+		Endpoint:     envCtx.Endpoint,
 	}
-
-	c.DefaultValue.ReTag.ExpandEnv()
-	c.RegistryAuth.ExpandEnv()
-	c.Tiller.ExpandEnv()
-	c.Endpoint.ExpandEnv()
 
 	cmd = &cobra.Command{
 		Use:  "capui",

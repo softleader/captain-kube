@@ -15,7 +15,13 @@ func (s *CaptainServer) Version(req *proto.VersionRequest, stream proto.Captain_
 		})
 	})
 
-	out.Write([]byte(fmt.Sprintln("Captain: " + s.Metadata.String(req.GetShort()))))
+	var v string
+	if req.GetLong() {
+		v = s.Metadata.LongString()
+	} else {
+		v = s.Metadata.String()
+	}
+	out.Write([]byte(fmt.Sprintln("Captain: " + v)))
 
 	endpoints, err := s.lookupCaplet(logrus.StandardLogger(), req.GetColor())
 	if err != nil {
@@ -23,7 +29,7 @@ func (s *CaptainServer) Version(req *proto.VersionRequest, stream proto.Captain_
 	}
 
 	endpoints.Each(func(e *caplet.Endpoint) {
-		if r, err := e.Version(req.GetShort(), req.GetTimeout()); err != nil {
+		if r, err := e.Version(req.GetLong(), req.GetTimeout()); err != nil {
 			out.Write([]byte(err.Error()))
 		} else {
 			msg := fmt.Sprintln("Caplet " + r.GetHostname() + ": " + r.GetVersion())

@@ -5,9 +5,14 @@ import (
 	"github.com/softleader/captain-kube/pkg/proto"
 )
 
-func (s *CapletServer) Version(ctx context.Context, req *proto.VersionRequest) (*proto.VersionResponse, error) {
-	return &proto.VersionResponse{
+func (s *CapletServer) Version(ctx context.Context, req *proto.VersionRequest) (resp *proto.VersionResponse, err error) {
+	resp = &proto.VersionResponse{
 		Hostname: s.hostname,
-		Version:  s.metadata.String(req.GetShort()),
-	}, nil
+	}
+	if req.GetLong() {
+		resp.Version = s.metadata.LongString()
+	} else {
+		resp.Version = s.metadata.String()
+	}
+	return
 }

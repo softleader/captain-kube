@@ -8,7 +8,7 @@ import (
 	"google.golang.org/grpc"
 )
 
-func (e *Endpoint) Version(short bool, timeout int64) (*proto.VersionResponse, error) {
+func (e *Endpoint) Version(long bool, timeout int64) (*proto.VersionResponse, error) {
 	conn, err := grpc.Dial(e.String(), grpc.WithInsecure())
 	if err != nil {
 		return nil, fmt.Errorf("[%s] did not connect: %v", e.Target, err)
@@ -18,6 +18,6 @@ func (e *Endpoint) Version(short bool, timeout int64) (*proto.VersionResponse, e
 	ctx, cancel := context.WithTimeout(context.Background(), dur.Deadline(timeout))
 	defer cancel()
 	return c.Version(ctx, &proto.VersionRequest{
-		Short: short,
+		Long: long,
 	})
 }

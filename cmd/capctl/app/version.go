@@ -10,7 +10,7 @@ import (
 
 func newVersionCmd(activeCtx *ctx.Context, metadata *version.BuildMetadata) *cobra.Command {
 	endpoint := activeCtx.Endpoint
-	var long bool
+	var full bool
 	cmd := &cobra.Command{
 		Use:   "version",
 		Short: "print capctl, captain, and caplet version",
@@ -18,7 +18,7 @@ func newVersionCmd(activeCtx *ctx.Context, metadata *version.BuildMetadata) *cob
 		RunE: func(cmd *cobra.Command, args []string) error {
 			logrus.Infoln(metadata.String())
 			if endpoint.Specified() {
-				if err := captain.Version(logrus.StandardLogger(), endpoint.String(), long, settings.color, settings.timeout); err != nil {
+				if err := captain.Version(logrus.StandardLogger(), endpoint.String(), full, settings.color, settings.timeout); err != nil {
 					return err
 				}
 			}
@@ -27,7 +27,7 @@ func newVersionCmd(activeCtx *ctx.Context, metadata *version.BuildMetadata) *cob
 	}
 
 	f := cmd.Flags()
-	f.BoolVar(&long, "long", false, "print long version number and commit hash")
+	f.BoolVar(&full, "full", false, "print full version number and commit hash")
 	endpoint.AddFlags(f)
 
 	return cmd

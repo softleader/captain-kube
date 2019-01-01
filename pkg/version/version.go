@@ -33,6 +33,6 @@ func (b *BuildMetadata) String() string {
 	return fmt.Sprintf("%s+%s", b.GitVersion, b.GitCommit[:7])
 }
 
-func (b *BuildMetadata) LongString() string {
+func (b *BuildMetadata) FullString() string {
 	return fmt.Sprintf("%#v", b)
 }

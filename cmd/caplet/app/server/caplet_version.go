@@ -9,8 +9,8 @@ func (s *CapletServer) Version(ctx context.Context, req *proto.VersionRequest) (
 	resp = &proto.VersionResponse{
 		Hostname: s.hostname,
 	}
-	if req.GetLong() {
-		resp.Version = s.metadata.LongString()
+	if req.GetFull() {
+		resp.Version = s.metadata.FullString()
 	} else {
 		resp.Version = s.metadata.String()
 	}

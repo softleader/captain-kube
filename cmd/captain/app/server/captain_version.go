@@ -16,8 +16,8 @@ func (s *CaptainServer) Version(req *proto.VersionRequest, stream proto.Captain_
 	})
 
 	var v string
-	if req.GetLong() {
-		v = s.Metadata.LongString()
+	if req.GetFull() {
+		v = s.Metadata.FullString()
 	} else {
 		v = s.Metadata.String()
 	}
@@ -29,7 +29,7 @@ func (s *CaptainServer) Version(req *proto.VersionRequest, stream proto.Captain_
 	}
 
 	endpoints.Each(func(e *caplet.Endpoint) {
-		if r, err := e.Version(req.GetLong(), req.GetTimeout()); err != nil {
+		if r, err := e.Version(req.GetFull(), req.GetTimeout()); err != nil {
 			out.Write([]byte(err.Error()))
 		} else {
 			msg := fmt.Sprintln("Caplet " + r.GetHostname() + ": " + r.GetVersion())

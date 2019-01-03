@@ -2,6 +2,7 @@ package ctx
 
 import (
 	"github.com/imdario/mergo"
+	"github.com/spf13/cobra"
 )
 
 type Context struct {
@@ -19,6 +20,14 @@ func NewContextFromEnv() (c *Context) {
 		ReTag:        newReTagFromEnv(),
 	}
 	return
+}
+
+func newContextFromArgs(args []string) (*Context, error) {
+	cmd := &cobra.Command{}
+	f := cmd.Flags()
+	ctx := newContext()
+	addFlags(ctx, f)
+	return ctx, cmd.ParseFlags(args)
 }
 
 func newContext() (c *Context) {

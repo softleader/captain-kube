@@ -1,11 +1,10 @@
 package ctx
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/sirupsen/logrus"
-	"github.com/spf13/cobra"
-	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -30,7 +29,7 @@ For more details: https://github.com/softleader/slctl/wiki/Plugins-Guide#mount-v
 type Contexts struct {
 	log      *logrus.Logger
 	path     string
-	Contexts map[string]*Context
+	Contexts map[string][]string
 	Active   string // 當前
 	Previous string // 上一個
 }
@@ -53,40 +52,44 @@ func LoadContexts(log *logrus.Logger, path string) (*Contexts, error) {
 	if err != nil && !os.IsNotExist(err) {
 		return nil, err
 	} else if os.IsNotExist(err) {
-		ctx.Contexts = make(map[string]*Context)
+		ctx.Contexts = make(map[string][]string)
 		return ctx, nil
 	}
-	return ctx, yaml.Unmarshal(data, ctx)
+	return ctx, json.Unmarshal(data, ctx)
 }
 
 func (c *Contexts) GetActiveExpandEnv() (*Context, error) {
 	if c.Active == "" {
 		return nil, ErrNoActiveContextPresent
 	}
-	if ctx, found := c.Contexts[c.Active]; !found {
+	if args, found := c.Contexts[c.Active]; !found {
 		return nil, fmt.Errorf("no active context exists with name %q", c.Active)
 	} else {
+		ctx, err := newContextFromArgs(args)
+		if err != nil {
+			return nil, err
+		}
 		return ctx, ctx.expandEnv()
 	}
 }
 
-func (c *Contexts) Add(name string, args []string) (err error) {
+func (c *Contexts) Add(name string, args []string) error {
 	if contextNameRegexp.MatchString(name) {
 		return fmt.Errorf("context name can not match: %s", contextNameRegexp.String())
 	}
 	if _, found := c.Contexts[name]; found {
 		return fmt.Errorf("context %q already exists", name)
 	}
-	cmd := &cobra.Command{}
-	f := cmd.Flags()
-	ctx := newContext()
-	addFlags(ctx, f)
-	c.Contexts[name] = ctx
-	cmd.ParseFlags(args)
-	if err = c.save(); err == nil {
-		c.log.Printf("Context %q added.\n", name)
+	// make sure every args is fine
+	if _, err := newContextFromArgs(args); err != nil {
+		return err
 	}
-	return
+	c.Contexts[name] = args
+	if err := c.save(); err != nil {
+		return err
+	}
+	c.log.Printf("Context %q added.\n", name)
+	return nil
 }
 
 func (c *Contexts) Delete(names ...string) (err error) {
@@ -149,7 +152,7 @@ func (c *Contexts) save() error {
 	if c == PlainContexts {
 		return errors.New("plain contexts is not able to save")
 	}
-	data, err := yaml.Marshal(c)
+	data, err := json.Marshal(c)
 	if err != nil {
 		return err
 	}

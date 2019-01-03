@@ -1,7 +1,6 @@
 package app
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/gosuri/uitable"
 	"github.com/manifoldco/promptui"
@@ -91,18 +90,14 @@ func (c *ctxCmd) run() error {
 		table := uitable.New()
 		table.AddRow("CONTEXT", "ARGS")
 		table.MaxColWidth = c.width
-		for name, ctx := range c.ctxs.Contexts {
+		for name, args := range c.ctxs.Contexts {
 			prefix := " "
 			if name == c.ctxs.Active {
 				prefix = ">"
 			} else if name == c.ctxs.Previous {
 				prefix = "-"
 			}
-			args, err := json.Marshal(ctx)
-			if err != nil {
-				return err
-			}
-			table.AddRow(fmt.Sprintf("%s %s", prefix, name), fmt.Sprintf("%+v", string(args)))
+			table.AddRow(fmt.Sprintf("%s %s", prefix, name), strings.Join(args, " "))
 		}
 		logrus.Println(table)
 		return nil

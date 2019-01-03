@@ -28,7 +28,7 @@ func (i *icpDeleter) Delete(log *logrus.Logger) error {
 }
 
 func deleteHelmChart(log *logrus.Logger, endpoint, chartName, chartVersion string) error {
-	args := []string{"pr", "load-helm-chart", "--clustername", endpoint, "--name", chartName}
+	args := []string{"pr", "delete-helm-chart", "--clustername", endpoint, "--name", chartName}
 	if len(chartVersion) > 0 {
 		args = append(args, "--version", chartVersion)
 	}

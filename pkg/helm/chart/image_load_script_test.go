@@ -2,6 +2,7 @@ package chart
 
 import (
 	"github.com/sirupsen/logrus"
+	"github.com/softleader/captain-kube/pkg/utils/command"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -10,6 +11,11 @@ import (
 )
 
 func TestTemplates_GenerateLoadScript(t *testing.T) {
+	helm := "helm"
+	if !command.IsAvailable(helm) {
+		t.Skipf("%q command does not exist", helm)
+	}
+
 	log := logrus.New()
 	log.SetOutput(os.Stdout)
 
@@ -19,13 +25,13 @@ func TestTemplates_GenerateLoadScript(t *testing.T) {
 	}
 	defer os.RemoveAll(path)
 
-	cmd := exec.Command("helm", "create", "foo")
+	cmd := exec.Command(helm, "create", "foo")
 	cmd.Dir = path
 	if err := cmd.Run(); err != nil {
 		t.Error(err)
 	}
 
-	cmd = exec.Command("helm", "package", "foo")
+	cmd = exec.Command(helm, "package", "foo")
 	cmd.Dir = path
 	if err := cmd.Run(); err != nil {
 		t.Error(err)

@@ -5,7 +5,7 @@ import (
 	"github.com/softleader/captain-kube/pkg/dur"
 	"github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/utils"
-	"github.com/softleader/captain-kube/pkg/utils/cmd"
+	"github.com/softleader/captain-kube/pkg/utils/command"
 	"github.com/softleader/captain-kube/pkg/utils/tcp"
 	"io/ioutil"
 	"os"
@@ -22,7 +22,7 @@ func TestGenerateScript(t *testing.T) {
 	}
 
 	helm := "helm"
-	if !cmd.IsAvailable(helm) {
+	if !command.IsAvailable(helm) {
 		t.Skipf("%q command does not exist", helm)
 	}
 

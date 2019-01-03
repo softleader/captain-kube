@@ -91,6 +91,7 @@ func (c *scriptCmd) run() error {
 			return err
 		}
 		logrus.Println("")
+		logrus.Println("")
 
 		// 如果buf裡面有存東西，則append到暫存裡面
 		if buf != nil {

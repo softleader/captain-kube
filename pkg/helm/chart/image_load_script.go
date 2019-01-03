@@ -8,14 +8,14 @@ import (
 const loadScript = `
 {{- $tpls := index . "tpls" -}}
 {{- $len := len $tpls -}} 
-{{- if eq $len 0 -}}
+{{- if eq $len 0 }}
 # no sources found in template
 {{- else -}}
-{{- range $path, $images := $tpls -}}
+{{- range $path, $images := $tpls }}
 ##---
 # Source: {{ $path }}
 {{- $len = len $images -}} 
-{{- if eq $len 0 -}}
+{{- if eq $len 0 }}
 # no images found in source
 {{- else -}}
 {{- range $key, $image := $images }}

@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"regexp"
 )
 
 const (
@@ -23,6 +24,7 @@ For more details: https://github.com/softleader/slctl/wiki/Plugins-Guide#mount-v
 `)
 	ErrNoActiveContextPresent = errors.New("no active context present") // 代表當前沒有 active 的 context
 	PlainContexts             = new(Contexts)
+	contextNameRegexp         = regexp.MustCompile(`^(-|x)$`)
 )
 
 type Contexts struct {
@@ -69,6 +71,9 @@ func (c *Contexts) GetActiveExpandEnv() (*Context, error) {
 }
 
 func (c *Contexts) Add(name string, args []string) (err error) {
+	if contextNameRegexp.MatchString(name) {
+		return fmt.Errorf("context name can not match: %s", contextNameRegexp.String())
+	}
 	if _, found := c.Contexts[name]; found {
 		return fmt.Errorf("context %q already exists", name)
 	}

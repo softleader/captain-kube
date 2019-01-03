@@ -4,16 +4,19 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gosuri/uitable"
+	"github.com/manifoldco/promptui"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/ctx"
 	"github.com/spf13/cobra"
+	"strings"
 )
 
 const (
 	ctxHelp = `Switch between captain-kubes back and forth
 
-	ctx                       : 列出所有 context
-	ctx --width 0             : 列出所有 context 並顯示完整的 args
+	ctx                       : 互動式的快速切換 context
+	ctx --ls                  : 列出所有 context
+	ctx --ls --width 0        : 列出所有 context 並顯示完整的 args
 	ctx <NAME>                : 切換 context 到 <NAME>
 	ctx -                     : 切換到前一個 context
 	ctx x                     : 切換成空的 context
@@ -27,6 +30,7 @@ const (
 type ctxCmd struct {
 	width  uint
 	add    string
+	ls     bool
 	delete []string
 	args   []string
 	ctxs   *ctx.Contexts
@@ -67,6 +71,7 @@ func newCtxCmd(ctxs *ctx.Contexts) *cobra.Command {
 	f := cmd.Flags()
 	f.StringVarP(&c.add, "add", "a", "", "add context <NAME> with <ARGS...>")
 	f.StringArrayVarP(&c.delete, "delete", "d", []string{}, "delete context <NAME> ('.' for current-context)")
+	f.BoolVar(&c.ls, "ls", false, "list contexts")
 	f.UintVar(&c.width, "width", 100, "maximum allowed width for listing context args")
 
 	return cmd
@@ -82,23 +87,44 @@ func (c *ctxCmd) run() error {
 	if len(c.args) > 0 {
 		return c.ctxs.Switch(c.args[0])
 	}
-
-	table := uitable.New()
-	table.AddRow("CONTEXT", "ARGS")
-	table.MaxColWidth = c.width
-	for name, ctx := range c.ctxs.Contexts {
-		prefix := " "
-		if name == c.ctxs.Active {
-			prefix = ">"
-		} else if name == c.ctxs.Previous {
-			prefix = "-"
+	if c.ls {
+		table := uitable.New()
+		table.AddRow("CONTEXT", "ARGS")
+		table.MaxColWidth = c.width
+		for name, ctx := range c.ctxs.Contexts {
+			prefix := " "
+			if name == c.ctxs.Active {
+				prefix = ">"
+			} else if name == c.ctxs.Previous {
+				prefix = "-"
+			}
+			args, err := json.Marshal(ctx)
+			if err != nil {
+				return err
+			}
+			table.AddRow(fmt.Sprintf("%s %s", prefix, name), fmt.Sprintf("%+v", string(args)))
 		}
-		args, err := json.Marshal(ctx)
-		if err != nil {
-			return err
-		}
-		table.AddRow(fmt.Sprintf("%s %s", prefix, name), fmt.Sprintf("%+v", string(args)))
+		logrus.Println(table)
+		return nil
 	}
-	logrus.Println(table)
-	return nil
+
+	var items []string
+	for ctx := range c.ctxs.Contexts {
+		items = append(items, ctx)
+	}
+	prompt := promptui.Select{
+		Label: "Select Context",
+		Items: items,
+		Searcher: func(input string, index int) bool {
+			ctx := items[index]
+			name := strings.Replace(strings.ToLower(ctx), " ", "", -1)
+			input = strings.Replace(strings.ToLower(input), " ", "", -1)
+			return strings.Contains(name, input)
+		},
+	}
+	_, result, err := prompt.Run()
+	if err != nil {
+		return err
+	}
+	return c.ctxs.Switch(result)
 }

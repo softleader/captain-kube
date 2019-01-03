@@ -22,7 +22,9 @@ ifeq ($(strip $(COMMIT)),)
 endif
 	mkdir -p $(BUILD)
 	mkdir -p $(DIST)
-	cp ./cmd/$(BINARY)/metadata.yaml $(BUILD) && cp README.md $(BUILD) && cp LICENSE $(BUILD)
+	sed -E 's/^(version: )(.+)/\1$(VERSION)/g' ./cmd/$(BINARY)/metadata.yaml > $(BUILD)/metadata.yaml
+	cp README.md $(BUILD)
+	cp LICENSE $(BUILD)
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o $(BUILD)/$(BINARY) -ldflags $(LDFLAGS) -a -tags netgo ./cmd/$(BINARY)
 	tar -C $(BUILD) -zcvf $(DIST)/$(BINARY)-linux-$(VERSION).tgz $(BINARY) metadata.yaml README.md LICENSE
 	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -o $(BUILD)/$(BINARY) -ldflags $(LDFLAGS) -a -tags netgo ./cmd/$(BINARY)

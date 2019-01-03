@@ -11,7 +11,7 @@ import (
 func TestPullImage(t *testing.T) {
 	endpoint := "localhost"
 	port := caplet.DefaultPort
-	if !tcp.Reachable(endpoint, port, 3) {
+	if !tcp.IsReachable(endpoint, port, 3) {
 		t.Skipf("endpoint %s:%v is not reachable", endpoint, port)
 	}
 

@@ -6,8 +6,8 @@ import (
 	"time"
 )
 
-func Reachable(host string, port, timeOutSec int) bool {
-	timeOut := time.Duration(timeOutSec) * time.Second
+func IsReachable(host string, port, timeoutSeconds int) bool {
+	timeOut := time.Duration(timeoutSeconds) * time.Second
 	_, err := net.DialTimeout("tcp", fmt.Sprintf("%s:%v", host, port), timeOut)
 	return err == nil
 }

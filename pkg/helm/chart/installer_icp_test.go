@@ -11,7 +11,7 @@ import (
 func TestIcpInstaller_Install(t *testing.T) {
 	endpoint := "192.168.1.93"
 	port := captain.DefaultPort
-	if !tcp.Reachable(endpoint, port, 3) {
+	if !tcp.IsReachable(endpoint, port, 3) {
 		t.Skipf("endpoint %s:%v is not reachable", endpoint, port)
 	}
 

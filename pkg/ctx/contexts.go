@@ -23,7 +23,8 @@ For more details: https://github.com/softleader/slctl/wiki/Plugins-Guide#mount-v
 `)
 	ErrNoActiveContextPresent = errors.New("no active context present") // 代表當前沒有 active 的 context
 	PlainContexts             = new(Contexts)
-	contextNameRegexp         = regexp.MustCompile(`^(-|x)$`)
+	contextNameRegexp         = regexp.MustCompile(`^(.|-|x)$`)
+	contextNameContainsRegexp = regexp.MustCompile(`(=|\s)+`)
 )
 
 type Contexts struct {
@@ -75,7 +76,10 @@ func (c *Contexts) GetActiveExpandEnv() (*Context, error) {
 
 func (c *Contexts) Add(name string, args []string) error {
 	if contextNameRegexp.MatchString(name) {
-		return fmt.Errorf("context name can not match: %s", contextNameRegexp.String())
+		return fmt.Errorf("context name must not match regexp: %s", contextNameRegexp.String())
+	}
+	if contextNameContainsRegexp.MatchString(name) {
+		return fmt.Errorf("context name must not match regexp: %s", contextNameContainsRegexp.String())
 	}
 	if _, found := c.Contexts[name]; found {
 		return fmt.Errorf("context %q already exists", name)
@@ -89,6 +93,32 @@ func (c *Contexts) Add(name string, args []string) error {
 		return err
 	}
 	c.log.Printf("Context %q added.\n", name)
+	return nil
+}
+
+func (c *Contexts) Rename(from, to string) error {
+	if from == "." {
+		from = c.Active
+	}
+	args, found := c.Contexts[from]
+	if !found {
+		return fmt.Errorf("no context exists with name %q", from)
+	}
+	if _, found := c.Contexts[to]; found {
+		return fmt.Errorf("context %q already exists", to)
+	}
+	c.Contexts[to] = args
+	delete(c.Contexts, from)
+	if c.Active == from {
+		c.Active = to
+	}
+	if c.Previous == from {
+		c.Previous = to
+	}
+	if err := c.save(); err != nil {
+		return err
+	}
+	c.log.Printf("Renamed context %q to %q.\n", from, to)
 	return nil
 }
 

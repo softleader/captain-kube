@@ -21,6 +21,8 @@ const (
 	ctx x                     : 切換成空的 context
 	ctx -d <NAME>             : 刪除 context <NAME> ('.' 為當前的 context)
 	ctx -a <NAME> -- <ARGS..> : 新增 context <NAME>
+	ctx -r <NAME>=<NEW_NAME>  : 重新命名 <NAME> 成 <NEW_NAME>
+	ctx -r .=<NEW_NAME>       : 重新命名當前的 Context Name 成 <NEW_NAME>
 
 參數的讀取順序為: 當前 flags > ctx > os.LookupEnv
 `
@@ -29,6 +31,7 @@ const (
 type ctxCmd struct {
 	width  uint
 	add    string
+	rename string
 	ls     bool
 	delete []string
 	args   []string
@@ -46,14 +49,19 @@ func newCtxCmd(ctxs *ctx.Contexts) *cobra.Command {
 			if ctxs == ctx.PlainContexts {
 				return ctx.ErrMountVolumeNotExist
 			}
-			if len(c.add) > 0 && len(c.delete) > 0 {
-				return fmt.Errorf("can not add and delete at the same time")
-			}
 			if len(c.add) > 0 && len(args) == 0 {
 				return fmt.Errorf("requires at least 1 argument to add context")
 			}
 			if len(c.delete) > 0 && len(args) > 0 {
 				return fmt.Errorf("delete context does not accpet arguments")
+			}
+			if len(c.rename) > 0 {
+				if len(args) > 0 {
+					return fmt.Errorf("rename context does not accpet arguments")
+				}
+				if !strings.Contains(c.rename, "=") {
+					return fmt.Errorf("requires 1 equal sign (=) to rename context, e.g. <NAME>=<NEW_NAME>")
+				}
 			}
 			if len(c.add) == 0 && len(c.delete) == 0 && len(args) > 1 {
 				return fmt.Errorf("list/switch context only accpet max 1 argument")
@@ -70,6 +78,7 @@ func newCtxCmd(ctxs *ctx.Contexts) *cobra.Command {
 	f := cmd.Flags()
 	f.StringVarP(&c.add, "add", "a", "", "add context <NAME> with <ARGS...>")
 	f.StringArrayVarP(&c.delete, "delete", "d", []string{}, "delete context <NAME> ('.' for current-context)")
+	f.StringVarP(&c.rename, "rename", "r", "", "rename context <NAME> to <NEW_NAME>")
 	f.BoolVar(&c.ls, "ls", false, "list contexts")
 	f.UintVar(&c.width, "width", 100, "maximum allowed width for listing context args")
 
@@ -82,6 +91,10 @@ func (c *ctxCmd) run() error {
 	}
 	if len(c.delete) > 0 {
 		return c.ctxs.Delete(c.delete...)
+	}
+	if len(c.rename) > 0 {
+		r := strings.Split(c.rename, "=")
+		return c.ctxs.Rename(r[0], r[1])
 	}
 	if len(c.args) > 0 {
 		return c.ctxs.Switch(c.args[0])

@@ -7,27 +7,32 @@ import (
 	"strings"
 )
 
-type icpInstaller struct {
+type icpDeleter struct {
 	endpoint          string
-	chart             string
 	username          string
 	password          string
 	account           string
 	skipSslValidation bool
+	chartName         string
+	chartVersion      string
 }
 
-func (i *icpInstaller) Install(log *logrus.Logger) error {
+func (i *icpDeleter) Delete(log *logrus.Logger) error {
 	if err := loginBxPr(log, i.endpoint, i.username, i.password, i.account, i.skipSslValidation); err != nil {
 		return err
 	}
-	if err := loadHelmChart(log, i.endpoint, i.chart); err != nil {
+	if err := deleteHelmChart(log, i.endpoint, i.chartName, i.chartVersion); err != nil {
 		return err
 	}
 	return nil
 }
 
-func loadHelmChart(log *logrus.Logger, endpoint, chart string) error {
-	cmd := exec.Command("bx", "pr", "load-helm-chart", "--archive", chart, "--clustername", endpoint)
+func deleteHelmChart(log *logrus.Logger, endpoint, chartName, chartVersion string) error {
+	args := []string{"pr", "load-helm-chart", "--clustername", endpoint, "--name", chartName}
+	if len(chartVersion) > 0 {
+		args = append(args, "--version", chartVersion)
+	}
+	cmd := exec.Command("bx", args...)
 	if log.IsLevelEnabled(logrus.DebugLevel) {
 		log.Out.Write([]byte(fmt.Sprintln(strings.Join(cmd.Args, " "))))
 		cmd.Stdout = log.Out

@@ -19,7 +19,7 @@ func TestIcpInstaller_Install(t *testing.T) {
 	log := logrus.New()
 	log.SetOutput(buf)
 	logrus.SetLevel(logrus.DebugLevel)
-	if err := loginBxPr(logrus.StandardLogger(), endpoint, "admin", "admin", "icp Account", true); err != nil {
+	if err := loginBxPr(logrus.StandardLogger(), endpoint, "admin", "admin", "mycluster Account", true); err != nil {
 		t.Error(err)
 	}
 }

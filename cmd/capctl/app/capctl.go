@@ -44,6 +44,7 @@ func NewRootCmd(args []string, metadata *version.BuildMetadata) (*cobra.Command,
 
 	cmd.AddCommand(
 		newInstallCmd(activeCtx),
+		newDeleteCmd(activeCtx),
 		newScriptCmd(activeCtx),
 		newPruneCmd(activeCtx),
 		newVersionCmd(activeCtx, metadata),

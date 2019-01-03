@@ -20,6 +20,14 @@ message InstallChartRequest {
     bool color = 9;
 }
 
+message DeleteChartRequest {
+    Tiller tiller = 1;
+    string chartName = 2;
+    string chartVersion = 3;
+    int64 timeout = 4;
+    bool verbose = 5;
+}
+
 message GenerateScriptRequest {
     Chart chart = 1;
     bool pull = 2;
@@ -31,6 +39,8 @@ message GenerateScriptRequest {
 
 service Captain {
     rpc InstallChart (InstallChartRequest) returns (stream ChunkMessage) {
+    }
+    rpc DeleteChart (DeleteChartRequest) returns (stream ChunkMessage) {
     }
     rpc GenerateScript (GenerateScriptRequest) returns (stream ChunkMessage) {
     }

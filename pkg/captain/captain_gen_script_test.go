@@ -5,6 +5,7 @@ import (
 	"github.com/softleader/captain-kube/pkg/dur"
 	"github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/utils"
+	"github.com/softleader/captain-kube/pkg/utils/cmd"
 	"github.com/softleader/captain-kube/pkg/utils/tcp"
 	"io/ioutil"
 	"os"
@@ -20,19 +21,24 @@ func TestGenerateScript(t *testing.T) {
 		t.Skipf("endpoint %s:%v is not reachable", endpoint, port)
 	}
 
+	helm := "helm"
+	if !cmd.IsAvailable(helm) {
+		t.Skipf("%q command does not exist", helm)
+	}
+
 	path, err := ioutil.TempDir(os.TempDir(), "test-generate-script-")
 	if err != nil {
 		t.Error(err)
 	}
 	defer os.RemoveAll(path)
 
-	cmd := exec.Command("helm", "create", "foo")
+	cmd := exec.Command(helm, "create", "foo")
 	cmd.Dir = path
 	if err := cmd.Run(); err != nil {
 		t.Error(err)
 	}
 
-	cmd = exec.Command("helm", "package", "foo")
+	cmd = exec.Command(helm, "package", "foo")
 	cmd.Dir = path
 	if err := cmd.Run(); err != nil {
 		t.Error(err)

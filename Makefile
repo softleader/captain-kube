@@ -73,7 +73,7 @@ endif
 
 .PHONY: bootstrap
 bootstrap:
-	go mod tidy
+	go mod download
 
 .PHONY: clean
 clean:

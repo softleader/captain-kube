@@ -10,11 +10,10 @@ import (
 var (
 	version string
 	commit  string
-	date    string
 )
 
 func main() {
-	metadata := ver.NewBuildMetadata(version, commit, date)
+	metadata := ver.NewBuildMetadata(version, commit)
 	command := app.NewCaptainCommand(metadata)
 	if err := command.Execute(); err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)

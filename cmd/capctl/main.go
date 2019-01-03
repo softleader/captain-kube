@@ -10,11 +10,10 @@ import (
 var (
 	version string
 	commit  string
-	date    string
 )
 
 func main() {
-	metadata := ver.NewBuildMetadata(version, commit, date)
+	metadata := ver.NewBuildMetadata(version, commit)
 	if command, err := app.NewRootCmd(os.Args[1:], metadata); err != nil {
 		logrus.Error(err)
 		os.Exit(1)

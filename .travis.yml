@@ -1,0 +1,24 @@
+language: go
+os:
+- linux
+go:
+- 1.11.x
+env:
+- GO111MODULE=on
+script:
+- make bootstrap test
+before_deploy:
+- |
+  if ! [ "$BEFORE_DEPLOY_RUN" ]; then
+    export BEFORE_DEPLOY_RUN=1;
+    make dist-capctl VERSION=${TRAVIS_TAG} COMMIT=${TRAVIS_COMMIT};
+  fi
+deploy:
+  - provider: releases
+    api_key:
+      secure: 0KUgWQqCZ531+TuTCyexZ9xoypD2neB75xMWuzbhZqSVrEUTa14OGUZMFOQPuEb6+Eg14HuVpi1PAWasmTBAQPyb/fv2kmQMwlqv2RQgyuxqgGnUrfMdCVk2GRD+Xb+DpMXFUtBHfQDH8i2SNObv+w8jRVvQHHgoaBdcfj6164ReRUsTZMJ3SxM2Kgti6/hb82nRhL/NsRnx/LHy8hKauU+IfjB2naYHR/wONb9tS8KuHsQD4Mo4PG4uS+r8aFBaKpLiJZtqr+dAAERQCDg4BpPUuyh+IZLFQ6QgbBhnbxj3WDtrZQySW4IUY/u9mlEQZUqxRuKZ2zJwnojOk41rSmXu4plaJrX497spbSitBTWP8cjs98eP9AanyaNuKNyzni/CygIThc3jvOlHLT5/AgFwn8hAQzZ/T8qQc6wiOYagjypQdIlMJVcYZeI2q1uyiAdSKJVVhv1NQU2fmYI+Ez/cBjYkDzyiEqn+HCMsO5Iu9soAy8BKFTa4xEVBMfkKvMsICfQ1Hys66/GijfquqFYDFO4KAN/fnsvfxtpxZGd+1I1TIMTvjuf5Cy/yly4QvkSPS94nK/9HwohOoRlFedn1xuATZEFIdN+SAgsTvARXYOkhR4zRJvHn68g5LUkiLAWWNhxNAKopQBuXUbB9NrkemJwvZ4aJoe0Qz1T+Gc0=
+    file: "_dist/*"
+    file_glob: true
+    skip_cleanup: true
+    on:
+      tags: true

@@ -2,7 +2,6 @@ package chart
 
 import (
 	"bytes"
-	"strings"
 	"text/template"
 )
 
@@ -27,11 +26,7 @@ docker save -o ./{{ replace $image.Name ":" "_" -1 }}.tar {{ $image.String }}
 {{- end -}}
 `
 
-var saveFuncMap = template.FuncMap{
-	"replace": strings.Replace,
-}
-
-var saveTemplate = template.Must(template.New("").Funcs(saveFuncMap).Parse(saveScript))
+var saveTemplate = template.Must(template.New("").Funcs(templateFuncs).Parse(saveScript))
 
 func (t *Templates) GenerateSaveScript() ([]byte, error) {
 	data := make(map[string]interface{})

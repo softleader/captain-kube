@@ -19,14 +19,14 @@ const loadScript = `
 # no images found in source
 {{- else -}}
 {{- range $key, $image := $images }}
-docker load -i ./{{ $image.Name }}.tar
+docker load -i ./{{ replace $image.Name ":" "_" -1 }}.tar
 {{- end -}}
 {{- end -}}
 {{- end -}}
 {{- end -}}
 `
 
-var loadTemplate = template.Must(template.New("").Parse(loadScript))
+var loadTemplate = template.Must(template.New("").Funcs(templateFuncs).Parse(loadScript))
 
 func (t *Templates) GenerateLoadScript() ([]byte, error) {
 	data := make(map[string]interface{})

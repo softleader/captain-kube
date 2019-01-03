@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"strings"
+	"text/template"
 )
 
 type Image struct {
@@ -83,4 +84,8 @@ func after(value string, a string) string {
 		return ""
 	}
 	return value[adjustedPos:]
+}
+
+var templateFuncs = template.FuncMap{
+	"replace": strings.Replace,
 }

@@ -44,7 +44,7 @@ func TestLoadContexts(t *testing.T) {
 		t.Errorf("suppose to have foo key")
 		t.FailNow()
 	} else {
-		foo, err := newContextFromArgs(args)
+		foo, err := newContext(args...)
 		if err != nil {
 			t.Error(err)
 			t.FailNow()
@@ -73,7 +73,7 @@ func TestLoadContexts(t *testing.T) {
 		t.Errorf("suppose to have bar key")
 		t.FailNow()
 	} else {
-		bar, err := newContextFromArgs(args)
+		bar, err := newContext(args...)
 		if err != nil {
 			t.Error(err)
 			t.FailNow()

@@ -8,7 +8,11 @@ import (
 )
 
 func TestExpandEnv(t *testing.T) {
-	ctx := newContext()
+	ctx, err := newContext()
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
 	ctx.HelmTiller.Endpoint = "192.168.1.93"
 	ctx.HelmTiller.Account = "hello-tiller"
 	ctx.HelmTiller.Password = "secret"

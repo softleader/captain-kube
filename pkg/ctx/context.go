@@ -22,22 +22,20 @@ func NewContextFromEnv() (c *Context) {
 	return
 }
 
-func newContextFromArgs(args []string) (*Context, error) {
-	cmd := &cobra.Command{}
-	f := cmd.Flags()
-	ctx := newContext()
-	addFlags(ctx, f)
-	return ctx, cmd.ParseFlags(args)
-}
-
-func newContext() (c *Context) {
-	c = &Context{
+func newContext(args ...string) (*Context, error) {
+	c := &Context{
 		Endpoint:     &Endpoint{},
 		HelmTiller:   &HelmTiller{},
 		RegistryAuth: &RegistryAuth{},
 		ReTag:        &ReTag{},
 	}
-	return
+	if len(args) == 0 {
+		return c, nil
+	}
+	cmd := &cobra.Command{}
+	f := cmd.Flags()
+	addFlags(c, f)
+	return c, cmd.ParseFlags(args)
 }
 func (ctx *Context) expandEnv() error {
 	defaultCtx := NewContextFromEnv()

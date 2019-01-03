@@ -66,7 +66,7 @@ func (c *Contexts) GetActiveExpandEnv() (*Context, error) {
 	if args, found := c.Contexts[c.Active]; !found {
 		return nil, fmt.Errorf("no active context exists with name %q", c.Active)
 	} else {
-		ctx, err := newContextFromArgs(args)
+		ctx, err := newContext(args...)
 		if err != nil {
 			return nil, err
 		}
@@ -85,7 +85,7 @@ func (c *Contexts) Add(name string, args []string) error {
 		return fmt.Errorf("context %q already exists", name)
 	}
 	// make sure every args is fine
-	if _, err := newContextFromArgs(args); err != nil {
+	if _, err := newContext(args...); err != nil {
 		return err
 	}
 	c.Contexts[name] = args

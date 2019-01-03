@@ -41,7 +41,7 @@ func newDeleteCmd(activeCtx *ctx.Context) *cobra.Command {
 	}
 
 	f := cmd.Flags()
-	f.StringVarP(&c.chartVersion, "version", "v", c.chartVersion, "the version of the helm chart to delete")
+	f.StringVarP(&c.chartVersion, "chart-version", "V", c.chartVersion, "the version of the helm chart to delete")
 	c.endpoint.AddFlags(f)
 	c.helmTiller.AddFlags(f)
 

@@ -13,18 +13,19 @@ import (
 const (
 	ctxHelp = `Switch between captain-kubes back and forth
 
-	ctx                       : 互動式的快速切換 context
-	ctx --ls                  : 列出所有 context
-	ctx --ls --width 0        : 列出所有 context 並顯示完整的 args
-	ctx <NAME>                : 切換 context 到 <NAME>
-	ctx -                     : 切換到前一個 context
-	ctx x                     : 切換成空的 context
-	ctx -d <NAME>             : 刪除 context <NAME> ('.' 為當前的 context)
-	ctx -a <NAME> -- <ARGS..> : 新增 context <NAME>
-	ctx -r <NAME>=<NEW_NAME>  : 重新命名 <NAME> 成 <NEW_NAME>
-	ctx -r .=<NEW_NAME>       : 重新命名當前的 Context Name 成 <NEW_NAME>
+	ctx                        : 互動式的快速切換 context
+	ctx <NAME>                 : 切換 context 到 <NAME>
+	ctx -                      : 切換到前一個 context
+	ctx x                      : 清空當前的 context
+	ctx --ls                   : 列出所有 context
+	ctx --ls --width 0         : 列出所有 context 並顯示完整的 args (預設顯示 100 長度)
+	ctx -a <NAME> -- <ARGS...> : 新增 context <NAME>
+	ctx -d <NAME>              : 刪除 context <NAME>
+	ctx -d .                   : 刪除當前的 context
+	ctx -r <NAME>=<NEW_NAME>   : 重新命名 <NAME> 成 <NEW_NAME>
+	ctx -r .=<NEW_NAME>        : 重新命名當前的 Context Name 成 <NEW_NAME>
 
-參數的讀取順序為: 當前 flags > ctx > os.LookupEnv
+參數的載入順序為: 當前 flags > ctx > os.LookupEnv
 `
 )
 

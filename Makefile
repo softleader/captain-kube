@@ -1,7 +1,8 @@
 DIST := $(CURDIR)/_dist
 BUILD := $(CURDIR)/_build
 REGISTRY := softleader
-
+VERSION := ""
+COMMIT := ""
 CAPTAIN := captain
 CAPLET := caplet
 UI := cap-ui
@@ -26,50 +27,38 @@ build: clean bootstrap build-caplet build-captain build-ui build-capctl
 
 .PHONY: build-caplet
 build-caplet:
-	make build --file ./cmd/$(CAPLET)/Makefile REGISTRY=$(REGISTRY)
+	make build --file ./cmd/$(CAPLET)/Makefile VERSION=$(VERSION) COMMIT=$(COMMIT) REGISTRY=$(REGISTRY)
 
 .PHONY: build-captain
 build-captain:
-	make build --file ./cmd/$(CAPLET)/Makefile REGISTRY=$(REGISTRY)
+	make build --file ./cmd/$(CAPLET)/Makefile VERSION=$(VERSION) COMMIT=$(COMMIT) REGISTRY=$(REGISTRY)
 
 .PHONY: build-ui
 build-ui:
-	make build --file ./cmd/$(UI)/Makefile REGISTRY=$(REGISTRY)
+	make build --file ./cmd/$(UI)/Makefile VERSION=$(VERSION) COMMIT=$(COMMIT) REGISTRY=$(REGISTRY)
 
 .PHONY: build-capctl
 build-capctl:
-	make build --file ./cmd/$(CAPCTL)/Makefile REGISTRY=$(REGISTRY)
+	make build --file ./cmd/$(CAPCTL)/Makefile VERSION=$(VERSION) COMMIT=$(COMMIT)
 
 .PHONY: dist
 dist: dist-caplet dist-captain dist-ui dist-capctl
 
 .PHONY: dist-caplet
 dist-caplet:
-ifneq ($(strip $(VERSION)),)
-	$(error VERSION is not set)
-endif
-	make dist --file ./cmd/$(CAPLET)/Makefile REGISTRY=$(REGISTRY)
+	make dist --file ./cmd/$(CAPLET)/Makefile VERSION=$(VERSION) COMMIT=$(COMMIT) REGISTRY=$(REGISTRY)
 
 .PHONY: dist-captain
 dist-captain:
-ifneq ($(strip $(VERSION)),)
-	$(error VERSION is not set)
-endif
-	make dist --file ./cmd/$(CAPTAIN)/Makefile REGISTRY=$(REGISTRY)
+	make dist --file ./cmd/$(CAPTAIN)/Makefile VERSION=$(VERSION) COMMIT=$(COMMIT) REGISTRY=$(REGISTRY)
 
 .PHONY: dist-ui
 dist-ui:
-ifneq ($(strip $(VERSION)),)
-	$(error VERSION is not set)
-endif
-	make dist --file ./cmd/$(UI)/Makefile REGISTRY=$(REGISTRY)
+	make dist --file ./cmd/$(UI)/Makefile VERSION=$(VERSION) COMMIT=$(COMMIT) REGISTRY=$(REGISTRY)
 
 .PHONY: dist-capctl
 dist-capctl:
-ifeq ($(strip $(VERSION)),)
-	$(error VERSION is not set)
-endif
-	make dist --file ./cmd/$(CAPCTL)/Makefile REGISTRY=$(REGISTRY)
+	make dist --file ./cmd/$(CAPCTL)/Makefile VERSION=$(VERSION) COMMIT=$(COMMIT)
 
 .PHONY: bootstrap
 bootstrap:

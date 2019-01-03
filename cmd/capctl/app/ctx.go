@@ -16,7 +16,7 @@ const (
 	ctx                        : 互動式的快速切換 context
 	ctx <NAME>                 : 切換 context 到 <NAME>
 	ctx -                      : 切換到前一個 context
-	ctx x                      : 清空當前的 context
+	ctx --off                  : 清空當前的 context
 	ctx --ls                   : 列出所有 context
 	ctx --ls --width 0         : 列出所有 context 並顯示完整的 args (預設顯示 100 長度)
 	ctx -a <NAME> -- <ARGS...> : 新增 context <NAME>
@@ -34,6 +34,7 @@ type ctxCmd struct {
 	add    string
 	rename string
 	ls     bool
+	off    bool
 	delete []string
 	args   []string
 	ctxs   *ctx.Contexts
@@ -55,6 +56,9 @@ func newCtxCmd(ctxs *ctx.Contexts) *cobra.Command {
 			}
 			if len(c.delete) > 0 && len(args) > 0 {
 				return fmt.Errorf("delete context does not accpet arguments")
+			}
+			if c.off && len(args) > 0 {
+				return fmt.Errorf("switch off context does not accpet arguments")
 			}
 			if len(c.rename) > 0 {
 				if len(args) > 0 {
@@ -81,12 +85,16 @@ func newCtxCmd(ctxs *ctx.Contexts) *cobra.Command {
 	f.StringArrayVarP(&c.delete, "delete", "d", []string{}, "delete context <NAME> ('.' for current-context)")
 	f.StringVarP(&c.rename, "rename", "r", "", "rename context <NAME> to <NEW_NAME>")
 	f.BoolVar(&c.ls, "ls", false, "list contexts")
+	f.BoolVar(&c.off, "off", false, "switch off the context")
 	f.UintVar(&c.width, "width", 100, "maximum allowed width for listing context args")
 
 	return cmd
 }
 
 func (c *ctxCmd) run() error {
+	if c.off {
+		return c.ctxs.SwitchOff()
+	}
 	if len(c.add) > 0 {
 		return c.ctxs.Add(c.add, c.args)
 	}
@@ -122,8 +130,9 @@ func (c *ctxCmd) run() error {
 		items = append(items, ctx)
 	}
 	prompt := promptui.Select{
-		Label: "Select Context",
-		Items: items,
+		Label:             "Select Context",
+		Items:             items,
+		StartInSearchMode: true,
 		Searcher: func(input string, index int) bool {
 			ctx := items[index]
 			name := strings.Replace(strings.ToLower(ctx), " ", "", -1)

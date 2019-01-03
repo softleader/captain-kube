@@ -23,7 +23,7 @@ For more details: https://github.com/softleader/slctl/wiki/Plugins-Guide#mount-v
 `)
 	ErrNoActiveContextPresent = errors.New("no active context present") // 代表當前沒有 active 的 context
 	PlainContexts             = new(Contexts)
-	contextNameRegexp         = regexp.MustCompile(`^(.|-|x)$`)
+	contextNameRegexp         = regexp.MustCompile(`^(.|-)$`)
 	contextNameContainsRegexp = regexp.MustCompile(`(=|\s)+`)
 )
 
@@ -145,9 +145,6 @@ func (c *Contexts) Switch(name string) (err error) {
 	if name == "-" {
 		return c.switchToPrevious()
 	}
-	if name == "x" {
-		return c.switchOff()
-	}
 	if _, found := c.Contexts[name]; !found {
 		return fmt.Errorf("no context exists with name %q", name)
 	}
@@ -159,7 +156,7 @@ func (c *Contexts) Switch(name string) (err error) {
 	return
 }
 
-func (c *Contexts) switchOff() (err error) {
+func (c *Contexts) SwitchOff() (err error) {
 	c.Previous = c.Active
 	c.Active = ""
 	if err = c.save(); err == nil {

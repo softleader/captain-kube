@@ -1,6 +1,7 @@
 package ctx
 
 import (
+	"bytes"
 	"github.com/imdario/mergo"
 	"github.com/spf13/cobra"
 )
@@ -20,6 +21,25 @@ func NewContextFromEnv() (c *Context) {
 		ReTag:        newReTagFromEnv(),
 	}
 	return
+}
+
+func UsageString() (string, error) {
+	c := &Context{
+		Endpoint:     &Endpoint{},
+		HelmTiller:   &HelmTiller{},
+		RegistryAuth: &RegistryAuth{},
+		ReTag:        &ReTag{},
+	}
+	cmd := &cobra.Command{}
+	cmd.SetUsageTemplate(`{{.LocalFlags.FlagUsages | trimTrailingWhitespaces}}`)
+	f := cmd.Flags()
+	addFlags(c, f)
+	bb := new(bytes.Buffer)
+	cmd.SetOutput(bb)
+	if err := cmd.Usage(); err != nil {
+		return "", err
+	}
+	return bb.String(), nil
 }
 
 func newContext(args ...string) (*Context, error) {

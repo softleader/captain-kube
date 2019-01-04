@@ -1,6 +1,7 @@
 package app
 
 import (
+	"bytes"
 	"fmt"
 	"github.com/gosuri/uitable"
 	"github.com/manifoldco/promptui"
@@ -8,26 +9,39 @@ import (
 	"github.com/softleader/captain-kube/pkg/ctx"
 	"github.com/spf13/cobra"
 	"strings"
+	"text/template"
 )
 
 const (
 	ctxHelp = `Switch between captain-kubes back and forth
 
-	ctx                        : 互動式的快速切換 context
-	ctx <NAME>                 : 切換 context 到 <NAME>
-	ctx -                      : 切換到前一個 context
-	ctx --off                  : 清空當前的 context
-	ctx --ls                   : 列出所有 context
-	ctx --ls --width 0         : 列出所有 context 並顯示完整的 args (預設顯示 100 長度)
-	ctx -a <NAME> -- <ARGS...> : 新增 context <NAME>
-	ctx -d <NAME>              : 刪除 context <NAME>
-	ctx -d .                   : 刪除當前的 context
-	ctx -r <NAME>=<NEW_NAME>   : 重新命名 <NAME> 成 <NEW_NAME>
-	ctx -r .=<NEW_NAME>        : 重新命名當前的 Context Name 成 <NEW_NAME>
+  ctx                        : 互動式的快速切換 context
+  ctx <NAME>                 : 切換 context 到 <NAME>
+  ctx -                      : 切換到前一個 context
+  ctx --off                  : 清空當前的 context
+  ctx --ls                   : 列出所有 context
+  ctx --ls --width 0         : 列出所有 context 並顯示完整的 args (預設顯示 100 長度)
+  ctx -a <NAME> -- <ARGS...> : 新增 context <NAME> 及其 ARGS
+  ctx -d <NAME>              : 刪除 context <NAME>
+  ctx -d .                   : 刪除當前的 context
+  ctx -r <NAME>=<NEW_NAME>   : 重新命名 <NAME> 成 <NEW_NAME>
+  ctx -r .=<NEW_NAME>        : 重新命名當前的 context name 成 <NEW_NAME>
 
-參數的載入順序為: 當前 flags > ctx > os.LookupEnv
+ARGS:
+{{.}}
 `
 )
+
+func ctxLong() string {
+	var buf bytes.Buffer
+	parsed := template.Must(template.New("").Parse(ctxHelp))
+	usage, _ := ctx.UsageString()
+	err := parsed.Execute(&buf, usage)
+	if err != nil {
+		panic(err)
+	}
+	return buf.String()
+}
 
 type ctxCmd struct {
 	width  uint
@@ -46,7 +60,7 @@ func newCtxCmd(ctxs *ctx.Contexts) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "ctx",
 		Short: "switch between captain-kubes back and forth",
-		Long:  ctxHelp,
+		Long:  ctxLong(),
 		Args: func(cmd *cobra.Command, args []string) error {
 			if ctxs == ctx.PlainContexts {
 				return ctx.ErrMountVolumeNotExist

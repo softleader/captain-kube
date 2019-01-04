@@ -1,6 +1,7 @@
 package ctx
 
 import (
+	"fmt"
 	"github.com/softleader/captain-kube/pkg/captain"
 	"os"
 	"strconv"
@@ -34,4 +35,12 @@ func TestExpandEnv(t *testing.T) {
 	if p := ctx.Endpoint.Port; p != captain.DefaultPort {
 		t.Errorf("new endpoint port should be %v, but got %v", captain.DefaultPort, p)
 	}
+}
+
+func TestUsageString(t *testing.T) {
+	u, err := UsageString()
+	if err != nil {
+		t.Error(err)
+	}
+	fmt.Println(u)
 }

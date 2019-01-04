@@ -35,7 +35,7 @@ CTX_FLAGS:
 func ctxLong() string {
 	var buf bytes.Buffer
 	parsed := template.Must(template.New("").Parse(ctxHelp))
-	usage, _ := ctx.UsageString()
+	usage, _ := ctx.FlagsString()
 	err := parsed.Execute(&buf, usage)
 	if err != nil {
 		panic(err)

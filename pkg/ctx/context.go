@@ -23,7 +23,7 @@ func NewContextFromEnv() (c *Context) {
 	return
 }
 
-func UsageString() (string, error) {
+func FlagsString() (string, error) {
 	c := &Context{
 		Endpoint:     &Endpoint{},
 		HelmTiller:   &HelmTiller{},

@@ -38,7 +38,7 @@ func TestExpandEnv(t *testing.T) {
 }
 
 func TestUsageString(t *testing.T) {
-	u, err := UsageString()
+	u, err := FlagsString()
 	if err != nil {
 		t.Error(err)
 	}

@@ -15,19 +15,19 @@ import (
 const (
 	ctxHelp = `Switch between captain-kubes back and forth
 
-  ctx                        : 互動式的快速切換 context
-  ctx <NAME>                 : 切換 context 到 <NAME>
-  ctx -                      : 切換到前一個 context
-  ctx --off                  : 清空當前的 context
-  ctx --ls                   : 列出所有 context
-  ctx --ls --width 0         : 列出所有 context 並顯示完整的 args (預設顯示 100 長度)
-  ctx -a <NAME> -- <ARGS...> : 新增 context <NAME> 及其 ARGS
-  ctx -d <NAME>              : 刪除 context <NAME>
-  ctx -d .                   : 刪除當前的 context
-  ctx -r <NAME>=<NEW_NAME>   : 重新命名 <NAME> 成 <NEW_NAME>
-  ctx -r .=<NEW_NAME>        : 重新命名當前的 context name 成 <NEW_NAME>
+  ctx                             : 互動式的快速切換 context
+  ctx <NAME>                      : 切換 context 到 <NAME>
+  ctx -                           : 切換到前一個 context
+  ctx --off                       : 清空當前的 context
+  ctx --ls                        : 列出所有 context
+  ctx --ls --width 0              : 列出所有 context 並顯示完整的 args (預設顯示 100 長度)
+  ctx -a <NAME> -- <CTX_FLAGS...> : 新增 context <NAME> 及 <CTX_FLAGS...>
+  ctx -d <NAME>                   : 刪除 context <NAME>
+  ctx -d .                        : 刪除當前的 context
+  ctx -r <NAME>=<NEW_NAME>        : 重新命名 <NAME> 成 <NEW_NAME>
+  ctx -r .=<NEW_NAME>             : 重新命名當前的 context name 成 <NEW_NAME>
 
-ARGS:
+CTX_FLAGS:
 {{.}}
 `
 )
@@ -95,7 +95,7 @@ func newCtxCmd(ctxs *ctx.Contexts) *cobra.Command {
 	}
 
 	f := cmd.Flags()
-	f.StringVarP(&c.add, "add", "a", "", "add context <NAME> with <ARGS...>")
+	f.StringVarP(&c.add, "add", "a", "", "add context <NAME> with <CTX_FLAGS...>")
 	f.StringArrayVarP(&c.delete, "delete", "d", []string{}, "delete context <NAME> ('.' for current-context)")
 	f.StringVarP(&c.rename, "rename", "r", "", "rename context <NAME> to <NEW_NAME>")
 	f.BoolVar(&c.ls, "ls", false, "list contexts")

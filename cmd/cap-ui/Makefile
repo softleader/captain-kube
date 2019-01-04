@@ -19,7 +19,7 @@ endif
 ifeq ($(strip $(COMMIT)),)
 	$(error COMMIT is not set)
 endif
-	mkdir "$(DIST)"
+	mkdir -p $(DIST)
 	cp ./cmd/$(BINARY)/Dockerfile $(DIST)
 	cp -r ./templates $(DIST)
 	cp -r ./static $(DIST)

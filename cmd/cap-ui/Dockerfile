@@ -3,8 +3,11 @@ FROM alpine:3.8
 RUN apk update && apk add ca-certificates && rm -rf /var/cache/apk/*
 
 WORKDIR /app
-ADD docker-compose.yml /data/
-ADD static/* /app/static/
-ADD templates/* /app/templates/
+COPY docker-compose.yml /
+COPY static/ /app/static/
+COPY templates/ /app/templates/
+COPY cap-ui /app
 
-ENTRYPOINT ["./ui"]
+ENV GIN_MODE=release
+
+ENTRYPOINT ["./cap-ui"]

@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	ctxHelp = `Context 抽象化了 command flags, 你可以視一個 context 為一組環境設定
+	ctxHelp = `Context 抽象化了 flags, 你可以視一個 context 為一組環境設定
 將配置好的 context 啟用後, 會在執行任何 command 前被載入, command 使用的順序為:
 
 	1. 當前 command 執行時所傳入的 flag 

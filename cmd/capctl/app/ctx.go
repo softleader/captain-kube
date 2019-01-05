@@ -1,7 +1,6 @@
 package app
 
 import (
-	"bytes"
 	"fmt"
 	"github.com/gosuri/uitable"
 	"github.com/manifoldco/promptui"
@@ -9,38 +8,51 @@ import (
 	"github.com/softleader/captain-kube/pkg/ctx"
 	"github.com/spf13/cobra"
 	"strings"
-	"text/template"
 )
 
 const (
-	ctxHelp = `Switch between captain-kubes back and forth
+	ctxHelp = `Context 抽象化了 command flags, 你可以視一個 context 為一組環境設定
+將配置好的 context 啟用後, 會在執行任何 command 前被載入, command 使用的順序為:
 
-  ctx                             : 互動式的快速切換 context
-  ctx <NAME>                      : 切換 context 到 <NAME>
-  ctx -                           : 切換到前一個 context
-  ctx --off                       : 清空當前的 context
-  ctx --ls                        : 列出所有 context
-  ctx --ls --width 0              : 列出所有 context 並顯示完整的 args (預設顯示 100 長度)
-  ctx -a <NAME> -- <CTX_FLAGS...> : 新增 context <NAME> 及 <CTX_FLAGS...>
-  ctx -d <NAME>                   : 刪除 context <NAME>
-  ctx -d .                        : 刪除當前的 context
-  ctx -r <NAME>=<NEW_NAME>        : 重新命名 <NAME> 成 <NEW_NAME>
-  ctx -r .=<NEW_NAME>             : 重新命名當前的 context name 成 <NEW_NAME>
+	1. 當前 command 執行時所傳入的 flag 
+	2. 啟用中的 context flag 
+	3. 環境變數的設定
 
-CTX_FLAGS:
-{{.}}
+'ctx' 指令可以快速的在不同 context 之間切換
+
+	$ ctx         : 互動式的快速切換 context
+	$ ctx <NAME>  : 切換 context 到 <NAME>
+	$ ctx -       : 切換到前一個 context
+	$ ctx --off   : 清空當前的 context
+
+傳入 '--ls' 可以列出所有 context 及其 args
+配合 '--width' 可以指定顯示的 args 字數 (預設100), '--width 0' 為不限長度, 即顯示完整的 args
+
+	$ ctx --ls
+	$ ctx --ls --width 0
+
+傳入 '--add' 可以新增 context
+使用上需先接著一組 double-dash (--), 之後再給予1到數個 CONTEXT_FLAGS
+
+	$ ctx -a <NAME> -- <CONTEXT_FLAGS...>
+	$ ctx -a local -- -e localhost --endpoint-port 30051  
+
+傳入 '--delete' 或 '--rename' 可以刪除或重新命名 context:
+
+	$ ctx -d <NAME>             : 刪除 context <NAME>
+	$ ctx -d .                  : 刪除當前的 context
+	$ ctx -r <NAME>=<NEW_NAME>  : 重新命名 <NAME> 成 <NEW_NAME>
+	$ ctx -r .=<NEW_NAME>       : 重新命名當前的 context name 成 <NEW_NAME>
+
+可用的 CONTEXT_FLAGS 包含了:
+
+%s
 `
 )
 
-func ctxLong() string {
-	var buf bytes.Buffer
-	parsed := template.Must(template.New("").Parse(ctxHelp))
+func formatCtxHelp() string {
 	usage, _ := ctx.FlagsString()
-	err := parsed.Execute(&buf, usage)
-	if err != nil {
-		panic(err)
-	}
-	return buf.String()
+	return fmt.Sprintf(ctxHelp, usage)
 }
 
 type ctxCmd struct {
@@ -60,7 +72,7 @@ func newCtxCmd(ctxs *ctx.Contexts) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "ctx",
 		Short: "switch between captain-kubes back and forth",
-		Long:  ctxLong(),
+		Long:  formatCtxHelp(),
 		Args: func(cmd *cobra.Command, args []string) error {
 			if ctxs == ctx.PlainContexts {
 				return ctx.ErrMountVolumeNotExist

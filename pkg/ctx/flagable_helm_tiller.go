@@ -26,10 +26,10 @@ func newHelmTillerFromEnv() (ht *HelmTiller) {
 }
 
 func (ht *HelmTiller) AddFlags(f *pflag.FlagSet) {
-	f.StringVar(&ht.Endpoint, "tiller", ht.Endpoint, "specify the endpoint of helm tiller")
-	f.StringVar(&ht.Username, "tiller-user", ht.Username, "specify the username of helm tiller")
-	f.StringVar(&ht.Password, "tiller-pass", ht.Password, "specify the password of helm tiller")
-	f.StringVar(&ht.Account, "tiller-account", ht.Account, "specify the account of helm tiller")
-	f.BoolVar(&ht.SkipSslValidation, "tiller-skip-ssl", ht.SkipSslValidation, "specify skip ssl validation of helm tiller")
+	f.StringVar(&ht.Endpoint, "tiller", ht.Endpoint, "specify the endpoint of helm tiller, override $"+captain.EnvTillerEndpoint)
+	f.StringVar(&ht.Username, "tiller-user", ht.Username, "specify the username of helm tiller, override $"+captain.EnvTillerUsername)
+	f.StringVar(&ht.Password, "tiller-pass", ht.Password, "specify the password of helm tiller, override $"+captain.EnvTillerPassword)
+	f.StringVar(&ht.Account, "tiller-account", ht.Account, "specify the account of helm tiller, override $"+captain.EnvTillerAccount)
+	f.BoolVar(&ht.SkipSslValidation, "tiller-skip-ssl", ht.SkipSslValidation, "skip the ssl validation of helm tiller, override $"+captain.EnvTillerSkipSslValidation)
 	return
 }

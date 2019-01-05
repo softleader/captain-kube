@@ -22,8 +22,8 @@ func newEndpointFromEnv() (e *Endpoint) {
 }
 
 func (e *Endpoint) AddFlags(f *pflag.FlagSet) {
-	f.StringVarP(&e.Host, "endpoint", "e", e.Host, "specify the host of captain endpoint")
-	f.IntVar(&e.Port, "endpoint-port", e.Port, "specify the port of captain endpoint")
+	f.StringVarP(&e.Host, "endpoint", "e", e.Host, "specify the host of captain endpoint, override $"+captain.EnvEndpoint)
+	f.IntVar(&e.Port, "endpoint-port", e.Port, "specify the port of captain endpoint, override $"+captain.EnvPort)
 	return
 }
 

@@ -20,7 +20,7 @@ func newRegistryAuthFromEnv() (ra *RegistryAuth) {
 }
 
 func (ra *RegistryAuth) AddFlags(f *pflag.FlagSet) {
-	f.StringVar(&ra.Username, "reg-user", ra.Username, "specify username of basic-auth for docker registry")
-	f.StringVar(&ra.Password, "reg-pass", ra.Password, "specify password of basic-auth for docker registry")
+	f.StringVar(&ra.Username, "reg-user", ra.Username, "specify username of basic-auth for docker registry, override $"+captain.EnvRegistryAuthUsername)
+	f.StringVar(&ra.Password, "reg-pass", ra.Password, "specify password of basic-auth for docker registry, override $"+captain.EnvRegistryAuthPassword)
 	return
 }

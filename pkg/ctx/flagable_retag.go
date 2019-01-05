@@ -20,7 +20,7 @@ func newReTagFromEnv() (rt *ReTag) {
 }
 
 func (rt *ReTag) AddFlags(f *pflag.FlagSet) {
-	f.StringVarP(&rt.From, "retag-from", "f", rt.From, "specify re-tagging image host from")
-	f.StringVarP(&rt.To, "retag-to", "t", rt.To, "specify re-tagging image host to")
+	f.StringVarP(&rt.From, "retag-from", "f", rt.From, "specify re-tagging image host from, override $"+capui.EnvReTagFrom)
+	f.StringVarP(&rt.To, "retag-to", "t", rt.To, "specify re-tagging image host to, override $"+capui.EnvReTagTo)
 	return
 }

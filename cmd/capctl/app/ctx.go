@@ -15,7 +15,7 @@ const (
 將配置好的 context 啟用後, 會在執行任何 command 前被載入, command 使用的順序為:
 
 	1. 當前 command 執行時所傳入的 flag 
-	2. 啟用中的 context flag 
+	2. 啟用中的 context-flags 
 	3. 環境變數的設定
 
 'ctx' 指令可以快速的在不同 context 之間切換
@@ -25,14 +25,14 @@ const (
 	$ ctx -       : 切換到前一個 context
 	$ ctx --off   : 清空當前的 context
 
-傳入 '--ls' 可以列出所有 context 及其 args
-配合 '--width' 可以指定顯示的 args 字數 (預設100), '--width 0' 為不限長度, 即顯示完整的 args
+傳入 '--ls' 可以列出所有 context 及其 context-flags
+配合 '--width' 可以指定顯示的字數 (預設100), '--width 0' 為不限長度, 即完整顯示
 
 	$ ctx --ls
 	$ ctx --ls --width 0
 
 傳入 '--add' 可以新增 context
-使用上需先接著一組 double-dash (--), 之後再給予1到數個 CONTEXT_FLAGS
+使用上需先接著一組 double-dash (--), 之後再給予1到數個 context-flags
 
 	$ ctx -a <NAME> -- <CONTEXT_FLAGS...>
 	$ ctx -a local -- -e localhost --endpoint-port 30051  
@@ -44,7 +44,7 @@ const (
 	$ ctx -r <NAME>=<NEW_NAME>  : 重新命名 <NAME> 成 <NEW_NAME>
 	$ ctx -r .=<NEW_NAME>       : 重新命名當前的 context name 成 <NEW_NAME>
 
-可用的 CONTEXT_FLAGS 包含了:
+可用的 context-flags 包含了:
 
 %s
 `
@@ -136,7 +136,7 @@ func (c *ctxCmd) run() error {
 	}
 	if c.ls {
 		table := uitable.New()
-		table.AddRow("CONTEXT", "ARGS")
+		table.AddRow("CONTEXT", "FLAGS")
 		table.MaxColWidth = c.width
 		for name, args := range c.ctxs.Contexts {
 			prefix := " "

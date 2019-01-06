@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/mitchellh/go-homedir"
 	"github.com/sirupsen/logrus"
 	"io/ioutil"
 	"os"
@@ -39,6 +40,10 @@ func LoadContextsFromEnv(log *logrus.Logger) (*Contexts, error) {
 	mount, found := os.LookupEnv(EnvMountVolume)
 	if !found {
 		return nil, ErrMountVolumeNotExist
+	}
+	mount, err := homedir.Expand(mount)
+	if err != nil {
+		return nil, err
 	}
 	return LoadContexts(log, filepath.Join(mount, ContextsFile))
 }

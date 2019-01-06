@@ -11,7 +11,7 @@ type pruneCmd struct {
 	endpoint *ctx.Endpoint
 }
 
-func newPruneCmd(activeCtx *ctx.Context) *cobra.Command {
+func newPruneCmd() *cobra.Command {
 	c := pruneCmd{
 		endpoint: activeCtx.Endpoint,
 	}

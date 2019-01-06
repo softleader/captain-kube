@@ -3,12 +3,10 @@ package app
 import (
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/captain"
-	"github.com/softleader/captain-kube/pkg/ctx"
-	"github.com/softleader/captain-kube/pkg/version"
 	"github.com/spf13/cobra"
 )
 
-func newVersionCmd(activeCtx *ctx.Context, metadata *version.BuildMetadata) *cobra.Command {
+func newVersionCmd() *cobra.Command {
 	endpoint := activeCtx.Endpoint
 	var full bool
 	cmd := &cobra.Command{

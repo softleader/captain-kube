@@ -30,7 +30,7 @@ type scriptCmd struct {
 	registryAuth *ctx.RegistryAuth
 }
 
-func newScriptCmd(activeCtx *ctx.Context) *cobra.Command {
+func newScriptCmd() *cobra.Command {
 	c := scriptCmd{
 		endpoint:     activeCtx.Endpoint,
 		registryAuth: activeCtx.RegistryAuth,

@@ -66,7 +66,7 @@ type ctxCmd struct {
 	ctxs   *ctx.Contexts
 }
 
-func newCtxCmd(ctxs *ctx.Contexts) *cobra.Command {
+func newCtxCmd() *cobra.Command {
 	c := ctxCmd{}
 
 	cmd := &cobra.Command{

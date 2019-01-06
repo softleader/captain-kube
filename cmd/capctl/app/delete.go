@@ -15,7 +15,7 @@ type deleteCmd struct {
 	endpoint                *ctx.Endpoint   // captain 的 endpoint ip
 }
 
-func newDeleteCmd(activeCtx *ctx.Context) *cobra.Command {
+func newDeleteCmd() *cobra.Command {
 	c := deleteCmd{
 		endpoint:   activeCtx.Endpoint,
 		helmTiller: activeCtx.HelmTiller,

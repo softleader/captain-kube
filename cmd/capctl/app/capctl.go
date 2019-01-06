@@ -9,7 +9,18 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func NewRootCmd(args []string, metadata *version.BuildMetadata) (*cobra.Command, error) {
+var (
+	ctxs      *ctx.Contexts
+	activeCtx *ctx.Context
+	metadata  *version.BuildMetadata
+)
+
+func NewRootCmd(args []string, m *version.BuildMetadata) (*cobra.Command, error) {
+	if err := initContext(); err != nil {
+		return nil, err
+	}
+	metadata = m
+
 	cmd := &cobra.Command{
 		Use:          "capctl",
 		Short:        "the captain-kube command line interface",
@@ -24,34 +35,35 @@ func NewRootCmd(args []string, metadata *version.BuildMetadata) (*cobra.Command,
 		},
 	}
 
-	ctxs, err := ctx.LoadContextsFromEnv(logrus.StandardLogger())
-	if err != nil {
-		if err != ctx.ErrMountVolumeNotExist {
-			return nil, err
-		}
-		ctxs = ctx.PlainContexts
-	}
-	activeCtx, err := ctxs.GetActiveExpandEnv()
-	if err != nil {
-		if err != ctx.ErrNoActiveContextPresent {
-			return nil, err
-		}
-		activeCtx = ctx.NewContextFromEnv()
-	}
-
 	flags := cmd.PersistentFlags()
 	addGlobalFlags(flags)
 
 	cmd.AddCommand(
-		newInstallCmd(activeCtx),
-		newDeleteCmd(activeCtx),
-		newScriptCmd(activeCtx),
-		newPruneCmd(activeCtx),
-		newVersionCmd(activeCtx, metadata),
-		newCtxCmd(ctxs),
+		newInstallCmd(),
+		newDeleteCmd(),
+		newScriptCmd(),
+		newPruneCmd(),
+		newVersionCmd(),
+		newCtxCmd(),
 	)
 
 	flags.Parse(args)
 
 	return cmd, nil
+}
+
+func initContext() (err error) {
+	if ctxs, err = ctx.LoadContextsFromEnv(logrus.StandardLogger()); err != nil {
+		if err != ctx.ErrMountVolumeNotExist {
+			return err
+		}
+		ctxs = ctx.PlainContexts
+	}
+	if activeCtx, err = ctxs.GetActiveExpandEnv(); err != nil {
+		if err != ctx.ErrNoActiveContextPresent {
+			return err
+		}
+		activeCtx = ctx.NewContextFromEnv()
+	}
+	return nil
 }

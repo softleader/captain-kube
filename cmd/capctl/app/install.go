@@ -26,7 +26,7 @@ type installCmd struct {
 	endpoint     *ctx.Endpoint     // captain 的 endpoint ip
 }
 
-func newInstallCmd(activeCtx *ctx.Context) *cobra.Command {
+func newInstallCmd() *cobra.Command {
 	c := installCmd{
 		namespace:    "default",
 		retag:        activeCtx.ReTag,

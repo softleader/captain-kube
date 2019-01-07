@@ -44,6 +44,7 @@ func (s *CaptainServer) InstallChart(req *proto.InstallChartRequest, stream prot
 	}
 
 	if req.GetSync() {
+		log.Printf("Syncing images to all kubernetes worker nodes..")
 		endpoints, err := s.lookupCaplet(log, req.GetColor())
 		if err != nil {
 			return err

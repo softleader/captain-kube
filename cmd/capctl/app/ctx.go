@@ -99,7 +99,6 @@ func newCtxCmd() *cobra.Command {
 			return nil
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			c.ctxs = ctxs
 			c.args = args
 			return c.run()
 		},
@@ -118,30 +117,30 @@ func newCtxCmd() *cobra.Command {
 
 func (c *ctxCmd) run() error {
 	if c.off {
-		return c.ctxs.SwitchOff()
+		return ctxs.SwitchOff()
 	}
 	if len(c.add) > 0 {
-		return c.ctxs.Add(c.add, c.args)
+		return ctxs.Add(c.add, c.args)
 	}
 	if len(c.delete) > 0 {
-		return c.ctxs.Delete(c.delete...)
+		return ctxs.Delete(c.delete...)
 	}
 	if len(c.rename) > 0 {
 		r := strings.Split(c.rename, "=")
-		return c.ctxs.Rename(r[0], r[1])
+		return ctxs.Rename(r[0], r[1])
 	}
 	if len(c.args) > 0 {
-		return c.ctxs.Switch(c.args[0])
+		return ctxs.Switch(c.args[0])
 	}
 	if c.ls {
 		table := uitable.New()
 		table.AddRow("CONTEXT", "FLAGS")
 		table.MaxColWidth = c.width
-		for name, args := range c.ctxs.Contexts {
+		for name, args := range ctxs.Contexts {
 			prefix := " "
-			if name == c.ctxs.Active {
+			if name == ctxs.Active {
 				prefix = ">"
-			} else if name == c.ctxs.Previous {
+			} else if name == ctxs.Previous {
 				prefix = "-"
 			}
 			table.AddRow(fmt.Sprintf("%s %s", prefix, name), strings.Join(args, " "))
@@ -151,7 +150,7 @@ func (c *ctxCmd) run() error {
 	}
 
 	var items []string
-	for ctx := range c.ctxs.Contexts {
+	for ctx := range ctxs.Contexts {
 		items = append(items, ctx)
 	}
 	prompt := promptui.Select{
@@ -169,5 +168,5 @@ func (c *ctxCmd) run() error {
 	if err != nil {
 		return err
 	}
-	return c.ctxs.Switch(result)
+	return ctxs.Switch(result)
 }

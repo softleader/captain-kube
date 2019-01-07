@@ -107,7 +107,7 @@ func newInstallCmd() *cobra.Command {
 func (c *installCmd) run() error {
 	for _, chart := range c.charts {
 		logrus.Printf("Installing helm chart: %s", chart)
-		if err := runInstall(c, chart); err != nil {
+		if err := c.install(chart); err != nil {
 			return err
 		}
 		logrus.Printf("Successfully installed chart to %q", c.helmTiller.Endpoint)
@@ -115,16 +115,16 @@ func (c *installCmd) run() error {
 	return nil
 }
 
-func runInstall(c *installCmd, path string) error {
-	abs, err := filepath.Abs(path)
-	if err != nil {
-		return err
-	}
+func (c *installCmd) install(path string) error {
 	expanded, err := homedir.Expand(path)
 	if err != nil {
 		path = expanded
 	}
-	bytes, err := ioutil.ReadFile(expanded)
+	abs, err := filepath.Abs(expanded)
+	if err != nil {
+		return err
+	}
+	bytes, err := ioutil.ReadFile(abs)
 	if err != nil {
 		return err
 	}
@@ -134,7 +134,7 @@ func runInstall(c *installCmd, path string) error {
 		Timeout: settings.timeout,
 		Verbose: settings.verbose,
 		Chart: &proto.Chart{
-			FileName: filepath.Base(abs),
+			FileName: filepath.Base(expanded),
 			Content:  bytes,
 			FileSize: int64(len(bytes)),
 		},
@@ -160,7 +160,7 @@ func runInstall(c *installCmd, path string) error {
 
 	if c.pull {
 		if tpls == nil {
-			if tpls, err = chart.LoadBytes(logrus.StandardLogger(), request.Chart.Content); err != nil {
+			if tpls, err = chart.LoadArchiveBytes(logrus.StandardLogger(), request.Chart.FileName, request.Chart.Content); err != nil {
 				return err
 			}
 		}
@@ -171,7 +171,7 @@ func runInstall(c *installCmd, path string) error {
 
 	if len(c.retag.From) > 0 && len(c.retag.To) > 0 {
 		if tpls == nil {
-			if tpls, err = chart.LoadBytes(logrus.StandardLogger(), request.Chart.Content); err != nil {
+			if tpls, err = chart.LoadArchiveBytes(logrus.StandardLogger(), request.Chart.FileName, request.Chart.Content); err != nil {
 				return err
 			}
 		}

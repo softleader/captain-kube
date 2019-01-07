@@ -124,7 +124,7 @@ func doInstall(log *logrus.Logger, s *Install, form *InstallRequest, fileHeader 
 
 	if strutil.Contains(form.Tags, "p") {
 		if tpls == nil {
-			if tpls, err = chart.LoadBytes(logrus.StandardLogger(), request.Chart.Content); err != nil {
+			if tpls, err = chart.LoadArchiveBytes(logrus.StandardLogger(), request.Chart.FileName, request.Chart.Content); err != nil {
 				return err
 			}
 		}
@@ -135,7 +135,7 @@ func doInstall(log *logrus.Logger, s *Install, form *InstallRequest, fileHeader 
 
 	if len(request.Retag.From) > 0 && len(request.Retag.To) > 0 {
 		if tpls == nil {
-			if tpls, err = chart.LoadBytes(logrus.StandardLogger(), request.Chart.Content); err != nil {
+			if tpls, err = chart.LoadArchiveBytes(logrus.StandardLogger(), request.Chart.FileName, request.Chart.Content); err != nil {
 				return err
 			}
 		}

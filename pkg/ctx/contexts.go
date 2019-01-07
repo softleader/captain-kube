@@ -20,6 +20,7 @@ const (
 var (
 	ErrMountVolumeNotExist = errors.New(`mount volume not found
 It looks like you are running the command outside slctl (https://github.com/softleader/slctl)
+Please set SL_PLUGIN_MOUNT variable to manually specify the location for the command to store data 
 For more details: https://github.com/softleader/slctl/wiki/Plugins-Guide#mount-volume
 `)
 	ErrNoActiveContextPresent = errors.New("no active context present") // 代表當前沒有 active 的 context

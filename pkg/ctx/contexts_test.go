@@ -29,7 +29,7 @@ func TestLoadContexts(t *testing.T) {
 		t.Error(err)
 	}
 
-	if err = ctx.Add("foo", []string{"-e", "localhost"}); err != nil {
+	if err = ctx.Add("foo", []string{"-e", "localhost"}, false); err != nil {
 		t.Error(err)
 	}
 	actual, err := LoadContexts(log, ctxFile)
@@ -58,7 +58,7 @@ func TestLoadContexts(t *testing.T) {
 		}
 	}
 
-	if err = ctx.Add("bar", []string{"--endpoint-port", "9876", "--endpoint", "192.168.1.93"}); err != nil {
+	if err = ctx.Add("bar", []string{"--endpoint-port", "9876", "--endpoint", "192.168.1.93"}, false); err != nil {
 		t.Error(err)
 	}
 	actual, err = LoadContexts(log, ctxFile)

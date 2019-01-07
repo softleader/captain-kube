@@ -19,8 +19,8 @@ func newPruneCmd() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "prune",
-		Short: "docker system prune to all node",
-		Long:  "docker system prune to all node",
+		Short: "docker system prune",
+		Long:  "docker system prune to current host and all worker nodes as well",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return c.run()
 		},

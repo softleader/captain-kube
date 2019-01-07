@@ -35,12 +35,12 @@ func LoadArchiveBytes(log *logrus.Logger, filename string, data []byte) (tpls Te
 }
 
 func LoadArchive(log *logrus.Logger, archivePath string) (tpls Templates, err error) {
-	path, err := ioutil.TempDir(os.TempDir(), "load-archive-")
+	tmp, err := ioutil.TempDir(os.TempDir(), "load-archive-")
 	if err != nil {
 		return
 	}
-	defer os.RemoveAll(path)
-	extractPath := filepath.Join(path, filepath.Base(archivePath))
+	defer os.RemoveAll(tmp)
+	extractPath := filepath.Join(tmp, filepath.Base(archivePath))
 	if err = arc.Extract(log, archivePath, extractPath); err != nil {
 		return
 	}

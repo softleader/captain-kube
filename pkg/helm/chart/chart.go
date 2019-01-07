@@ -21,6 +21,18 @@ func (t *Templates) Size() int {
 	return len(reflect.ValueOf(t).MapKeys())
 }
 
+func LoadBytes(log *logrus.Logger, content []byte) (tpls Templates, err error) {
+	tf, err := ioutil.TempFile(os.TempDir(), "load-bytes-")
+	if err != nil {
+		return nil, err
+	}
+	defer os.Remove(tf.Name())
+	if _, err := tf.Write(content); err != nil {
+		return nil, err
+	}
+	return LoadArchive(log, tf.Name())
+}
+
 func LoadArchive(log *logrus.Logger, archivePath string) (tpls Templates, err error) {
 	path, err := ioutil.TempDir(os.TempDir(), "load-archive-")
 	if err != nil {
@@ -40,6 +52,7 @@ func LoadArchive(log *logrus.Logger, archivePath string) (tpls Templates, err er
 		return
 	}
 	tpls, err = LoadDir(log, tplPath)
+	log.Debugf("%v template(s) loaded\n", len(tpls))
 	return
 }
 

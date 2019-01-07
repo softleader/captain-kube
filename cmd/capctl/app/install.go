@@ -7,6 +7,7 @@ import (
 	"github.com/softleader/captain-kube/pkg/captain"
 	"github.com/softleader/captain-kube/pkg/ctx"
 	"github.com/softleader/captain-kube/pkg/dockerd"
+	"github.com/softleader/captain-kube/pkg/helm/chart"
 	"github.com/softleader/captain-kube/pkg/proto"
 	"github.com/spf13/cobra"
 	"io/ioutil"
@@ -15,11 +16,10 @@ import (
 )
 
 type installCmd struct {
-	pull      bool
-	sync      bool
-	namespace string
-	charts    []string
-
+	pull bool // capctl 或 capui 是否要 pull image
+	sync bool // 同步 image 到所有 node 上: 有 re-tag 時僅同步符合 re-tag 條件的 image; 無 re-tag 則同步全部
+	//namespace    string
+	charts       []string
 	retag        *ctx.ReTag
 	registryAuth *ctx.RegistryAuth // docker registry auth
 	helmTiller   *ctx.HelmTiller   // helm tiller
@@ -28,7 +28,7 @@ type installCmd struct {
 
 func newInstallCmd() *cobra.Command {
 	c := installCmd{
-		namespace:    "default",
+		//namespace:    "default",
 		retag:        activeCtx.ReTag,
 		endpoint:     activeCtx.Endpoint,
 		registryAuth: activeCtx.RegistryAuth,
@@ -58,9 +58,9 @@ func newInstallCmd() *cobra.Command {
 	f := cmd.Flags()
 
 	f.BoolVarP(&c.pull, "pull", "p", c.pull, "pull images in Chart")
-	f.BoolVarP(&c.sync, "sync", "s", c.sync, "re-tag images & sync to all kubernetes nodes")
+	f.BoolVarP(&c.sync, "sync", "s", c.sync, "同步 image 到所有 node 上, 有 re-tag 則會同步 re-tag 之後的 image host")
 
-	f.StringVarP(&c.namespace, "namespace", "n", c.namespace, "specify the namespace of gcp, not available now")
+	// f.StringVarP(&c.namespace, "namespace", "n", c.namespace, "specify the namespace of gcp, not available now")
 
 	c.retag.AddFlags(f)
 	c.endpoint.AddFlags(f)
@@ -72,23 +72,25 @@ func newInstallCmd() *cobra.Command {
 
 func (c *installCmd) run() error {
 	for _, chart := range c.charts {
-		logrus.Println("### chart:", chart, "###")
+		logrus.Printf("Installing helm chart: %s", chart)
 		if err := runInstall(c, chart); err != nil {
 			return err
 		}
+		logrus.Printf("Successfully installed chart to %q", c.helmTiller.Endpoint)
 	}
 	return nil
 }
 
 func runInstall(c *installCmd, path string) error {
-	if expanded, err := homedir.Expand(path); err != nil {
-		path = expanded
-	}
 	abs, err := filepath.Abs(path)
 	if err != nil {
 		return err
 	}
-	bytes, err := ioutil.ReadFile(abs)
+	expanded, err := homedir.Expand(path)
+	if err != nil {
+		path = expanded
+	}
+	bytes, err := ioutil.ReadFile(expanded)
 	if err != nil {
 		return err
 	}
@@ -102,7 +104,6 @@ func runInstall(c *installCmd, path string) error {
 			Content:  bytes,
 			FileSize: int64(len(bytes)),
 		},
-		Pull: c.pull,
 		Sync: c.sync,
 		Retag: &proto.ReTag{
 			From: c.retag.From,
@@ -121,8 +122,28 @@ func runInstall(c *installCmd, path string) error {
 		},
 	}
 
-	if err := dockerd.PullAndSync(logrus.StandardLogger(), &request); err != nil {
-		return err
+	var tpls chart.Templates
+
+	if c.pull {
+		if tpls == nil {
+			if tpls, err = chart.LoadBytes(logrus.StandardLogger(), request.Chart.Content); err != nil {
+				return err
+			}
+		}
+		if err := dockerd.PullFromTemplates(logrus.StandardLogger(), tpls, request.RegistryAuth); err != nil {
+			return err
+		}
+	}
+
+	if len(c.retag.From) > 0 && len(c.retag.To) > 0 {
+		if tpls == nil {
+			if tpls, err = chart.LoadBytes(logrus.StandardLogger(), request.Chart.Content); err != nil {
+				return err
+			}
+		}
+		if err := dockerd.ReTagFromTemplates(logrus.StandardLogger(), tpls, request.Retag, request.RegistryAuth); err != nil {
+			return err
+		}
 	}
 
 	if err := captain.InstallChart(logrus.StandardLogger(), c.endpoint.String(), &request, settings.timeout); err != nil {

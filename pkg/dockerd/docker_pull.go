@@ -38,3 +38,15 @@ func Pull(log *logrus.Logger, image chart.Image, registryAuth *proto.RegistryAut
 
 	return err
 }
+
+func PullFromTemplates(log *logrus.Logger, tpls chart.Templates, auth *proto.RegistryAuth) error {
+	for _, tpl := range tpls {
+		for _, image := range tpl {
+			log.Debugln("pulling image:", image.String())
+			if err := Pull(log, *image, auth); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}

@@ -50,3 +50,21 @@ func ReTag(log *logrus.Logger, source chart.Image, target chart.Image, registryA
 
 	return err
 }
+
+func ReTagFromTemplates(log *logrus.Logger, tpls chart.Templates, retag *proto.ReTag, auth *proto.RegistryAuth) error {
+	for _, tpl := range tpls {
+		for _, image := range tpl {
+			if image.Host == retag.From {
+				log.Println("syncing ", image)
+				if err := ReTag(log, *image, chart.Image{
+					Host: retag.To,
+					Repo: image.Repo,
+					Tag:  image.Tag,
+				}, auth); err != nil {
+					return err
+				}
+			}
+		}
+	}
+	return nil
+}

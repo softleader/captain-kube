@@ -12,12 +12,11 @@ message InstallChartRequest {
     Chart chart = 1;
     Tiller tiller = 2;
     int64 timeout = 3;
-    bool pull = 4;
-    bool sync = 5;
-    ReTag retag = 6;
-    RegistryAuth registryAuth = 7;
-    bool verbose = 8;
-    bool color = 9;
+    bool sync = 4;
+    ReTag retag = 5;
+    RegistryAuth registryAuth = 6;
+    bool verbose = 7;
+    bool color = 8;
 }
 
 message DeleteChartRequest {

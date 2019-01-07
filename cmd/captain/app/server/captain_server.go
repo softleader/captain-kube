@@ -41,12 +41,7 @@ func (s *CaptainServer) lookupCaplet(log *logrus.Logger, colored bool) (endpoint
 			endpoints[i].Color = color
 		}
 	}
-	log.Debugf("found %v caplet(s) daemon:", len(endpoints))
-	if log.IsLevelEnabled(logrus.DebugLevel) {
-		for _, e := range endpoints {
-			log.Debugln(e.String())
-		}
-	}
+	log.Debugf("found %v caplet(s) daemon: %v", len(endpoints), endpoints)
 	return
 }
 
@@ -61,7 +56,7 @@ func newPullImageRequest(tpls chart.Templates, retag *proto.ReTag, auth *proto.R
 				Repo: img.Repo,
 				Tag:  img.Tag,
 			}
-			if i.Host == retag.From {
+			if i.Host == retag.From && len(retag.To) > 0 {
 				i.Host = retag.To
 			}
 			req.Images = append(req.Images, i)

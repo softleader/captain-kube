@@ -7,6 +7,8 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/captain"
 	"github.com/softleader/captain-kube/pkg/dockerd"
+	"github.com/softleader/captain-kube/pkg/dur"
+	"github.com/softleader/captain-kube/pkg/helm/chart"
 	"github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/sse"
 	"github.com/softleader/captain-kube/pkg/utils"
@@ -100,8 +102,7 @@ func doInstall(log *logrus.Logger, s *Install, form *InstallRequest, fileHeader 
 			Content:  buf.Bytes(),
 			FileSize: fileHeader.Size,
 		},
-		Pull: strutil.Contains(form.Tags, "p"),
-		Sync: strutil.Contains(form.Tags, "r"),
+		Sync: strutil.Contains(form.Tags, "s"),
 		Retag: &proto.ReTag{
 			From: form.SourceRegistry,
 			To:   form.Registry,
@@ -119,11 +120,31 @@ func doInstall(log *logrus.Logger, s *Install, form *InstallRequest, fileHeader 
 		},
 	}
 
-	if err := dockerd.PullAndSync(log, &request); err != nil {
-		return fmt.Errorf("Pull/Sync failed: %s", err)
+	var tpls chart.Templates
+
+	if strutil.Contains(form.Tags, "p") {
+		if tpls == nil {
+			if tpls, err = chart.LoadBytes(logrus.StandardLogger(), request.Chart.Content); err != nil {
+				return err
+			}
+		}
+		if err := dockerd.PullFromTemplates(logrus.StandardLogger(), tpls, request.RegistryAuth); err != nil {
+			return err
+		}
 	}
 
-	if err := captain.InstallChart(log, s.Cmd.Endpoint.String(), &request, 300); err != nil {
+	if len(request.Retag.From) > 0 && len(request.Retag.To) > 0 {
+		if tpls == nil {
+			if tpls, err = chart.LoadBytes(logrus.StandardLogger(), request.Chart.Content); err != nil {
+				return err
+			}
+		}
+		if err := dockerd.ReTagFromTemplates(logrus.StandardLogger(), tpls, request.Retag, request.RegistryAuth); err != nil {
+			return err
+		}
+	}
+
+	if err := captain.InstallChart(log, s.Cmd.Endpoint.String(), &request, dur.DefaultDeadlineSecond); err != nil {
 		return fmt.Errorf("call captain InstallChart failed: %s", err)
 	}
 

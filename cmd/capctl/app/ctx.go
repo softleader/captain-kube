@@ -63,7 +63,6 @@ type ctxCmd struct {
 	off    bool
 	delete []string
 	args   []string
-	ctxs   *ctx.Contexts
 }
 
 func newCtxCmd() *cobra.Command {

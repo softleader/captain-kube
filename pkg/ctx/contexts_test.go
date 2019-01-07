@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 )
 
@@ -56,6 +57,22 @@ func TestLoadContexts(t *testing.T) {
 			t.Errorf("suppose to have localhost endpoint.host of foo, but got %s", host)
 			t.FailNow()
 		}
+	}
+	if err = ctx.Add("foo", []string{"-e", "localhost"}, false); err == nil {
+		t.Error("should have error")
+	} else if !strings.HasSuffix(err.Error(), "already exists") {
+		t.Error("should have error suffix: already exists")
+	}
+	if err = ctx.Add("foo", []string{"-e", "localhost"}, true); err != nil {
+		t.Error(err)
+	}
+	actual, err = LoadContexts(log, ctxFile)
+	if err != nil {
+		t.Error(err)
+	}
+	if len(actual.Contexts) != 1 {
+		t.Errorf("suppose to have 1 context")
+		t.FailNow()
 	}
 
 	if err = ctx.Add("bar", []string{"--endpoint-port", "9876", "--endpoint", "192.168.1.93"}, false); err != nil {

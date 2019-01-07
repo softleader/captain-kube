@@ -1,12 +1,15 @@
 package app
 
 import (
+	"fmt"
 	"github.com/mattn/go-colorable"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/ctx"
 	"github.com/softleader/captain-kube/pkg/utils"
 	"github.com/softleader/captain-kube/pkg/version"
 	"github.com/spf13/cobra"
+	"os"
+	"strconv"
 )
 
 var (
@@ -16,6 +19,9 @@ var (
 )
 
 func NewRootCmd(args []string, m *version.BuildMetadata) (*cobra.Command, error) {
+	if offline, _ := strconv.ParseBool(os.Getenv("SL_OFFLINE")); offline {
+		return nil, fmt.Errorf("can not run the command in offline mode")
+	}
 	if err := initContext(); err != nil {
 		return nil, err
 	}

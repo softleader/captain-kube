@@ -15,6 +15,40 @@ import (
 	"strings"
 )
 
+const (
+	installHelp = `上傳一或多個 Helm Chart 至 Captain-Kube
+
+使用 '--endpoint' 指定上傳的 Captain Endpoint
+
+	$ capctl install CHART... -e CAPTAIN_ENDPOINT
+
+若 Helm Tiller Server 不在 Captain-Kube 環境中, 可以傳入 '--tiller*' 開頭的 flag 設定 Tiller 相關資訊
+
+	$ capctl install CHART... -e CAPTAIN_ENDPOINT --tiller TILLER_IP
+	$ capctl install CHART... -e CAPTAIN_ENDPOINT --tiller TILLER_IP --tiller-skip-ssl=false
+
+在上傳 Chart 之前, 支援以下 Pre-Procedures:
+
+'--pull' : 拉取 Chart 中的 image
+'--retag-from' 及 '--retag-to' : 將 Chart 中的 image tag 成指定 host 並推入該 docker registry
+
+	$ capctl install CHART... -e CAPTAIN_ENDPOINT -p
+	$ capctl install CHART... -e CAPTAIN_ENDPOINT -p -f hub.softleader.com.tw -t client-registry:5000
+
+在上傳 Chart 之後, 支援以下 Post-Procedures:
+
+'--sync' : 自動同步 image 到所有 kubernetes worker nodes, 如果當次上傳也有 re-tag 則會同步 re-tag 之後的 image
+
+	$ capctl install CHART... -e CAPTAIN_ENDPOINT -s
+	$ capctl install CHART... -e CAPTAIN_ENDPOINT -s -f hub.softleader.com.tw -t client-registry:5000
+
+Pre-Procedures 跟 Post-Procedures 均可混合使用
+亦可結合 '--reg-*' 開頭的 flags 指定 docker registry 的認證資訊
+
+	$ capctl install CHART... -e CAPTAIN_ENDPOINT -ps --reg-pass SECRET
+`
+)
+
 type installCmd struct {
 	pull bool // capctl 或 capui 是否要 pull image
 	sync bool // 同步 image 到所有 node 上: 有 re-tag 時僅同步符合 re-tag 條件的 image; 無 re-tag 則同步全部
@@ -36,9 +70,9 @@ func newInstallCmd() *cobra.Command {
 	}
 
 	cmd := &cobra.Command{
-		Use:   "install [CHART...]",
+		Use:   "install CHART...",
 		Short: "install helm-chart",
-		Long:  "install helm chart",
+		Long:  installHelp,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if c.charts = args; len(c.charts) == 0 {
 				return errors.New("chart path is required")

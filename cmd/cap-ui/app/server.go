@@ -7,10 +7,12 @@ import (
 	"github.com/softleader/captain-kube/pkg/capui"
 	"github.com/softleader/captain-kube/pkg/ctx"
 	"github.com/softleader/captain-kube/pkg/env"
+	"github.com/softleader/captain-kube/pkg/version"
 	"github.com/spf13/cobra"
 )
 
 type capUiCmd struct {
+	Metadata     *version.BuildMetadata
 	uiPort       int
 	DefaultValue DefaultValue      // 畫面選ss項預設值
 	RegistryAuth *ctx.RegistryAuth // docker registry 授權
@@ -25,10 +27,11 @@ type DefaultValue struct {
 	ReTag     *ctx.ReTag
 }
 
-func NewCapUiCommand() (cmd *cobra.Command) {
+func NewCapUiCommand(metadata *version.BuildMetadata) (cmd *cobra.Command) {
 	var verbose bool
 	envCtx := ctx.NewContextFromEnv()
 	c := capUiCmd{
+		Metadata: metadata,
 		DefaultValue: DefaultValue{
 			Plaform:   env.Lookup(capui.EnvPlaform, capui.DefaultPlaform),
 			Namespace: env.Lookup(capui.EnvNamespace, capui.DefaultNamespace),

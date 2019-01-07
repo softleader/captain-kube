@@ -8,8 +8,6 @@ import (
 	"github.com/softleader/captain-kube/pkg/utils"
 	"github.com/softleader/captain-kube/pkg/version"
 	"github.com/spf13/cobra"
-	"os"
-	"strconv"
 )
 
 var (
@@ -19,9 +17,6 @@ var (
 )
 
 func NewRootCmd(args []string, m *version.BuildMetadata) (*cobra.Command, error) {
-	if offline, _ := strconv.ParseBool(os.Getenv("SL_OFFLINE")); offline {
-		return nil, fmt.Errorf("can not run the command in offline mode")
-	}
 	if err := initContext(); err != nil {
 		return nil, err
 	}
@@ -32,12 +27,17 @@ func NewRootCmd(args []string, m *version.BuildMetadata) (*cobra.Command, error)
 		Short:        "the captain-kube command line interface",
 		Long:         "The command line interface against Captain-Kube services",
 		SilenceUsage: true,
-		PersistentPreRun: func(cmd *cobra.Command, args []string) {
+		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+			if settings.offline {
+				return fmt.Errorf("can not run the command in offline mode")
+			}
+
 			logrus.SetFormatter(&utils.PlainFormatter{})
 			logrus.SetOutput(colorable.NewColorableStdout()) // for windows color output
 			if settings.verbose {
 				logrus.SetLevel(logrus.DebugLevel)
 			}
+			return nil
 		},
 	}
 

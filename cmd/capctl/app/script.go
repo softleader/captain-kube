@@ -28,12 +28,12 @@ const (
 
 flags 可以自由的混搭使用, 你也可以使用 '>' 再將產生的 script 輸出成檔案
 
-	$ capctl script CHART... -prsl
-	$ capctl script CHART... -sl > save-and-load.sh
+	$ {{.}} script CHART... -prsl
+	$ {{.}} script CHART... -sl > save-and-load.sh
 
 結合 '--diff' 可以只產生差異 image 的 script
 
-	$ capctl script CHART ANOTHER_CHART -prsld
+	$ {{.}} script CHART ANOTHER_CHART -prsld
 `
 )
 
@@ -61,7 +61,7 @@ func newScriptCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "script CHART...",
 		Short: "generate script of helm-chart",
-		Long:  scriptHelp,
+		Long:  usage(scriptHelp),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if c.charts = args; len(c.charts) == 0 {
 				return errors.New("chart path is required")

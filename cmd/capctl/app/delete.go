@@ -14,16 +14,16 @@ const (
 
 使用 '--endpoint' 指定刪除的 Captain Endpoint
 
-	$ capctl delete CHART_NAME -e CAPTAIN_ENDPOINT
+	$ {{.}} delete CHART_NAME -e CAPTAIN_ENDPOINT
 
 若 Helm Tiller Server 不在 Captain-Kube 環境中, 可以傳入 '--tiller*' 開頭的 flag 設定 Tiller 相關資訊
 
-	$ capctl delete CHART_NAME -e CAPTAIN_ENDPOINT --tiller TILLER_IP
-	$ capctl delete CHART_NAME -e CAPTAIN_ENDPOINT --tiller TILLER_IP --tiller-skip-ssl=false
+	$ {{.}} delete CHART_NAME -e CAPTAIN_ENDPOINT --tiller TILLER_IP
+	$ {{.}} delete CHART_NAME -e CAPTAIN_ENDPOINT --tiller TILLER_IP --tiller-skip-ssl=false
 
 傳入 '--chart-version' 指定只刪除特定版本; 反之則刪除全部版本
 
-	$ capctl delete CHART_NAME -e CAPTAIN_ENDPOINT -V 0.1.0
+	$ {{.}} delete CHART_NAME -e CAPTAIN_ENDPOINT -V 0.1.0
 `
 )
 
@@ -42,7 +42,7 @@ func newDeleteCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "delete CHART_NAME",
 		Short: "delete helm-chart",
-		Long:  deleteHelp,
+		Long:  usage(deleteHelp),
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c.chartName = args[0]

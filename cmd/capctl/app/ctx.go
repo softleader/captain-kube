@@ -18,31 +18,31 @@ const (
 	2. 啟用中的 context-flags 
 	3. 環境變數的設定
 
-'ctx' 指令可以快速的在不同 context 之間切換
+'{{.}} ctx' 指令可以快速的在不同 context 之間切換
 
-	$ ctx         : 互動式的快速切換 context
-	$ ctx <NAME>  : 切換 context 到 <NAME>
-	$ ctx -       : 切換到前一個 context
-	$ ctx --off   : 清空當前的 context
+	$ {{.}} ctx         : 互動式的快速切換 context
+	$ {{.}} ctx <NAME>  : 切換 context 到 <NAME>
+	$ {{.}} ctx -       : 切換到前一個 context
+	$ {{.}} ctx --off   : 清空當前的 context
 
 傳入 '--ls' 可以列出所有 context 及其 context-flags
 配合 '--width' 可以指定顯示的字數 (預設100), '--width 0' 為不限長度, 即完整顯示
 
-	$ ctx --ls
-	$ ctx --ls --width 0
+	$ {{.}} ctx --ls
+	$ {{.}} ctx --ls --width 0
 
 傳入 '--add' 可以新增 context, 結合 '--force' 可以強制複寫已存在的 context
 使用上需先接著一組 double-dash (--), 之後再給予1到數個 context-flags
 
-	$ ctx -a <NAME> -- <CONTEXT_FLAGS...>
-	$ ctx -a local -f -- -e localhost --endpoint-port 30051  
+	$ {{.}} ctx -a <NAME> -- <CONTEXT_FLAGS...>
+	$ {{.}} ctx -a local -f -- -e localhost --endpoint-port 30051  
 
 傳入 '--delete' 或 '--rename' 可以刪除或重新命名 context:
 
-	$ ctx -d <NAME>             : 刪除 context <NAME>
-	$ ctx -d .                  : 刪除當前的 context
-	$ ctx -r <NAME>=<NEW_NAME>  : 重新命名 <NAME> 成 <NEW_NAME>
-	$ ctx -r .=<NEW_NAME>       : 重新命名當前的 context name 成 <NEW_NAME>
+	$ {{.}} ctx -d <NAME>             : 刪除 context <NAME>
+	$ {{.}} ctx -d .                  : 刪除當前的 context
+	$ {{.}} ctx -r <NAME>=<NEW_NAME>  : 重新命名 <NAME> 成 <NEW_NAME>
+	$ {{.}} ctx -r .=<NEW_NAME>       : 重新命名當前的 context name 成 <NEW_NAME>
 
 可用的 context-flags 包含了:
 
@@ -51,8 +51,9 @@ const (
 )
 
 func formatCtxHelp() string {
-	usage, _ := ctx.FlagsString()
-	return fmt.Sprintf(ctxHelp, usage)
+	help := usage(ctxHelp)
+	flags, _ := ctx.FlagsString()
+	return fmt.Sprintf(help, flags)
 }
 
 type ctxCmd struct {

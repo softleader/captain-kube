@@ -1,6 +1,7 @@
 package app
 
 import (
+	"bytes"
 	"fmt"
 	"github.com/mattn/go-colorable"
 	"github.com/sirupsen/logrus"
@@ -8,12 +9,15 @@ import (
 	"github.com/softleader/captain-kube/pkg/utils"
 	"github.com/softleader/captain-kube/pkg/version"
 	"github.com/spf13/cobra"
+	"os"
+	"text/template"
 )
 
 var (
 	ctxs      *ctx.Contexts
 	activeCtx *ctx.Context
 	metadata  *version.BuildMetadata
+	name      = "capctl"
 )
 
 func NewRootCmd(args []string, m *version.BuildMetadata) (*cobra.Command, error) {
@@ -21,9 +25,12 @@ func NewRootCmd(args []string, m *version.BuildMetadata) (*cobra.Command, error)
 		return nil, err
 	}
 	metadata = m
+	if cli, found := os.LookupEnv("SL_CLI"); found {
+		name = fmt.Sprintf("%s cap", cli)
+	}
 
 	cmd := &cobra.Command{
-		Use:          "capctl",
+		Use:          name,
 		Short:        "the captain-kube command line interface",
 		Long:         "The command line interface against Captain-Kube services",
 		SilenceUsage: true,
@@ -31,7 +38,6 @@ func NewRootCmd(args []string, m *version.BuildMetadata) (*cobra.Command, error)
 			if settings.Offline {
 				return fmt.Errorf("can not run the command in offline mode")
 			}
-
 			logrus.SetFormatter(&utils.PlainFormatter{})
 			logrus.SetOutput(colorable.NewColorableStdout()) // for windows color output
 			if settings.Verbose {
@@ -72,4 +78,15 @@ func initContext() (err error) {
 		activeCtx = ctx.NewContextFromEnv()
 	}
 	return nil
+}
+
+func usage(tpl string) string {
+	var buf bytes.Buffer
+	parsed := template.Must(template.New("").Parse(tpl))
+	err := parsed.Execute(&buf, name)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	return buf.String()
 }

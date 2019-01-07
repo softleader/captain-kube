@@ -28,13 +28,13 @@ func NewRootCmd(args []string, m *version.BuildMetadata) (*cobra.Command, error)
 		Long:         "The command line interface against Captain-Kube services",
 		SilenceUsage: true,
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-			if settings.offline {
+			if settings.Offline {
 				return fmt.Errorf("can not run the command in offline mode")
 			}
 
 			logrus.SetFormatter(&utils.PlainFormatter{})
 			logrus.SetOutput(colorable.NewColorableStdout()) // for windows color output
-			if settings.verbose {
+			if settings.Verbose {
 				logrus.SetLevel(logrus.DebugLevel)
 			}
 			return nil
@@ -42,7 +42,7 @@ func NewRootCmd(args []string, m *version.BuildMetadata) (*cobra.Command, error)
 	}
 
 	flags := cmd.PersistentFlags()
-	addGlobalFlags(flags)
+	initGlobalFlags(activeCtx.Global, flags)
 
 	cmd.AddCommand(
 		newInstallCmd(),

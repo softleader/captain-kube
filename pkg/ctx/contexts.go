@@ -79,7 +79,7 @@ func (c *Contexts) GetActiveExpandEnv() (*Context, error) {
 	}
 }
 
-func (c *Contexts) Add(name string, args []string) error {
+func (c *Contexts) Add(name string, args []string, force bool) error {
 	if contextNameRegexp.MatchString(name) {
 		return fmt.Errorf("context name must not match regexp: %s", contextNameRegexp.String())
 	}
@@ -87,7 +87,10 @@ func (c *Contexts) Add(name string, args []string) error {
 		return fmt.Errorf("context name must not match regexp: %s", contextNameContainsRegexp.String())
 	}
 	if _, found := c.Contexts[name]; found {
-		return fmt.Errorf("context %q already exists", name)
+		if !force {
+			return fmt.Errorf("context %q already exists", name)
+		}
+		delete(c.Contexts, name)
 	}
 	// make sure every args is fine
 	if _, err := newContext(args...); err != nil {

@@ -50,8 +50,8 @@ func newDeleteCmd() *cobra.Command {
 
 func (c *deleteCmd) run() error {
 	request := proto.DeleteChartRequest{
-		Timeout: settings.timeout,
-		Verbose: settings.verbose,
+		Timeout: settings.Timeout,
+		Verbose: settings.Verbose,
 		Tiller: &proto.Tiller{
 			Endpoint:          c.helmTiller.Endpoint,
 			Username:          c.helmTiller.Username,
@@ -62,7 +62,7 @@ func (c *deleteCmd) run() error {
 		ChartName:    c.chartName,
 		ChartVersion: c.chartVersion,
 	}
-	if err := captain.DeleteChart(logrus.StandardLogger(), c.endpoint.String(), &request, settings.timeout); err != nil {
+	if err := captain.DeleteChart(logrus.StandardLogger(), c.endpoint.String(), &request, settings.Timeout); err != nil {
 		return err
 	}
 	return nil

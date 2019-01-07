@@ -35,5 +35,5 @@ func newPruneCmd() *cobra.Command {
 }
 
 func (c *pruneCmd) run() error {
-	return captain.Prune(logrus.StandardLogger(), c.endpoint.String(), settings.verbose, settings.color, settings.timeout)
+	return captain.Prune(logrus.StandardLogger(), c.endpoint.String(), settings.Verbose, settings.Color, settings.Timeout)
 }

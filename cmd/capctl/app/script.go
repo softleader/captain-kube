@@ -138,7 +138,7 @@ func runScript(log *logrus.Logger, c *scriptCmd, path string) error {
 		Load: c.load,
 	}
 
-	if err := captain.GenerateScript(log, c.endpoint.String(), &request, settings.timeout); err != nil {
+	if err := captain.GenerateScript(log, c.endpoint.String(), &request, settings.Timeout); err != nil {
 		return err
 	}
 

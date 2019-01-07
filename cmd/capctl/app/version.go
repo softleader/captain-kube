@@ -16,7 +16,7 @@ func newVersionCmd() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			logrus.Infoln(metadata.String())
 			if endpoint.Specified() {
-				if err := captain.Version(logrus.StandardLogger(), endpoint.String(), full, settings.color, settings.timeout); err != nil {
+				if err := captain.Version(logrus.StandardLogger(), endpoint.String(), full, settings.Color, settings.Timeout); err != nil {
 					return err
 				}
 			}

@@ -31,11 +31,11 @@ const (
 	$ ctx --ls
 	$ ctx --ls --width 0
 
-傳入 '--add' 可以新增 context
+傳入 '--add' 可以新增 context, 結合 '--force' 可以強制複寫已存在的 context
 使用上需先接著一組 double-dash (--), 之後再給予1到數個 context-flags
 
 	$ ctx -a <NAME> -- <CONTEXT_FLAGS...>
-	$ ctx -a local -- -e localhost --endpoint-port 30051  
+	$ ctx -a local -f -- -e localhost --endpoint-port 30051  
 
 傳入 '--delete' 或 '--rename' 可以刪除或重新命名 context:
 
@@ -59,6 +59,7 @@ type ctxCmd struct {
 	width  uint
 	add    string
 	rename string
+	force  bool
 	ls     bool
 	off    bool
 	delete []string
@@ -106,6 +107,7 @@ func newCtxCmd() *cobra.Command {
 
 	f := cmd.Flags()
 	f.StringVarP(&c.add, "add", "a", "", "add context <NAME> with <CONTEXT_FLAGS...>")
+	f.BoolVarP(&c.force, "force", "f", false, "force to delete context before adding context")
 	f.StringArrayVarP(&c.delete, "delete", "d", []string{}, "delete context <NAME> ('.' for current-context)")
 	f.StringVarP(&c.rename, "rename", "r", "", "rename context <NAME> to <NEW_NAME>")
 	f.BoolVar(&c.ls, "ls", false, "list contexts")
@@ -120,7 +122,7 @@ func (c *ctxCmd) run() error {
 		return ctxs.SwitchOff()
 	}
 	if len(c.add) > 0 {
-		return ctxs.Add(c.add, c.args)
+		return ctxs.Add(c.add, c.args, c.force)
 	}
 	if len(c.delete) > 0 {
 		return ctxs.Delete(c.delete...)

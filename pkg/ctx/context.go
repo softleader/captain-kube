@@ -7,6 +7,7 @@ import (
 )
 
 type Context struct {
+	Global       *Global
 	Endpoint     *Endpoint
 	HelmTiller   *HelmTiller
 	RegistryAuth *RegistryAuth
@@ -15,6 +16,7 @@ type Context struct {
 
 func NewContextFromEnv() (c *Context) {
 	c = &Context{
+		Global:       newGlobalFromEnv(),
 		Endpoint:     newEndpointFromEnv(),
 		HelmTiller:   newHelmTillerFromEnv(),
 		RegistryAuth: newRegistryAuthFromEnv(),
@@ -25,6 +27,7 @@ func NewContextFromEnv() (c *Context) {
 
 func FlagsString() (string, error) {
 	c := &Context{
+		Global:       &Global{},
 		Endpoint:     &Endpoint{},
 		HelmTiller:   &HelmTiller{},
 		RegistryAuth: &RegistryAuth{},
@@ -44,6 +47,7 @@ func FlagsString() (string, error) {
 
 func newContext(args ...string) (*Context, error) {
 	c := &Context{
+		Global:       &Global{},
 		Endpoint:     &Endpoint{},
 		HelmTiller:   &HelmTiller{},
 		RegistryAuth: &RegistryAuth{},

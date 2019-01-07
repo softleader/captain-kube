@@ -130,9 +130,9 @@ func (c *installCmd) install(path string) error {
 	}
 
 	request := proto.InstallChartRequest{
-		Color:   settings.color,
-		Timeout: settings.timeout,
-		Verbose: settings.verbose,
+		Color:   settings.Color,
+		Timeout: settings.Timeout,
+		Verbose: settings.Verbose,
 		Chart: &proto.Chart{
 			FileName: filepath.Base(expanded),
 			Content:  bytes,
@@ -180,7 +180,7 @@ func (c *installCmd) install(path string) error {
 		}
 	}
 
-	if err := captain.InstallChart(logrus.StandardLogger(), c.endpoint.String(), &request, settings.timeout); err != nil {
+	if err := captain.InstallChart(logrus.StandardLogger(), c.endpoint.String(), &request, settings.Timeout); err != nil {
 		return err
 	}
 

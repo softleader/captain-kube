@@ -1,3 +1,4 @@
+[![Go Report Card](https://goreportcard.com/badge/github.com/softleader/captain-kube)](https://goreportcard.com/report/github.com/softleader/captain-kube)
 ![stability-experimental](https://img.shields.io/badge/stability-experimental-orange.svg)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/softleader/captain-kube/blob/master/LICENSE)
 [![Build Status](https://travis-ci.com/softleader/captain-kube.svg?branch=master)](https://travis-ci.com/softleader/captain-kube)

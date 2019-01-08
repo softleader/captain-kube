@@ -154,7 +154,15 @@ func (c *ctxCmd) run() error {
 
 	var items []string
 	for ctx := range ctxs.Contexts {
-		items = append(items, ctx)
+		prefix := " "
+		if ctx == ctxs.Active {
+			prefix = ">"
+		}
+		// 都要用過濾的了, 好像不需要再顯示前一個了
+		//else if ctx == ctxs.Previous {
+		//	prefix = "-"
+		//}
+		items = append(items, fmt.Sprintf("%s %s", prefix, ctx))
 	}
 	prompt := promptui.Select{
 		Label:             "Select Context",
@@ -171,5 +179,5 @@ func (c *ctxCmd) run() error {
 	if err != nil {
 		return err
 	}
-	return ctxs.Switch(result)
+	return ctxs.Switch(result[2:])
 }

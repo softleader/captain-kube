@@ -18,6 +18,7 @@ func encode(ra *proto.RegistryAuth) (string, error) {
 func isDockerUnauthorized(err error) bool {
 	if err != nil {
 		if _, ok := err.(*docker.Error); ok {
+			// TODO 判斷是 no basic auth credentials
 			return true
 			// return derr.Status == 500 && strings.HasSuffix(derr.Message, "no basic auth credentials")
 		}

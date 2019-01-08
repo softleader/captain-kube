@@ -40,8 +40,11 @@ func ReTag(log *logrus.Logger, source chart.Image, target chart.Image, registryA
 		OutputStream: log.Out,
 	}
 
-	// 第一此採用沒有帳密的方式, 若失敗則重試第二次, 第二次採用帳密
-	if err := cli.PushImage(options, docker.AuthConfiguration{}); isDockerUnauthorized(err) && registryAuth != nil {
+	// 第一此採用沒有帳密的方式, 若失敗且為驗證相關的問題, 則重試第二次並採用帳密
+	if err := cli.PushImage(options, docker.AuthConfiguration{}); err != nil {
+		if registryAuth == nil || !isDockerUnauthorized(err) {
+			return err
+		}
 		// 為了避免 ineffectual assignments, so lets make a new var of error
 		if erragain := cli.PushImage(options, docker.AuthConfiguration{
 			Username: registryAuth.Username,

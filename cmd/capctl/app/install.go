@@ -160,7 +160,7 @@ func (c *installCmd) install(path string) error {
 
 	if c.pull {
 		if tpls == nil {
-			if tpls, err = chart.LoadArchiveBytes(logrus.StandardLogger(), request.Chart.FileName, request.Chart.Content); err != nil {
+			if tpls, err = chart.LoadArchive(logrus.StandardLogger(), abs); err != nil {
 				return err
 			}
 		}
@@ -171,7 +171,7 @@ func (c *installCmd) install(path string) error {
 
 	if len(c.retag.From) > 0 && len(c.retag.To) > 0 {
 		if tpls == nil {
-			if tpls, err = chart.LoadArchiveBytes(logrus.StandardLogger(), request.Chart.FileName, request.Chart.Content); err != nil {
+			if tpls, err = chart.LoadArchive(logrus.StandardLogger(), abs); err != nil {
 				return err
 			}
 		}

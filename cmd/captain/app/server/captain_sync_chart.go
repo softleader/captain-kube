@@ -12,7 +12,7 @@ import (
 	"path/filepath"
 )
 
-func (s *CaptainServer) InstallChart(req *proto.InstallChartRequest, stream proto.Captain_InstallChartServer) error {
+func (s *CaptainServer) SyncChart(req *proto.SyncChartRequest, stream proto.Captain_SyncChartServer) error {
 	log := logrus.New()
 	log.SetOutput(sio.NewStreamWriter(func(p []byte) error {
 		return stream.Send(&proto.ChunkMessage{
@@ -24,7 +24,7 @@ func (s *CaptainServer) InstallChart(req *proto.InstallChartRequest, stream prot
 		log.SetLevel(logrus.DebugLevel)
 	}
 
-	tmp, err := ioutil.TempDir(os.TempDir(), "install-chart-")
+	tmp, err := ioutil.TempDir(os.TempDir(), "sync-chart-")
 	if err != nil {
 		return err
 	}
@@ -34,32 +34,21 @@ func (s *CaptainServer) InstallChart(req *proto.InstallChartRequest, stream prot
 	if err := ioutil.WriteFile(chartPath, req.GetChart().GetContent(), 0644); err != nil {
 		return err
 	}
-	i, err := chart.NewInstaller(s.K8s, req.GetTiller(), chartPath)
+	log.Printf("Syncing images to all kubernetes worker nodes..")
+	endpoints, err := s.lookupCaplet(log, req.GetColor())
 	if err != nil {
 		return err
 	}
-
-	if err := i.Install(log); err != nil {
+	tpls, err := chart.LoadArchive(log, chartPath)
+	if err != nil {
 		return err
 	}
-
-	if req.GetSync() {
-		log.Printf("Syncing images to all kubernetes worker nodes..")
-		endpoints, err := s.lookupCaplet(log, req.GetColor())
-		if err != nil {
-			return err
+	log.Debugf("%v template(s) loaded\n", len(tpls))
+	log.SetNoLock()
+	endpoints.Each(func(e *caplet.Endpoint) {
+		if err := e.PullImage(log, newPullImageRequest(tpls, req.GetRetag(), req.GetRegistryAuth()), req.GetTimeout()); err != nil {
+			log.Error(err)
 		}
-		tpls, err := chart.LoadArchive(log, chartPath)
-		if err != nil {
-			return err
-		}
-		log.Debugf("%v template(s) loaded\n", len(tpls))
-		log.SetNoLock()
-		endpoints.Each(func(e *caplet.Endpoint) {
-			if err := e.PullImage(log, newPullImageRequest(tpls, req.GetRetag(), req.GetRegistryAuth()), req.GetTimeout()); err != nil {
-				log.Error(err)
-			}
-		})
-	}
+	})
 	return nil
 }

@@ -8,6 +8,15 @@ import "msg.proto";
 import "version.proto";
 import "prune.proto";
 
+message SyncChartRequest {
+    Chart chart = 1;
+    int64 timeout = 2;
+    ReTag retag = 3;
+    RegistryAuth registryAuth = 4;
+    bool verbose = 5;
+    bool color = 6;
+}
+
 message InstallChartRequest {
     Chart chart = 1;
     Tiller tiller = 2;
@@ -37,6 +46,8 @@ message GenerateScriptRequest {
 }
 
 service Captain {
+    rpc SyncChart (SyncChartRequest) returns (stream ChunkMessage) {
+    }
     rpc InstallChart (InstallChartRequest) returns (stream ChunkMessage) {
     }
     rpc DeleteChart (DeleteChartRequest) returns (stream ChunkMessage) {

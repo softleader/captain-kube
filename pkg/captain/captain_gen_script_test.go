@@ -56,9 +56,8 @@ func TestGenerateScript(t *testing.T) {
 			Content:  chart,
 			FileName: "foo-0.1.0.tgz",
 		},
-		Pull: true,
-		Retag: &proto.ReTag{
-		},
+		Pull:    true,
+		Retag:   &proto.ReTag{},
 		Save:    true,
 		Load:    true,
 		Verbose: true,

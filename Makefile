@@ -1,3 +1,4 @@
+HAS_GOLINT := $(shell command -v golint;)
 DIST := $(CURDIR)/_dist
 BUILD := $(CURDIR)/_build
 REGISTRY := softleader
@@ -9,8 +10,19 @@ UI := cap-ui
 CAPCTL = capctl
 
 .PHONY: test
-test:
+test: golint
 	go test ./... -v
+
+.PHONY: gofmt
+gofmt:
+	gofmt -s -w .
+
+.PHONY: golint
+golint: gofmt
+ifndef HAS_GOLINT
+	go get -u golang.org/x/lint/golint
+endif
+	golint ./...
 
 .PHONY: protoc
 protoc:

@@ -2,8 +2,8 @@ package app
 
 import (
 	"fmt"
-	"github.com/sirupsen/logrus"
 	"github.com/mattn/go-colorable"
+	"github.com/sirupsen/logrus"
 	"github.com/softleader/captain-kube/cmd/captain/app/server"
 	"github.com/softleader/captain-kube/pkg/caplet"
 	"github.com/softleader/captain-kube/pkg/captain"

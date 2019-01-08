@@ -14,7 +14,7 @@ func (s *CapletServer) PullImage(req *proto.PullImageRequest, stream proto.Caple
 	log.SetOutput(sio.NewStreamWriter(func(p []byte) error {
 		return stream.Send(&proto.ChunkMessage{
 			Hostname: s.hostname,
-			Msg: p,
+			Msg:      p,
 		})
 	}))
 	log.SetFormatter(&utils.PlainFormatter{})

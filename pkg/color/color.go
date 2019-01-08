@@ -27,11 +27,11 @@ var colors = []string{
 }
 
 // 什麼都不上色
-var Plain = func(b [] byte) []byte {
+var Plain = func(b []byte) []byte {
 	return b
 }
 
-func Pick(n int) (c []func([] byte) []byte) {
+func Pick(n int) (c []func([]byte) []byte) {
 	shuffled := shuffle(colors)
 	d := len(shuffled)
 	for i := 0; i < n; i++ {

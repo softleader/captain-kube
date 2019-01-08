@@ -2,9 +2,9 @@ package utils
 
 import (
 	"bytes"
+	"fmt"
 	"github.com/sirupsen/logrus"
 	"strings"
-	"fmt"
 )
 
 var ln = fmt.Sprintln()

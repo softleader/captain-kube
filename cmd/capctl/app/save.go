@@ -12,13 +12,13 @@ import (
 const (
 	saveHelp = `匯出一個或多個 Helm Chart 中的 image
 
-傳入 '--output' 指定儲存的檔案路徑, 建議檔案的副檔應該為壓縮檔, 如: .tar.gz
+傳入 '--output' 指定儲存的檔案路徑, docker 預設的儲存檔案格式為 tarball (.tar)
 
-	$ {{.}} save CHART... -o OUTPUT.tgz
+	$ {{.}} save CHART... -o OUTPUT.tar
 
 傳入 '--force' 可以強制複寫已存在的 output 檔案
 
-	$ {{.}} save CHART... -o OUTPUT.tgz -f
+	$ {{.}} save CHART... -o OUTPUT.tar -f
 `
 )
 

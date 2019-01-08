@@ -22,19 +22,21 @@ type CaptainServer struct {
 }
 
 func (s *CaptainServer) lookupCaplet(log *logrus.Logger, colored bool) (endpoints caplet.Endpoints, err error) {
+	var hosts []string
 	if len(s.Endpoints) > 0 {
 		log.Debugf("server has specified endpoint(s) for %q, skip dynamically lookup", s.Endpoints)
+		hosts = s.Endpoints
 	} else {
 		log.Debugf("looking up %q", s.Hostname)
-		if s.Endpoints, err = net.LookupHost(s.Hostname); err != nil {
+		if hosts, err = net.LookupHost(s.Hostname); err != nil {
 			return
 		}
 	}
-	if len(s.Endpoints) == 0 {
+	if len(hosts) == 0 {
 		return nil, ErrNonCapletDaemonFound
 	}
-	for _, ep := range s.Endpoints {
-		endpoints = append(endpoints, caplet.NewEndpoint(ep, s.Port))
+	for _, host := range hosts {
+		endpoints = append(endpoints, caplet.NewEndpoint(host, s.Port))
 	}
 	if colored {
 		for i, color := range color.Pick(len(endpoints)) {

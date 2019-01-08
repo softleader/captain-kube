@@ -168,7 +168,7 @@ func (c *ctxCmd) run() error {
 		//}
 		items = append(items, fmt.Sprintf("%s %s", prefix, ctx))
 	}
-	
+
 	prompt := promptui.Select{
 		Label:             "Select Context",
 		Items:             items,

@@ -32,8 +32,8 @@ func newSaveCmd() *cobra.Command {
 	c := saveCmd{}
 
 	cmd := &cobra.Command{
-		Use:   "save CHART",
-		Short: "save images of a helm-chart",
+		Use:   "save CHART...",
+		Short: "save images of helm-charts",
 		Long:  usage(saveHelp),
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {

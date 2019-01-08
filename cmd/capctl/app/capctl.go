@@ -60,6 +60,7 @@ func NewRootCmd(args []string, m *version.BuildMetadata) (*cobra.Command, error)
 		newPullCmd(),
 		newReTagCmd(),
 		newSyncCmd(),
+		newSaveCmd(),
 	)
 
 	flags.Parse(args)

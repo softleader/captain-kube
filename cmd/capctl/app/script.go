@@ -3,6 +3,7 @@ package app
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"github.com/mitchellh/go-homedir"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/captain"
@@ -93,8 +94,8 @@ func (c *scriptCmd) run() error {
 	var scripts []string
 	var log *logrus.Logger
 	if c.diff {
-		if len(c.charts) != 2 {
-			return errors.New("diff mode must have two files")
+		if l := len(c.charts); l != 2 {
+			return fmt.Errorf("required two charts in diff mode, but received %v", l)
 		} else {
 			log = logrus.New() // 這個是這次請求要往前吐的 log
 			buf = &bytes.Buffer{}

@@ -12,6 +12,10 @@ import (
 
 const (
 	saveHelp = `匯出 Helm Chart 中的 image
+
+傳入 '--output' 指定儲存的檔案路徑, 建議檔案的副檔應該為壓縮檔, 如: .tar.gz
+
+	$ {{.}} save CHART -o OUTPUT.tgz
 `
 )
 

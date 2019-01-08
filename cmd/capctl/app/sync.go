@@ -13,7 +13,17 @@ import (
 )
 
 const (
-	syncHelp = `Re-Tag 一或多個 Helm Chart 中的 image
+	syncHelp = `同步一或多個 Helm Chart 中的 image 到所有 kubernetes worker nodes
+
+	$ {{.}} sync CHART... -e CAPTAIN_ENDPOINT
+
+亦可結合 '--retag-from' 及 '--retag-to', 同步 re-tag 之後的 image
+
+	$ {{.}} sync CHART... -e CAPTAIN_ENDPOINT -s -f hub.softleader.com.tw -t client-registry:5000
+
+如果 registry 需要登入, 可以傳入 '--reg-*' 開頭的 flags 指定 docker registry 的認證資訊
+
+	$ {{.}} sync CHART... -e CAPTAIN_ENDPOINT --reg-pass SECRET
 `
 )
 

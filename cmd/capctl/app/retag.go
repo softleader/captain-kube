@@ -13,7 +13,15 @@ import (
 )
 
 const (
-	retagHelp = `Re-Tag 一或多個 Helm Chart 中的 image
+	retagHelp = `將一或多個 Chart 中的 image tag 成指定 host 並推入該 docker registry
+
+傳入 '--retag-from' 及 '--retag-to' 指定 retag 的來源及目標, 只有符合 '--retag-from' 的 image 才會被 retag
+
+	$ {{.}} retag CHART... -e CAPTAIN_ENDPOINT -f hub.softleader.com.tw -t client-registry:5000
+
+如果 registry 需要登入, 可以傳入 '--reg-*' 開頭的 flags 指定 docker registry 的認證資訊
+
+	$ {{.}} retag CHART... -e CAPTAIN_ENDPOINT -f hub.softleader.com.tw -t client-registry:5000 --reg-pass SECRET
 `
 )
 

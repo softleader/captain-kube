@@ -23,7 +23,7 @@ func newGlobalFromEnv() (g *Global) {
 }
 
 func (g *Global) AddFlags(f *pflag.FlagSet) {
-	f.BoolVarP(&g.Offline, "offline", "o", g.Offline, "work offline")
+	f.BoolVar(&g.Offline, "offline", g.Offline, "work offline")
 	f.BoolVarP(&g.Verbose, "verbose", "v", g.Verbose, "enable verbose output")
 	f.BoolVar(&g.Color, "color", g.Color, "colored caplet output")
 	f.Int64Var(&g.Timeout, "timeout", dur.DefaultDeadlineSecond, "timeout second communicating to captain services")

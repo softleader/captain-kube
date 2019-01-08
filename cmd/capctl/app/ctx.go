@@ -108,7 +108,7 @@ func newCtxCmd() *cobra.Command {
 
 	f := cmd.Flags()
 	f.StringVarP(&c.add, "add", "a", "", "add context <NAME> with <CONTEXT_FLAGS...>")
-	f.BoolVarP(&c.force, "force", "f", false, "force to delete context before adding context")
+	f.BoolVarP(&c.force, "force", "f", false, "force to delete context if exist")
 	f.StringArrayVarP(&c.delete, "delete", "d", []string{}, "delete context <NAME> ('.' for current-context)")
 	f.StringVarP(&c.rename, "rename", "r", "", "rename context <NAME> to <NEW_NAME>")
 	f.BoolVar(&c.ls, "ls", false, "list contexts")

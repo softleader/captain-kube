@@ -8,7 +8,7 @@ import (
 	"github.com/softleader/captain-kube/pkg/proto"
 )
 
-func ReTag(log *logrus.Logger, source chart.Image, target chart.Image, registryAuth *proto.RegistryAuth) (err error) {
+func ReTag(log *logrus.Logger, source chart.Image, target chart.Image, registryAuth *proto.RegistryAuth) error {
 	ctx := context.Background()
 
 	// Use DOCKER_HOST to set the url to the docker server.
@@ -42,13 +42,16 @@ func ReTag(log *logrus.Logger, source chart.Image, target chart.Image, registryA
 
 	// 第一此採用沒有帳密的方式, 若失敗則重試第二次, 第二次採用帳密
 	if err := cli.PushImage(options, docker.AuthConfiguration{}); isDockerUnauthorized(err) && registryAuth != nil {
-		err = cli.PushImage(options, docker.AuthConfiguration{
+		// 為了避免 ineffectual assignments, so lets make a new var of error
+		if erragain := cli.PushImage(options, docker.AuthConfiguration{
 			Username: registryAuth.Username,
 			Password: registryAuth.Password,
-		})
+		}); erragain != nil {
+			return erragain
+		}
 	}
 
-	return err
+	return nil
 }
 
 func ReTagFromTemplates(log *logrus.Logger, tpls chart.Templates, retag *proto.ReTag, auth *proto.RegistryAuth) error {

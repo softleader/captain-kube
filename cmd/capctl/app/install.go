@@ -118,7 +118,7 @@ func (c *installCmd) run() error {
 func (c *installCmd) install(path string) error {
 	expanded, err := homedir.Expand(path)
 	if err != nil {
-		path = expanded
+		expanded = path
 	}
 	abs, err := filepath.Abs(expanded)
 	if err != nil {
@@ -134,7 +134,7 @@ func (c *installCmd) install(path string) error {
 		Timeout: settings.Timeout,
 		Verbose: settings.Verbose,
 		Chart: &proto.Chart{
-			FileName: filepath.Base(expanded),
+			FileName: filepath.Base(abs),
 			Content:  bytes,
 			FileSize: int64(len(bytes)),
 		},

@@ -8,7 +8,7 @@ import (
 	"github.com/softleader/captain-kube/pkg/proto"
 )
 
-func Pull(log *logrus.Logger, image chart.Image, registryAuth *proto.RegistryAuth) (err error) {
+func Pull(log *logrus.Logger, image chart.Image, registryAuth *proto.RegistryAuth) error {
 	ctx := context.Background()
 
 	// Use DOCKER_HOST to set the url to the docker server.
@@ -30,13 +30,15 @@ func Pull(log *logrus.Logger, image chart.Image, registryAuth *proto.RegistryAut
 
 	// 第一此採用沒有帳密的方式, 若失敗則重試第二次, 第二次採用帳密
 	if err := cli.PullImage(options, docker.AuthConfiguration{}); isDockerUnauthorized(err) && registryAuth != nil {
-		err = cli.PullImage(options, docker.AuthConfiguration{
+		if erragain := cli.PullImage(options, docker.AuthConfiguration{
 			Username: registryAuth.Username,
 			Password: registryAuth.Password,
-		})
+		}); erragain != nil {
+			return erragain
+		}
 	}
 
-	return err
+	return nil
 }
 
 func PullFromTemplates(log *logrus.Logger, tpls chart.Templates, auth *proto.RegistryAuth) error {

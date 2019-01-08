@@ -10,6 +10,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"sort"
 )
 
 const (
@@ -35,6 +36,14 @@ type Contexts struct {
 	Contexts map[string][]string
 	Active   string // 當前
 	Previous string // 上一個
+}
+
+func (c *Contexts) GetSortedNames() (n []string) {
+	for ctx := range c.Contexts {
+		n = append(n, ctx)
+	}
+	sort.Strings(n)
+	return
 }
 
 func LoadContextsFromEnv(log *logrus.Logger) (*Contexts, error) {

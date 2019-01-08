@@ -7,7 +7,6 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/ctx"
 	"github.com/spf13/cobra"
-	"sort"
 	"strings"
 )
 
@@ -136,17 +135,13 @@ func (c *ctxCmd) run() error {
 	if len(c.args) > 0 {
 		return ctxs.Switch(c.args[0])
 	}
+
+	names := ctxs.GetSortedNames()
+
 	if c.ls {
 		table := uitable.New()
 		table.AddRow("CONTEXT", "FLAGS")
 		table.MaxColWidth = c.width
-
-		var names []string
-		for ctx := range ctxs.Contexts {
-			names = append(names, ctx)
-		}
-		sort.Strings(names)
-
 		for _, name := range names {
 			args := ctxs.Contexts[name]
 			prefix := " "
@@ -162,7 +157,7 @@ func (c *ctxCmd) run() error {
 	}
 
 	var items []string
-	for ctx := range ctxs.Contexts {
+	for _, ctx := range names {
 		prefix := " "
 		if ctx == ctxs.Active {
 			prefix = ">"
@@ -173,7 +168,7 @@ func (c *ctxCmd) run() error {
 		//}
 		items = append(items, fmt.Sprintf("%s %s", prefix, ctx))
 	}
-	sort.Strings(items)
+	
 	prompt := promptui.Select{
 		Label:             "Select Context",
 		Items:             items,

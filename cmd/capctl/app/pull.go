@@ -15,11 +15,11 @@ import (
 const (
 	pullHelp = `拉取一或多個 Helm Chart 中的 image
 
-	$ {{.}} pull CHART... -e CAPTAIN_ENDPOINT
+	$ {{.}} pull CHART...
 
 如果 registry 需要登入, 可以傳入 '--reg-*' 開頭的 flags 指定 docker registry 的認證資訊
 
-	$ {{.}} pull CHART... -e CAPTAIN_ENDPOINT --reg-user ME --reg-pass SECRET
+	$ {{.}} pull CHART... --reg-user ME --reg-pass SECRET
 `
 )
 

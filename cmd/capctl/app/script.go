@@ -6,11 +6,13 @@ import (
 	"fmt"
 	"github.com/mitchellh/go-homedir"
 	"github.com/sirupsen/logrus"
+	"github.com/softleader/captain-kube/pkg/captain"
 	"github.com/softleader/captain-kube/pkg/ctx"
-	"github.com/softleader/captain-kube/pkg/helm/chart"
+	"github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/utils"
 	"github.com/softleader/captain-kube/pkg/utils/strutil"
 	"github.com/spf13/cobra"
+	"io/ioutil"
 	"path/filepath"
 	"strings"
 )
@@ -87,6 +89,7 @@ func newScriptCmd() *cobra.Command {
 }
 
 func (c *scriptCmd) run() error {
+
 	var buf *bytes.Buffer
 	var scripts []string
 	var log *logrus.Logger
@@ -137,43 +140,28 @@ func runScript(log *logrus.Logger, c *scriptCmd, path string) error {
 	if err != nil {
 		return err
 	}
-
-	tpls, err := chart.LoadArchive(log, abs)
+	bytes, err := ioutil.ReadFile(abs)
 	if err != nil {
 		return err
 	}
-	log.Debugf("%v template(s) loaded\n", len(tpls))
 
-	if from, to := strings.TrimSpace(c.retag.From), strings.TrimSpace(c.retag.To); from != "" && to != "" {
-		if b, err := tpls.GenerateReTagScript(from, to); err != nil {
-			return err
-		} else {
-			log.Out.Write(b)
-		}
+	request := proto.GenerateScriptRequest{
+		Chart: &proto.Chart{
+			FileName: filepath.Base(abs),
+			Content:  bytes,
+			FileSize: int64(len(bytes)),
+		},
+		Pull: c.pull,
+		Retag: &proto.ReTag{
+			From: c.retag.From,
+			To:   c.retag.To,
+		},
+		Save: c.save,
+		Load: c.load,
 	}
 
-	if c.pull {
-		if b, err := tpls.GeneratePullScript(); err != nil {
-			return err
-		} else {
-			log.Out.Write(b)
-		}
-	}
-
-	if c.load {
-		if b, err := tpls.GenerateLoadScript(); err != nil {
-			return err
-		} else {
-			log.Out.Write(b)
-		}
-	}
-
-	if c.save {
-		if b, err := tpls.GenerateSaveScript(); err != nil {
-			return err
-		} else {
-			log.Out.Write(b)
-		}
+	if err := captain.GenerateScript(log, c.endpoint.String(), &request, settings.Timeout); err != nil {
+		return err
 	}
 
 	return nil

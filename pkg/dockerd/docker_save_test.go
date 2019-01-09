@@ -18,7 +18,7 @@ func TestSave(t *testing.T) {
 	defer os.RemoveAll(tmp)
 	out := filepath.Join(tmp, "saved.tar")
 
-	images := []*chart.Image{
+	images := []chart.Image{
 		{
 			Repo: "busybox",
 		},
@@ -29,7 +29,7 @@ func TestSave(t *testing.T) {
 		},
 	}
 
-	if err := Save(logrus.StandardLogger(), images, out, true); err != nil {
+	if err := Save(logrus.StandardLogger(), images, out); err != nil {
 		t.Error(err)
 		t.Skipf("maybe just docker not exist")
 	}

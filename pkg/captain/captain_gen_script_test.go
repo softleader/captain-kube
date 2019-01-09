@@ -2,7 +2,8 @@ package captain
 
 import (
 	"github.com/sirupsen/logrus"
-	chart2 "github.com/softleader/captain-kube/pkg/helm/chart"
+	"github.com/softleader/captain-kube/pkg/dur"
+	"github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/utils"
 	"github.com/softleader/captain-kube/pkg/utils/command"
 	"github.com/softleader/captain-kube/pkg/utils/tcp"
@@ -43,30 +44,25 @@ func TestGenerateScript(t *testing.T) {
 		t.Error(err)
 	}
 
-	log := logrus.New()
-	log.SetFormatter(&utils.PlainFormatter{})
-
-	tpls, err := chart2.LoadArchive(logrus.StandardLogger(), filepath.Join(path, "foo-0.1.0.tgz"))
+	chart, err := ioutil.ReadFile(filepath.Join(path, "foo-0.1.0.tgz"))
 	if err != nil {
 		t.Error(err)
 	}
 
-	if b, err := tpls.GeneratePullScript(); err != nil {
+	log := logrus.New()
+	log.SetFormatter(&utils.PlainFormatter{})
+	err = GenerateScript(log, "192.168.1.93:30051", &proto.GenerateScriptRequest{
+		Chart: &proto.Chart{
+			Content:  chart,
+			FileName: "foo-0.1.0.tgz",
+		},
+		Pull:    true,
+		Retag:   &proto.ReTag{},
+		Save:    true,
+		Load:    true,
+		Verbose: true,
+	}, dur.DefaultDeadlineSecond)
+	if err != nil {
 		t.Error(err)
-	} else {
-		log.Out.Write(b)
 	}
-
-	if b, err := tpls.GenerateLoadScript(); err != nil {
-		t.Error(err)
-	} else {
-		log.Out.Write(b)
-	}
-
-	if b, err := tpls.GenerateSaveScript(); err != nil {
-		t.Error(err)
-	} else {
-		log.Out.Write(b)
-	}
-
 }

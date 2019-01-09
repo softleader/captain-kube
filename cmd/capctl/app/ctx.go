@@ -170,9 +170,8 @@ func (c *ctxCmd) run() error {
 	}
 
 	prompt := promptui.Select{
-		Label:             "Select Context",
-		Items:             items,
-		StartInSearchMode: true,
+		Label: "Select Context",
+		Items: items,
 		Searcher: func(input string, index int) bool {
 			ctx := items[index]
 			name := strings.Replace(strings.ToLower(ctx), " ", "", -1)

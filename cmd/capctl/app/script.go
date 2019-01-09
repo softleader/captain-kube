@@ -46,13 +46,11 @@ type scriptCmd struct {
 	charts []string
 
 	retag        *ctx.ReTag
-	endpoint     *ctx.Endpoint // captain 的 endpoint ip
 	registryAuth *ctx.RegistryAuth
 }
 
 func newScriptCmd() *cobra.Command {
 	c := scriptCmd{
-		endpoint:     activeCtx.Endpoint,
 		registryAuth: activeCtx.RegistryAuth,
 		retag:        activeCtx.ReTag,
 	}
@@ -65,9 +63,6 @@ func newScriptCmd() *cobra.Command {
 			if c.charts = args; len(c.charts) == 0 {
 				return errors.New("chart path is required")
 			}
-			if err := c.endpoint.Validate(); err != nil {
-				return err
-			}
 			return c.run()
 		},
 	}
@@ -79,8 +74,6 @@ func newScriptCmd() *cobra.Command {
 	f.BoolVarP(&c.load, "load", "l", c.load, "load images in Chart")
 	f.BoolVarP(&c.diff, "diff", "d", c.diff, "show diff of two charts")
 
-	c.endpoint.AddFlags(f)
-	c.registryAuth.AddFlags(f)
 	c.retag.AddFlags(f)
 
 	return cmd

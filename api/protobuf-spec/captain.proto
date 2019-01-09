@@ -36,23 +36,12 @@ message DeleteChartRequest {
     bool verbose = 5;
 }
 
-message GenerateScriptRequest {
-    Chart chart = 1;
-    bool pull = 2;
-    ReTag retag = 3;
-    bool save = 4;
-    bool load = 5;
-    bool verbose = 6;
-}
-
 service Captain {
     rpc SyncChart (SyncChartRequest) returns (stream ChunkMessage) {
     }
     rpc InstallChart (InstallChartRequest) returns (stream ChunkMessage) {
     }
     rpc DeleteChart (DeleteChartRequest) returns (stream ChunkMessage) {
-    }
-    rpc GenerateScript (GenerateScriptRequest) returns (stream ChunkMessage) {
     }
     rpc Prune (PruneRequest) returns (stream ChunkMessage) {
     }

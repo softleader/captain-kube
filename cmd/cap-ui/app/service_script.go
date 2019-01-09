@@ -5,8 +5,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
-	"github.com/softleader/captain-kube/pkg/captain"
-	"github.com/softleader/captain-kube/pkg/proto"
+	"github.com/softleader/captain-kube/pkg/helm/chart"
 	"github.com/softleader/captain-kube/pkg/sse"
 	"github.com/softleader/captain-kube/pkg/utils"
 	"github.com/softleader/captain-kube/pkg/utils/strutil"
@@ -122,25 +121,42 @@ func doScript(log *logrus.Logger, s *Script, form *ScriptRequest, fileHeader *mu
 		log.Debugln("readed ", readed, " bytes")
 	}
 
-	request := proto.GenerateScriptRequest{
-		Chart: &proto.Chart{
-			FileName: fileHeader.Filename,
-			Content:  buf.Bytes(),
-			FileSize: fileHeader.Size,
-		},
-		Pull: strutil.Contains(form.Tags, "p"),
-		Retag: &proto.ReTag{
-			From: form.SourceRegistry,
-			To:   form.Registry,
-		},
-		Save: strutil.Contains(form.Tags, "s"),
-		Load: strutil.Contains(form.Tags, "l"),
+	tpls, err := chart.LoadArchiveBytes(log, fileHeader.Filename, buf.Bytes())
+	if err != nil {
+		return err
+	}
+	log.Debugf("%v template(s) loaded\n", len(tpls))
+
+	if from, to := strings.TrimSpace(form.SourceRegistry), strings.TrimSpace(form.Registry); from != "" && to != "" {
+		if b, err := tpls.GenerateReTagScript(from, to); err != nil {
+			return err
+		} else {
+			log.Out.Write(b)
+		}
 	}
 
-	if err := captain.GenerateScript(log, s.Cmd.Endpoint.String(), &request, 300); err != nil {
-		return fmt.Errorf("call captain GenerateScript failed: %s", err)
-	} else {
-		log.Debugln("GenerateScript finish")
+	if strutil.Contains(form.Tags, "p") {
+		if b, err := tpls.GeneratePullScript(); err != nil {
+			return err
+		} else {
+			log.Out.Write(b)
+		}
+	}
+
+	if strutil.Contains(form.Tags, "l") {
+		if b, err := tpls.GenerateLoadScript(); err != nil {
+			return err
+		} else {
+			log.Out.Write(b)
+		}
+	}
+
+	if strutil.Contains(form.Tags, "s") {
+		if b, err := tpls.GenerateSaveScript(); err != nil {
+			return err
+		} else {
+			log.Out.Write(b)
+		}
 	}
 
 	return nil

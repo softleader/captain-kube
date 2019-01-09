@@ -1,11 +1,9 @@
-package captain
+package chart
 
 import (
 	"github.com/sirupsen/logrus"
-	chart2 "github.com/softleader/captain-kube/pkg/helm/chart"
 	"github.com/softleader/captain-kube/pkg/utils"
 	"github.com/softleader/captain-kube/pkg/utils/command"
-	"github.com/softleader/captain-kube/pkg/utils/tcp"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -14,12 +12,6 @@ import (
 )
 
 func TestGenerateScript(t *testing.T) {
-	endpoint := "192.168.1.93"
-	port := DefaultPort
-	if !tcp.IsReachable(endpoint, port, 3) {
-		t.Skipf("endpoint %s:%v is not reachable", endpoint, port)
-	}
-
 	helm := "helm"
 	if !command.IsAvailable(helm) {
 		t.Skipf("%q command does not exist", helm)
@@ -46,7 +38,7 @@ func TestGenerateScript(t *testing.T) {
 	log := logrus.New()
 	log.SetFormatter(&utils.PlainFormatter{})
 
-	tpls, err := chart2.LoadArchive(logrus.StandardLogger(), filepath.Join(path, "foo-0.1.0.tgz"))
+	tpls, err := LoadArchive(logrus.StandardLogger(), filepath.Join(path, "foo-0.1.0.tgz"))
 	if err != nil {
 		t.Error(err)
 	}

@@ -20,7 +20,7 @@ const (
 
 '{{.}} ctx' 指令可以快速的在不同 context 之間切換
 
-	$ {{.}} ctx         : 互動式的快速切換 context, 點擊 '/' 進入或離開過濾模式
+	$ {{.}} ctx         : 互動式的快速切換 context
 	$ {{.}} ctx <NAME>  : 切換 context 到 <NAME>
 	$ {{.}} ctx -       : 切換到前一個 context
 	$ {{.}} ctx --off   : 清空當前的 context
@@ -173,9 +173,6 @@ func (c *ctxCmd) run() error {
 		Label:             "Select Context",
 		Items:             items,
 		StartInSearchMode: true,
-		Keys: &promptui.SelectKeys{
-
-		},
 		Searcher: func(input string, index int) bool {
 			ctx := items[index]
 			name := strings.Replace(strings.ToLower(ctx), " ", "", -1)

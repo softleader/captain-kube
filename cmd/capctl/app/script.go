@@ -29,12 +29,12 @@ const (
 
 flags 可以自由的混搭使用, 你也可以使用 '>' 再將產生的 script 輸出成檔案
 
-	$ {{.}} script CHART... -prsl
-	$ {{.}} script CHART... -sl > save-and-load.sh
+	$ {{.}} script CHART... -e CAPTAIN_ENDPOINT -prsl
+	$ {{.}} script CHART... -e CAPTAIN_ENDPOINT -sl > save-and-load.sh
 
 結合 '--diff' 可以只產生差異 image 的 script
 
-	$ {{.}} script CHART ANOTHER_CHART -prsld
+	$ {{.}} script CHART ANOTHER_CHART -e CAPTAIN_ENDPOINT -prsld
 `
 )
 

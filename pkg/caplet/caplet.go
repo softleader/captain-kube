@@ -47,7 +47,7 @@ func (endpoints Endpoints) Each(consumer func(e *Endpoint)) {
 	wg.Wait()
 }
 
-func format(last, chunk *proto.ChunkMessage) []byte {
+func format(last, chunk *tw_com_softleader_captainkube.ChunkMessage) []byte {
 	msg := chunk.GetMsg()
 	if msg == nil || len(msg) == 0 {
 		return msg

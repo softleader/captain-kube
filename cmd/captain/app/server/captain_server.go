@@ -47,13 +47,13 @@ func (s *CaptainServer) lookupCaplet(log *logrus.Logger, colored bool) (endpoint
 	return
 }
 
-func newPullImageRequest(tpls chart.Templates, retag *proto.ReTag, auth *proto.RegistryAuth) (req *proto.PullImageRequest) {
-	req = &proto.PullImageRequest{
+func newPullImageRequest(tpls chart.Templates, retag *tw_com_softleader_captainkube.ReTag, auth *tw_com_softleader_captainkube.RegistryAuth) (req *tw_com_softleader_captainkube.PullImageRequest) {
+	req = &tw_com_softleader_captainkube.PullImageRequest{
 		RegistryAuth: auth,
 	}
 	for _, tpl := range tpls {
 		for _, img := range tpl {
-			i := &proto.Image{
+			i := &tw_com_softleader_captainkube.Image{
 				Host: img.Host,
 				Repo: img.Repo,
 				Tag:  img.Tag,

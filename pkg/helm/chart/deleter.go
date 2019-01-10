@@ -10,7 +10,7 @@ type Deleter interface {
 	Delete(log *logrus.Logger) error
 }
 
-func NewDeleter(k8s string, tiller *proto.Tiller, chartName, chartVersion string) (Deleter, error) {
+func NewDeleter(k8s string, tiller *tw_com_softleader_captainkube.Tiller, chartName, chartVersion string) (Deleter, error) {
 	switch k8s {
 	case "icp":
 		return &icpDeleter{

@@ -8,9 +8,9 @@ import (
 	"github.com/softleader/captain-kube/pkg/sio"
 )
 
-func (s *CaptainServer) Version(req *proto.VersionRequest, stream proto.Captain_VersionServer) error {
+func (s *CaptainServer) Version(req *tw_com_softleader_captainkube.VersionRequest, stream tw_com_softleader_captainkube.Captain_VersionServer) error {
 	out := sio.NewStreamWriter(func(p []byte) error {
-		return stream.Send(&proto.ChunkMessage{
+		return stream.Send(&tw_com_softleader_captainkube.ChunkMessage{
 			Msg: p,
 		})
 	})

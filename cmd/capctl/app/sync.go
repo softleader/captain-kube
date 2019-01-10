@@ -85,20 +85,20 @@ func (c *syncCmd) sync(path string) error {
 	if err != nil {
 		return err
 	}
-	return captain.SyncChart(logrus.StandardLogger(), c.endpoint.String(), &proto.SyncChartRequest{
+	return captain.SyncChart(logrus.StandardLogger(), c.endpoint.String(), &tw_com_softleader_captainkube.SyncChartRequest{
 		Color:   settings.Color,
 		Timeout: settings.Timeout,
 		Verbose: settings.Verbose,
-		Chart: &proto.Chart{
+		Chart: &tw_com_softleader_captainkube.Chart{
 			FileName: filepath.Base(abs),
 			Content:  bytes,
 			FileSize: int64(len(bytes)),
 		},
-		RegistryAuth: &proto.RegistryAuth{
+		RegistryAuth: &tw_com_softleader_captainkube.RegistryAuth{
 			Username: c.registryAuth.Username,
 			Password: c.registryAuth.Password,
 		},
-		Retag: &proto.ReTag{
+		Retag: &tw_com_softleader_captainkube.ReTag{
 			From: c.retag.From,
 			To:   c.retag.To,
 		},

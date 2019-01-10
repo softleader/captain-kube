@@ -10,20 +10,20 @@ import (
 	"io"
 )
 
-func (e *Endpoint) PullImage(log *logrus.Logger, req *proto.PullImageRequest, timeout int64) error {
+func (e *Endpoint) PullImage(log *logrus.Logger, req *tw_com_softleader_captainkube.PullImageRequest, timeout int64) error {
 	conn, err := grpc.Dial(e.String(), grpc.WithInsecure())
 	if err != nil {
 		return fmt.Errorf("[%s] did not connect: %v", e.Target, err)
 	}
 	defer conn.Close()
-	c := proto.NewCapletClient(conn)
+	c := tw_com_softleader_captainkube.NewCapletClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), dur.Deadline(timeout))
 	defer cancel()
 	stream, err := c.PullImage(ctx, req)
 	if err != nil {
 		return fmt.Errorf("[%s] could not pull image: %v", e.Target, err)
 	}
-	var last *proto.ChunkMessage
+	var last *tw_com_softleader_captainkube.ChunkMessage
 	for {
 		recv, err := stream.Recv()
 		if err == io.EOF {

@@ -8,10 +8,10 @@ import (
 	"github.com/softleader/captain-kube/pkg/utils"
 )
 
-func (s *CapletServer) Prune(req *proto.PruneRequest, stream proto.Caplet_PruneServer) error {
+func (s *CapletServer) Prune(req *tw_com_softleader_captainkube.PruneRequest, stream tw_com_softleader_captainkube.Caplet_PruneServer) error {
 	log := logrus.New()
 	log.SetOutput(sio.NewStreamWriter(func(p []byte) error {
-		return stream.Send(&proto.ChunkMessage{
+		return stream.Send(&tw_com_softleader_captainkube.ChunkMessage{
 			Hostname: s.hostname,
 			Msg:      p,
 		})

@@ -64,7 +64,7 @@ func (c *captainCmd) Run() error {
 		return fmt.Errorf("failed to listen: %v", err)
 	}
 	s := grpc.NewServer()
-	proto.RegisterCaptainServer(s, &server.CaptainServer{
+	tw_com_softleader_captainkube.RegisterCaptainServer(s, &server.CaptainServer{
 		Metadata:  c.metadata,
 		Hostname:  c.capletHostname,
 		Endpoints: c.endpoints,

@@ -12,10 +12,10 @@ import (
 	"path/filepath"
 )
 
-func (s *CaptainServer) InstallChart(req *proto.InstallChartRequest, stream proto.Captain_InstallChartServer) error {
+func (s *CaptainServer) InstallChart(req *tw_com_softleader_captainkube.InstallChartRequest, stream tw_com_softleader_captainkube.Captain_InstallChartServer) error {
 	log := logrus.New()
 	log.SetOutput(sio.NewStreamWriter(func(p []byte) error {
-		return stream.Send(&proto.ChunkMessage{
+		return stream.Send(&tw_com_softleader_captainkube.ChunkMessage{
 			Msg: p,
 		})
 	}))

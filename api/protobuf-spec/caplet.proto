@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package proto;
+package tw.com.softleader.captainkube;
 
 import "image.proto";
 import "msg.proto";

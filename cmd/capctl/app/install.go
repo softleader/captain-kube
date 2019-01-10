@@ -129,28 +129,28 @@ func (c *installCmd) install(path string) error {
 		return err
 	}
 
-	request := proto.InstallChartRequest{
+	request := tw_com_softleader_captainkube.InstallChartRequest{
 		Color:   settings.Color,
 		Timeout: settings.Timeout,
 		Verbose: settings.Verbose,
-		Chart: &proto.Chart{
+		Chart: &tw_com_softleader_captainkube.Chart{
 			FileName: filepath.Base(abs),
 			Content:  bytes,
 			FileSize: int64(len(bytes)),
 		},
 		Sync: c.sync,
-		Retag: &proto.ReTag{
+		Retag: &tw_com_softleader_captainkube.ReTag{
 			From: c.retag.From,
 			To:   c.retag.To,
 		},
-		Tiller: &proto.Tiller{
+		Tiller: &tw_com_softleader_captainkube.Tiller{
 			Endpoint:          c.helmTiller.Endpoint,
 			Username:          c.helmTiller.Username,
 			Password:          c.helmTiller.Password,
 			Account:           c.helmTiller.Account,
 			SkipSslValidation: c.helmTiller.SkipSslValidation,
 		},
-		RegistryAuth: &proto.RegistryAuth{
+		RegistryAuth: &tw_com_softleader_captainkube.RegistryAuth{
 			Username: c.registryAuth.Username,
 			Password: c.registryAuth.Password,
 		},

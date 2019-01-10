@@ -145,14 +145,14 @@ func runScript(log *logrus.Logger, c *scriptCmd, path string) error {
 		return err
 	}
 
-	request := proto.GenerateScriptRequest{
-		Chart: &proto.Chart{
+	request := tw_com_softleader_captainkube.GenerateScriptRequest{
+		Chart: &tw_com_softleader_captainkube.Chart{
 			FileName: filepath.Base(abs),
 			Content:  bytes,
 			FileSize: int64(len(bytes)),
 		},
 		Pull: c.pull,
-		Retag: &proto.ReTag{
+		Retag: &tw_com_softleader_captainkube.ReTag{
 			From: c.retag.From,
 			To:   c.retag.To,
 		},

@@ -16,10 +16,10 @@ func Version(log *logrus.Logger, url string, full, color bool, timeout int64) er
 		return fmt.Errorf("did not connect: %v\n", err)
 	}
 	defer conn.Close()
-	c := proto.NewCaptainClient(conn)
+	c := tw_com_softleader_captainkube.NewCaptainClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), dur.Deadline(timeout))
 	defer cancel()
-	stream, err := c.Version(ctx, &proto.VersionRequest{
+	stream, err := c.Version(ctx, &tw_com_softleader_captainkube.VersionRequest{
 		Full:    full,
 		Color:   color,
 		Timeout: timeout,

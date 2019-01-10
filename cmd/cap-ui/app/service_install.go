@@ -96,22 +96,22 @@ func doInstall(log *logrus.Logger, s *Install, form *InstallRequest, fileHeader 
 	}
 
 	// prepare rquest
-	request := proto.InstallChartRequest{
-		Chart: &proto.Chart{
+	request := tw_com_softleader_captainkube.InstallChartRequest{
+		Chart: &tw_com_softleader_captainkube.Chart{
 			FileName: fileHeader.Filename,
 			Content:  buf.Bytes(),
 			FileSize: fileHeader.Size,
 		},
 		Sync: strutil.Contains(form.Tags, "s"),
-		Retag: &proto.ReTag{
+		Retag: &tw_com_softleader_captainkube.ReTag{
 			From: form.SourceRegistry,
 			To:   form.Registry,
 		},
-		RegistryAuth: &proto.RegistryAuth{
+		RegistryAuth: &tw_com_softleader_captainkube.RegistryAuth{
 			Username: s.Cmd.RegistryAuth.Username,
 			Password: s.Cmd.RegistryAuth.Password,
 		},
-		Tiller: &proto.Tiller{
+		Tiller: &tw_com_softleader_captainkube.Tiller{
 			Endpoint:          s.Cmd.Tiller.Endpoint,
 			Username:          s.Cmd.Tiller.Username,
 			Password:          s.Cmd.Tiller.Password,

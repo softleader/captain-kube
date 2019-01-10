@@ -10,20 +10,20 @@ import (
 	"io"
 )
 
-func (e *Endpoint) Prune(log *logrus.Logger, req *tw_com_softleader_captainkube.PruneRequest, timeout int64) error {
+func (e *Endpoint) Prune(log *logrus.Logger, req *tw_com_softleader.PruneRequest, timeout int64) error {
 	conn, err := grpc.Dial(e.String(), grpc.WithInsecure())
 	if err != nil {
 		return fmt.Errorf("[%s] did not connect: %v", e.Target, err)
 	}
 	defer conn.Close()
-	c := tw_com_softleader_captainkube.NewCapletClient(conn)
+	c := tw_com_softleader.NewCapletClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), dur.Deadline(timeout))
 	defer cancel()
 	stream, err := c.Prune(ctx, req)
 	if err != nil {
 		return fmt.Errorf("[%s] could not pull image: %v", e.Target, err)
 	}
-	var last *tw_com_softleader_captainkube.ChunkMessage
+	var last *tw_com_softleader.ChunkMessage
 	for {
 		recv, err := stream.Recv()
 		if err == io.EOF {

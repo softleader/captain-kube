@@ -8,10 +8,10 @@ import (
 	"github.com/softleader/captain-kube/pkg/utils"
 )
 
-func (s *CaptainServer) DeleteChart(req *tw_com_softleader_captainkube.DeleteChartRequest, stream tw_com_softleader_captainkube.Captain_DeleteChartServer) error {
+func (s *CaptainServer) DeleteChart(req *tw_com_softleader.DeleteChartRequest, stream tw_com_softleader.Captain_DeleteChartServer) error {
 	log := logrus.New()
 	log.SetOutput(sio.NewStreamWriter(func(p []byte) error {
-		return stream.Send(&tw_com_softleader_captainkube.ChunkMessage{
+		return stream.Send(&tw_com_softleader.ChunkMessage{
 			Msg: p,
 		})
 	}))

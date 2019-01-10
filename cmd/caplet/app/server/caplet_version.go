@@ -5,8 +5,8 @@ import (
 	"github.com/softleader/captain-kube/pkg/proto"
 )
 
-func (s *CapletServer) Version(ctx context.Context, req *tw_com_softleader_captainkube.VersionRequest) (resp *tw_com_softleader_captainkube.VersionResponse, err error) {
-	resp = &tw_com_softleader_captainkube.VersionResponse{
+func (s *CapletServer) Version(ctx context.Context, req *tw_com_softleader.VersionRequest) (resp *tw_com_softleader.VersionResponse, err error) {
+	resp = &tw_com_softleader.VersionResponse{
 		Hostname: s.hostname,
 	}
 	if req.GetFull() {

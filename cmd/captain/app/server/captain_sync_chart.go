@@ -12,10 +12,10 @@ import (
 	"path/filepath"
 )
 
-func (s *CaptainServer) SyncChart(req *tw_com_softleader_captainkube.SyncChartRequest, stream tw_com_softleader_captainkube.Captain_SyncChartServer) error {
+func (s *CaptainServer) SyncChart(req *tw_com_softleader.SyncChartRequest, stream tw_com_softleader.Captain_SyncChartServer) error {
 	log := logrus.New()
 	log.SetOutput(sio.NewStreamWriter(func(p []byte) error {
-		return stream.Send(&tw_com_softleader_captainkube.ChunkMessage{
+		return stream.Send(&tw_com_softleader.ChunkMessage{
 			Msg: p,
 		})
 	}))

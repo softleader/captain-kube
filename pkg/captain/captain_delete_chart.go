@@ -10,13 +10,13 @@ import (
 	"io"
 )
 
-func DeleteChart(log *logrus.Logger, url string, req *tw_com_softleader_captainkube.DeleteChartRequest, timeout int64) error {
+func DeleteChart(log *logrus.Logger, url string, req *tw_com_softleader.DeleteChartRequest, timeout int64) error {
 	conn, err := grpc.Dial(url, grpc.WithInsecure())
 	if err != nil {
 		return fmt.Errorf("did not connect: %v\n", err)
 	}
 	defer conn.Close()
-	c := tw_com_softleader_captainkube.NewCaptainClient(conn)
+	c := tw_com_softleader.NewCaptainClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), dur.Deadline(timeout))
 	defer cancel()
 	stream, err := c.DeleteChart(ctx, req)

@@ -16,10 +16,10 @@ func Prune(log *logrus.Logger, url string, verbose, color bool, timeout int64) e
 		return fmt.Errorf("did not connect: %v\n", err)
 	}
 	defer conn.Close()
-	c := tw_com_softleader_captainkube.NewCaptainClient(conn)
+	c := tw_com_softleader.NewCaptainClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), dur.Deadline(timeout))
 	defer cancel()
-	stream, err := c.Prune(ctx, &tw_com_softleader_captainkube.PruneRequest{
+	stream, err := c.Prune(ctx, &tw_com_softleader.PruneRequest{
 		Verbose: verbose,
 		Timeout: timeout,
 		Color:   color,

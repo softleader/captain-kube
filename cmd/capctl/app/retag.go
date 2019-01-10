@@ -78,10 +78,10 @@ func (c *retagCmd) reTag(path string) error {
 	if err != nil {
 		return err
 	}
-	return dockerd.ReTagFromTemplates(logrus.StandardLogger(), tpls, &tw_com_softleader_captainkube.ReTag{
+	return dockerd.ReTagFromTemplates(logrus.StandardLogger(), tpls, &tw_com_softleader.ReTag{
 		From: c.retag.From,
 		To:   c.retag.To,
-	}, &tw_com_softleader_captainkube.RegistryAuth{
+	}, &tw_com_softleader.RegistryAuth{
 		Username: c.registryAuth.Username,
 		Password: c.registryAuth.Password,
 	})

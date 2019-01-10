@@ -122,14 +122,14 @@ func doScript(log *logrus.Logger, s *Script, form *ScriptRequest, fileHeader *mu
 		log.Debugln("readed ", readed, " bytes")
 	}
 
-	request := tw_com_softleader_captainkube.GenerateScriptRequest{
-		Chart: &tw_com_softleader_captainkube.Chart{
+	request := tw_com_softleader.GenerateScriptRequest{
+		Chart: &tw_com_softleader.Chart{
 			FileName: fileHeader.Filename,
 			Content:  buf.Bytes(),
 			FileSize: fileHeader.Size,
 		},
 		Pull: strutil.Contains(form.Tags, "p"),
-		Retag: &tw_com_softleader_captainkube.ReTag{
+		Retag: &tw_com_softleader.ReTag{
 			From: form.SourceRegistry,
 			To:   form.Registry,
 		},

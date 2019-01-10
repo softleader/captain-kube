@@ -52,13 +52,13 @@ func TestGenerateScript(t *testing.T) {
 
 	log := logrus.New()
 	log.SetFormatter(&utils.PlainFormatter{})
-	err = GenerateScript(log, fmt.Sprintf("%v:%v", endpoint, port), &tw_com_softleader_captainkube.GenerateScriptRequest{
-		Chart: &tw_com_softleader_captainkube.Chart{
+	err = GenerateScript(log, fmt.Sprintf("%v:%v", endpoint, port), &tw_com_softleader.GenerateScriptRequest{
+		Chart: &tw_com_softleader.Chart{
 			Content:  chart,
 			FileName: "foo-0.1.0.tgz",
 		},
 		Pull:    true,
-		Retag:   &tw_com_softleader_captainkube.ReTag{},
+		Retag:   &tw_com_softleader.ReTag{},
 		Save:    true,
 		Load:    true,
 		Verbose: true,

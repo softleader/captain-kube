@@ -10,7 +10,7 @@ type Installer interface {
 	Install(log *logrus.Logger) error
 }
 
-func NewInstaller(k8s string, tiller *tw_com_softleader_captainkube.Tiller, chart string) (Installer, error) {
+func NewInstaller(k8s string, tiller *tw_com_softleader.Tiller, chart string) (Installer, error) {
 	switch k8s {
 	case "icp":
 		return &icpInstaller{

@@ -67,10 +67,10 @@ func newDeleteCmd() *cobra.Command {
 }
 
 func (c *deleteCmd) run() error {
-	request := tw_com_softleader_captainkube.DeleteChartRequest{
+	request := tw_com_softleader.DeleteChartRequest{
 		Timeout: settings.Timeout,
 		Verbose: settings.Verbose,
-		Tiller: &tw_com_softleader_captainkube.Tiller{
+		Tiller: &tw_com_softleader.Tiller{
 			Endpoint:          c.helmTiller.Endpoint,
 			Username:          c.helmTiller.Username,
 			Password:          c.helmTiller.Password,

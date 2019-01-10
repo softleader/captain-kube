@@ -8,10 +8,10 @@ import (
 	"github.com/softleader/captain-kube/pkg/utils"
 )
 
-func (s *CaptainServer) Prune(req *tw_com_softleader_captainkube.PruneRequest, stream tw_com_softleader_captainkube.Captain_PruneServer) error {
+func (s *CaptainServer) Prune(req *tw_com_softleader.PruneRequest, stream tw_com_softleader.Captain_PruneServer) error {
 	log := logrus.New()
 	log.SetOutput(sio.NewStreamWriter(func(p []byte) error {
-		return stream.Send(&tw_com_softleader_captainkube.ChunkMessage{
+		return stream.Send(&tw_com_softleader.ChunkMessage{
 			Msg: p,
 		})
 	}))

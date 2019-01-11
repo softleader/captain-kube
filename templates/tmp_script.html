@@ -4,6 +4,7 @@
 
 <script>
 	$(function () {
+		let defaultCtx = '{{ .config.ActiveCtx }}';
 		let $ctxList = $('#ctxList');
 		if ($ctxList.length > 0) {
 			fetch('/contexts', {
@@ -11,7 +12,11 @@
 			}).then(response => response.json()
 			).then(json => {
 				json.forEach(name => {
-					$ctxList.append($(`<option value="${name}">${name}</option>`));
+					let $option = $(`<option value="${name}">${name}</option>`);
+					if (name === defaultCtx) {
+						$option.prop('selected', true);
+                    }
+					$ctxList.append($option);
                 })
 			});
 

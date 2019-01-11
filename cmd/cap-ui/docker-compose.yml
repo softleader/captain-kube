@@ -2,10 +2,9 @@ version: '3'
 services:
   cap-ui:
     image: softleader/cap-ui
-    args:
-      - --active-ctx: choose-a-ctx
+    command: "--active-ctx choose-a-context"
     environment:
-      - CTX_named-a-context="-e changeit -f hub.softleader.com.tw -t changeit"
-      - CTX_another-name="..."
+      - CTX_named-a-context=-e changeit -f hub.softleader.com.tw -t changeit
+      - CTX_another-context=...
     ports:
       - 8080:8080

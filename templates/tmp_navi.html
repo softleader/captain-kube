@@ -4,7 +4,8 @@
              width="30" height="30" class="d-inline-block align-top" alt="">
         Captain Kube
     </a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
+            aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
 
@@ -17,15 +18,16 @@
                 <a class="nav-link" href="/install">Install</a>
             </li>
             {{/*<li class="nav-item">*/}}
-                {{/*<a class="nav-link" href="/script">Script</a>*/}}
+            {{/*<a class="nav-link" href="/script">Script</a>*/}}
             {{/*</li>*/}}
         </ul>
         <form class="form-inline my-2 my-lg-0">
             <div class="input-group mr-sm-2">
                 <div class="input-group-prepend">
-                    <div class="input-group-text">Kubernetes@</div>
+                    <div class="input-group-text">Context@</div>
                 </div>
-                <input class="form-control" type="text" readonly="readonly" value="{{ .defaultValue.Endpoint.String }}">
+                <select class="custom-select" id="ctxList">
+                </select>
             </div>
         </form>
     </div>

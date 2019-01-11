@@ -1,3 +1,31 @@
 <script src="/static/jquery-3.3.1.min.js"></script>
 <script src="/static/bootstrap-4.1.0-dist/js/bootstrap.bundle.min.js"></script>
 <script src="/static/sseUtils.js"></script>
+
+<script>
+	$(function () {
+		let $ctxList = $('#ctxList');
+		if ($ctxList.length > 0) {
+			fetch('/contexts', {
+				method: 'GET',
+			}).then(response => response.json()
+			).then(json => {
+				json.forEach(name => {
+					$ctxList.append($(`<option value="${name}">${name}</option>`));
+                })
+			});
+
+			$ctxList.on('change', e => {
+				fetch(`/contexts/${e.target.value}`, {
+					method: 'PUT',
+				}).then(response => {
+					if (!response.ok) {
+						response.text().then(text => {
+							alert(text)
+                        });
+                    }
+                });
+            });
+        }
+	});
+</script>

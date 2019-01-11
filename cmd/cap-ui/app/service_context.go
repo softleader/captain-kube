@@ -32,6 +32,10 @@ func initContext(envs []string) error {
 			s := strings.Split(env, "=")
 			key := strings.Trim(s[0], prefix)
 			args := strings.Split(s[1], " ")
+			// to make sure args are alright
+			if _, err := ctx.NewContext(args...); err != nil {
+				return err
+			}
 			contexts[strings.ToLower(key)] = args
 		}
 	}

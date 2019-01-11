@@ -44,6 +44,7 @@ func NewCapUICommand(metadata *version.BuildMetadata) (cmd *cobra.Command) {
 		Metadata:         metadata,
 		defaultPlatform:  env.Lookup(capui.EnvPlatform, capui.DefaultPlatform),
 		defaultNamespace: env.Lookup(capui.EnvNamespace, capui.DefaultNamespace),
+		ActiveCtx:        "local",
 	}
 
 	cmd = &cobra.Command{

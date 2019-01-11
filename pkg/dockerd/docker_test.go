@@ -9,7 +9,7 @@ import (
 )
 
 func TestEncode(t *testing.T) {
-	auth := tw_com_softleader.RegistryAuth{
+	auth := captainkube_v2.RegistryAuth{
 		Username:         "a",
 		Password:         "b",
 		XXX_unrecognized: []byte("c"),

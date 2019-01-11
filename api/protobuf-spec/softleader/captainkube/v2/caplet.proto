@@ -1,6 +1,11 @@
 syntax = "proto3";
 
-package tw.com.softleader;
+// 依照 https://cloud.google.com/apis/design/naming_convention 規範
+package softleader.captainkube.v2;
+
+// Specifies Java package name, using the standard prefix "tw.com."
+option java_package = "tw.com.softleader.captainkube.v2";
+option go_package = "captainkube.v2";
 
 import "image.proto";
 import "msg.proto";
@@ -9,7 +14,7 @@ import "version.proto";
 
 message PullImageRequest {
     repeated Image images = 1;
-    RegistryAuth registryAuth = 2;
+    RegistryAuth registry_auth = 2;
     bool verbose = 3;
     bool color = 4;
 }

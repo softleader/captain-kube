@@ -14,7 +14,7 @@ var (
 
 func main() {
 	metadata := ver.NewBuildMetadata(version, commit)
-	command := app.NewCapUiCommand(metadata)
+	command := app.NewCapUICommand(metadata)
 	if err := command.Execute(); err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
 		os.Exit(1)

@@ -11,7 +11,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type capUiCmd struct {
+type capUICmd struct {
 	Metadata     *version.BuildMetadata
 	uiPort       int
 	DefaultValue DefaultValue      // 畫面選ss項預設值
@@ -27,10 +27,10 @@ type DefaultValue struct {
 	ReTag     *ctx.ReTag
 }
 
-func NewCapUiCommand(metadata *version.BuildMetadata) (cmd *cobra.Command) {
+func NewCapUICommand(metadata *version.BuildMetadata) (cmd *cobra.Command) {
 	var verbose bool
 	envCtx := ctx.NewContextFromEnv()
-	c := capUiCmd{
+	c := capUICmd{
 		Metadata: metadata,
 		DefaultValue: DefaultValue{
 			Plaform:   env.Lookup(capui.EnvPlaform, capui.DefaultPlaform),
@@ -53,10 +53,8 @@ func NewCapUiCommand(metadata *version.BuildMetadata) (cmd *cobra.Command) {
 			}
 			if err := c.Endpoint.Validate(); err != nil {
 				return err
-			} else {
-				c.EndpointStr = c.Endpoint.String()
 			}
-
+			c.EndpointStr = c.Endpoint.String()
 			return c.run()
 		},
 	}
@@ -76,7 +74,7 @@ func NewCapUiCommand(metadata *version.BuildMetadata) (cmd *cobra.Command) {
 	return
 }
 
-func (cmd *capUiCmd) run() error {
-	server := NewCapUiServer(cmd)
+func (cmd *capUICmd) run() error {
+	server := NewCapUIServer(cmd)
 	return server.Run(fmt.Sprintf(":%v", cmd.uiPort))
 }

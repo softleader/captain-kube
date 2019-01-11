@@ -73,7 +73,7 @@ func (c *pullCmd) pull(path string) error {
 	if err != nil {
 		return err
 	}
-	return dockerd.PullFromTemplates(logrus.StandardLogger(), tpls, &tw_com_softleader.RegistryAuth{
+	return dockerd.PullFromTemplates(logrus.StandardLogger(), tpls, &captainkube_v2.RegistryAuth{
 		Username: c.registryAuth.Username,
 		Password: c.registryAuth.Password,
 	})

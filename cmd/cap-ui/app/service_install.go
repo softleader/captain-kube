@@ -29,7 +29,7 @@ type InstallRequest struct {
 }
 
 type Install struct {
-	Cmd *capUiCmd
+	Cmd *capUICmd
 }
 
 func (s *Install) View(c *gin.Context) {
@@ -89,29 +89,29 @@ func doInstall(log *logrus.Logger, s *Install, form *InstallRequest, fileHeader 
 	log.Debugln("file:", file)
 
 	buf := bytes.NewBuffer(nil)
-	if readed, err := io.Copy(buf, file); err != nil {
+	readed, err := io.Copy(buf, file)
+	if err != nil {
 		return fmt.Errorf("reading file failed: %s", err)
-	} else {
-		log.Debugln("readed ", readed, " bytes")
 	}
+	log.Debugln("readed ", readed, " bytes")
 
 	// prepare rquest
-	request := tw_com_softleader.InstallChartRequest{
-		Chart: &tw_com_softleader.Chart{
+	request := captainkube_v2.InstallChartRequest{
+		Chart: &captainkube_v2.Chart{
 			FileName: fileHeader.Filename,
 			Content:  buf.Bytes(),
 			FileSize: fileHeader.Size,
 		},
 		Sync: strutil.Contains(form.Tags, "s"),
-		Retag: &tw_com_softleader.ReTag{
+		Retag: &captainkube_v2.ReTag{
 			From: form.SourceRegistry,
 			To:   form.Registry,
 		},
-		RegistryAuth: &tw_com_softleader.RegistryAuth{
+		RegistryAuth: &captainkube_v2.RegistryAuth{
 			Username: s.Cmd.RegistryAuth.Username,
 			Password: s.Cmd.RegistryAuth.Password,
 		},
-		Tiller: &tw_com_softleader.Tiller{
+		Tiller: &captainkube_v2.Tiller{
 			Endpoint:          s.Cmd.Tiller.Endpoint,
 			Username:          s.Cmd.Tiller.Username,
 			Password:          s.Cmd.Tiller.Password,

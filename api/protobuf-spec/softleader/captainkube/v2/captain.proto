@@ -1,6 +1,11 @@
 syntax = "proto3";
 
-package tw.com.softleader;
+// 依照 https://cloud.google.com/apis/design/naming_convention 規範
+package softleader.captainkube.v2;
+
+// Specifies Java package name, using the standard prefix "tw.com."
+option java_package = "tw.com.softleader.captainkube.v2";
+option go_package = "captainkube.v2";
 
 import "chart.proto";
 import "image.proto";
@@ -12,7 +17,7 @@ message SyncChartRequest {
     Chart chart = 1;
     int64 timeout = 2;
     ReTag retag = 3;
-    RegistryAuth registryAuth = 4;
+    RegistryAuth registry_auth = 4;
     bool verbose = 5;
     bool color = 6;
 }
@@ -23,15 +28,15 @@ message InstallChartRequest {
     int64 timeout = 3;
     bool sync = 4;
     ReTag retag = 5;
-    RegistryAuth registryAuth = 6;
+    RegistryAuth registry_auth = 6;
     bool verbose = 7;
     bool color = 8;
 }
 
 message DeleteChartRequest {
     Tiller tiller = 1;
-    string chartName = 2;
-    string chartVersion = 3;
+    string chart_name = 2;
+    string chart_version = 3;
     int64 timeout = 4;
     bool verbose = 5;
 }

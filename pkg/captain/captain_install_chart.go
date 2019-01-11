@@ -10,18 +10,18 @@ import (
 	"io"
 )
 
-func InstallChart(log *logrus.Logger, url string, req *tw_com_softleader.InstallChartRequest, timeout int64) error {
+func InstallChart(log *logrus.Logger, url string, req *captainkube_v2.InstallChartRequest, timeout int64) error {
 	conn, err := grpc.Dial(url, grpc.WithInsecure())
 	if err != nil {
-		return fmt.Errorf("did not connect: %v\n", err)
+		return fmt.Errorf("did not connect: %v", err)
 	}
 	defer conn.Close()
-	c := tw_com_softleader.NewCaptainClient(conn)
+	c := captainkube_v2.NewCaptainClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), dur.Deadline(timeout))
 	defer cancel()
 	stream, err := c.InstallChart(ctx, req)
 	if err != nil {
-		return fmt.Errorf("could not install chart: %v\n", err)
+		return fmt.Errorf("could not install chart: %v", err)
 	}
 	for {
 		recv, err := stream.Recv()

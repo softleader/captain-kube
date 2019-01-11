@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+// 依照 https://cloud.google.com/apis/design/naming_convention 規範
+package softleader.captainkube.v2;
+
+// Specifies Java package name, using the standard prefix "tw.com."
+option java_package = "tw.com.softleader.captainkube.v2";
+option go_package = "captainkube.v2";
+
+message ChunkMessage {
+    string hostname = 1;
+    bytes msg = 2;
+}

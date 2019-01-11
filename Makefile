@@ -8,6 +8,9 @@ CAPTAIN := captain
 CAPLET := caplet
 UI := cap-ui
 CAPCTL = capctl
+protobuf = api/protobuf-spec/softleader/captainkube/v2
+proto_dst = pkg/proto
+
 
 .PHONY: test
 test: golint
@@ -26,13 +29,13 @@ endif
 
 .PHONY: protoc
 protoc:
-	protoc -I api/protobuf-spec/ --go_out=plugins=grpc:pkg/proto api/protobuf-spec/caplet.proto
-	protoc -I api/protobuf-spec/ --go_out=plugins=grpc:pkg/proto api/protobuf-spec/captain.proto
-	protoc -I api/protobuf-spec/ --go_out=plugins=grpc:pkg/proto api/protobuf-spec/chart.proto
-	protoc -I api/protobuf-spec/ --go_out=plugins=grpc:pkg/proto api/protobuf-spec/image.proto
-	protoc -I api/protobuf-spec/ --go_out=plugins=grpc:pkg/proto api/protobuf-spec/msg.proto
-	protoc -I api/protobuf-spec/ --go_out=plugins=grpc:pkg/proto api/protobuf-spec/prune.proto
-	protoc -I api/protobuf-spec/ --go_out=plugins=grpc:pkg/proto api/protobuf-spec/version.proto
+	protoc -I $(protobuf) --go_out=plugins=grpc:$(proto_dst) $(protobuf)/caplet.proto
+	protoc -I $(protobuf) --go_out=plugins=grpc:$(proto_dst) $(protobuf)/captain.proto
+	protoc -I $(protobuf) --go_out=plugins=grpc:$(proto_dst) $(protobuf)/chart.proto
+	protoc -I $(protobuf) --go_out=plugins=grpc:$(proto_dst) $(protobuf)/image.proto
+	protoc -I $(protobuf) --go_out=plugins=grpc:$(proto_dst) $(protobuf)/msg.proto
+	protoc -I $(protobuf) --go_out=plugins=grpc:$(proto_dst) $(protobuf)/prune.proto
+	protoc -I $(protobuf) --go_out=plugins=grpc:$(proto_dst) $(protobuf)/version.proto
 
 .PHONY: build
 build: clean bootstrap build-caplet build-captain build-ui build-capctl

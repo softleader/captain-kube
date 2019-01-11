@@ -9,10 +9,10 @@ import (
 	"github.com/softleader/captain-kube/pkg/utils"
 )
 
-func (s *CapletServer) PullImage(req *tw_com_softleader.PullImageRequest, stream tw_com_softleader.Caplet_PullImageServer) error {
+func (s *CapletServer) PullImage(req *captainkube_v2.PullImageRequest, stream captainkube_v2.Caplet_PullImageServer) error {
 	log := logrus.New()
 	log.SetOutput(sio.NewStreamWriter(func(p []byte) error {
-		return stream.Send(&tw_com_softleader.ChunkMessage{
+		return stream.Send(&captainkube_v2.ChunkMessage{
 			Hostname: s.hostname,
 			Msg:      p,
 		})
@@ -29,7 +29,7 @@ func (s *CapletServer) PullImage(req *tw_com_softleader.PullImageRequest, stream
 	return nil
 }
 
-func pull(log *logrus.Logger, image *tw_com_softleader.Image, auth *tw_com_softleader.RegistryAuth) error {
+func pull(log *logrus.Logger, image *captainkube_v2.Image, auth *captainkube_v2.RegistryAuth) error {
 	if tag := image.GetTag(); len(tag) == 0 {
 		image.Tag = "latest"
 	}

@@ -12,10 +12,10 @@ import (
 	"strings"
 )
 
-func (s *CaptainServer) GenerateScript(req *tw_com_softleader.GenerateScriptRequest, stream tw_com_softleader.Captain_GenerateScriptServer) error {
+func (s *CaptainServer) GenerateScript(req *captainkube_v2.GenerateScriptRequest, stream captainkube_v2.Captain_GenerateScriptServer) error {
 	log := logrus.New()
 	log.SetOutput(sio.NewStreamWriter(func(p []byte) error {
-		return stream.Send(&tw_com_softleader.ChunkMessage{
+		return stream.Send(&captainkube_v2.ChunkMessage{
 			Msg: p,
 		})
 	}))
@@ -48,35 +48,35 @@ func (s *CaptainServer) GenerateScript(req *tw_com_softleader.GenerateScriptRequ
 	log.Debugf("%v template(s) loaded\n", len(tpls))
 
 	if from, to := strings.TrimSpace(req.GetRetag().GetFrom()), strings.TrimSpace(req.GetRetag().GetTo()); from != "" && to != "" {
-		if b, err := tpls.GenerateReTagScript(from, to); err != nil {
+		b, err := tpls.GenerateReTagScript(from, to)
+		if err != nil {
 			return err
-		} else {
-			log.Out.Write(b)
 		}
+		log.Out.Write(b)
 	}
 
 	if req.Pull {
-		if b, err := tpls.GeneratePullScript(); err != nil {
+		b, err := tpls.GeneratePullScript()
+		if err != nil {
 			return err
-		} else {
-			log.Out.Write(b)
 		}
+		log.Out.Write(b)
 	}
 
 	if req.Load {
-		if b, err := tpls.GenerateLoadScript(); err != nil {
+		b, err := tpls.GenerateLoadScript()
+		if err != nil {
 			return err
-		} else {
-			log.Out.Write(b)
 		}
+		log.Out.Write(b)
 	}
 
 	if req.Save {
-		if b, err := tpls.GenerateSaveScript(); err != nil {
+		b, err := tpls.GenerateSaveScript()
+		if err != nil {
 			return err
-		} else {
-			log.Out.Write(b)
 		}
+		log.Out.Write(b)
 	}
 
 	return nil

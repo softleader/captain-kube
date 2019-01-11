@@ -1,8 +1,0 @@
-syntax = "proto3";
-
-package tw.com.softleader;
-
-message ChunkMessage {
-    string hostname = 1;
-    bytes msg = 2;
-}

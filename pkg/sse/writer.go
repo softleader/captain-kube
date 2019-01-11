@@ -4,22 +4,22 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func NewWriter(c *gin.Context) *SSEWriter {
-	return &SSEWriter{
+func NewWriter(c *gin.Context) *Writer {
+	return &Writer{
 		GinContext: c,
 	}
 }
 
-type SSEWriter struct {
+type Writer struct {
 	GinContext *gin.Context
 }
 
-func (w *SSEWriter) Write(p []byte) (n int, err error) {
+func (w *Writer) Write(p []byte) (n int, err error) {
 	SSE(w.GinContext, string(p))
 	return len(p), nil
 }
 
-func (w *SSEWriter) WriteStr(s string) (n int, err error) {
+func (w *Writer) WriteStr(s string) (n int, err error) {
 	SSE(w.GinContext, s)
 	return len(s), nil
 }

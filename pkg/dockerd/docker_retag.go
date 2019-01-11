@@ -8,7 +8,7 @@ import (
 	"github.com/softleader/captain-kube/pkg/proto"
 )
 
-func ReTag(log *logrus.Logger, source chart.Image, target chart.Image, registryAuth *tw_com_softleader.RegistryAuth) error {
+func ReTag(log *logrus.Logger, source chart.Image, target chart.Image, registryAuth *captainkube_v2.RegistryAuth) error {
 	ctx := context.Background()
 
 	// Use DOCKER_HOST to set the url to the docker server.
@@ -57,7 +57,7 @@ func ReTag(log *logrus.Logger, source chart.Image, target chart.Image, registryA
 	return nil
 }
 
-func ReTagFromTemplates(log *logrus.Logger, tpls chart.Templates, retag *tw_com_softleader.ReTag, auth *tw_com_softleader.RegistryAuth) error {
+func ReTagFromTemplates(log *logrus.Logger, tpls chart.Templates, retag *captainkube_v2.ReTag, auth *captainkube_v2.RegistryAuth) error {
 	for _, tpl := range tpls {
 		for _, image := range tpl {
 			if image.Host == retag.From {

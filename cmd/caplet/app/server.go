@@ -53,7 +53,7 @@ func (c *capletCmd) run() error {
 	}
 
 	s := grpc.NewServer()
-	tw_com_softleader.RegisterCapletServer(s, server.NewCapletServer(c.metadata))
+	captainkube_v2.RegisterCapletServer(s, server.NewCapletServer(c.metadata))
 	logrus.Printf("registered caplet server\n")
 	reflection.Register(s)
 

@@ -16,8 +16,8 @@ func TestPullImage(t *testing.T) {
 	}
 
 	log := logrus.New()
-	req := &tw_com_softleader.PullImageRequest{}
-	req.Images = append(req.Images, &tw_com_softleader.Image{
+	req := &captainkube_v2.PullImageRequest{}
+	req.Images = append(req.Images, &captainkube_v2.Image{
 		Host: "softleader",
 		Repo: "helm",
 	})

@@ -22,8 +22,7 @@ var (
 	ErrMountVolumeNotExist = errors.New(`mount volume not found
 It looks like you are running the command outside slctl (https://github.com/softleader/slctl)
 Please set SL_PLUGIN_MOUNT variable to manually specify the location for the command to store data 
-For more details: https://github.com/softleader/slctl/wiki/Plugins-Guide#mount-volume
-`)
+For more details: https://github.com/softleader/slctl/wiki/Plugins-Guide#mount-volume`)
 	ErrNoActiveContextPresent = errors.New("no active context present") // 代表當前沒有 active 的 context
 	PlainContexts             = new(Contexts)
 	contextNameRegexp         = regexp.MustCompile(`^(.|-)$`)
@@ -78,15 +77,15 @@ func (c *Contexts) GetActiveExpandEnv() (*Context, error) {
 	if c.Active == "" {
 		return nil, ErrNoActiveContextPresent
 	}
-	if args, found := c.Contexts[c.Active]; !found {
+	args, found := c.Contexts[c.Active]
+	if !found {
 		return nil, fmt.Errorf("no active context exists with name %q", c.Active)
-	} else {
-		ctx, err := newContext(args...)
-		if err != nil {
-			return nil, err
-		}
-		return ctx, ctx.expandEnv()
 	}
+	ctx, err := newContext(args...)
+	if err != nil {
+		return nil, err
+	}
+	return ctx, ctx.expandEnv()
 }
 
 func (c *Contexts) Add(name string, args []string, force bool) error {

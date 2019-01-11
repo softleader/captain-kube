@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func NewCapUiServer(cmd *capUiCmd) (r *gin.Engine) {
+func NewCapUIServer(cmd *capUICmd) (r *gin.Engine) {
 	r = gin.Default()
 
 	r.SetFuncMap(template.FuncMap{

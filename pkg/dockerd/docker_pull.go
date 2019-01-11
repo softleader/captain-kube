@@ -8,7 +8,7 @@ import (
 	"github.com/softleader/captain-kube/pkg/proto"
 )
 
-func Pull(log *logrus.Logger, image chart.Image, registryAuth *tw_com_softleader.RegistryAuth) error {
+func Pull(log *logrus.Logger, image chart.Image, registryAuth *captainkube_v2.RegistryAuth) error {
 	ctx := context.Background()
 
 	// Use DOCKER_HOST to set the url to the docker server.
@@ -45,7 +45,7 @@ func Pull(log *logrus.Logger, image chart.Image, registryAuth *tw_com_softleader
 	return nil
 }
 
-func PullFromTemplates(log *logrus.Logger, tpls chart.Templates, auth *tw_com_softleader.RegistryAuth) error {
+func PullFromTemplates(log *logrus.Logger, tpls chart.Templates, auth *captainkube_v2.RegistryAuth) error {
 	for _, tpl := range tpls {
 		for _, image := range tpl {
 			log.Debugln("pulling image:", image.String())

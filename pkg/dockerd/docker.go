@@ -7,7 +7,7 @@ import (
 	"github.com/softleader/captain-kube/pkg/proto"
 )
 
-func encode(ra *tw_com_softleader.RegistryAuth) (string, error) {
+func encode(ra *captainkube_v2.RegistryAuth) (string, error) {
 	b, err := json.Marshal(ra)
 	if err != nil {
 		return "", nil

@@ -96,13 +96,12 @@ func (c *scriptCmd) run() error {
 	if c.diff {
 		if l := len(c.charts); l != 2 {
 			return fmt.Errorf("required two charts in diff mode, but received %v", l)
-		} else {
-			log = logrus.New() // 這個是這次請求要往前吐的 log
-			buf = &bytes.Buffer{}
-			//log.SetOutput(io.MultiWriter(&sseWriter, buf))
-			log.SetOutput(buf)
-			log.SetFormatter(&utils.PlainFormatter{})
 		}
+		log = logrus.New() // 這個是這次請求要往前吐的 log
+		buf = &bytes.Buffer{}
+		//log.SetOutput(io.MultiWriter(&sseWriter, buf))
+		log.SetOutput(buf)
+		log.SetFormatter(&utils.PlainFormatter{})
 	} else {
 		log = logrus.StandardLogger()
 	}
@@ -145,14 +144,14 @@ func runScript(log *logrus.Logger, c *scriptCmd, path string) error {
 		return err
 	}
 
-	request := tw_com_softleader.GenerateScriptRequest{
-		Chart: &tw_com_softleader.Chart{
+	request := captainkube_v2.GenerateScriptRequest{
+		Chart: &captainkube_v2.Chart{
 			FileName: filepath.Base(abs),
 			Content:  bytes,
 			FileSize: int64(len(bytes)),
 		},
 		Pull: c.pull,
-		Retag: &tw_com_softleader.ReTag{
+		Retag: &captainkube_v2.ReTag{
 			From: c.retag.From,
 			To:   c.retag.To,
 		},

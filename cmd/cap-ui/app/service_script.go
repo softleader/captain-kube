@@ -26,7 +26,7 @@ type ScriptRequest struct {
 
 type Script struct {
 	Log *logrus.Logger // 這個是 server 自己的 log
-	Cmd *capUiCmd
+	Cmd *capUICmd
 }
 
 func (s *Script) View(c *gin.Context) {
@@ -70,11 +70,10 @@ func (s *Script) Generate(c *gin.Context) {
 			log.Errorln("diff mode must have two files")
 			logrus.Errorln("diff mode must have two files")
 			return
-		} else {
-			buf = &bytes.Buffer{}
-			//log.SetOutput(io.MultiWriter(&sseWriter, buf))
-			log.SetOutput(buf)
 		}
+		buf = &bytes.Buffer{}
+		//log.SetOutput(io.MultiWriter(&sseWriter, buf))
+		log.SetOutput(buf)
 	}
 
 	for _, file := range files {
@@ -116,20 +115,20 @@ func doScript(log *logrus.Logger, s *Script, form *ScriptRequest, fileHeader *mu
 	log.Debugln("file:", file)
 
 	buf := bytes.NewBuffer(nil)
-	if readed, err := io.Copy(buf, file); err != nil {
+	readed, err := io.Copy(buf, file)
+	if err != nil {
 		return fmt.Errorf("call captain GenerateScript failed: %s", err)
-	} else {
-		log.Debugln("readed ", readed, " bytes")
 	}
+	log.Debugln("readed ", readed, " bytes")
 
-	request := tw_com_softleader.GenerateScriptRequest{
-		Chart: &tw_com_softleader.Chart{
+	request := captainkube_v2.GenerateScriptRequest{
+		Chart: &captainkube_v2.Chart{
 			FileName: fileHeader.Filename,
 			Content:  buf.Bytes(),
 			FileSize: fileHeader.Size,
 		},
 		Pull: strutil.Contains(form.Tags, "p"),
-		Retag: &tw_com_softleader.ReTag{
+		Retag: &captainkube_v2.ReTag{
 			From: form.SourceRegistry,
 			To:   form.Registry,
 		},
@@ -139,9 +138,8 @@ func doScript(log *logrus.Logger, s *Script, form *ScriptRequest, fileHeader *mu
 
 	if err := captain.GenerateScript(log, s.Cmd.Endpoint.String(), &request, 300); err != nil {
 		return fmt.Errorf("call captain GenerateScript failed: %s", err)
-	} else {
-		log.Debugln("GenerateScript finish")
 	}
+	log.Debugln("GenerateScript finish")
 
 	return nil
 }

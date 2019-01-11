@@ -62,7 +62,7 @@ func NewContext(args ...string) (*Context, error) {
 	return c, cmd.ParseFlags(args)
 }
 
-func (ctx *Context) expandEnv() error {
+func (ctx *Context) ExpandEnv() error {
 	defaultCtx := NewContextFromEnv()
 	return mergo.Merge(ctx, defaultCtx)
 }

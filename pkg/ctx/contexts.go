@@ -85,7 +85,7 @@ func (c *Contexts) GetActiveExpandEnv() (*Context, error) {
 	if err != nil {
 		return nil, err
 	}
-	return ctx, ctx.expandEnv()
+	return ctx, ctx.ExpandEnv()
 }
 
 func (c *Contexts) Add(name string, args []string, force bool) error {

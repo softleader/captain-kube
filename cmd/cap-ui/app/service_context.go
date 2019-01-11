@@ -23,7 +23,11 @@ func newActiveContext(activeCtx string) (*ctx.Context, error) {
 	if !found {
 		return nil, ctx.ErrNoActiveContextPresent
 	}
-	return ctx.NewContext(args...)
+	c, err := ctx.NewContext(args...)
+	if err != nil {
+		return nil, err
+	}
+	return c, c.ExpandEnv()
 }
 
 func initContext(envs []string) error {

@@ -20,7 +20,7 @@ func TestExpandEnv(t *testing.T) {
 	os.Setenv(captain.DefaultTillerPassword, "surprised")
 	os.Setenv(captain.EnvPort, strconv.Itoa(captain.DefaultPort))
 
-	if err := ctx.expandEnv(); err != nil {
+	if err := ctx.ExpandEnv(); err != nil {
 		t.Error(err)
 	}
 	if e := ctx.HelmTiller.Endpoint; e != "192.168.1.93" {

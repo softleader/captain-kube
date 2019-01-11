@@ -3,7 +3,7 @@ services:
   cap-ui:
     image: softleader/cap-ui
     args:
-      - active-ctx: choose-a-ctx
+      - --active-ctx: choose-a-ctx
     environment:
       - CTX_named-a-context="-e changeit -f hub.softleader.com.tw -t changeit"
       - CTX_another-name="..."

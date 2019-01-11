@@ -1,0 +1,67 @@
+{{- if .Values.capui.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "captain-kube.capui" . }}
+  labels:
+    app: {{ template "captain-kube.capui" . }}
+    chart: {{ template "captain-kube.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "captain-kube.capui" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "captain-kube.capui" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ template "captain-kube.capui" . }}
+          image: "{{ .Values.capui.image }}:{{ .Values.capui.tag }}"
+          imagePullPolicy: {{ .Values.capui.pullPolicy }}
+          args: ["--active-ctx", "default"]
+          envFrom:
+            - configMapRef:
+                name: {{ template "captain-kube.config" . }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "captain-kube.capui" . }}
+  labels:
+    app: {{ template "captain-kube.capui" . }}
+    chart: {{ template "captain-kube.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: ClusterIP
+  ports:
+    - name: {{ template "captain-kube.capui" . }}
+      protocol: TCP
+      port: 8080
+  selector:
+    app: {{ template "captain-kube.captain" . }}
+    release: {{ .Release.Name }}
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "captain-kube.capui" . }}
+  labels:
+    app: {{ template "captain-kube.capui" . }}
+    chart: {{ template "captain-kube.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  rules:
+    - http:
+        paths:
+          - path: {{ .Values.capui.ingress.path }}
+            backend:
+              serviceName: {{ template "captain-kube.capui" . }}
+              servicePort: 8080
+{{- end }}

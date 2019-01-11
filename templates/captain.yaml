@@ -25,3 +25,23 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ template "captain-kube.config" . }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "captain-kube.captain" . }}
+  labels:
+    app: {{ template "captain-kube.captain" . }}
+    chart: {{ template "captain-kube.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: NodePort
+  ports:
+    - name: {{ template "captain-kube.captain" . }}
+      protocol: TCP
+      port: {{ .Values.captain.port }}
+      nodePort: {{ .Values.captain.port }}
+  selector:
+    app: {{ template "captain-kube.captain" . }}
+    release: {{ .Release.Name }}

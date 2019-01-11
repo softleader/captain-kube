@@ -19,16 +19,35 @@ spec:
         release: {{ .Release.Name }}
     spec:
       volumes:
-      - name: docker-socket
+      - name: docker-socket-{{ .Release.Namespace }}
         persistentVolumeClaim:
-          claimName: docker-socket-claim
+          claimName: docker-socket-claim-{{ .Release.Namespace }}
       containers:
         - name: {{ template "captain-kube.caplet" . }}
           image: "{{ .Values.caplet.image }}:{{ .Values.caplet.tag }}"
           imagePullPolicy: {{ .Values.caplet.pullPolicy }}
           volumeMounts:
             - mountPath: "/var/run/docker.sock"
-              name: docker-socket
+              name: docker-socket-{{ .Release.Namespace }}
           envFrom:
             - configMapRef:
                 name: {{ template "captain-kube.config" . }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "captain-kube.caplet" . }}
+  labels:
+    app: {{ template "captain-kube.caplet" . }}
+    chart: {{ template "captain-kube.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  clusterIP: None
+  ports:
+    - name: {{ template "captain-kube.caplet" . }}
+      protocol: TCP
+      port: {{ .Values.caplet.port }}
+  selector:
+    app: {{ template "captain-kube.caplet" . }}
+    release: {{ .Release.Name }}

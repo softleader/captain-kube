@@ -13,3 +13,7 @@
 {{- define "captain-kube.config" -}}
 {{- printf "captain-kube-config" -}}
 {{- end -}}
+
+{{- define "captain-kube.capui" -}}
+{{- printf "capui" -}}
+{{- end -}}

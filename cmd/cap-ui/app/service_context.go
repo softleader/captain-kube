@@ -52,12 +52,12 @@ func (s *Contexts) ListContext(c *gin.Context) {
 func (s *Contexts) SwitchContext(c *gin.Context) {
 	ctx := c.Param("ctx")
 	if ctx == "" {
-		c.String(http.StatusNotImplemented, fmt.Sprintf("can't switch to blank context: %q", ctx))
+		c.Error(fmt.Errorf("can't switch to blank context: %q", ctx))
 		return
 	}
 	_, found := contexts[strings.ToLower(ctx)]
 	if !found {
-		c.String(http.StatusNotImplemented, fmt.Sprintf("context %q not found", ctx))
+		c.Error(fmt.Errorf("context %q not found", ctx))
 		return
 	}
 	s.ActiveCtx = ctx

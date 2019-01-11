@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/softleader/captain-kube/cmd/cap-ui/app"
+	"github.com/softleader/captain-kube/cmd/capui/app"
 	ver "github.com/softleader/captain-kube/pkg/version"
 	"os"
 )

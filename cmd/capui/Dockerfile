@@ -6,8 +6,8 @@ WORKDIR /app
 COPY docker-compose.yml /
 COPY static/ /app/static/
 COPY templates/ /app/templates/
-COPY cap-ui /app
+COPY capui /app
 
-ENV GIN_MODE=release
+#ENV GIN_MODE=release
 
-ENTRYPOINT ["./cap-ui"]
+ENTRYPOINT ["./capui"]

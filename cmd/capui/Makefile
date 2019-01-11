@@ -4,7 +4,7 @@ VERSION := ""
 COMMIT := ""
 LDFLAGS := "-X main.version=${VERSION} -X main.commit=${COMMIT}"
 REGISTRY := softleader
-BINARY = cap-ui
+BINARY = capui
 
 .PHONY: build
 build:

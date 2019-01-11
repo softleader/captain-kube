@@ -6,7 +6,7 @@ VERSION := ""
 COMMIT := ""
 CAPTAIN := captain
 CAPLET := caplet
-UI := cap-ui
+CAPUI := capui
 CAPCTL = capctl
 protobuf = api/protobuf-spec/softleader/captainkube/v2
 proto_dst = pkg/proto
@@ -48,9 +48,9 @@ build-caplet:
 build-captain:
 	make build --file ./cmd/$(CAPLET)/Makefile VERSION=$(VERSION) COMMIT=$(COMMIT) REGISTRY=$(REGISTRY)
 
-.PHONY: build-ui
-build-ui:
-	make build --file ./cmd/$(UI)/Makefile VERSION=$(VERSION) COMMIT=$(COMMIT) REGISTRY=$(REGISTRY)
+.PHONY: build-capui
+build-capui:
+	make build --file ./cmd/$(CAPUI)/Makefile VERSION=$(VERSION) COMMIT=$(COMMIT) REGISTRY=$(REGISTRY)
 
 .PHONY: build-capctl
 build-capctl:
@@ -67,9 +67,9 @@ dist-caplet:
 dist-captain:
 	make dist --file ./cmd/$(CAPTAIN)/Makefile VERSION=$(VERSION) COMMIT=$(COMMIT) REGISTRY=$(REGISTRY)
 
-.PHONY: dist-ui
-dist-ui:
-	make dist --file ./cmd/$(UI)/Makefile VERSION=$(VERSION) COMMIT=$(COMMIT) REGISTRY=$(REGISTRY)
+.PHONY: dist-capui
+dist-capui:
+	make dist --file ./cmd/$(CAPUI)/Makefile VERSION=$(VERSION) COMMIT=$(COMMIT) REGISTRY=$(REGISTRY)
 
 .PHONY: dist-capctl
 dist-capctl:

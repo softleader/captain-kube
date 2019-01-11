@@ -15,14 +15,14 @@
                 <div class="form-check">
                     <label class="form-check-label">
                         <input class="form-check-input" type="radio" name="platform" value="helm"
-                               {{ if eq .config.DefaultValue.Plaform "helm" }}checked{{ end }}>
+                               {{ if eq .defaultValue.Platform "helm" }}checked{{ end }}>
                         Google Helm
                     </label>
                 </div>
                 <div class="form-check">
                     <label class="form-check-label">
                         <input class="form-check-input" type="radio" name="platform" value="icp"
-                               {{ if eq .config.DefaultValue.Plaform "icp" }}checked{{ end }}>
+                               {{ if eq .defaultValue.Platform "icp" }}checked{{ end }}>
                         IBM Cloud Private
                     </label>
                 </div>
@@ -31,8 +31,8 @@
             <div class="form-group">
                 <label for="namespace">Namespace</label>
                 <input type="text" class="form-control" name="namespace" id="namespace"
-                       value="{{ .config.DefaultValue.Namespace }}"
-                       {{ if ne .config.DefaultValue.Plaform "helm" }}disabled{{ end }}>
+                       value="{{ .defaultValue.Namespace }}"
+                       {{ if ne .defaultValue.Platform "helm" }}disabled{{ end }}>
             </div>
 
             <div class="form-group">
@@ -60,12 +60,12 @@
                 <label for="registry">Registry</label>
                 <div class="input-group">
                     <input type="text" class="form-control" name="sourceRegistry" id="sourceRegistry"
-                           value="{{ .config.DefaultValue.ReTag.From }}" disabled required>
+                           value="{{ .defaultValue.ReTag.From }}" disabled required>
                     <div class="input-group-prepend">
                         <span class="input-group-text" id=""><i class="fas fa-angle-double-right"></i></span>
                     </div>
                     <input type="text" class="form-control" name="registry" id="registry"
-                           value="{{ .config.DefaultValue.ReTag.To }}" disabled required>
+                           value="{{ .defaultValue.ReTag.To }}" disabled required>
                 </div>
             </div>
 
@@ -154,7 +154,7 @@
             let $btns = $("button");
             $btns.prop('disabled', true);
 
-            let $outputBLock = $('#output_block');
+            let $outputBlock = $('#output_block');
             let $output = $("#output");
             $output.empty();
 
@@ -170,7 +170,7 @@
             }).then(response => readSSE(response, {
                 onNext(value) {
                     $output.append(value + '<br>');
-                    $outputBLock.scrollTop($outputBLock[0].scrollHeight);
+                    $outputBlock.scrollTop($outputBlock[0].scrollHeight);
                 },
                 onComplete() {
                     $btns.prop('disabled', false);

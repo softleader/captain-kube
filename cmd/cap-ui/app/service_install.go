@@ -29,12 +29,18 @@ type InstallRequest struct {
 }
 
 type Install struct {
-	Cmd *capUICmd
+	*capUICmd
 }
 
 func (s *Install) View(c *gin.Context) {
+	dft, err := s.newDefaultValue()
+	if err != nil {
+		c.Error(err)
+		return
+	}
 	c.HTML(http.StatusOK, "install.html", gin.H{
-		"config": &s.Cmd,
+		"config":    &s,
+		"defaultValue": dft,
 	})
 }
 
@@ -48,7 +54,6 @@ func (s *Install) Chart(c *gin.Context) {
 
 	var form InstallRequest
 	if err := c.Bind(&form); err != nil {
-		//sw.WriteStr(fmt.Sprint("binding form data error:", err))
 		log.Errorln("binding form data error:", err)
 		logrus.Errorln("binding form data error:", err)
 		return
@@ -56,7 +61,6 @@ func (s *Install) Chart(c *gin.Context) {
 
 	mForm, err := c.MultipartForm()
 	if err != nil {
-		//sw.WriteStr(fmt.Sprint("loading form file error:", err))
 		log.Errorln("loading form files error:", err)
 		logrus.Errorln("loading form files error:", err)
 		return
@@ -67,7 +71,7 @@ func (s *Install) Chart(c *gin.Context) {
 	for _, file := range files {
 		filename := file.Filename
 		log.Println("### Chart:", filename, "###")
-		if err := doInstall(log, s, &form, file); err != nil {
+		if err := s.install(log, &form, file); err != nil {
 			log.Errorln("### [ERROR]", filename, err)
 			logrus.Errorln(filename, err)
 		}
@@ -78,7 +82,14 @@ func (s *Install) Chart(c *gin.Context) {
 
 }
 
-func doInstall(log *logrus.Logger, s *Install, form *InstallRequest, fileHeader *multipart.FileHeader) error {
+func (s *Install) install(log *logrus.Logger, form *InstallRequest, fileHeader *multipart.FileHeader) error {
+	activeCtx, err := newActiveContext(s.ActiveCtx)
+	if err != nil {
+		return err
+	}
+
+	log.Debugf("active context: %#v\n", activeCtx)
+
 	file, err := fileHeader.Open()
 	if err != nil {
 		return fmt.Errorf("open file stream failed: %s", err)
@@ -108,15 +119,15 @@ func doInstall(log *logrus.Logger, s *Install, form *InstallRequest, fileHeader 
 			To:   form.Registry,
 		},
 		RegistryAuth: &captainkube_v2.RegistryAuth{
-			Username: s.Cmd.RegistryAuth.Username,
-			Password: s.Cmd.RegistryAuth.Password,
+			Username: activeCtx.RegistryAuth.Username,
+			Password: activeCtx.RegistryAuth.Password,
 		},
 		Tiller: &captainkube_v2.Tiller{
-			Endpoint:          s.Cmd.Tiller.Endpoint,
-			Username:          s.Cmd.Tiller.Username,
-			Password:          s.Cmd.Tiller.Password,
-			Account:           s.Cmd.Tiller.Account,
-			SkipSslValidation: s.Cmd.Tiller.SkipSslValidation,
+			Endpoint:          activeCtx.HelmTiller.Endpoint,
+			Username:          activeCtx.HelmTiller.Username,
+			Password:          activeCtx.HelmTiller.Password,
+			Account:           activeCtx.HelmTiller.Account,
+			SkipSslValidation: activeCtx.HelmTiller.SkipSslValidation,
 		},
 	}
 
@@ -144,7 +155,7 @@ func doInstall(log *logrus.Logger, s *Install, form *InstallRequest, fileHeader 
 		}
 	}
 
-	if err := captain.InstallChart(log, s.Cmd.Endpoint.String(), &request, dur.DefaultDeadlineSecond); err != nil {
+	if err := captain.InstallChart(log, activeCtx.Endpoint.String(), &request, dur.DefaultDeadlineSecond); err != nil {
 		return fmt.Errorf("call captain InstallChart failed: %s", err)
 	}
 

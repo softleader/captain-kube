@@ -25,13 +25,18 @@ type ScriptRequest struct {
 }
 
 type Script struct {
-	Log *logrus.Logger // 這個是 server 自己的 log
-	Cmd *capUICmd
+	*capUICmd
 }
 
 func (s *Script) View(c *gin.Context) {
+	dft, err := s.newDefaultValue()
+	if err != nil {
+		c.Error(err)
+		return
+	}
 	c.HTML(http.StatusOK, "script.html", gin.H{
-		"config": &s.Cmd,
+		"config":    &s,
+		"defaultValue": dft,
 	})
 }
 
@@ -79,7 +84,7 @@ func (s *Script) Generate(c *gin.Context) {
 	for _, file := range files {
 		filename := file.Filename
 		log.Println("### Chart:", filename, "###")
-		if err := doScript(log, s, &form, file); err != nil {
+		if err := s.script(log, &form, file); err != nil {
 			log.Errorln("### [ERROR]", filename, err)
 			logrus.Errorln(filename, err)
 		}
@@ -104,7 +109,14 @@ func (s *Script) Generate(c *gin.Context) {
 
 }
 
-func doScript(log *logrus.Logger, s *Script, form *ScriptRequest, fileHeader *multipart.FileHeader) error {
+func (s *Script) script(log *logrus.Logger, form *ScriptRequest, fileHeader *multipart.FileHeader) error {
+	activeCtx, err := newActiveContext(s.ActiveCtx)
+	if err != nil {
+		return err
+	}
+
+	log.Debugf("active context: %#v\n", activeCtx)
+
 	file, err := fileHeader.Open()
 	if err != nil {
 		return fmt.Errorf("open file stream failed: %s", err)
@@ -136,7 +148,7 @@ func doScript(log *logrus.Logger, s *Script, form *ScriptRequest, fileHeader *mu
 		Load: strutil.Contains(form.Tags, "l"),
 	}
 
-	if err := captain.GenerateScript(log, s.Cmd.Endpoint.String(), &request, 300); err != nil {
+	if err := captain.GenerateScript(log, activeCtx.Endpoint.String(), &request, 300); err != nil {
 		return fmt.Errorf("call captain GenerateScript failed: %s", err)
 	}
 	log.Debugln("GenerateScript finish")

@@ -45,7 +45,7 @@ func FlagsString() (string, error) {
 	return bb.String(), nil
 }
 
-func newContext(args ...string) (*Context, error) {
+func NewContext(args ...string) (*Context, error) {
 	c := &Context{
 		Global:       &Global{},
 		Endpoint:     &Endpoint{},

@@ -1,11 +1,11 @@
 package capui
 
 const (
-	EnvPlaform       = "CAPUI_PLAFORM"
+	EnvPlatform      = "CAPUI_PLAFORM"
 	EnvNamespace     = "CAPUI_NAMESPACE"
 	EnvReTagFrom     = "CAPUI_RETAGFROM"
 	EnvReTagTo       = "CAPUI_RETAGTO"
-	DefaultPlaform   = "icp"
+	DefaultPlatform  = "icp"
 	DefaultNamespace = "default"
 	DefaultReTagFrom = ""
 	DefaultReTagTo   = ""

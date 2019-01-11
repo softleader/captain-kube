@@ -45,15 +45,12 @@ func TestLoadContexts(t *testing.T) {
 		t.Errorf("suppose to have foo key")
 		t.FailNow()
 	} else {
-		foo, err := newContext(args...)
+		foo, err := NewContext(args...)
 		if err != nil {
 			t.Error(err)
 			t.FailNow()
 		}
-		if foo.Endpoint == nil {
-			t.Errorf("suppose to have non nil endpoint of foo")
-			t.FailNow()
-		} else if host := foo.Endpoint.Host; host != "localhost" {
+		if host := foo.Endpoint.Host; host != "localhost" {
 			t.Errorf("suppose to have localhost endpoint.host of foo, but got %s", host)
 			t.FailNow()
 		}
@@ -90,15 +87,12 @@ func TestLoadContexts(t *testing.T) {
 		t.Errorf("suppose to have bar key")
 		t.FailNow()
 	} else {
-		bar, err := newContext(args...)
+		bar, err := NewContext(args...)
 		if err != nil {
 			t.Error(err)
 			t.FailNow()
 		}
-		if bar.Endpoint == nil {
-			t.Errorf("suppose to have non nil endpoint of bar")
-			t.FailNow()
-		} else if host := bar.Endpoint.Host; host != "192.168.1.93" {
+		if host := bar.Endpoint.Host; host != "192.168.1.93" {
 			t.Errorf("suppose to have 192.168.1.93 endpoint.host of bar, but got %s", host)
 			t.FailNow()
 		} else if port := bar.Endpoint.Port; port != 9876 {

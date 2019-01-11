@@ -9,7 +9,7 @@ import (
 )
 
 func TestExpandEnv(t *testing.T) {
-	ctx, err := newContext()
+	ctx, err := NewContext()
 	if err != nil {
 		t.Error(err)
 		t.FailNow()

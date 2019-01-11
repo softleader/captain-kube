@@ -23,15 +23,21 @@ func NewCapUIServer(cmd *capUICmd) (r *gin.Engine) {
 
 	// index
 	r.GET("/", func(c *gin.Context) {
+		dft, err := cmd.newDefaultValue()
+		if err != nil {
+			c.Error(err)
+			return
+		}
 		c.HTML(http.StatusOK, "index.html", gin.H{
-			"config": cmd,
+			"config":       cmd,
+			"defaultValue": dft,
 		})
 	})
 
 	installRoute := r.Group("/install")
 	{
 		install := &Install{
-			Cmd: cmd,
+			cmd,
 		}
 		installRoute.GET("/", install.View)
 		installRoute.POST("/", install.Chart)
@@ -40,10 +46,19 @@ func NewCapUIServer(cmd *capUICmd) (r *gin.Engine) {
 	scriptRoute := r.Group("/script")
 	{
 		script := &Script{
-			Cmd: cmd,
+			cmd,
 		}
 		scriptRoute.GET("/", script.View)
 		scriptRoute.POST("/", script.Generate)
+	}
+
+	contextsRoute := r.Group("/contexts")
+	{
+		ctxs := &Contexts{
+			cmd,
+		}
+		contextsRoute.GET("/", ctxs.ListContext)
+		contextsRoute.PUT("/:ctx", ctxs.SwitchContext)
 	}
 
 	return

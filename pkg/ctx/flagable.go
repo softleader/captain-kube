@@ -25,7 +25,7 @@ func addFlags(x interface{}, f *pflag.FlagSet) {
 
 func valueOf(x interface{}) reflect.Value {
 	val := reflect.ValueOf(x)
-	if val.Kind() == reflect.Ptr {
+	if val.Kind() == reflect.Ptr || val.Kind() == reflect.Interface {
 		return val.Elem()
 	}
 	return val

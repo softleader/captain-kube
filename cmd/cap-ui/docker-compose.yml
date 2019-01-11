@@ -2,7 +2,10 @@ version: '3'
 services:
   cap-ui:
     image: softleader/cap-ui
+    args:
+      - active-ctx: choose-a-ctx
     environment:
-      - CAPTAIN_ENDPOINT=changeit
+      - CTX_named-a-context="-e changeit -f hub.softleader.com.tw -t changeit"
+      - CTX_another-name="..."
     ports:
       - 8080:8080

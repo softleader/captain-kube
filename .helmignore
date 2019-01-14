@@ -24,4 +24,5 @@ logo/
 vendor/
 
 *.tgz
-_*
+_dist
+_build

@@ -3,7 +3,6 @@ kind: ConfigMap
 metadata:
   name: {{ template "captain-kube.config" . }}
   labels:
-    app: {{ template "captain-kube.config" . }}
     chart: {{ template "captain-kube.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -12,4 +11,4 @@ data:
   CAPTAIN_K8S_VENDOR: {{ .Values.captain.k8sVendor }}
   CAPLET_PORT: {{ .Values.caplet.port | quote }}
   CAPLET_HOSTNAME: {{ template "captain-kube.caplet" . }}
-  CAPUI_CONTEXT_DEFAULT: {{ .Values.capui.context | quote }}
+  CAPUI_CTX_DEFAULT: {{ .Values.capui.context | quote }}

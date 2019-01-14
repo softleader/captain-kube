@@ -48,7 +48,7 @@ func NewCapUICommand(metadata *version.BuildMetadata) (cmd *cobra.Command) {
 
 	cmd = &cobra.Command{
 		Use:  "capui",
-		Long: "capui is a web interface for captain",
+		Long: "capui is a web interface for captain-kube",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			logrus.SetOutput(colorable.NewColorableStdout()) // for windows color output
 			if verbose {
@@ -74,6 +74,9 @@ func (c *capUICmd) run() error {
 	if err := initContext(os.Environ()); err != nil {
 		return err
 	}
+	logrus.Printf("default context: %s", c.ActiveCtx)
 	server := NewCapUIServer(c)
-	return server.Run(fmt.Sprintf(":%v", c.port))
+	addr := fmt.Sprintf(":%v", c.port)
+	logrus.Printf("listening and serving CapUI on %v", addr)
+	return server.Run(addr)
 }

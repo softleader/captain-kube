@@ -8,6 +8,6 @@ COPY static/ /app/static/
 COPY templates/ /app/templates/
 COPY capui /app
 
-#ENV GIN_MODE=release
+ENV GIN_MODE=release
 
 ENTRYPOINT ["./capui"]

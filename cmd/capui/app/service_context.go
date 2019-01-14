@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/ctx"
 	"net/http"
 	"strings"
@@ -19,22 +20,25 @@ type Contexts struct {
 }
 
 func newActiveContext(activeCtx string) (*ctx.Context, error) {
-	args, found := contexts[activeCtx]
+	target := strings.ToLower(activeCtx)
+	args, found := contexts[target]
 	if !found {
 		return nil, ctx.ErrNoActiveContextPresent
 	}
+	logrus.Debugf("loading context '%s' with its args: %s", target, strings.Join(args, " "))
 	c, err := ctx.NewContext(args...)
 	if err != nil {
 		return nil, err
 	}
-	return c, c.ExpandEnv()
+	err = c.ExpandEnv()
+	return c, err
 }
 
 func initContext(envs []string) error {
 	for _, env := range envs {
 		if strings.HasPrefix(env, prefix) {
 			s := strings.Split(env, "=")
-			key := strings.Trim(s[0], prefix)
+			key := strings.Replace(s[0], prefix, "", -1)
 			args := strings.Split(s[1], " ")
 			// to make sure args are alright
 			if _, err := ctx.NewContext(args...); err != nil {
@@ -44,7 +48,11 @@ func initContext(envs []string) error {
 		}
 	}
 	if len(contexts) == 0 {
-		return errors.New("can't initial any contexts")
+		return errors.New("can't found any contexts")
+	}
+	logrus.Printf("context loaded:")
+	for k, v := range contexts {
+		logrus.Printf("%s: %s", k, v)
 	}
 	return nil
 }

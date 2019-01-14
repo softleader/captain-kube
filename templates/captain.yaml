@@ -22,6 +22,9 @@ spec:
         - name: {{ template "captain-kube.captain" . }}
           image: "{{ .Values.captain.image }}:{{ .Values.captain.tag }}"
           imagePullPolicy: {{ .Values.captain.pullPolicy }}
+          volumeMounts:
+            - mountPath: "/var/run/docker.sock"
+              name: docker-socket-{{ .Release.Namespace }}
           envFrom:
             - configMapRef:
                 name: {{ template "captain-kube.config" . }}

@@ -44,7 +44,7 @@ spec:
       protocol: TCP
       port: 8080
   selector:
-    app: {{ template "captain-kube.captain" . }}
+    app: {{ template "captain-kube.capui" . }}
     release: {{ .Release.Name }}
 ---
 apiVersion: extensions/v1beta1
@@ -58,6 +58,7 @@ metadata:
     heritage: {{ .Release.Service }}
   annotations:
     ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
     - http:

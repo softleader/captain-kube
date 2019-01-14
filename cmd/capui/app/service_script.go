@@ -35,7 +35,7 @@ func (s *Script) View(c *gin.Context) {
 		return
 	}
 	c.HTML(http.StatusOK, "script.html", gin.H{
-		"config":    &s,
+		"config":       &s,
 		"defaultValue": dft,
 	})
 }

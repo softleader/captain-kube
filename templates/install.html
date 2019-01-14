@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
+<base href="{{.config.BaseUrl}}">
 {{ template "tmp_head.html" }}
 </head>
 <body>
@@ -131,8 +132,8 @@
 </footer>
 
 {{ template "tmp_script.html" . }}
-<script src="/static/clipboard.min.js"></script>
-<script src="/static/bootstrap-slider.min.js"></script>
+<script src="static/clipboard.min.js"></script>
+<script src="static/bootstrap-slider.min.js"></script>
 
 <script>
 

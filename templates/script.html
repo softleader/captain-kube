@@ -1,7 +1,8 @@
 <!doctype html>
 <html lang="en">
 <head>
-    {{ template "tmp_head.html" }}
+<base href="{{.config.BaseUrl}}">
+{{ template "tmp_head.html" }}
 </head>
 <body>
 {{ template "tmp_navi.html" . }}
@@ -105,7 +106,7 @@
 </footer>
 
 {{ template "tmp_script.html" . }}
-<script src="/static/clipboard.min.js"></script>
+<script src="static/clipboard.min.js"></script>
 
 <script>
 
@@ -161,7 +162,7 @@
           let dl = /generated\s(.+)$/gm.exec($output.text());
           if (dl) {
             let $a = $("<a></a>").addClass("btn btn-outline-info").append("Download");
-            $a.attr("href", "/script?file=" + dl[1]);
+            $a.attr("href", "script?file=" + dl[1]);
             $a.click(function () {
               $(this).remove();
             });

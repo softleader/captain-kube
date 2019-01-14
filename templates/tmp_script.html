@@ -1,13 +1,13 @@
-<script src="/static/jquery-3.3.1.min.js"></script>
-<script src="/static/bootstrap-4.1.0-dist/js/bootstrap.bundle.min.js"></script>
-<script src="/static/sseUtils.js"></script>
+<script src="static/jquery-3.3.1.min.js"></script>
+<script src="static/bootstrap-4.1.0-dist/js/bootstrap.bundle.min.js"></script>
+<script src="static/sseUtils.js"></script>
 
 <script>
 	$(function () {
 		let defaultCtx = '{{ .config.ActiveCtx }}';
 		let $ctxList = $('#ctxList');
 		if ($ctxList.length > 0) {
-			fetch('/contexts', {
+			fetch('contexts/', {
 				method: 'GET',
 			}).then(response => response.json()
 			).then(json => {
@@ -21,7 +21,7 @@
 			});
 
 			$ctxList.on('change', e => {
-				fetch(`/contexts/${e.target.value}`, {
+				fetch(`contexts/${e.target.value}`, {
 					method: 'PUT',
 				}).then(response => {
 					if (!response.ok) {

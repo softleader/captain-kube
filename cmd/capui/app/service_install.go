@@ -39,7 +39,7 @@ func (s *Install) View(c *gin.Context) {
 		return
 	}
 	c.HTML(http.StatusOK, "install.html", gin.H{
-		"config":    &s,
+		"config":       &s,
 		"defaultValue": dft,
 	})
 }
@@ -70,14 +70,14 @@ func (s *Install) Chart(c *gin.Context) {
 	files := mForm.File["files"]
 	for _, file := range files {
 		filename := file.Filename
-		log.Println("### Chart:", filename, "###")
+		log.Println("Installing chart:", filename)
 		if err := s.install(log, &form, file); err != nil {
-			log.Errorln("### [ERROR]", filename, err)
-			logrus.Errorln(filename, err)
+			log.Errorln(err)
+			logrus.Errorln(err)
 		}
-		log.Println("### Finish:", filename, "###")
-		log.Println("#")
-		log.Println("#")
+		log.Println("Successfully installed chart:", filename)
+		log.Println("")
+		log.Println("")
 	}
 
 }
@@ -158,7 +158,5 @@ func (s *Install) install(log *logrus.Logger, form *InstallRequest, fileHeader *
 	if err := captain.InstallChart(log, activeCtx.Endpoint.String(), &request, dur.DefaultDeadlineSecond); err != nil {
 		return fmt.Errorf("call captain InstallChart failed: %s", err)
 	}
-
-	log.Debugln("InstallChart finish")
 	return nil
 }

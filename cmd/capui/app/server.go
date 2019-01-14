@@ -10,6 +10,7 @@ import (
 	"github.com/softleader/captain-kube/pkg/version"
 	"github.com/spf13/cobra"
 	"os"
+	"strings"
 )
 
 type capUICmd struct {
@@ -18,6 +19,7 @@ type capUICmd struct {
 	ActiveCtx        string
 	defaultPlatform  string
 	defaultNamespace string
+	BaseUrl          string
 }
 
 type DefaultValue struct {
@@ -54,6 +56,9 @@ func NewCapUICommand(metadata *version.BuildMetadata) (cmd *cobra.Command) {
 			if verbose {
 				logrus.SetLevel(logrus.DebugLevel)
 			}
+			if !strings.HasSuffix(c.BaseUrl, "/") {
+				c.BaseUrl += "/"
+			}
 			return c.run()
 		},
 	}
@@ -64,6 +69,7 @@ func NewCapUICommand(metadata *version.BuildMetadata) (cmd *cobra.Command) {
 	f.StringVarP(&c.defaultPlatform, "platform", "k", c.defaultPlatform, "default value of k8s platform")
 	f.StringVarP(&c.defaultNamespace, "namespace", "n", c.defaultNamespace, "default value of the namespace of gcp, not available now")
 	f.StringVar(&c.ActiveCtx, "active-ctx", "", "active ctx")
+	f.StringVar(&c.BaseUrl, "base-url", "/", "specify base url, more details: https://www.w3schools.com/tags/tag_base.asp")
 
 	cmd.MarkFlagRequired("active-ctx")
 

@@ -23,3 +23,5 @@ logo/
 .tgz
 vendor/
 
+*.tgz
+_*

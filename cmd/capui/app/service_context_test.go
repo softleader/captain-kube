@@ -6,7 +6,7 @@ import (
 )
 
 func TestActiveContext(t *testing.T) {
-	ctxs := []string{"CTX_local=-e localhost", "CTX_93=-e 192.168.1.93 --color"}
+	ctxs := []string{"CAPUI_CTX_local=-e localhost", "CAPUI_CTX_93=-e 192.168.1.93 --color"}
 	if err := initContext(ctxs); err != nil {
 		t.Error(err)
 		t.FailNow()

@@ -20,7 +20,7 @@ func ReTag(log *logrus.Logger, source chart.Image, target chart.Image, registryA
 		return err
 	}
 
-	log.Printf("tagging image from %q to %q \n", source.String(), target.String())
+	log.Printf("tagging image from %q to %q", source.String(), target.String())
 	if err := cli.TagImage(source.String(), docker.TagImageOptions{
 		Context: ctx,
 		Force:   true,
@@ -61,7 +61,7 @@ func ReTagFromTemplates(log *logrus.Logger, tpls chart.Templates, retag *captain
 	for _, tpl := range tpls {
 		for _, image := range tpl {
 			if image.Host == retag.From {
-				log.Println("re-tagging image from %q to %q", image.String(), retag.To)
+				log.Printf("tagging image from %q to %q", image.String(), retag.To)
 				if err := ReTag(log, *image, chart.Image{
 					Host: retag.To,
 					Repo: image.Repo,

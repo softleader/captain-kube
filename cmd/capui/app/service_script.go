@@ -72,13 +72,6 @@ func (s *Script) Generate(c *gin.Context) {
 		return
 	}
 
-	// do some validation check
-	if err := activeCtx.Endpoint.Validate(); err != nil {
-		log.Errorln(err)
-		logrus.Errorln(err)
-		return
-	}
-
 	// ps. 在讀完request body後才可以開始response, 否則body會close
 	files := mForm.File["files"]
 

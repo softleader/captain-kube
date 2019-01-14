@@ -31,6 +31,10 @@ func newActiveContext(log *logrus.Logger, activeCtx string) (*ctx.Context, error
 		return nil, err
 	}
 	err = c.ExpandEnv()
+	// apply some default value
+	if te := strings.TrimSpace(c.HelmTiller.Endpoint); len(te) == 0 {
+		c.HelmTiller.Endpoint = c.Endpoint.Host
+	}
 	return c, err
 }
 
@@ -41,7 +45,11 @@ func initContext(envs []string) error {
 			key := s[0][len(prefix)+1:]
 			args := strings.Split(s[1], " ")
 			// to make sure args are alright
-			if _, err := ctx.NewContext(args...); err != nil {
+			c, err := ctx.NewContext(args...)
+			if err != nil {
+				return err
+			}
+			if err := c.Endpoint.Validate(); err != nil {
 				return err
 			}
 			contexts[strings.ToLower(key)] = args

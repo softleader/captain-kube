@@ -18,7 +18,6 @@ import (
 	"mime/multipart"
 	"net/http"
 	"strconv"
-	"strings"
 )
 
 type InstallRequest struct {
@@ -73,17 +72,6 @@ func (s *Install) Chart(c *gin.Context) {
 		log.Errorln(err)
 		logrus.Errorln(err)
 		return
-	}
-
-	// do some validation check
-	if err := activeCtx.Endpoint.Validate(); err != nil {
-		log.Errorln(err)
-		logrus.Errorln(err)
-		return
-	}
-	// apply some default value
-	if te := strings.TrimSpace(activeCtx.HelmTiller.Endpoint); len(te) == 0 {
-		activeCtx.HelmTiller.Endpoint = activeCtx.Endpoint.Host
 	}
 
 	// ps. 在讀完request body後才可以開始response, 否則body會close

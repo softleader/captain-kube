@@ -19,11 +19,18 @@ spec:
         app: {{ template "captain-kube.capui" . }}
         release: {{ .Release.Name }}
     spec:
+      volumes:
+        - name: docker-socket-{{ .Release.Namespace }}
+          persistentVolumeClaim:
+            claimName: docker-socket-claim-{{ .Release.Namespace }}
       containers:
         - name: {{ template "captain-kube.capui" . }}
           image: "{{ .Values.capui.image }}:{{ .Values.capui.tag }}"
           imagePullPolicy: {{ .Values.capui.pullPolicy }}
           args: ["--base-url", {{ .Values.capui.ingress.path | quote }}, "--active-ctx", "default"]
+          volumeMounts:
+            - mountPath: "/var/run/docker.sock"
+              name: docker-socket-{{ .Release.Namespace }}
           envFrom:
             - configMapRef:
                 name: {{ template "captain-kube.config" . }}

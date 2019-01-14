@@ -2,6 +2,8 @@ version: '3'
 services:
   capui:
     image: softleader/capui
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
     command: "--active-ctx choose-a-context"
     environment:
       - CAPUI_CTX_named-a-context=--endpoint changeit --retag-to changeit --retag-from hub.softleader.com.tw

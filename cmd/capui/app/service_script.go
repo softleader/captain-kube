@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/captain"
+	"github.com/softleader/captain-kube/pkg/ctx"
 	"github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/sse"
 	"github.com/softleader/captain-kube/pkg/utils"
@@ -64,6 +65,20 @@ func (s *Script) Generate(c *gin.Context) {
 		return
 	}
 
+	activeCtx, err := newActiveContext(log, s.ActiveCtx)
+	if err != nil {
+		log.Errorln(err)
+		logrus.Errorln(err)
+		return
+	}
+
+	// do some validation check
+	if err := activeCtx.Endpoint.Validate(); err != nil {
+		log.Errorln(err)
+		logrus.Errorln(err)
+		return
+	}
+
 	// ps. 在讀完request body後才可以開始response, 否則body會close
 	files := mForm.File["files"]
 
@@ -84,14 +99,11 @@ func (s *Script) Generate(c *gin.Context) {
 	for _, file := range files {
 		filename := file.Filename
 		log.Println("### Chart:", filename, "###")
-		if err := s.script(log, &form, file); err != nil {
-			log.Errorln("### [ERROR]", filename, err)
-			logrus.Errorln(filename, err)
+		if err := s.script(log, activeCtx, &form, file); err != nil {
+			log.Errorln(err)
+			logrus.Errorln(err)
 		}
 		log.Println("")
-		log.Println("### Finish:", filename, "###")
-		log.Println("#")
-		log.Println("#")
 
 		// 如果buf裡面有存東西，則append到暫存裡面
 		if buf != nil {
@@ -109,31 +121,23 @@ func (s *Script) Generate(c *gin.Context) {
 
 }
 
-func (s *Script) script(log *logrus.Logger, form *ScriptRequest, fileHeader *multipart.FileHeader) error {
-	activeCtx, err := newActiveContext(s.ActiveCtx)
-	if err != nil {
-		return err
-	}
-
-	log.Debugf("active context: %#v\n", activeCtx)
-
+func (s *Script) script(log *logrus.Logger, activeCtx *ctx.Context, form *ScriptRequest, fileHeader *multipart.FileHeader) error {
 	file, err := fileHeader.Open()
 	if err != nil {
-		return fmt.Errorf("open file stream failed: %s", err)
+		return fmt.Errorf("failed to open file stream: %s", err)
 	}
 
-	log.Debugln("call: POST /script")
-	log.Debugln("form:", form)
-	log.Debugln("file:", file)
+	log.Debugf("received form: %+v", form)
 
 	buf := bytes.NewBuffer(nil)
-	readed, err := io.Copy(buf, file)
+	read, err := io.Copy(buf, file)
 	if err != nil {
-		return fmt.Errorf("call captain GenerateScript failed: %s", err)
+		return fmt.Errorf("failed to copy buffer to file: %s", err)
 	}
-	log.Debugln("readed ", readed, " bytes")
+	log.Debugf("received chart size: %v", read)
 
 	request := captainkube_v2.GenerateScriptRequest{
+		Verbose: form.Verbose,
 		Chart: &captainkube_v2.Chart{
 			FileName: fileHeader.Filename,
 			Content:  buf.Bytes(),
@@ -149,9 +153,7 @@ func (s *Script) script(log *logrus.Logger, form *ScriptRequest, fileHeader *mul
 	}
 
 	if err := captain.GenerateScript(log, activeCtx.Endpoint.String(), &request, 300); err != nil {
-		return fmt.Errorf("call captain GenerateScript failed: %s", err)
+		return fmt.Errorf("failed to call backend: %s", err)
 	}
-	log.Debugln("GenerateScript finish")
-
 	return nil
 }

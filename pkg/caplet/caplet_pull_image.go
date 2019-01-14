@@ -17,11 +17,13 @@ func (e *Endpoint) PullImage(log *logrus.Logger, req *captainkube_v2.PullImageRe
 	}
 	defer conn.Close()
 	c := captainkube_v2.NewCapletClient(conn)
-	ctx, cancel := context.WithTimeout(context.Background(), dur.Deadline(timeout))
+	deadline := dur.Deadline(timeout)
+	log.Debugf("setting context with timeout %v", deadline)
+	ctx, cancel := context.WithTimeout(context.Background(), deadline)
 	defer cancel()
 	stream, err := c.PullImage(ctx, req)
 	if err != nil {
-		return fmt.Errorf("[%s] could not pull image: %v", e.Target, err)
+		return fmt.Errorf("[%s] %v.PullImage(%v) = _, %v", e.Target, c, req, err)
 	}
 	var last *captainkube_v2.ChunkMessage
 	for {
@@ -30,7 +32,7 @@ func (e *Endpoint) PullImage(log *logrus.Logger, req *captainkube_v2.PullImageRe
 			break
 		}
 		if err != nil {
-			return fmt.Errorf("%v.PullImage(_) = _, %v", c, err)
+			return fmt.Errorf("[%s] failed to receive a chunk msg : %v", e.Target, err)
 		}
 		log.Out.Write(e.Color(format(last, recv)))
 		last = recv

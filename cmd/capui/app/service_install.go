@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/captain"
+	"github.com/softleader/captain-kube/pkg/ctx"
 	"github.com/softleader/captain-kube/pkg/dockerd"
 	"github.com/softleader/captain-kube/pkg/dur"
 	"github.com/softleader/captain-kube/pkg/helm/chart"
@@ -17,6 +18,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 type InstallRequest struct {
@@ -66,48 +68,58 @@ func (s *Install) Chart(c *gin.Context) {
 		return
 	}
 
+	activeCtx, err := newActiveContext(log, s.ActiveCtx)
+	if err != nil {
+		log.Errorln(err)
+		logrus.Errorln(err)
+		return
+	}
+
+	// do some validation check
+	if err := activeCtx.Endpoint.Validate(); err != nil {
+		log.Errorln(err)
+		logrus.Errorln(err)
+		return
+	}
+	// apply some default value
+	if te := strings.TrimSpace(activeCtx.HelmTiller.Endpoint); len(te) == 0 {
+		activeCtx.HelmTiller.Endpoint = activeCtx.Endpoint.Host
+	}
+
 	// ps. 在讀完request body後才可以開始response, 否則body會close
 	files := mForm.File["files"]
 	for _, file := range files {
 		filename := file.Filename
 		log.Println("Installing chart:", filename)
-		if err := s.install(log, &form, file); err != nil {
+		if err := s.install(log, activeCtx, &form, file); err != nil {
 			log.Errorln(err)
 			logrus.Errorln(err)
+		} else {
+			log.Println("Successfully installed chart:", filename)
 		}
-		log.Println("Successfully installed chart:", filename)
-		log.Println("")
 		log.Println("")
 	}
 
 }
 
-func (s *Install) install(log *logrus.Logger, form *InstallRequest, fileHeader *multipart.FileHeader) error {
-	activeCtx, err := newActiveContext(s.ActiveCtx)
-	if err != nil {
-		return err
-	}
-
-	log.Debugf("active context: %#v\n", activeCtx)
-
+func (s *Install) install(log *logrus.Logger, activeCtx *ctx.Context, form *InstallRequest, fileHeader *multipart.FileHeader) error {
 	file, err := fileHeader.Open()
 	if err != nil {
-		return fmt.Errorf("open file stream failed: %s", err)
+		return fmt.Errorf("failed to open file stream: %s", err)
 	}
 
-	log.Debugln("call: POST /install")
-	log.Debugln("form:", form)
-	log.Debugln("file:", file)
+	log.Debugf("received form: %+v", form)
 
 	buf := bytes.NewBuffer(nil)
-	readed, err := io.Copy(buf, file)
+	read, err := io.Copy(buf, file)
 	if err != nil {
-		return fmt.Errorf("reading file failed: %s", err)
+		return fmt.Errorf("failed to copy buffer to file: %s", err)
 	}
-	log.Debugln("readed ", readed, " bytes")
+	log.Debugf("received chart size: %v", read)
 
 	// prepare rquest
 	request := captainkube_v2.InstallChartRequest{
+		Verbose: form.Verbose,
 		Chart: &captainkube_v2.Chart{
 			FileName: fileHeader.Filename,
 			Content:  buf.Bytes(),
@@ -156,7 +168,7 @@ func (s *Install) install(log *logrus.Logger, form *InstallRequest, fileHeader *
 	}
 
 	if err := captain.InstallChart(log, activeCtx.Endpoint.String(), &request, dur.DefaultDeadlineSecond); err != nil {
-		return fmt.Errorf("call captain InstallChart failed: %s", err)
+		return fmt.Errorf("failed to call backend: %s", err)
 	}
 	return nil
 }

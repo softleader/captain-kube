@@ -1,6 +1,7 @@
 package app
 
 import (
+	"github.com/sirupsen/logrus"
 	"testing"
 )
 
@@ -10,7 +11,7 @@ func TestActiveContext(t *testing.T) {
 		t.Error(err)
 		t.FailNow()
 	}
-	currentCtx, err := newActiveContext("93")
+	currentCtx, err := newActiveContext(logrus.StandardLogger(),"93")
 	if err != nil {
 		t.Error(err)
 		t.FailNow()

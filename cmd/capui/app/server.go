@@ -29,17 +29,17 @@ type DefaultValue struct {
 }
 
 func (c *capUICmd) newDefaultValue() (*DefaultValue, error) {
-	ac, err := newActiveContext(c.ActiveCtx)
+	ac, err := newActiveContext(logrus.StandardLogger(), c.ActiveCtx)
 	if err != nil {
 		return nil, err
 	}
-
 	return &DefaultValue{
 		Platform:  c.defaultPlatform,
 		Namespace: c.defaultNamespace,
 		Context:   ac,
 	}, nil
 }
+
 func NewCapUICommand(metadata *version.BuildMetadata) (cmd *cobra.Command) {
 	var verbose bool
 	c := capUICmd{

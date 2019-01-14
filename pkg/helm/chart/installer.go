@@ -11,6 +11,9 @@ type Installer interface {
 }
 
 func NewInstaller(k8s string, tiller *captainkube_v2.Tiller, chart string) (Installer, error) {
+	if tiller.GetEndpoint() == "" {
+		return nil, fmt.Errorf("tiller endpoint is required")
+	}
 	switch k8s {
 	case "icp":
 		return &icpInstaller{

@@ -11,17 +11,20 @@ import (
 )
 
 func GenerateScript(log *logrus.Logger, url string, req *captainkube_v2.GenerateScriptRequest, timeout int64) error {
+	log.Debugf("dialing %q with insecure", url)
 	conn, err := grpc.Dial(url, grpc.WithInsecure())
 	if err != nil {
 		return fmt.Errorf("did not connect: %v", err)
 	}
 	defer conn.Close()
 	c := captainkube_v2.NewCaptainClient(conn)
-	ctx, cancel := context.WithTimeout(context.Background(), dur.Deadline(timeout))
+	deadline := dur.Deadline(timeout)
+	log.Debugf("setting context with timeout %v", deadline)
+	ctx, cancel := context.WithTimeout(context.Background(), deadline)
 	defer cancel()
 	stream, err := c.GenerateScript(ctx, req)
 	if err != nil {
-		return fmt.Errorf("could not generate script: %v", err)
+		return fmt.Errorf("%v.GenerateScript(%v) = _, %v", c, req, err)
 	}
 	for {
 		recv, err := stream.Recv()
@@ -29,7 +32,7 @@ func GenerateScript(log *logrus.Logger, url string, req *captainkube_v2.Generate
 			break
 		}
 		if err != nil {
-			return fmt.Errorf("%v.GenerateScript(_) = _, %v", c, err)
+			return fmt.Errorf("failed to receive a chunk msg : %v", err)
 		}
 		log.Out.Write(recv.GetMsg())
 	}

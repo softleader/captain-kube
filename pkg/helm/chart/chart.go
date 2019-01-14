@@ -53,7 +53,7 @@ func LoadArchive(log *logrus.Logger, archivePath string) (tpls Templates, err er
 		return
 	}
 	tpls, err = LoadDir(log, tplPath)
-	log.Debugf("%v template(s) loaded\n", len(tpls))
+	log.Debugf("%v template(s) loaded", len(tpls))
 	return
 }
 

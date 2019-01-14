@@ -19,13 +19,13 @@ type Contexts struct {
 	*capUICmd
 }
 
-func newActiveContext(activeCtx string) (*ctx.Context, error) {
+func newActiveContext(log *logrus.Logger, activeCtx string) (*ctx.Context, error) {
 	target := strings.ToLower(activeCtx)
 	args, found := contexts[target]
 	if !found {
 		return nil, ctx.ErrNoActiveContextPresent
 	}
-	logrus.Debugf("loading context '%s' with its args: %s", target, strings.Join(args, " "))
+	log.Debugf("loading context '%s' with its args: %s", target, strings.Join(args, " "))
 	c, err := ctx.NewContext(args...)
 	if err != nil {
 		return nil, err

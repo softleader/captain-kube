@@ -48,7 +48,7 @@ func Pull(log *logrus.Logger, image chart.Image, registryAuth *captainkube_v2.Re
 func PullFromTemplates(log *logrus.Logger, tpls chart.Templates, auth *captainkube_v2.RegistryAuth) error {
 	for _, tpl := range tpls {
 		for _, image := range tpl {
-			log.Debugln("pulling image:", image.String())
+			log.Debugf("pulling image %q", image.String())
 			if err := Pull(log, *image, auth); err != nil {
 				return err
 			}

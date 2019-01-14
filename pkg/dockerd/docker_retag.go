@@ -61,7 +61,7 @@ func ReTagFromTemplates(log *logrus.Logger, tpls chart.Templates, retag *captain
 	for _, tpl := range tpls {
 		for _, image := range tpl {
 			if image.Host == retag.From {
-				log.Println("syncing ", image)
+				log.Println("re-tagging image from %q to %q", image.String(), retag.To)
 				if err := ReTag(log, *image, chart.Image{
 					Host: retag.To,
 					Repo: image.Repo,

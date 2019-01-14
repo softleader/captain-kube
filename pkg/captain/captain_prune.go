@@ -11,21 +11,25 @@ import (
 )
 
 func Prune(log *logrus.Logger, url string, verbose, color bool, timeout int64) error {
+	log.Debugf("dialing %q with insecure", url)
 	conn, err := grpc.Dial(url, grpc.WithInsecure())
 	if err != nil {
 		return fmt.Errorf("did not connect: %v", err)
 	}
 	defer conn.Close()
 	c := captainkube_v2.NewCaptainClient(conn)
-	ctx, cancel := context.WithTimeout(context.Background(), dur.Deadline(timeout))
+	deadline := dur.Deadline(timeout)
+	log.Debugf("setting context with timeout %v", deadline)
+	ctx, cancel := context.WithTimeout(context.Background(), deadline)
 	defer cancel()
-	stream, err := c.Prune(ctx, &captainkube_v2.PruneRequest{
+	req := &captainkube_v2.PruneRequest{
 		Verbose: verbose,
 		Timeout: timeout,
 		Color:   color,
-	})
+	}
+	stream, err := c.Prune(ctx, req)
 	if err != nil {
-		return fmt.Errorf("could not prune: %v", err)
+		return fmt.Errorf("%v.Prune(%v) = _, %v", c, req, err)
 	}
 	for {
 		recv, err := stream.Recv()
@@ -33,7 +37,7 @@ func Prune(log *logrus.Logger, url string, verbose, color bool, timeout int64) e
 			break
 		}
 		if err != nil {
-			return fmt.Errorf("%v.Prune(_) = _, %v", c, err)
+			return fmt.Errorf("failed to receive a chunk msg : %v", err)
 		}
 		log.Out.Write(recv.GetMsg())
 	}

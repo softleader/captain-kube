@@ -23,7 +23,7 @@ spec:
         - name: {{ template "captain-kube.capui" . }}
           image: "{{ .Values.capui.image }}:{{ .Values.capui.tag }}"
           imagePullPolicy: {{ .Values.capui.pullPolicy }}
-          args: ["--active-ctx", "default"]
+          args: ["--base-url", {{ .Values.capui.ingress.path | quote }}, "--active-ctx", "default"]
           envFrom:
             - configMapRef:
                 name: {{ template "captain-kube.config" . }}

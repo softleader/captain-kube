@@ -12,7 +12,7 @@ caplet:
   port: 50051
 
 capui:
-  enabled: false
+  enabled: true
   image: softleader/capui
   tag: latest
   pullPolicy: Always

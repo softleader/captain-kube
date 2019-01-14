@@ -16,6 +16,6 @@ capui:
   image: softleader/capui
   tag: latest
   pullPolicy: Always
-  context: "--endpoint changeit --re-tag-to changeit --re-tag-from hub.softleader.com.tw "
+  context: "--endpoint changeit --retag-to changeit --retag-from hub.softleader.com.tw "
   ingress:
     path: /captain-kube

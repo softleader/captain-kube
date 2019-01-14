@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	prefix   = "CTX_"
+	prefix   = "CAPUI_CTX"
 	contexts = make(map[string][]string)
 )
 
@@ -38,7 +38,7 @@ func initContext(envs []string) error {
 	for _, env := range envs {
 		if strings.HasPrefix(env, prefix) {
 			s := strings.Split(env, "=")
-			key := strings.Replace(s[0], prefix, "", -1)
+			key := s[0][len(prefix)+1:]
 			args := strings.Split(s[1], " ")
 			// to make sure args are alright
 			if _, err := ctx.NewContext(args...); err != nil {

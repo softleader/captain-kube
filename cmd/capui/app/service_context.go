@@ -50,7 +50,7 @@ func initContext(envs []string) error {
 	if len(contexts) == 0 {
 		return errors.New("can't found any contexts")
 	}
-	logrus.Printf("context loaded:")
+	logrus.Printf("loading context:")
 	for k, v := range contexts {
 		logrus.Printf("%s: %s", k, v)
 	}

@@ -74,7 +74,7 @@ func (c *capUICmd) run() error {
 	if err := initContext(os.Environ()); err != nil {
 		return err
 	}
-	logrus.Printf("default context: %s", c.ActiveCtx)
+	logrus.Printf("activated default context: %s", c.ActiveCtx)
 	server := NewCapUIServer(c)
 	addr := fmt.Sprintf(":%v", c.port)
 	logrus.Printf("listening and serving CapUI on %v", addr)

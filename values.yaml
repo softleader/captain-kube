@@ -12,10 +12,10 @@ caplet:
   port: 50051
 
 capui:
-  enabled: true
+  enabled: false
   image: softleader/capui
   tag: latest
   pullPolicy: Always
-  registry: changeit
+  context: "--endpoint changeit --re-tag-to changeit --re-tag-from hub.softleader.com.tw "
   ingress:
     path: /captain-kube

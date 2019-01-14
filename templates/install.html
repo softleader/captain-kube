@@ -10,7 +10,7 @@
 <main role="main">
     <div class="container">
         <p>
-        <form id="dataForm">
+        <form id="dataForm" action="install">
             <div class="form-group">
                 <label for="platform">Platform</label>
                 <div class="form-check">
@@ -89,8 +89,7 @@
                 </div>
             </div>
 
-            <button id="install" url="/install" type="submit" class="btn btn-outline-primary btn-block"
-                    onclick="$(this).parent().attr('action', $(this).attr('url'))">
+            <button id="install" url="/install" type="submit" class="btn btn-outline-primary btn-block" >
                 Fire in the hole
             </button>
         </form>

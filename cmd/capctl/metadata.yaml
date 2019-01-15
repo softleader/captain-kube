@@ -1,6 +1,0 @@
-name: cap
-version: 0.1.0
-usage: the captain-kube command line interface
-description: The command line interface against Captain-Kube services
-exec:
-  command: $SL_PLUGIN_DIR/capctl

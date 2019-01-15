@@ -46,6 +46,7 @@ type scriptCmd struct {
 	diff bool
 
 	charts []string
+	set    []string
 
 	retag        *ctx.ReTag
 	endpoint     *ctx.Endpoint // captain 的 endpoint ip
@@ -75,6 +76,7 @@ func newScriptCmd() *cobra.Command {
 	}
 
 	f := cmd.Flags()
+	f.StringArrayVar(&c.set, "set", []string{}, "set values (can specify multiple or separate values with commas: key1=val1,key2=val2)")
 	f.BoolVarP(&c.pull, "pull", "p", c.pull, "pull images in Chart")
 	f.BoolVarP(&c.rt, "re-tag", "r", c.rt, "re-tag images in Chart")
 	f.BoolVarP(&c.save, "save", "s", c.save, "save images in Chart")

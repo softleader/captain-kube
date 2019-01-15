@@ -21,7 +21,7 @@ func (t *Templates) Size() int {
 	return len(reflect.ValueOf(t).MapKeys())
 }
 
-func LoadArchiveBytes(log *logrus.Logger, filename string, data []byte) (tpls Templates, err error) {
+func LoadArchiveBytes(log *logrus.Logger, filename string, data []byte, set ...string) (tpls Templates, err error) {
 	tmp, err := ioutil.TempDir(os.TempDir(), "load-bytes-")
 	if err != nil {
 		return
@@ -31,10 +31,10 @@ func LoadArchiveBytes(log *logrus.Logger, filename string, data []byte) (tpls Te
 	if err := ioutil.WriteFile(archive, data, 0644); err != nil {
 		return nil, err
 	}
-	return LoadArchive(log, archive)
+	return LoadArchive(log, archive, set...)
 }
 
-func LoadArchive(log *logrus.Logger, archivePath string) (tpls Templates, err error) {
+func LoadArchive(log *logrus.Logger, archivePath string, set ...string) (tpls Templates, err error) {
 	tmp, err := ioutil.TempDir(os.TempDir(), "load-archive-")
 	if err != nil {
 		return
@@ -49,7 +49,7 @@ func LoadArchive(log *logrus.Logger, archivePath string) (tpls Templates, err er
 		return
 	}
 	tplPath := filepath.Join(chartDir, templateDir)
-	if err = helm.Template(log, chartDir, tplPath); err != nil {
+	if err = helm.Template(log, chartDir, tplPath, set...); err != nil {
 		return
 	}
 	tpls, err = LoadDir(log, tplPath)

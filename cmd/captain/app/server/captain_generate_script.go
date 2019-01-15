@@ -29,6 +29,7 @@ func (s *CaptainServer) GenerateScript(req *captainkube_v2.GenerateScriptRequest
 	log.Debugf("pull: %+v", req.GetPull())
 	log.Debugf("load: %+v", req.GetLoad())
 	log.Debugf("save: %+v", req.GetSave())
+	log.Debugf("set: %+v", req.GetSet())
 
 	tmp, err := ioutil.TempDir(os.TempDir(), "generate-script-")
 	if err != nil {
@@ -41,7 +42,7 @@ func (s *CaptainServer) GenerateScript(req *captainkube_v2.GenerateScriptRequest
 		return err
 	}
 
-	tpls, err := chart.LoadArchive(log, chartPath)
+	tpls, err := chart.LoadArchive(log, chartPath, req.GetSet()...)
 	if err != nil {
 		return err
 	}

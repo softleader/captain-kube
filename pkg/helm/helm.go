@@ -8,11 +8,15 @@ import (
 	"strings"
 )
 
-func Template(log *logrus.Logger, chart, outputDir string) (err error) {
+func Template(log *logrus.Logger, chart, outputDir string, set ...string) (err error) {
 	if err = ensureDirExist(outputDir); err != nil {
 		return
 	}
-	cmd := exec.Command("helm", "template", "--output-dir", outputDir, chart)
+	args := []string{"template", "--output-dir", outputDir, chart}
+	if len(set) > 0 {
+		args = append(args, "--set", strings.Join(set, ","))
+	}
+	cmd := exec.Command("helm", args...)
 	if log.IsLevelEnabled(logrus.DebugLevel) {
 		log.Out.Write([]byte(fmt.Sprintln(strings.Join(cmd.Args, " "))))
 		cmd.Stdout = log.Out

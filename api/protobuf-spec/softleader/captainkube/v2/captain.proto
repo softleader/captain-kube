@@ -47,7 +47,8 @@ message GenerateScriptRequest {
     ReTag retag = 3;
     bool save = 4;
     bool load = 5;
-    bool verbose = 6;
+    repeated string set = 6;
+    bool verbose = 7;
 }
 
 service Captain {

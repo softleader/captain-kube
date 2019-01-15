@@ -26,6 +26,7 @@ type saveCmd struct {
 	output string
 	force  bool
 	charts []string
+	set    []string
 }
 
 func newSaveCmd() *cobra.Command {
@@ -43,6 +44,7 @@ func newSaveCmd() *cobra.Command {
 	}
 
 	f := cmd.Flags()
+	f.StringArrayVar(&c.set, "set", []string{}, "set values (can specify multiple or separate values with commas: key1=val1,key2=val2)")
 	f.StringVarP(&c.output, "output", "o", c.output, "location of saved file")
 	f.BoolVarP(&c.force, "force", "f", false, "force to delete output file if exist")
 
@@ -63,7 +65,7 @@ func (c *saveCmd) run() error {
 			return err
 		}
 		logrus.Printf("Collecting images from: %s\n", abs)
-		tpls, err := chart.LoadArchive(logrus.StandardLogger(), abs)
+		tpls, err := chart.LoadArchive(logrus.StandardLogger(), abs, c.set...)
 		if err != nil {
 			return err
 		}

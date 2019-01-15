@@ -35,6 +35,10 @@ flags 可以自由的混搭使用, 你也可以使用 '>' 再將產生的 script
 結合 '--diff' 可以只產生差異 image 的 script
 
 	$ {{.}} script CHART ANOTHER_CHART -e CAPTAIN_ENDPOINT -prsld
+
+如果需要在產生 script 前修改 values.yaml 中任何參數, 可以傳入 '--set key1=val1,key2=val2'
+
+	$ {{.}} script CHART... -e CAPTAIN_ENDPOINT --set ingress.enabled=true
 `
 )
 

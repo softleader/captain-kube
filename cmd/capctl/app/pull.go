@@ -20,6 +20,10 @@ const (
 如果 registry 需要登入, 可以傳入 '--reg-*' 開頭的 flags 指定 docker registry 的認證資訊
 
 	$ {{.}} pull CHART... --reg-user ME --reg-pass SECRET
+
+如果需要在 pull 前修改 values.yaml 中任何參數, 可以傳入 '--set key1=val1,key2=val2'
+
+	$ {{.}} pull CHART... --set ingress.enabled=true
 `
 )
 

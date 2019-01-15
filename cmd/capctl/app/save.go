@@ -19,6 +19,10 @@ const (
 傳入 '--force' 可以強制複寫已存在的 output 檔案
 
 	$ {{.}} save CHART... -o OUTPUT.tar -f
+
+如果需要在 save 前修改 values.yaml 中任何參數, 可以傳入 '--set key1=val1,key2=val2'
+
+	$ {{.}} save CHART... --set ingress.enabled=true
 `
 )
 

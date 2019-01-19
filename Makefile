@@ -36,6 +36,7 @@ protoc:
 	protoc -I $(protobuf) --go_out=plugins=grpc:$(proto_dst) $(protobuf)/msg.proto
 	protoc -I $(protobuf) --go_out=plugins=grpc:$(proto_dst) $(protobuf)/prune.proto
 	protoc -I $(protobuf) --go_out=plugins=grpc:$(proto_dst) $(protobuf)/version.proto
+	protoc -I $(protobuf) --go_out=plugins=grpc:$(proto_dst) $(protobuf)/console_url.proto
 
 .PHONY: build
 build: clean bootstrap build-caplet build-captain build-ui build-capctl

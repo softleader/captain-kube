@@ -12,6 +12,7 @@ import "image.proto";
 import "msg.proto";
 import "version.proto";
 import "prune.proto";
+import "console_url.proto";
 
 message SyncChartRequest {
     Chart chart = 1;
@@ -63,5 +64,7 @@ service Captain {
     rpc Prune (PruneRequest) returns (stream ChunkMessage) {
     }
     rpc Version (VersionRequest) returns (stream ChunkMessage) {
+    }
+    rpc ConsoleURL (ConsoleURLRequest) returns (ConsoleURLResponse) {
     }
 }

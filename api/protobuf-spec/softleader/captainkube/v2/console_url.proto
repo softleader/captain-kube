@@ -7,13 +7,11 @@ package softleader.captainkube.v2;
 option java_package = "tw.com.softleader.captainkube.v2";
 option go_package = "captainkube.v2";
 
-message VersionRequest {
-    bool full = 1;
-    int64 timeout = 2;
-    bool color = 3;
+message ConsoleURLRequest {
+    string host = 1;
 }
 
-message VersionResponse {
-    string hostname = 1;
-    string version = 2;
+message ConsoleURLResponse {
+    string vendor = 1;
+    string url = 2;
 }

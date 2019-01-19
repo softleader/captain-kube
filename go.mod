@@ -31,6 +31,7 @@ require (
 	github.com/nwaples/rardecode v1.0.0 // indirect
 	github.com/pelletier/go-toml v1.2.0 // indirect
 	github.com/pierrec/lz4 v2.0.5+incompatible // indirect
+	github.com/pkg/browser v0.0.0-20180916011732-0a3d74bf9ce4
 	github.com/pkg/errors v0.8.0
 	github.com/pmezard/go-difflib v1.0.0
 	github.com/sirupsen/logrus v1.2.0

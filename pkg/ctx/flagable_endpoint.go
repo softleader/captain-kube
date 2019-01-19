@@ -32,12 +32,15 @@ func (e *Endpoint) String() string {
 }
 
 func (e *Endpoint) Specified() bool {
-	return len(e.Host) > 0 && e.Port > 0
+	return e.Validate() == nil
 }
 
 func (e *Endpoint) Validate() error {
-	if !e.Specified() {
+	if len(e.Host) == 0 {
 		return errors.New("endpoint is required")
+	}
+	if e.Port == 0 {
+		return errors.New("endpoint port is required")
 	}
 	return nil
 }

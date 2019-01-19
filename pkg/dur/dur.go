@@ -2,7 +2,7 @@ package dur
 
 import "time"
 
-var DefaultDeadlineSecond int64 = 300
+var DefaultDeadlineSecond int64 = 1800
 
 func Deadline(timeout int64) time.Duration {
 	if timeout <= 0 {

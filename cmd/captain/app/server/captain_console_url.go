@@ -1,0 +1,22 @@
+package server
+
+import (
+	"context"
+	"fmt"
+	"github.com/softleader/captain-kube/pkg/proto"
+)
+
+func (s *CaptainServer) ConsoleURL(ctx context.Context, req *captainkube_v2.ConsoleURLRequest) (*captainkube_v2.ConsoleURLResponse, error) {
+	resp := &captainkube_v2.ConsoleURLResponse{
+		Vendor: s.K8s,
+	}
+	switch v := s.K8s; v {
+	case "icp":
+		resp.Url = fmt.Sprintf("https://%s:%v", req.GetHost(), 8443)
+		return resp, nil
+	case "gcp":
+		return nil, fmt.Errorf("GCP is not supported yet")
+	default:
+		return nil, fmt.Errorf("unsupported kubernetes vendor: %v", v)
+	}
+}

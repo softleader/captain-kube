@@ -24,6 +24,7 @@ type captainCmd struct {
 	port           int
 	capletHostname string
 	capletPort     int
+	k8sVendor      string
 }
 
 func NewCaptainCommand(metadata *version.BuildMetadata) (cmd *cobra.Command) {
@@ -52,6 +53,7 @@ func NewCaptainCommand(metadata *version.BuildMetadata) (cmd *cobra.Command) {
 	f.StringVar(&c.capletHostname, "caplet-hostname", c.capletHostname, "specify the hostname of caplet daemon to lookup, override "+caplet.EnvHostname)
 	f.IntVar(&c.capletPort, "caplet-port", c.capletPort, "specify the port of caplet daemon to connect, override "+caplet.EnvPort)
 	f.StringArrayVarP(&c.endpoints, "caplet-endpoint", "e", []string{}, "specify the endpoint of caplet daemon to connect, override '--caplet-hostname'")
+	f.StringVar(&c.k8sVendor, "k8s-vendor", c.k8sVendor, "specify the vendor of k8s")
 
 	return
 }
@@ -61,18 +63,24 @@ func (c *captainCmd) Run() error {
 	if err != nil {
 		return fmt.Errorf("failed to listen: %v", err)
 	}
-	kv, err := kubectl.Version()
-	if err != nil {
-		return err
-	}
-	s := grpc.NewServer()
-	captainkube_v2.RegisterCaptainServer(s, &server.CaptainServer{
+	srv := &server.CaptainServer{
 		Metadata:  c.metadata,
 		Hostname:  c.capletHostname,
 		Endpoints: c.endpoints,
 		Port:      c.capletPort,
-		K8s:       kv,
-	})
+	}
+	if len(c.k8sVendor) > 0 {
+		logrus.Printf("server has specified k8s vendor to %q, skipping auto detection", c.k8sVendor)
+		srv.K8s = &kubectl.KubeVersion{
+			Server: kubectl.Info{
+				GitCommit: c.k8sVendor,
+			},
+		}
+	} else if srv.K8s, err = kubectl.Version(); err != nil {
+		return err
+	}
+	s := grpc.NewServer()
+	captainkube_v2.RegisterCaptainServer(s, srv)
 	reflection.Register(s)
 	logrus.Printf("listening and serving GRPC on %v", lis.Addr().String())
 	return s.Serve(lis)

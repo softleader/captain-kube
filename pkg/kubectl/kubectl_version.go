@@ -6,14 +6,14 @@ import (
 	"strings"
 )
 
-// KubeVersion 代表 kubectl version 的結果
+// KubeVersion 代表 kubectl version 的內容
 type KubeVersion struct {
-	ClientVersion ClientVersion `yaml:"clientVersion"`
-	ServerVersion ServerVersion `yaml:"serverVersion"`
+	Client Info `yaml:"clientVersion"`
+	Server Info `yaml:"serverVersion"`
 }
 
-// ClientVersion 代表 kubectl version 的 client 版本
-type ClientVersion struct {
+// Info 代表了跟版本有關的欄位
+type Info struct {
 	BuildDate struct {
 	} `yaml:"buildDate"`
 	Compiler     string `yaml:"compiler"`
@@ -26,25 +26,11 @@ type ClientVersion struct {
 	Platform     string `yaml:"platform"`
 }
 
-// ServerVersion 代表 kubectl version 的 server 版本
-type ServerVersion struct {
-	BuildDate struct {
-	} `yaml:"buildDate"`
-	Compiler     string `yaml:"compiler"`
-	GitCommit    string `yaml:"gitCommit"`
-	GitTreeState string `yaml:"gitTreeState"`
-	GitVersion   string `yaml:"gitVersion"`
-	GoVersion    string `yaml:"goVersion"`
-	Major        string `yaml:"major"`
-	Minor        string `yaml:"minor"`
-	Platform     string `yaml:"platform"`
-}
-
-func (sv *ServerVersion) IsICP() bool {
+func (sv *Info) IsICP() bool {
 	return strings.Contains(sv.GitVersion, "icp")
 }
 
-func (sv *ServerVersion) IsGCP() bool {
+func (sv *Info) IsGCP() bool {
 	// TODO 還不知道怎麼判斷
 	return false
 }

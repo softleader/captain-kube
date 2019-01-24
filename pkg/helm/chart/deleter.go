@@ -12,7 +12,7 @@ type Deleter interface {
 }
 
 func NewDeleter(k8s *kubectl.KubeVersion, tiller *captainkube_v2.Tiller, chartName, chartVersion string) (Deleter, error) {
-	if k8s.ServerVersion.IsICP() {
+	if k8s.Server.IsICP() {
 		return &icpDeleter{
 			endpoint:          tiller.GetEndpoint(),
 			username:          tiller.GetUsername(),
@@ -24,7 +24,7 @@ func NewDeleter(k8s *kubectl.KubeVersion, tiller *captainkube_v2.Tiller, chartNa
 		}, nil
 	}
 
-	if k8s.ServerVersion.IsGCP() {
+	if k8s.Server.IsGCP() {
 		return &gcpDeleter{
 			endpoint:     tiller.GetEndpoint(),
 			chartName:    chartName,
@@ -32,5 +32,5 @@ func NewDeleter(k8s *kubectl.KubeVersion, tiller *captainkube_v2.Tiller, chartNa
 		}, nil
 	}
 
-	return nil, fmt.Errorf("unsupported kubernetes vendor: %v", k8s.ServerVersion.GitCommit)
+	return nil, fmt.Errorf("unsupported kubernetes vendor: %v", k8s.Server.GitCommit)
 }

@@ -1,7 +1,11 @@
-FROM ubuntu:xenial
+FROM ubuntu:bionic
 
 RUN apt-get update && \
-    apt-get install -y curl && \
+    apt-get install -y gnupg2 curl apt-transport-https && \
+    curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && \
+    echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | tee -a /etc/apt/sources.list.d/kubernetes.list && \
+    apt-get update && \
+    apt-get install -y kubectl && \
     apt-get autoclean && \
 	curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | bash && \
 	helm init -c && \

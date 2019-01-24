@@ -16,7 +16,7 @@ func NewInstaller(k8s *kubectl.KubeVersion, tiller *captainkube_v2.Tiller, chart
 		return nil, fmt.Errorf("tiller endpoint is required")
 	}
 
-	if k8s.ServerVersion.IsICP() {
+	if k8s.Server.IsICP() {
 		return &icpInstaller{
 			endpoint:          tiller.GetEndpoint(),
 			chart:             chart,
@@ -27,12 +27,12 @@ func NewInstaller(k8s *kubectl.KubeVersion, tiller *captainkube_v2.Tiller, chart
 		}, nil
 	}
 
-	if k8s.ServerVersion.IsGCP() {
+	if k8s.Server.IsGCP() {
 		return &gcpInstaller{
 			endpoint: tiller.GetEndpoint(),
 			chart:    chart,
 		}, nil
 	}
 
-	return nil, fmt.Errorf("unsupported kubernetes vendor: %v", k8s.ServerVersion.GitCommit)
+	return nil, fmt.Errorf("unsupported kubernetes vendor: %v", k8s.Server.GitCommit)
 }

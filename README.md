@@ -7,7 +7,7 @@
 
 ![](https://raw.githubusercontent.com/softleader/captain-kube/helm-chart/logo/banner.png)
 
-> Install SoftLeader's products faster, more reliable and automatically on Kubernetes with Captain Kube.
+> Deliver SoftLeader's products faster, more reliable to Kubernetes.
 
 Documentation and Other Links:
 

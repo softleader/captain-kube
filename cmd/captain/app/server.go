@@ -71,11 +71,7 @@ func (c *captainCmd) Run() error {
 	}
 	if len(c.k8sVendor) > 0 {
 		logrus.Printf("server has specified k8s vendor to %q, skipping auto detection", c.k8sVendor)
-		srv.K8s = &kubectl.KubeVersion{
-			Server: kubectl.Info{
-				GitCommit: c.k8sVendor,
-			},
-		}
+		srv.K8s = kubectl.NewKubeVersion(c.k8sVendor)
 	} else if srv.K8s, err = kubectl.Version(); err != nil {
 		return err
 	}

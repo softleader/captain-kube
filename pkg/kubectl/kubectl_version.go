@@ -6,6 +6,14 @@ import (
 	"strings"
 )
 
+func NewKubeVersion(vendor string) *KubeVersion {
+	return &KubeVersion{
+		Server: Info{
+			GitCommit: vendor,
+		},
+	}
+}
+
 // KubeVersion 代表 kubectl version 的內容
 type KubeVersion struct {
 	Client Info `yaml:"clientVersion"`

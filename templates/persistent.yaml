@@ -18,19 +18,19 @@ spec:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: kubeconfig-{{ .Release.Namespace }}
+  name: kubelet-{{ .Release.Namespace }}
   labels:
     chart: {{ template "captain-kube.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  storageClassName: "kubeconfig-{{ .Release.Namespace }}"
+  storageClassName: "kubelet-{{ .Release.Namespace }}"
   capacity:
-    storage: 1Mi
+    storage: 10Mi
   accessModes:
     - ReadWriteMany
   hostPath:
-    path: {{ .Values.captain.kubeconfig | quote }}
+    path: {{ .Values.captain.kubeletPath | quote }}
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
@@ -51,15 +51,15 @@ spec:
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: kubeconfig-claim-{{ .Release.Namespace }}
+  name: kubelet-claim-{{ .Release.Namespace }}
   labels:
     chart: {{ template "captain-kube.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  storageClassName: "kubeconfig-{{ .Release.Namespace }}"
+  storageClassName: "kubelet-{{ .Release.Namespace }}"
   accessModes:
     - ReadWriteMany
   resources:
     requests:
-      storage: 1Mi
+      storage: 10Mi

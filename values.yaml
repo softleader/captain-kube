@@ -2,7 +2,7 @@ captain:
   image: softleader/captain
   tag: latest
   pullPolicy: Always
-  kubeconfig: /var/lib/kubelet/kubelet-config
+  kubeletPath: /var/lib/kubelet
   port: 30051
 
 caplet:

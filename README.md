@@ -4,7 +4,7 @@
 [![Build Status](https://img.shields.io/travis/com/softleader/captain-kube.svg)](https://travis-ci.com/softleader/captain-kube)
 [![release](https://img.shields.io/github/release/softleader/captain-kube.svg)](https://github.com/softleader/captain-kube/releases)
 
-![](https://raw.githubusercontent.com/softleader/captain-kube/helm-chart/logo/banner.png)
+[![](https://raw.githubusercontent.com/softleader/captain-kube/helm-chart/logo/banner.png)](https://softleader.github.io/captain-kube/)
 
 > Deliver SoftLeader's products faster, more reliable to Kubernetes.
 

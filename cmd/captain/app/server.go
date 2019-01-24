@@ -8,6 +8,7 @@ import (
 	"github.com/softleader/captain-kube/pkg/caplet"
 	"github.com/softleader/captain-kube/pkg/captain"
 	"github.com/softleader/captain-kube/pkg/env"
+	"github.com/softleader/captain-kube/pkg/kubectl"
 	"github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/version"
 	"github.com/spf13/cobra"
@@ -21,7 +22,6 @@ type captainCmd struct {
 	serve          string
 	endpoints      []string
 	port           int
-	k8sVendor      string
 	capletHostname string
 	capletPort     int
 }
@@ -31,7 +31,6 @@ func NewCaptainCommand(metadata *version.BuildMetadata) (cmd *cobra.Command) {
 	c := captainCmd{
 		metadata:       metadata,
 		port:           env.LookupInt(captain.EnvPort, captain.DefaultPort),
-		k8sVendor:      env.Lookup(captain.EnvK8sVendor, captain.DefaultK8sVendor),
 		capletPort:     env.LookupInt(caplet.EnvPort, caplet.DefaultPort),
 		capletHostname: env.Lookup(caplet.EnvHostname, caplet.DefaultHostname),
 	}
@@ -50,7 +49,6 @@ func NewCaptainCommand(metadata *version.BuildMetadata) (cmd *cobra.Command) {
 	f := cmd.Flags()
 	f.BoolVarP(&verbose, "verbose", "v", false, "enable verbose output")
 	f.IntVarP(&c.port, "port", "p", c.port, "specify the port of captain, override "+captain.EnvPort)
-	f.StringVar(&c.k8sVendor, "k8s-vendor", c.k8sVendor, "specify the vendor of k8s, override "+captain.EnvK8sVendor)
 	f.StringVar(&c.capletHostname, "caplet-hostname", c.capletHostname, "specify the hostname of caplet daemon to lookup, override "+caplet.EnvHostname)
 	f.IntVar(&c.capletPort, "caplet-port", c.capletPort, "specify the port of caplet daemon to connect, override "+caplet.EnvPort)
 	f.StringArrayVarP(&c.endpoints, "caplet-endpoint", "e", []string{}, "specify the endpoint of caplet daemon to connect, override '--caplet-hostname'")
@@ -63,13 +61,17 @@ func (c *captainCmd) Run() error {
 	if err != nil {
 		return fmt.Errorf("failed to listen: %v", err)
 	}
+	kv, err := kubectl.Version()
+	if err != nil {
+		return err
+	}
 	s := grpc.NewServer()
 	captainkube_v2.RegisterCaptainServer(s, &server.CaptainServer{
 		Metadata:  c.metadata,
 		Hostname:  c.capletHostname,
 		Endpoints: c.endpoints,
 		Port:      c.capletPort,
-		K8s:       c.k8sVendor,
+		K8s:       kv,
 	})
 	reflection.Register(s)
 	logrus.Printf("listening and serving GRPC on %v", lis.Addr().String())

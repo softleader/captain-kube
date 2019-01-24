@@ -6,6 +6,7 @@ import (
 	"github.com/softleader/captain-kube/pkg/caplet"
 	"github.com/softleader/captain-kube/pkg/color"
 	"github.com/softleader/captain-kube/pkg/helm/chart"
+	"github.com/softleader/captain-kube/pkg/kubectl"
 	"github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/version"
 	"net"
@@ -18,7 +19,7 @@ type CaptainServer struct {
 	Hostname  string
 	Endpoints []string
 	Port      int
-	K8s       string
+	K8s       *kubectl.KubeVersion
 }
 
 func (s *CaptainServer) lookupCaplet(log *logrus.Logger, colored bool) (endpoints caplet.Endpoints, err error) {

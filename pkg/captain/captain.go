@@ -1,11 +1,9 @@
 package captain
 
 const (
-	EnvEndpoint      = "CAPTAIN_ENDPOINT"
-	EnvPort          = "CAPTAIN_PORT"
-	EnvK8sVendor     = "CAPTAIN_K8S_VENDOR"
-	DefaultPort      = 30051
-	DefaultK8sVendor = "icp"
+	EnvEndpoint = "CAPTAIN_ENDPOINT"
+	EnvPort     = "CAPTAIN_PORT"
+	DefaultPort = 30051
 
 	// helm tiller
 	EnvTillerEndpoint              = "TILLER_ENDPOINT"

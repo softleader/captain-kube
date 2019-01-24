@@ -8,15 +8,14 @@ import (
 
 func (s *CaptainServer) ConsoleURL(ctx context.Context, req *captainkube_v2.ConsoleURLRequest) (*captainkube_v2.ConsoleURLResponse, error) {
 	resp := &captainkube_v2.ConsoleURLResponse{
-		Vendor: s.K8s,
+		Vendor: s.K8s.ServerVersion.GitCommit,
 	}
-	switch v := s.K8s; v {
-	case "icp":
+	if s.K8s.ServerVersion.IsICP() {
 		resp.Url = fmt.Sprintf("https://%s:%v", req.GetHost(), 8443)
 		return resp, nil
-	case "gcp":
-		return nil, fmt.Errorf("GCP is not supported yet")
-	default:
-		return nil, fmt.Errorf("unsupported kubernetes vendor: %v", v)
 	}
+	if s.K8s.ServerVersion.IsGCP() {
+		return nil, fmt.Errorf("GCP is not supported yet")
+	}
+	return nil, fmt.Errorf("unsupported kubernetes vendor: %v", s.K8s.ServerVersion.GitCommit)
 }

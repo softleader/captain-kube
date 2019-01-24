@@ -18,17 +18,10 @@ spec:
         app: {{ template "captain-kube.captain" . }}
         release: {{ .Release.Name }}
     spec:
-      volumes:
-      - name: kubelet-{{ .Release.Namespace }}
-        persistentVolumeClaim:
-          claimName: kubelet-claim-{{ .Release.Namespace }}
       containers:
         - name: {{ template "captain-kube.captain" . }}
           image: "{{ .Values.captain.image }}:{{ .Values.captain.tag }}"
           imagePullPolicy: {{ .Values.captain.pullPolicy }}
-          volumeMounts:
-            - mountPath: "/var/lib/kubelet"
-              name: kubelet-{{ .Release.Namespace }}
           envFrom:
             - configMapRef:
                 name: {{ template "captain-kube.config" . }}

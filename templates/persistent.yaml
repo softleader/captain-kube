@@ -15,23 +15,6 @@ spec:
   hostPath:
     path: "/var/run/docker.sock"
 ---
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: kubelet-{{ .Release.Namespace }}
-  labels:
-    chart: {{ template "captain-kube.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
-spec:
-  storageClassName: "kubelet-{{ .Release.Namespace }}"
-  capacity:
-    storage: 10Mi
-  accessModes:
-    - ReadWriteMany
-  hostPath:
-    path: {{ .Values.captain.kubeletPath | quote }}
----
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
@@ -47,19 +30,3 @@ spec:
   resources:
     requests:
       storage: 1Ki
----
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: kubelet-claim-{{ .Release.Namespace }}
-  labels:
-    chart: {{ template "captain-kube.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
-spec:
-  storageClassName: "kubelet-{{ .Release.Namespace }}"
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 10Mi

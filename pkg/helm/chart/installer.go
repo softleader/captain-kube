@@ -34,5 +34,5 @@ func NewInstaller(k8s *kubectl.KubeVersion, tiller *captainkube_v2.Tiller, chart
 		}, nil
 	}
 
-	return nil, fmt.Errorf("unsupported kubernetes vendor: %v", k8s)
+	return nil, fmt.Errorf("unsupported kubernetes vendor: %v", k8s.ServerVersion.GitCommit)
 }

@@ -10,7 +10,7 @@ import (
 func NewKubeVersion(vendor string) *KubeVersion {
 	return &KubeVersion{
 		Server: Info{
-			GitCommit: vendor,
+			GitVersion: vendor,
 		},
 	}
 }

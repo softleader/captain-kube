@@ -77,7 +77,7 @@ func (c *captainCmd) run() error {
 		if err != nil {
 			return err
 		}
-		logrus.Printf("detected k8s vendor: %s", srv.K8s.Server.GitCommit)
+		logrus.Printf("detected k8s vendor: %s", srv.K8s.Server.GitVersion)
 	}
 	s := grpc.NewServer()
 	captainkube_v2.RegisterCaptainServer(s, srv)

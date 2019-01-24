@@ -32,5 +32,5 @@ func NewDeleter(k8s *kubectl.KubeVersion, tiller *captainkube_v2.Tiller, chartNa
 		}, nil
 	}
 
-	return nil, fmt.Errorf("unsupported kubernetes vendor: %v", k8s.Server.GitCommit)
+	return nil, fmt.Errorf("unsupported kubernetes vendor: %v", k8s.Server.GitVersion)
 }

@@ -19,11 +19,7 @@ func (s *CaptainServer) DeleteChart(req *captainkube_v2.DeleteChartRequest, stre
 	if req.GetVerbose() {
 		log.SetLevel(logrus.DebugLevel)
 	}
-	k8s, err := s.k8s()
-	if err != nil {
-		return err
-	}
-	d, err := chart.NewDeleter(k8s, req.GetTiller(), req.GetChartName(), req.GetChartVersion())
+	d, err := chart.NewDeleter(s.K8s, req.GetTiller(), req.GetChartName(), req.GetChartVersion())
 	if err != nil {
 		return err
 	}

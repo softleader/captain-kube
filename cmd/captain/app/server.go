@@ -71,7 +71,9 @@ func (c *captainCmd) run() error {
 	}
 	if len(c.k8sVendor) > 0 {
 		logrus.Printf("server has specified k8s vendor to %q, skipping auto detection", c.k8sVendor)
-		srv.KubeVersion = kubectl.NewKubeVersion(c.k8sVendor)
+		srv.K8s = kubectl.NewKubeVersion(c.k8sVendor)
+	} else if srv.K8s, err = kubectl.Version(); err != nil {
+		return err
 	}
 	s := grpc.NewServer()
 	captainkube_v2.RegisterCaptainServer(s, srv)

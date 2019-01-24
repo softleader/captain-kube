@@ -1,10 +1,10 @@
 package kubectl
 
 import (
-	"fmt"
 	"gopkg.in/yaml.v2"
 	"os/exec"
 	"strings"
+	"time"
 )
 
 func NewKubeVersion(vendor string) *KubeVersion {
@@ -23,16 +23,15 @@ type KubeVersion struct {
 
 // Info 代表了跟版本有關的欄位
 type Info struct {
-	BuildDate struct {
-	} `yaml:"buildDate"`
-	Compiler     string `yaml:"compiler"`
-	GitCommit    string `yaml:"gitCommit"`
-	GitTreeState string `yaml:"gitTreeState"`
-	GitVersion   string `yaml:"gitVersion"`
-	GoVersion    string `yaml:"goVersion"`
-	Major        string `yaml:"major"`
-	Minor        string `yaml:"minor"`
-	Platform     string `yaml:"platform"`
+	BuildDate    time.Time `yaml:"buildDate"`
+	Compiler     string    `yaml:"compiler"`
+	GitCommit    string    `yaml:"gitCommit"`
+	GitTreeState string    `yaml:"gitTreeState"`
+	GitVersion   string    `yaml:"gitVersion"`
+	GoVersion    string    `yaml:"goVersion"`
+	Major        string    `yaml:"major"`
+	Minor        string    `yaml:"minor"`
+	Platform     string    `yaml:"platform"`
 }
 
 func (sv *Info) IsICP() bool {
@@ -46,12 +45,11 @@ func (sv *Info) IsGCP() bool {
 
 // Version returns the version of kubernetes server
 func Version() (*KubeVersion, error) {
-	cmd := exec.Command(kubectl, "--kubeconfig", kubeconfig, "version", "-o", "yaml")
+	cmd := exec.Command(kubectl, "version", "-o", "yaml")
 	b, err := cmd.CombinedOutput()
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(string(b))
 	kv := &KubeVersion{}
 	if err = yaml.Unmarshal(b, kv); err != nil {
 		return nil, err

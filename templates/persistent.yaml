@@ -15,6 +15,23 @@ spec:
   hostPath:
     path: "/var/run/docker.sock"
 ---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: kubeconfig-{{ .Release.Namespace }}
+  labels:
+    chart: {{ template "captain-kube.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  storageClassName: "kubeconfig-{{ .Release.Namespace }}"
+  capacity:
+    storage: 1Ki
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: {{ .Values.captain.kubeconfig | quote }}
+---
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
@@ -25,6 +42,22 @@ metadata:
     heritage: {{ .Release.Service }}
 spec:
   storageClassName: "docker-socket-{{ .Release.Namespace }}"
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Ki
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: kubeconfig-{{ .Release.Namespace }}
+  labels:
+    chart: {{ template "captain-kube.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  storageClassName: "kubeconfig-{{ .Release.Namespace }}"
   accessModes:
     - ReadWriteMany
   resources:

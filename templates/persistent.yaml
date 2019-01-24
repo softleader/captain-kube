@@ -26,7 +26,7 @@ metadata:
 spec:
   storageClassName: "kubeconfig-{{ .Release.Namespace }}"
   capacity:
-    storage: 1Ki
+    storage: 1Mi
   accessModes:
     - ReadWriteMany
   hostPath:
@@ -51,7 +51,7 @@ spec:
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: kubeconfig-{{ .Release.Namespace }}
+  name: kubeconfig-claim-{{ .Release.Namespace }}
   labels:
     chart: {{ template "captain-kube.chart" . }}
     release: {{ .Release.Name }}
@@ -62,4 +62,4 @@ spec:
     - ReadWriteMany
   resources:
     requests:
-      storage: 1Ki
+      storage: 1Mi

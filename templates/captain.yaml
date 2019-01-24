@@ -21,7 +21,7 @@ spec:
       volumes:
       - name: kubeconfig-{{ .Release.Namespace }}
         persistentVolumeClaim:
-          claimName: kubeconfig-{{ .Release.Namespace }}
+          claimName: kubeconfig-claim-{{ .Release.Namespace }}
       containers:
         - name: {{ template "captain-kube.captain" . }}
           image: "{{ .Values.captain.image }}:{{ .Values.captain.tag }}"

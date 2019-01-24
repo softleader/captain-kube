@@ -39,7 +39,7 @@ func (sv *Info) IsICP() bool {
 }
 
 func (sv *Info) IsGCP() bool {
-	// TODO 還不知道怎麼判斷
+	// TODO 還不知道怎麼判斷, 寫死固定 return false
 	return false
 }
 

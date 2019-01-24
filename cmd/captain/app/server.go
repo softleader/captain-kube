@@ -43,7 +43,7 @@ func NewCaptainCommand(metadata *version.BuildMetadata) (cmd *cobra.Command) {
 			if verbose {
 				logrus.SetLevel(logrus.DebugLevel)
 			}
-			return c.Run()
+			return c.run()
 		},
 	}
 
@@ -58,7 +58,7 @@ func NewCaptainCommand(metadata *version.BuildMetadata) (cmd *cobra.Command) {
 	return
 }
 
-func (c *captainCmd) Run() error {
+func (c *captainCmd) run() error {
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%v", c.port))
 	if err != nil {
 		return fmt.Errorf("failed to listen: %v", err)
@@ -71,9 +71,7 @@ func (c *captainCmd) Run() error {
 	}
 	if len(c.k8sVendor) > 0 {
 		logrus.Printf("server has specified k8s vendor to %q, skipping auto detection", c.k8sVendor)
-		srv.K8s = kubectl.NewKubeVersion(c.k8sVendor)
-	} else if srv.K8s, err = kubectl.Version(); err != nil {
-		return err
+		srv.KubeVersion = kubectl.NewKubeVersion(c.k8sVendor)
 	}
 	s := grpc.NewServer()
 	captainkube_v2.RegisterCaptainServer(s, srv)

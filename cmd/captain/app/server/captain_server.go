@@ -15,11 +15,22 @@ import (
 var ErrNonCapletDaemonFound = fmt.Errorf("non caplet daemon found")
 
 type CaptainServer struct {
-	Metadata  *version.BuildMetadata
-	Hostname  string
-	Endpoints []string
-	Port      int
-	K8s       *kubectl.KubeVersion
+	Metadata    *version.BuildMetadata
+	Hostname    string
+	Endpoints   []string
+	Port        int
+	KubeVersion *kubectl.KubeVersion
+}
+
+func (s *CaptainServer) k8s() (*kubectl.KubeVersion, error) {
+	if s.KubeVersion == nil {
+		kv, err := kubectl.Version()
+		if err != nil {
+			return nil, err
+		}
+		s.KubeVersion = kv
+	}
+	return s.KubeVersion, nil
 }
 
 func (s *CaptainServer) lookupCaplet(log *logrus.Logger, colored bool) (endpoints caplet.Endpoints, err error) {

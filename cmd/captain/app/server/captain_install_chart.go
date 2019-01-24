@@ -34,7 +34,11 @@ func (s *CaptainServer) InstallChart(req *captainkube_v2.InstallChartRequest, st
 	if err := ioutil.WriteFile(chartPath, req.GetChart().GetContent(), 0644); err != nil {
 		return err
 	}
-	i, err := chart.NewInstaller(s.K8s, req.GetTiller(), chartPath)
+	k8s, err := s.k8s()
+	if err != nil {
+		return err
+	}
+	i, err := chart.NewInstaller(k8s, req.GetTiller(), chartPath)
 	if err != nil {
 		return err
 	}

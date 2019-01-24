@@ -1,6 +1,7 @@
 package kubectl
 
 import (
+	"fmt"
 	"gopkg.in/yaml.v2"
 	"os/exec"
 	"strings"
@@ -45,12 +46,14 @@ func (sv *Info) IsGCP() bool {
 
 // Version returns the version of kubernetes server
 func Version() (*KubeVersion, error) {
-	args := []string{"--kubeconfig", kubeconfig, "version", "-o", "yaml"}
+	args := []string{ //"--kubeconfig", kubeconfig,
+		"version", "-o", "yaml", "--client"}
 	cmd := exec.Command(kubectl, args...)
 	b, err := cmd.CombinedOutput()
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println(string(b))
 	kv := &KubeVersion{}
 	if err = yaml.Unmarshal(b, kv); err != nil {
 		return nil, err

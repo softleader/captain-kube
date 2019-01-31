@@ -11,7 +11,7 @@ func TestVersion(t *testing.T) {
 	if !command.IsAvailable(kubectl) {
 		t.Skipf("%q command does not exist", kubectl)
 	}
-	v, err := Version()
+	v, err := versionClientOnly()
 	if err != nil {
 		t.Error(err)
 		t.FailNow()

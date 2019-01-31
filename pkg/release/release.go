@@ -1,4 +1,4 @@
-package version
+package release
 
 import (
 	"fmt"
@@ -10,13 +10,13 @@ const (
 	unknown    = "unknown"
 )
 
-type BuildMetadata struct {
+type Metadata struct {
 	GitVersion string
 	GitCommit  string
 }
 
-func NewBuildMetadata(version, commit string) (b *BuildMetadata) {
-	b = &BuildMetadata{
+func NewMetadata(version, commit string) (b *Metadata) {
+	b = &Metadata{
 		GitVersion: unreleased,
 		GitCommit:  unknown,
 	}
@@ -29,7 +29,7 @@ func NewBuildMetadata(version, commit string) (b *BuildMetadata) {
 	return
 }
 
-func (b *BuildMetadata) String() string {
+func (b *Metadata) String() string {
 	trunc := 7
 	if len := len(b.GitCommit); len < 7 {
 		trunc = len
@@ -37,6 +37,6 @@ func (b *BuildMetadata) String() string {
 	return fmt.Sprintf("%s+%s", b.GitVersion, b.GitCommit[:trunc])
 }
 
-func (b *BuildMetadata) FullString() string {
+func (b *Metadata) FullString() string {
 	return fmt.Sprintf("%#v", b)
 }

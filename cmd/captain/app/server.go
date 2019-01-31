@@ -10,7 +10,7 @@ import (
 	"github.com/softleader/captain-kube/pkg/env"
 	"github.com/softleader/captain-kube/pkg/kubectl"
 	"github.com/softleader/captain-kube/pkg/proto"
-	"github.com/softleader/captain-kube/pkg/version"
+	"github.com/softleader/captain-kube/pkg/release"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -18,7 +18,7 @@ import (
 )
 
 type captainCmd struct {
-	metadata       *version.BuildMetadata
+	metadata       *release.Metadata
 	serve          string
 	endpoints      []string
 	port           int
@@ -27,7 +27,7 @@ type captainCmd struct {
 	k8sVendor      string
 }
 
-func NewCaptainCommand(metadata *version.BuildMetadata) (cmd *cobra.Command) {
+func NewCaptainCommand(metadata *release.Metadata) (cmd *cobra.Command) {
 	var verbose bool
 	c := captainCmd{
 		metadata:       metadata,

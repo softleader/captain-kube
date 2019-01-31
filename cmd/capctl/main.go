@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/softleader/captain-kube/cmd/capctl/app"
-	ver "github.com/softleader/captain-kube/pkg/version"
+	"github.com/softleader/captain-kube/pkg/release"
 	"os"
 )
 
@@ -13,7 +13,7 @@ var (
 )
 
 func main() {
-	metadata := ver.NewBuildMetadata(version, commit)
+	metadata := release.NewMetadata(version, commit)
 	if command, err := app.NewRootCmd(os.Args[1:], metadata); err != nil {
 		fmt.Println(err)
 		os.Exit(1)

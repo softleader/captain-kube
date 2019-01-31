@@ -8,7 +8,7 @@ import (
 	"github.com/softleader/captain-kube/pkg/caplet"
 	"github.com/softleader/captain-kube/pkg/env"
 	"github.com/softleader/captain-kube/pkg/proto"
-	"github.com/softleader/captain-kube/pkg/version"
+	"github.com/softleader/captain-kube/pkg/release"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -16,12 +16,12 @@ import (
 )
 
 type capletCmd struct {
-	metadata *version.BuildMetadata
+	metadata *release.Metadata
 	serve    string
 	port     int
 }
 
-func NewCapletCommand(metadata *version.BuildMetadata) (cmd *cobra.Command) {
+func NewCapletCommand(metadata *release.Metadata) (cmd *cobra.Command) {
 	var verbose bool
 	c := &capletCmd{
 		metadata: metadata,

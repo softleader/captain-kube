@@ -6,8 +6,8 @@ import (
 	"github.com/mattn/go-colorable"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/ctx"
+	"github.com/softleader/captain-kube/pkg/release"
 	"github.com/softleader/captain-kube/pkg/utils"
-	"github.com/softleader/captain-kube/pkg/version"
 	"github.com/spf13/cobra"
 	"os"
 	"text/template"
@@ -16,11 +16,11 @@ import (
 var (
 	ctxs      *ctx.Contexts
 	activeCtx *ctx.Context
-	metadata  *version.BuildMetadata
+	metadata  *release.Metadata
 	name      = "capctl"
 )
 
-func NewRootCmd(args []string, m *version.BuildMetadata) (*cobra.Command, error) {
+func NewRootCmd(args []string, m *release.Metadata) (*cobra.Command, error) {
 	if err := initContext(); err != nil {
 		return nil, err
 	}

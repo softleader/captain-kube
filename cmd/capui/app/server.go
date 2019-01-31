@@ -7,14 +7,14 @@ import (
 	"github.com/softleader/captain-kube/pkg/capui"
 	"github.com/softleader/captain-kube/pkg/ctx"
 	"github.com/softleader/captain-kube/pkg/env"
-	"github.com/softleader/captain-kube/pkg/version"
+	"github.com/softleader/captain-kube/pkg/release"
 	"github.com/spf13/cobra"
 	"os"
 	"strings"
 )
 
 type capUICmd struct {
-	Metadata         *version.BuildMetadata
+	Metadata         *release.Metadata
 	port             int
 	ActiveCtx        string
 	defaultPlatform  string
@@ -40,7 +40,7 @@ func (c *capUICmd) newDefaultValue() (*DefaultValue, error) {
 	}, nil
 }
 
-func NewCapUICommand(metadata *version.BuildMetadata) (cmd *cobra.Command) {
+func NewCapUICommand(metadata *release.Metadata) (cmd *cobra.Command) {
 	var verbose bool
 	c := capUICmd{
 		Metadata:         metadata,

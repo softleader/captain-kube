@@ -8,14 +8,14 @@ import (
 	"github.com/softleader/captain-kube/pkg/helm/chart"
 	"github.com/softleader/captain-kube/pkg/kubectl"
 	"github.com/softleader/captain-kube/pkg/proto"
-	"github.com/softleader/captain-kube/pkg/version"
+	"github.com/softleader/captain-kube/pkg/release"
 	"net"
 )
 
 var ErrNonCapletDaemonFound = fmt.Errorf("non caplet daemon found")
 
 type CaptainServer struct {
-	Metadata  *version.BuildMetadata
+	Metadata  *release.Metadata
 	Hostname  string
 	Endpoints []string
 	Port      int

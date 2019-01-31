@@ -45,7 +45,11 @@ func (sv *Info) IsGCP() bool {
 
 // Version returns the version of kubernetes server
 func Version() (*KubeVersion, error) {
-	cmd := exec.Command(kubectl, "version", "-o", "yaml")
+	return version("version", "-o", "yaml")
+}
+
+func version(args ...string) (*KubeVersion, error) {
+	cmd := exec.Command(kubectl, args...)
 	b, err := cmd.CombinedOutput()
 	if err != nil {
 		return nil, err
@@ -55,4 +59,9 @@ func Version() (*KubeVersion, error) {
 		return nil, err
 	}
 	return kv, nil
+}
+
+// versionClientOnly expose Version for test
+func versionClientOnly() (*KubeVersion, error) {
+	return version("version", "-o", "yaml", "--client")
 }

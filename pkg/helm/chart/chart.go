@@ -94,7 +94,7 @@ func image(path string, f os.FileInfo) ([]*Image, error) {
 		t := TemplateYAML{}
 		yaml.Unmarshal(in, &t)
 		for _, c := range t.Spec.SpecTemplate.Spec.Containers {
-			i = append(i, newImage(c.Image))
+			i = append(i, NewImage(c.Image))
 		}
 	}
 	return i, nil

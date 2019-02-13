@@ -12,6 +12,8 @@ import "image.proto";
 import "msg.proto";
 import "version.proto";
 import "prune.proto";
+import "rmc.proto";
+import "rmi.proto";
 import "console_url.proto";
 
 message SyncChartRequest {
@@ -66,5 +68,9 @@ service Captain {
     rpc Version (VersionRequest) returns (stream ChunkMessage) {
     }
     rpc ConsoleURL (ConsoleURLRequest) returns (ConsoleURLResponse) {
+    }
+    rpc Rmc (RmcRequest) returns (stream ChunkMessage) {
+    }
+    rpc Rmi (RmiRequest) returns (stream ChunkMessage) {
     }
 }

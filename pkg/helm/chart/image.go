@@ -3,9 +3,12 @@ package chart
 import (
 	"bytes"
 	"fmt"
+	"github.com/Masterminds/semver"
 	"strings"
 	"text/template"
 )
+
+const DefaultTag = "latest"
 
 type Image struct {
 	Host string // e.g. hub.softleader.com.tw
@@ -40,7 +43,7 @@ func (i *Image) String() string {
 	return buf.String()
 }
 
-func newImage(img string) (i *Image) {
+func NewImage(img string) (i *Image) {
 	var name string
 	i = &Image{}
 	if strings.ContainsAny(img, "/") {
@@ -88,4 +91,16 @@ func after(value string, a string) string {
 
 var templateFuncs = template.FuncMap{
 	"replace": strings.Replace,
+}
+
+func (i *Image) CheckTag(other string) (bool, error) {
+	c, err := semver.NewConstraint(other)
+	if err != nil {
+		return false, err
+	}
+	v, err := semver.NewVersion(i.Tag)
+	if err != nil {
+		return false, err
+	}
+	return c.Check(v), nil
 }

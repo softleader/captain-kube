@@ -10,6 +10,7 @@ option go_package = "captainkube.v2";
 import "image.proto";
 import "msg.proto";
 import "prune.proto";
+import "rmi.proto";
 import "version.proto";
 
 message PullImageRequest {
@@ -25,5 +26,7 @@ service Caplet {
     rpc Prune (PruneRequest) returns (stream ChunkMessage) {
     }
     rpc Version (VersionRequest) returns (VersionResponse) {
+    }
+    rpc Rmi (RmiRequest) returns (stream ChunkMessage) {
     }
 }

@@ -62,6 +62,8 @@ func NewRootCmd(args []string, m *release.Metadata) (*cobra.Command, error) {
 		newSyncCmd(),
 		newSaveCmd(),
 		newOpenCmd(),
+		newRmiCmd(),
+		newRmcCmd(),
 	)
 
 	flags.Parse(args)

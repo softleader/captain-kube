@@ -9,7 +9,7 @@ import (
 	"github.com/softleader/captain-kube/pkg/utils"
 )
 
-func (s *CapletServer) PullImage(req *captainkube_v2.PullImageRequest, stream captainkube_v2.Caplet_PullImageServer) error {
+func (s *CapletServer) Rmi(req *captainkube_v2.RmiRequest, stream captainkube_v2.Caplet_RmiServer) error {
 	log := logrus.New()
 	log.SetOutput(sio.NewStreamWriter(func(p []byte) error {
 		return stream.Send(&captainkube_v2.ChunkMessage{
@@ -21,25 +21,18 @@ func (s *CapletServer) PullImage(req *captainkube_v2.PullImageRequest, stream ca
 	if req.GetVerbose() {
 		log.SetLevel(logrus.DebugLevel)
 	}
+
 	for _, image := range req.GetImages() {
-		if err := pull(log, image, req.GetRegistryAuth()); err != nil {
+		i := chart.Image{Host: image.Host, Repo: image.Repo, Tag: image.Tag}
+		rm, err := dockerd.ImagesWithTagConstraint(log, i.HostRepo(), i.Tag)
+		if err != nil {
 			return err
 		}
-	}
-	return nil
-}
-
-func pull(log *logrus.Logger, image *captainkube_v2.Image, auth *captainkube_v2.RegistryAuth) error {
-	if tag := image.GetTag(); len(tag) == 0 {
-		image.Tag = chart.DefaultTag
-	}
-	err := dockerd.Pull(log, chart.Image{
-		Host: image.Host,
-		Repo: image.Repo,
-		Tag:  image.Tag,
-	}, auth)
-	if err != nil {
-		return err
+		if !req.GetDryRun() {
+			if err := dockerd.Rmi(log, req.GetForce(), req.GetDryRun(), rm...); err != nil {
+				return err
+			}
+		}
 	}
 	return nil
 }

@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	rmcHelp = `刪除所有 node 上一個或多個 Chart 中的 Image
+	rmcHelp = `刪除所有 node 上一個或多個 Chart 中的所有 image
 
 使用 '--endpoint' 指定刪除的 Captain Endpoint
 

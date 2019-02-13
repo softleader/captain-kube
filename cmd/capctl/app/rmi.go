@@ -30,7 +30,7 @@ TAG 必須要指定, 可以是絕對條件或是 Semver2 的範圍條件 (https:
 
 傳入 '--force' 就算當前還有開啟 Container, 都強制刪除
 
-	$ {{.}} rmi IMAGE:TAG -e CAPTAIN_ENDPOINT -f
+	$ {{.}} rmi IMAGE:TAG -e CAPTAIN_ENDPOINT --force
 
 傳入 '--dry-run' 可以模擬真實的 rmi, 但不會真的刪除, 通常可以用來檢視 TAG 的 Semver2 範圍條件是否符合預期
 
@@ -76,7 +76,7 @@ func newRmiCmd() *cobra.Command {
 	}
 
 	f := cmd.Flags()
-	f.BoolVarP(&c.force, "force", "f", false, "force removal of the image")
+	f.BoolVar(&c.force, "force", false, "force removal of the image")
 	f.BoolVar(&c.dryRun, "dry-run", false, `simulate an rmi "for real"`)
 	c.endpoint.AddFlags(f)
 

@@ -8,14 +8,16 @@ option java_package = "tw.com.softleader.captainkube.v2";
 option go_package = "captainkube.v2";
 
 import "chart.proto";
+import "image.proto";
 
 message RmcRequest {
     Chart chart = 1;
-    repeated string set = 2;
-    string constraint = 3;
-    bool verbose = 4;
-    int64 timeout = 5;
-    bool color = 6;
-    bool force = 7;
-    bool dryRun = 8;
+    ReTag retag = 2;
+    repeated string set = 3;
+    string constraint = 4;
+    bool verbose = 5;
+    int64 timeout = 6;
+    bool color = 7;
+    bool force = 8;
+    bool dryRun = 9;
 }

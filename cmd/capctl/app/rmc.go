@@ -24,13 +24,17 @@ const (
 	$ {{.}} rmc CHART... -e CAPTAIN_ENDPOINT -r ^	
 	$ {{.}} rmc CHART... -e CAPTAIN_ENDPOINT -r ~
 
+傳入 '--retag-from' 及 '--retag-to' 可以刪除 retag 後的 image
+
+	$ {{.}} rmc CHART... -e CAPTAIN_ENDPOINT -f hub.softleader.com.tw -t client-registry:5000
+
 如果需要在 rmc 前修改 values.yaml 中任何參數, 可以傳入 '--set key1=val1,key2=val2'
 
 	$ {{.}} rmc CHART... -e CAPTAIN_ENDPOINT --set ingress.enabled=true
 
 傳入 '--force' 就算當前還有開啟 Container, 都強制刪除
 
-	$ {{.}} rmc CHART... -e CAPTAIN_ENDPOINT -f
+	$ {{.}} rmc CHART... -e CAPTAIN_ENDPOINT --force
 
 傳入 '--dry-run' 可以模擬真實的 rmi, 但不會真的刪除, 通常可以用來檢視 TAG 的 Semver2 範圍條件是否符合預期
 
@@ -43,6 +47,7 @@ type rmcCmd struct {
 	charts     []string
 	constraint string
 	endpoint   *ctx.Endpoint // captain 的 endpoint ip
+	retag      *ctx.ReTag
 	dryRun     bool
 	set        []string
 }
@@ -50,11 +55,12 @@ type rmcCmd struct {
 func newRmcCmd() *cobra.Command {
 	c := rmcCmd{
 		endpoint: activeCtx.Endpoint,
+		retag:    activeCtx.ReTag,
 	}
 
 	cmd := &cobra.Command{
 		Use:   "rmc CHARTS...",
-		Short: "remove image of charts",
+		Short: "remove images in charts",
 		Long:  usage(rmcHelp),
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -68,11 +74,12 @@ func newRmcCmd() *cobra.Command {
 	}
 
 	f := cmd.Flags()
-	f.BoolVarP(&c.force, "force", "f", false, "force removal of the image")
+	f.BoolVar(&c.force, "force", false, "force removal of the image")
 	f.StringVarP(&c.constraint, "constraint", "c", "", "tag semver2 constraint, more details: https://devhints.io/semver")
 	f.BoolVar(&c.dryRun, "dry-run", false, `simulate an rmc "for real"`)
 	f.StringArrayVar(&c.set, "set", []string{}, "set values (can specify multiple or separate values with commas: key1=val1,key2=val2)")
 	c.endpoint.AddFlags(f)
+	c.retag.AddFlags(f)
 
 	return cmd
 }

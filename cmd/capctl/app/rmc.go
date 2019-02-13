@@ -18,11 +18,11 @@ const (
 
 	$ {{.}} rmc CHART... -e CAPTAIN_ENDPOINT
 
-傳入 '--range' 指定 TAG Semver2 的範圍條件 (https://devhints.io/semver)
+傳入 '--constraint' 指定 TAG Semver2 的範圍條件 (https://devhints.io/semver)
 
-	$ {{.}} rmc CHART... -e CAPTAIN_ENDPOINT -r "<"
-	$ {{.}} rmc CHART... -e CAPTAIN_ENDPOINT -r ^	
-	$ {{.}} rmc CHART... -e CAPTAIN_ENDPOINT -r ~
+	$ {{.}} rmc CHART... -e CAPTAIN_ENDPOINT -c "<"
+	$ {{.}} rmc CHART... -e CAPTAIN_ENDPOINT -c ^	
+	$ {{.}} rmc CHART... -e CAPTAIN_ENDPOINT -c ~
 
 傳入 '--retag-from' 及 '--retag-to' 可以刪除 retag 後的 image
 

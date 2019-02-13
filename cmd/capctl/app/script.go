@@ -8,6 +8,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/captain"
 	"github.com/softleader/captain-kube/pkg/ctx"
+	"github.com/softleader/captain-kube/pkg/helm/chart"
 	"github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/utils"
 	"github.com/softleader/captain-kube/pkg/utils/strutil"
@@ -39,6 +40,15 @@ flags 可以自由的混搭使用, 你也可以使用 '>' 再將產生的 script
 如果需要在產生 script 前修改 values.yaml 中任何參數, 可以傳入 '--set key1=val1,key2=val2'
 
 	$ {{.}} script CHART... -e CAPTAIN_ENDPOINT --set ingress.enabled=true
+
+若 '--endpoint' 不指定則可在當前執行環境下產生 script, 而不是交給 Captain 執行
+但請注意當前環境也必須要有產生 script 的必要 package
+
+	$ {{.}} script CHART...
+
+可以結合 '{{.}} ctx' 指令: 清空 context, 執行 script 後, 再切回原 context
+
+	$ {{.}} ctx --off && {{.}} script CHART... && {{.}} ctx -
 `
 )
 
@@ -71,9 +81,6 @@ func newScriptCmd() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if c.charts = args; len(c.charts) == 0 {
 				return errors.New("chart path is required")
-			}
-			if err := c.endpoint.Validate(); err != nil {
-				return err
 			}
 			return c.run()
 		},
@@ -114,7 +121,7 @@ func (c *scriptCmd) run() error {
 
 	for _, chart := range c.charts {
 		logrus.Println("### chart:", chart, "###")
-		if err := runScript(log, c, chart); err != nil {
+		if err := c.runScript(log, chart); err != nil {
 			return err
 		}
 		logrus.Println("")
@@ -137,7 +144,7 @@ func (c *scriptCmd) run() error {
 	return nil
 }
 
-func runScript(log *logrus.Logger, c *scriptCmd, path string) error {
+func (c *scriptCmd) runScript(log *logrus.Logger, path string) error {
 	if expanded, err := homedir.Expand(path); err != nil {
 		path = expanded
 	}
@@ -145,29 +152,72 @@ func runScript(log *logrus.Logger, c *scriptCmd, path string) error {
 	if err != nil {
 		return err
 	}
-	bytes, err := ioutil.ReadFile(abs)
+
+	if c.endpoint.Specified() {
+		bytes, err := ioutil.ReadFile(abs)
+		if err != nil {
+			return err
+		}
+		request := captainkube_v2.GenerateScriptRequest{
+			Chart: &captainkube_v2.Chart{
+				FileName: filepath.Base(abs),
+				Content:  bytes,
+				FileSize: int64(len(bytes)),
+			},
+			Pull: c.pull,
+			Retag: &captainkube_v2.ReTag{
+				From: c.retag.From,
+				To:   c.retag.To,
+			},
+			Save: c.save,
+			Load: c.load,
+		}
+		if err := captain.GenerateScript(log, c.endpoint.String(), &request, settings.Timeout); err != nil {
+			return err
+		}
+		return nil
+	}
+
+	return c.runScriptOnClient(log, abs)
+}
+
+func (c *scriptCmd) runScriptOnClient(log *logrus.Logger, path string) error {
+	tpls, err := chart.LoadArchive(log, path, c.set...)
 	if err != nil {
 		return err
 	}
+	log.Debugf("%v template(s) loaded\n", len(tpls))
 
-	request := captainkube_v2.GenerateScriptRequest{
-		Chart: &captainkube_v2.Chart{
-			FileName: filepath.Base(abs),
-			Content:  bytes,
-			FileSize: int64(len(bytes)),
-		},
-		Pull: c.pull,
-		Retag: &captainkube_v2.ReTag{
-			From: c.retag.From,
-			To:   c.retag.To,
-		},
-		Save: c.save,
-		Load: c.load,
+	if from, to := strings.TrimSpace(c.retag.From), strings.TrimSpace(c.retag.To); from != "" && to != "" {
+		b, err := tpls.GenerateReTagScript(from, to)
+		if err != nil {
+			return err
+		}
+		log.Out.Write(b)
 	}
 
-	if err := captain.GenerateScript(log, c.endpoint.String(), &request, settings.Timeout); err != nil {
-		return err
+	if c.pull {
+		b, err := tpls.GeneratePullScript()
+		if err != nil {
+			return err
+		}
+		log.Out.Write(b)
 	}
 
+	if c.load {
+		b, err := tpls.GenerateLoadScript()
+		if err != nil {
+			return err
+		}
+		log.Out.Write(b)
+	}
+
+	if c.save {
+		b, err := tpls.GenerateSaveScript()
+		if err != nil {
+			return err
+		}
+		log.Out.Write(b)
+	}
 	return nil
 }

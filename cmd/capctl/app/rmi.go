@@ -106,6 +106,10 @@ func (c *rmiCmd) run() error {
 		return captain.Rmi(logrus.StandardLogger(), c.endpoint.String(), req, settings.Timeout)
 	}
 
+	return c.runOnClient()
+}
+
+func (c *rmiCmd) runOnClient() error {
 	for _, image := range c.images {
 		rm, err := dockerd.ImagesWithTagConstraint(logrus.StandardLogger(), image.HostRepo(), image.Tag)
 		if err != nil {

@@ -55,7 +55,7 @@ func ImagesWithTagConstraint(log *logrus.Logger, image, constraint string) ([]*c
 	for _, i := range list {
 		if ok, err := i.CheckTag(constraint);
 			err != nil && i.Tag != constraint { // 如果 tag 就等於是 constraint, 就算沒有符合 semver2 也當成就是要刪除的目標吧
-			log.Errorf("skip %q due to the constraint check: %s", i.String(), err)
+			log.Errorf("skip %q due to the tag constraint check: %s", i.String(), err)
 			continue
 		} else if !ok {
 			table.AddRow(i.String(), "NOT match")

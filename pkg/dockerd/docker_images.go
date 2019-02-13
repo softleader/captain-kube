@@ -53,14 +53,16 @@ func ImagesWithTagConstraint(log *logrus.Logger, image, constraint string) ([]*c
 	var filtered []*chart.Image
 	table := uitable.New()
 	for _, i := range list {
-		if ok, err := i.CheckTag(constraint); err != nil {
-			return nil, err
-		} else if ok {
-			table.AddRow(i.String(), "match")
-			filtered = append(filtered, i)
-		} else {
+		if ok, err := i.CheckTag(constraint);
+			err != nil && i.Tag != constraint { // 如果 tag 就等於是 constraint, 就算沒有符合 semver2 也當成就是要刪除的目標吧
+			log.Errorf("skip %q due to the constraint check %q: %s", i.String(), constraint, err)
+			continue
+		} else if !ok {
 			table.AddRow(i.String(), "NOT match")
+			continue
 		}
+		table.AddRow(i.String(), "match")
+		filtered = append(filtered, i)
 	}
 	// 為了讓 caplet 在呼叫這個 function 時, 從 grpc streaming 出去時可以正常被斷行
 	// 因此這邊我們切開斷行, 一行一行印出

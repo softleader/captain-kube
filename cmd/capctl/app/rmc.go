@@ -32,7 +32,7 @@ const (
 
 	$ {{.}} rmc CHART... -e CAPTAIN_ENDPOINT -f
 
-傳入 '--dry-run' 可以模擬真實的 rmi, 但不會真的刪除, 通常可以用來檢視 TAG 條件是否符合預期
+傳入 '--dry-run' 可以模擬真實的 rmi, 但不會真的刪除, 通常可以用來檢視 TAG 的 Semver2 範圍條件是否符合預期
 
 	$ {{.}} rmc CHART... -e CAPTAIN_ENDPOINT --dry-run
 `
@@ -65,7 +65,7 @@ func newRmcCmd() *cobra.Command {
 
 	f := cmd.Flags()
 	f.BoolVarP(&c.force, "force", "f", false, "force removal of the image")
-	f.StringVarP(&c.rang, "range", "r", "", "tag range constraint, more details: https://devhints.io/semver")
+	f.StringVarP(&c.rang, "range", "r", "", "tag range, more details: https://devhints.io/semver")
 	f.BoolVar(&c.dryRun, "dry-run", false, `simulate an rmc "for real"`)
 	f.StringArrayVar(&c.set, "set", []string{}, "set values (can specify multiple or separate values with commas: key1=val1,key2=val2)")
 	c.endpoint.AddFlags(f)

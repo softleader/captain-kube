@@ -11,7 +11,7 @@ func TestRmi(t *testing.T) {
 	if err := Pull(logrus.StandardLogger(), *image, nil); err != nil {
 		t.Skipf("maybe just can not connect to docker or internet: %s", err)
 	}
-	err := Rmi(logrus.StandardLogger(), []*chart.Image{image}, true, false)
+	err := Rmi(logrus.StandardLogger(), true, false, image)
 	if err != nil {
 		t.Error(err)
 		t.FailNow()

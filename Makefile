@@ -60,7 +60,7 @@ build-capctl:
 	make build --file ./cmd/$(CAPCTL)/Makefile VERSION=$(VERSION) COMMIT=$(COMMIT)
 
 .PHONY: dist
-dist: dist-caplet dist-captain dist-ui dist-capctl
+dist: dist-caplet dist-captain dist-capui dist-capctl
 
 .PHONY: dist-caplet
 dist-caplet:

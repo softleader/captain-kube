@@ -65,7 +65,7 @@ func ImagesWithTagConstraint(log *logrus.Logger, image, constraint string) ([]*c
 	// 為了讓 caplet 在呼叫這個 function 時, 從 grpc streaming 出去時可以正常被斷行
 	// 因此這邊我們切開斷行, 一行一行印出
 	for _, row := range strings.Split(table.String(), "\n") {
-		log.Debugln(row)
+		log.Debugf(row)
 	}
 	return filtered, nil
 }

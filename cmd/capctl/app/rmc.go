@@ -39,12 +39,12 @@ const (
 )
 
 type rmcCmd struct {
-	force    bool
-	charts   []string
-	rang     string
-	endpoint *ctx.Endpoint // captain 的 endpoint ip
-	dryRun   bool
-	set      []string
+	force      bool
+	charts     []string
+	constraint string
+	endpoint   *ctx.Endpoint // captain 的 endpoint ip
+	dryRun     bool
+	set        []string
 }
 
 func newRmcCmd() *cobra.Command {
@@ -58,6 +58,10 @@ func newRmcCmd() *cobra.Command {
 		Long:  usage(rmcHelp),
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
+			// do some validation check
+			if err := c.endpoint.Validate(); err != nil {
+				return err
+			}
 			c.charts = args
 			return c.run()
 		},
@@ -65,7 +69,7 @@ func newRmcCmd() *cobra.Command {
 
 	f := cmd.Flags()
 	f.BoolVarP(&c.force, "force", "f", false, "force removal of the image")
-	f.StringVarP(&c.rang, "range", "r", "", "tag range, more details: https://devhints.io/semver")
+	f.StringVarP(&c.constraint, "constraint", "c", "", "tag semver2 constraint, more details: https://devhints.io/semver")
 	f.BoolVar(&c.dryRun, "dry-run", false, `simulate an rmc "for real"`)
 	f.StringArrayVar(&c.set, "set", []string{}, "set values (can specify multiple or separate values with commas: key1=val1,key2=val2)")
 	c.endpoint.AddFlags(f)
@@ -74,6 +78,10 @@ func newRmcCmd() *cobra.Command {
 }
 
 func (c *rmcCmd) run() error {
+	if c.dryRun {
+		logrus.Warnln("running in dry-run mode, specify the '-v' flag if you want to turn on verbose output")
+	}
+
 	for _, chart := range c.charts {
 		expanded, err := homedir.Expand(chart)
 		if err != nil {
@@ -89,12 +97,12 @@ func (c *rmcCmd) run() error {
 		}
 
 		req := &captainkube_v2.RmcRequest{
-			Timeout: settings.Timeout,
-			DryRun:  c.dryRun,
-			Force:   c.force,
-			Color:   settings.Color,
-			Verbose: settings.Verbose,
-			Range:   c.rang,
+			Timeout:    settings.Timeout,
+			DryRun:     c.dryRun,
+			Force:      c.force,
+			Color:      settings.Color,
+			Verbose:    settings.Verbose,
+			Constraint: c.constraint,
 			Chart: &captainkube_v2.Chart{
 				FileName: filepath.Base(abs),
 				Content:  bytes,

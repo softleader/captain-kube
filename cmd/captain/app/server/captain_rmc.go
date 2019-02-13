@@ -48,7 +48,7 @@ func (s *CaptainServer) Rmc(req *captainkube_v2.RmcRequest, stream captainkube_v
 	endpoints.Each(func(e *caplet.Endpoint) {
 		if err := e.Rmi(log, newRmiRequest(
 			tpls,
-			req.GetRange(),
+			req.GetConstraint(),
 			req.GetVerbose(),
 			req.GetForce(),
 			req.GetDryRun()),
@@ -60,7 +60,7 @@ func (s *CaptainServer) Rmc(req *captainkube_v2.RmcRequest, stream captainkube_v
 	return nil
 }
 
-func newRmiRequest(tpls chart.Templates, rang string, verbose, force, dryRun bool) (req *captainkube_v2.RmiRequest) {
+func newRmiRequest(tpls chart.Templates, constraint string, verbose, force, dryRun bool) (req *captainkube_v2.RmiRequest) {
 	req = &captainkube_v2.RmiRequest{
 		Verbose: verbose,
 		Force:   force,
@@ -71,7 +71,7 @@ func newRmiRequest(tpls chart.Templates, rang string, verbose, force, dryRun boo
 			i := &captainkube_v2.Image{
 				Host: img.Host,
 				Repo: img.Repo,
-				Tag:  rang + img.Tag,
+				Tag:  constraint + img.Tag,
 			}
 			req.Images = append(req.Images, i)
 		}

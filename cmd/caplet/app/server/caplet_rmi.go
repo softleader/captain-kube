@@ -28,10 +28,8 @@ func (s *CapletServer) Rmi(req *captainkube_v2.RmiRequest, stream captainkube_v2
 		if err != nil {
 			return err
 		}
-		if !req.GetDryRun() {
-			if err := dockerd.Rmi(log, req.GetForce(), req.GetDryRun(), rm...); err != nil {
-				return err
-			}
+		if err := dockerd.Rmi(log, req.GetForce(), req.GetDryRun(), rm...); err != nil {
+			return err
 		}
 	}
 	return nil

@@ -12,7 +12,7 @@ import "chart.proto";
 message RmcRequest {
     Chart chart = 1;
     repeated string set = 2;
-    string range = 3;
+    string constraint = 3;
     bool verbose = 4;
     int64 timeout = 5;
     bool color = 6;

@@ -84,6 +84,10 @@ func newRmiCmd() *cobra.Command {
 }
 
 func (c *rmiCmd) run() error {
+	if c.dryRun {
+		logrus.Warnln("running in dry-run mode, specify the '-v' flag if you want to turn on verbose output")
+	}
+
 	if c.endpoint.Specified() {
 		req := &captainkube_v2.RmiRequest{
 			Timeout: settings.Timeout,
@@ -107,10 +111,8 @@ func (c *rmiCmd) run() error {
 		if err != nil {
 			return err
 		}
-		if !c.dryRun {
-			if err := dockerd.Rmi(logrus.StandardLogger(), c.force, c.dryRun, rm...); err != nil {
-				return err
-			}
+		if err := dockerd.Rmi(logrus.StandardLogger(), c.force, c.dryRun, rm...); err != nil {
+			return err
 		}
 	}
 	return nil

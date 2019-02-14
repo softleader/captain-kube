@@ -31,6 +31,9 @@
 <footer class="text-muted">
     <div class="container">
         <p>{{ .config.Metadata.String }}</p>
+        {{ range .defaultValue.ContextVersion }}
+        <p>{{ . }}</p>
+        {{ end }}
         <p>
             <a href="https://github.com/softleader" class="text-muted"><i class="fab fa-github"></i></a>
             <a href="https://www.facebook.com/softleader" class="text-muted"><i class="fab fa-facebook"></i></a>

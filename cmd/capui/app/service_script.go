@@ -65,12 +65,12 @@ func (s *Script) Generate(c *gin.Context) {
 		return
 	}
 
-	activeCtx, err := newActiveContext(log, s.ActiveCtx)
-	if err != nil {
-		log.Errorln(err)
-		logrus.Errorln(err)
-		return
-	}
+	//activeCtx, err := newActiveContext(log, s.ActiveCtx)
+	//if err != nil {
+	//	log.Errorln(err)
+	//	logrus.Errorln(err)
+	//	return
+	//}
 
 	// ps. 在讀完request body後才可以開始response, 否則body會close
 	files := mForm.File["files"]
@@ -92,7 +92,7 @@ func (s *Script) Generate(c *gin.Context) {
 	for _, file := range files {
 		filename := file.Filename
 		log.Println("### Chart:", filename, "###")
-		if err := s.script(log, activeCtx, &form, file); err != nil {
+		if err := s.script(log, activeContext, &form, file); err != nil {
 			log.Errorln(err)
 			logrus.Errorln(err)
 		}

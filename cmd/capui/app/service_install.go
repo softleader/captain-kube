@@ -67,19 +67,19 @@ func (s *Install) Chart(c *gin.Context) {
 		return
 	}
 
-	activeCtx, err := newActiveContext(log, s.ActiveCtx)
-	if err != nil {
-		log.Errorln(err)
-		logrus.Errorln(err)
-		return
-	}
+	//activeCtx, err := newActiveContext(log, s.ActiveCtx)
+	//if err != nil {
+	//	log.Errorln(err)
+	//	logrus.Errorln(err)
+	//	return
+	//}
 
 	// ps. 在讀完request body後才可以開始response, 否則body會close
 	files := mForm.File["files"]
 	for _, file := range files {
 		filename := file.Filename
 		log.Println("Installing chart:", filename)
-		if err := s.install(log, activeCtx, &form, file); err != nil {
+		if err := s.install(log, activeContext, &form, file); err != nil {
 			log.Errorln(err)
 			logrus.Errorln(err)
 		} else {

@@ -26,17 +26,18 @@ type DefaultValue struct {
 	Platform  string // 平台(Google/ICP)
 	Namespace string
 	*ctx.Context
+	ContextVersion []string // 平台上的 Captain-Kube 服務的版本
 }
 
 func (c *capUICmd) newDefaultValue() (*DefaultValue, error) {
-	ac, err := newActiveContext(logrus.StandardLogger(), c.ActiveCtx)
-	if err != nil {
+	if err := activateContext(logrus.StandardLogger(), c.ActiveCtx); err != nil {
 		return nil, err
 	}
 	return &DefaultValue{
-		Platform:  c.defaultPlatform,
-		Namespace: c.defaultNamespace,
-		Context:   ac,
+		Platform:       c.defaultPlatform,
+		Namespace:      c.defaultNamespace,
+		Context:        activeContext,
+		ContextVersion: activeContextVersion,
 	}, nil
 }
 
@@ -80,7 +81,6 @@ func (c *capUICmd) run() error {
 	if err := initContext(os.Environ()); err != nil {
 		return err
 	}
-	logrus.Printf("activated default context: %s", c.ActiveCtx)
 	server := NewCapUIServer(c)
 	addr := fmt.Sprintf(":%v", c.port)
 	logrus.Printf("listening and serving CapUI on %v", addr)

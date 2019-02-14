@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	pullHelp = `拉取一或多個 Helm Chart 中的 image
+	pullHelp = `拉取 helm-chart 中的 image
 
 	$ {{.}} pull CHART...
 
@@ -40,7 +40,7 @@ func newPullCmd() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "pull CHART...",
-		Short: "pull helm-chart",
+		Short: "拉取 helm-chart 中的 image",
 		Long:  usage(pullHelp),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if c.charts = args; len(c.charts) == 0 {

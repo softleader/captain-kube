@@ -11,7 +11,7 @@ func newVersionCmd() *cobra.Command {
 	var full bool
 	cmd := &cobra.Command{
 		Use:   "version",
-		Short: "print capctl, captain, and caplet version",
+		Short: "印出 capctl, captain 及 caplet 的版本",
 		Long:  "print capctl, captain, and caplet version",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			logrus.Infoln(metadata.String())

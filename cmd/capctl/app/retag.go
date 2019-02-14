@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	retagHelp = `將一或多個 Chart 中的 image tag 成指定 host 並推入該 docker registry
+	retagHelp = `重新 tag helm-chart 中的 image
 
 傳入 '--retag-from' 及 '--retag-to' 指定 retag 的來源及目標, 只有符合 '--retag-from' 的 image 才會被 retag
 
@@ -39,7 +39,7 @@ func newReTagCmd() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "retag CHART...",
-		Short: "retag helm-chart",
+		Short: "重新 tag helm-chart 中的 image",
 		Long:  usage(retagHelp),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if c.charts = args; len(c.charts) == 0 {

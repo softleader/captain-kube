@@ -19,14 +19,14 @@ import (
 )
 
 const (
-	scriptHelp = `依照一或多個 Helm Chart 內容產生 docker scripts
+	scriptHelp = `依照 helm-chart 內容產生 shell script
 
 傳入 flag 產生對應的 docker script
 
-	--pull    : docker pull IMAGE
-	--re-tag  : docker tag IMAGE NEW_IMAGE && docker push NEW_IMAGE
-	--save    : docker save IMAGE -o FILE
-	--load    : docker load -i FILE
+	--pull-script    : docker pull IMAGE
+	--re-tag-script  : docker tag IMAGE NEW_IMAGE && docker push NEW_IMAGE
+	--save-script    : docker save IMAGE -o FILE
+	--load-script    : docker load -i FILE
 
 flags 可以自由的混搭使用, 你也可以使用 '>' 再將產生的 script 輸出成檔案
 
@@ -76,7 +76,7 @@ func newScriptCmd() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "script CHART...",
-		Short: "generate script of helm-chart",
+		Short: "依照 helm-chart 內容產生 shell script",
 		Long:  usage(scriptHelp),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if c.charts = args; len(c.charts) == 0 {
@@ -88,10 +88,10 @@ func newScriptCmd() *cobra.Command {
 
 	f := cmd.Flags()
 	f.StringArrayVar(&c.set, "set", []string{}, "set values (can specify multiple or separate values with commas: key1=val1,key2=val2)")
-	f.BoolVarP(&c.pull, "pull", "p", c.pull, "pull images in Chart")
-	f.BoolVarP(&c.rt, "re-tag", "r", c.rt, "re-tag images in Chart")
-	f.BoolVarP(&c.save, "save", "s", c.save, "save images in Chart")
-	f.BoolVarP(&c.load, "load", "l", c.load, "load images in Chart")
+	f.BoolVarP(&c.pull, "pull-script", "p", c.pull, "generate pull images script")
+	f.BoolVarP(&c.rt, "re-tag-script", "r", c.rt, "generate re-tag images script")
+	f.BoolVarP(&c.save, "save-script", "s", c.save, "generate save images script")
+	f.BoolVarP(&c.load, "load-script", "l", c.load, "generate load images script")
 	f.BoolVarP(&c.diff, "diff", "d", c.diff, "show diff of two charts")
 
 	c.endpoint.AddFlags(f)

@@ -20,7 +20,7 @@ func newOpenCmd() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "open",
-		Short: "open endpoint Kubernetes console in browser",
+		Short: "以瀏覽器開啟 Kubernetes 管理介面",
 		Long:  "Open endpoint Kubernetes console in browser",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if err := c.endpoint.Validate(); err != nil {

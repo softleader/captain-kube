@@ -16,7 +16,7 @@ import (
 )
 
 const (
-	installHelp = `上傳一或多個 Helm Chart 至 Captain-Kube
+	installHelp = `上傳 helm-chart
 
 使用 '--endpoint' 指定上傳的 Captain Endpoint
 
@@ -71,7 +71,7 @@ func newInstallCmd() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "install CHART...",
-		Short: "install helm-chart",
+		Short: "上傳 helm-chart",
 		Long:  usage(installHelp),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if c.charts = args; len(c.charts) == 0 {

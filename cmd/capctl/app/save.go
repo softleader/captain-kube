@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	saveHelp = `匯出一個或多個 Helm Chart 中的 image
+	saveHelp = `匯出 helm-chart 中的 image
 
 傳入 '--output' 指定儲存的檔案路徑, docker 預設的儲存檔案格式為 tarball (.tar)
 
@@ -38,7 +38,7 @@ func newSaveCmd() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "save CHART...",
-		Short: "save images of helm-charts",
+		Short: "匯出 helm-chart 中的 image",
 		Long:  usage(saveHelp),
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {

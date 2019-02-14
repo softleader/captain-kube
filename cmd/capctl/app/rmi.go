@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	rmiHelp = `刪除一個或多個 docker image
+	rmiHelp = `刪除 docker image
 
 使用 '--endpoint' 指定刪除的 Captain Endpoint
 
@@ -60,7 +60,7 @@ func newRmiCmd() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "rmi IMAGES...",
-		Short: "remove images",
+		Short: "刪除 docker image",
 		Long:  usage(rmiHelp),
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {

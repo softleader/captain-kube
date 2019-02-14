@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	syncHelp = `同步一或多個 Helm Chart 中的 image 到所有 kubernetes worker nodes
+	syncHelp = `同步 helm-chart 中的 image 到每個 worker node
 
 	$ {{.}} sync CHART... -e CAPTAIN_ENDPOINT
 
@@ -43,7 +43,7 @@ func newSyncCmd() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "sync CHART...",
-		Short: "sync helm-chart",
+		Short: "同步 helm-chart 中的 image 到每個 worker node",
 		Long:  usage(syncHelp),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if c.charts = args; len(c.charts) == 0 {

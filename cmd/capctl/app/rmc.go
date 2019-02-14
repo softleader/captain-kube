@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	rmcHelp = `刪除所有 node 上一個或多個 Chart 中的所有 image
+	rmcHelp = `在每個 worker node 上刪除 helm-chart 中的 image
 
 使用 '--endpoint' 指定刪除的 Captain Endpoint
 
@@ -60,7 +60,7 @@ func newRmcCmd() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "rmc CHARTS...",
-		Short: "remove images in charts",
+		Short: "在每個 worker node 上刪除 helm-chart 中的 image",
 		Long:  usage(rmcHelp),
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {

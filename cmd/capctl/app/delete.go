@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	deleteHelp = `刪除 Helm Chart
+	deleteHelp = `刪除 helm-chart
 
 使用 '--endpoint' 指定刪除的 Captain Endpoint
 
@@ -41,7 +41,7 @@ func newDeleteCmd() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "delete CHART_NAME",
-		Short: "delete helm-chart",
+		Short: "刪除 helm-chart",
 		Long:  usage(deleteHelp),
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {

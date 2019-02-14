@@ -11,7 +11,9 @@ import (
 )
 
 const (
-	ctxHelp = `Context 抽象化了 flags, 你可以視一個 context 為一組環境設定
+	ctxHelp = `切換不同的 captain-kube 環境
+
+Context 抽象化了 flags, 你可以視一個 context 為一組環境設定
 將配置好的 context 啟用後, 會在執行任何 command 前被載入, command 使用的順序為:
 
 	1. 當前 command 執行時所傳入的 flag 
@@ -72,7 +74,7 @@ func newCtxCmd() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "ctx",
-		Short: "switch between captain-kubes back and forth",
+		Short: "切換不同的 captain-kube 環境",
 		Long:  formatCtxHelp(),
 		Args: func(cmd *cobra.Command, args []string) error {
 			if ctxs == ctx.PlainContexts {

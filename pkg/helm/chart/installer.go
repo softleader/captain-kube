@@ -11,12 +11,13 @@ type Installer interface {
 	Install(log *logrus.Logger) error
 }
 
-func NewInstaller(k8s *kubectl.KubeVersion, tiller *captainkube_v2.Tiller, chart string) (Installer, error) {
+func NewInstaller(log *logrus.Logger, k8s *kubectl.KubeVersion, tiller *captainkube_v2.Tiller, chart string) (Installer, error) {
 	if tiller.GetEndpoint() == "" {
 		return nil, fmt.Errorf("tiller endpoint is required")
 	}
 
 	if k8s.Server.IsICP() {
+		log.Debugf("creating ICP chart installer")
 		return &icpInstaller{
 			endpoint:          tiller.GetEndpoint(),
 			chart:             chart,
@@ -28,6 +29,7 @@ func NewInstaller(k8s *kubectl.KubeVersion, tiller *captainkube_v2.Tiller, chart
 	}
 
 	if k8s.Server.IsGCP() {
+		log.Debugf("creating GCP chart installer")
 		return &gcpInstaller{
 			endpoint: tiller.GetEndpoint(),
 			chart:    chart,

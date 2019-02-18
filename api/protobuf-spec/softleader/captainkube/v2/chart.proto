@@ -10,7 +10,8 @@ option go_package = "captainkube.v2";
 message Chart {
     string fileName = 1;
     bytes content = 2;
-    int64 file_size = 3;
+    string contentHex = 3;
+    int64 file_size = 4;
 }
 
 // Tiller is the Helm Server

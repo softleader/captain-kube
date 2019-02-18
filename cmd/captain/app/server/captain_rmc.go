@@ -36,7 +36,7 @@ func (s *CaptainServer) Rmc(req *captainkube_v2.RmcRequest, stream captainkube_v
 	defer os.RemoveAll(tmp)
 
 	chartPath := filepath.Join(tmp, req.GetChart().GetFileName())
-	if err := ioutil.WriteFile(chartPath, req.GetChart().GetContent(), 0644); err != nil {
+	if err := saveChart(req.GetChart(), chartPath); err != nil {
 		return err
 	}
 	tpls, err := chart.LoadArchive(log, chartPath, req.GetSet()...)

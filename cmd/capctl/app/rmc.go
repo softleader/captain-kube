@@ -1,6 +1,8 @@
 package app
 
 import (
+	"encoding/hex"
+	"encoding/json"
 	"github.com/mitchellh/go-homedir"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/captain"
@@ -43,6 +45,7 @@ const (
 )
 
 type rmcCmd struct {
+	hex        bool
 	force      bool
 	charts     []string
 	constraint string
@@ -78,6 +81,7 @@ func newRmcCmd() *cobra.Command {
 	f.StringVarP(&c.constraint, "constraint", "c", "", "tag semver2 constraint, more details: https://devhints.io/semver")
 	f.BoolVar(&c.dryRun, "dry-run", false, `simulate an rmc "for real"`)
 	f.StringArrayVar(&c.set, "set", []string{}, "set values (can specify multiple or separate values with commas: key1=val1,key2=val2)")
+	f.BoolVar(&c.hex, "hex", false, "upload chart via hex string instead of bytes")
 	c.endpoint.AddFlags(f)
 	c.retag.AddFlags(f)
 
@@ -112,10 +116,18 @@ func (c *rmcCmd) run() error {
 			Constraint: c.constraint,
 			Chart: &captainkube_v2.Chart{
 				FileName: filepath.Base(abs),
-				Content:  bytes,
 				FileSize: int64(len(bytes)),
 			},
 		}
+
+		if c.hex {
+			req.Chart.ContentHex = hex.EncodeToString(bytes)
+			v, _ := json.Marshal(req)
+			logrus.Debugln(string(v)) // 如果是 hex string 印出來才有意義
+		} else {
+			req.Chart.Content = bytes
+		}
+
 		if err := captain.Rmc(logrus.StandardLogger(), c.endpoint.String(), req, settings.Timeout); err != nil {
 			return err
 		}

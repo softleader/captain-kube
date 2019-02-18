@@ -1,6 +1,8 @@
 package app
 
 import (
+	"encoding/hex"
+	"encoding/json"
 	"errors"
 	"github.com/mitchellh/go-homedir"
 	"github.com/sirupsen/logrus"
@@ -28,6 +30,7 @@ const (
 )
 
 type syncCmd struct {
+	hex          bool
 	charts       []string
 	registryAuth *ctx.RegistryAuth // docker registry auth
 	retag        *ctx.ReTag
@@ -57,6 +60,7 @@ func newSyncCmd() *cobra.Command {
 	}
 
 	f := cmd.Flags()
+	f.BoolVar(&c.hex, "hex", false, "upload chart via hex string instead of bytes")
 	c.registryAuth.AddFlags(f)
 	c.retag.AddFlags(f)
 
@@ -85,13 +89,13 @@ func (c *syncCmd) sync(path string) error {
 	if err != nil {
 		return err
 	}
-	return captain.SyncChart(logrus.StandardLogger(), c.endpoint.String(), &captainkube_v2.SyncChartRequest{
+
+	req := &captainkube_v2.SyncChartRequest{
 		Color:   settings.Color,
 		Timeout: settings.Timeout,
 		Verbose: settings.Verbose,
 		Chart: &captainkube_v2.Chart{
 			FileName: filepath.Base(abs),
-			Content:  bytes,
 			FileSize: int64(len(bytes)),
 		},
 		RegistryAuth: &captainkube_v2.RegistryAuth{
@@ -102,5 +106,15 @@ func (c *syncCmd) sync(path string) error {
 			From: c.retag.From,
 			To:   c.retag.To,
 		},
-	}, settings.Timeout)
+	}
+
+	if c.hex {
+		req.Chart.ContentHex = hex.EncodeToString(bytes)
+		v, _ := json.Marshal(req)
+		logrus.Debugln(string(v)) // 如果是 hex string 印出來才有意義
+	} else {
+		req.Chart.Content = bytes
+	}
+
+	return captain.SyncChart(logrus.StandardLogger(), c.endpoint.String(), req, settings.Timeout)
 }

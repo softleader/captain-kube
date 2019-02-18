@@ -38,7 +38,7 @@ func (s *CaptainServer) GenerateScript(req *captainkube_v2.GenerateScriptRequest
 	defer os.RemoveAll(tmp)
 
 	chartPath := filepath.Join(tmp, req.GetChart().GetFileName())
-	if err := ioutil.WriteFile(chartPath, req.GetChart().GetContent(), 0644); err != nil {
+	if err := saveChart(req.GetChart(), chartPath); err != nil {
 		return err
 	}
 

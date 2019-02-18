@@ -1,6 +1,8 @@
 package app
 
 import (
+	"encoding/hex"
+	"encoding/json"
 	"github.com/mitchellh/go-homedir"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
@@ -50,6 +52,7 @@ Pre-Procedures 跟 Post-Procedures 均可混合使用
 )
 
 type installCmd struct {
+	hex  bool
 	pull bool // capctl 或 capui 是否要 pull image
 	sync bool // 同步 image 到所有 node 上: 有 re-tag 時僅同步符合 re-tag 條件的 image; 無 re-tag 則同步全部
 	//namespace    string
@@ -93,6 +96,7 @@ func newInstallCmd() *cobra.Command {
 
 	f.BoolVarP(&c.pull, "pull", "p", c.pull, "pull images in Chart")
 	f.BoolVarP(&c.sync, "sync", "s", c.sync, "同步 image 到所有 node 上, 有 re-tag 則會同步 re-tag 之後的 image host")
+	f.BoolVar(&c.hex, "hex", false, "upload chart via hex string instead of bytes")
 
 	// f.StringVarP(&c.namespace, "namespace", "n", c.namespace, "specify the namespace of gcp, not available now")
 
@@ -135,7 +139,6 @@ func (c *installCmd) install(path string) error {
 		Verbose: settings.Verbose,
 		Chart: &captainkube_v2.Chart{
 			FileName: filepath.Base(abs),
-			Content:  bytes,
 			FileSize: int64(len(bytes)),
 		},
 		Sync: c.sync,
@@ -154,6 +157,13 @@ func (c *installCmd) install(path string) error {
 			Username: c.registryAuth.Username,
 			Password: c.registryAuth.Password,
 		},
+	}
+	if c.hex {
+		request.Chart.ContentHex = hex.EncodeToString(bytes)
+		v, _ := json.Marshal(request)
+		logrus.Debugln(string(v)) // 如果是 hex string 印出來才有意義
+	} else {
+		request.Chart.Content = bytes
 	}
 
 	var tpls chart.Templates

@@ -2,6 +2,8 @@ package app
 
 import (
 	"bytes"
+	"encoding/hex"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/mitchellh/go-homedir"
@@ -53,6 +55,7 @@ flags 可以自由的混搭使用, 你也可以使用 '>' 再將產生的 script
 )
 
 type scriptCmd struct {
+	hex  bool
 	pull bool
 	rt   bool
 	save bool
@@ -93,6 +96,7 @@ func newScriptCmd() *cobra.Command {
 	f.BoolVarP(&c.save, "save-script", "s", c.save, "generate save images script")
 	f.BoolVarP(&c.load, "load-script", "l", c.load, "generate load images script")
 	f.BoolVarP(&c.diff, "diff", "d", c.diff, "show diff of two charts")
+	f.BoolVar(&c.hex, "hex", false, "upload chart via hex string instead of bytes")
 
 	c.endpoint.AddFlags(f)
 	c.registryAuth.AddFlags(f)
@@ -161,7 +165,6 @@ func (c *scriptCmd) runScript(log *logrus.Logger, path string) error {
 		request := captainkube_v2.GenerateScriptRequest{
 			Chart: &captainkube_v2.Chart{
 				FileName: filepath.Base(abs),
-				Content:  bytes,
 				FileSize: int64(len(bytes)),
 			},
 			Pull: c.pull,
@@ -172,6 +175,15 @@ func (c *scriptCmd) runScript(log *logrus.Logger, path string) error {
 			Save: c.save,
 			Load: c.load,
 		}
+
+		if c.hex {
+			request.Chart.ContentHex = hex.EncodeToString(bytes)
+			v, _ := json.Marshal(request)
+			logrus.Debugln(string(v)) // 如果是 hex string 印出來才有意義
+		} else {
+			request.Chart.Content = bytes
+		}
+
 		if err := captain.GenerateScript(log, c.endpoint.String(), &request, settings.Timeout); err != nil {
 			return err
 		}

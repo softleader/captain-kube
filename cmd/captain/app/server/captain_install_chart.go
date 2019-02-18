@@ -13,6 +13,8 @@ import (
 )
 
 func (s *CaptainServer) InstallChart(req *captainkube_v2.InstallChartRequest, stream captainkube_v2.Captain_InstallChartServer) error {
+	logrus.Debugf("%+v", req)
+
 	log := logrus.New()
 	log.SetOutput(sio.NewStreamWriter(func(p []byte) error {
 		return stream.Send(&captainkube_v2.ChunkMessage{
@@ -31,10 +33,11 @@ func (s *CaptainServer) InstallChart(req *captainkube_v2.InstallChartRequest, st
 	defer os.RemoveAll(tmp)
 
 	chartPath := filepath.Join(tmp, req.GetChart().GetFileName())
-	if err := ioutil.WriteFile(chartPath, req.GetChart().GetContent(), 0644); err != nil {
+	if err := saveChart(req.GetChart(), chartPath); err != nil {
 		return err
 	}
-	i, err := chart.NewInstaller(s.K8s, req.GetTiller(), chartPath)
+
+	i, err := chart.NewInstaller(log, s.K8s, req.GetTiller(), chartPath)
 	if err != nil {
 		return err
 	}

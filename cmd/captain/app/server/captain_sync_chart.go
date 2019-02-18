@@ -31,7 +31,7 @@ func (s *CaptainServer) SyncChart(req *captainkube_v2.SyncChartRequest, stream c
 	defer os.RemoveAll(tmp)
 
 	chartPath := filepath.Join(tmp, req.GetChart().GetFileName())
-	if err := ioutil.WriteFile(chartPath, req.GetChart().GetContent(), 0644); err != nil {
+	if err := saveChart(req.GetChart(), chartPath); err != nil {
 		return err
 	}
 	log.Printf("Syncing images to all kubernetes worker nodes..")

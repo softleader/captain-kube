@@ -15,7 +15,7 @@ func TestVersion(t *testing.T) {
 		t.Skipf("endpoint %s:%v is not reachable", endpoint, port)
 	}
 	addr := fmt.Sprintf("%v:%v", endpoint, port)
-	if err := Version(logrus.StandardLogger(), addr, false, false, dur.DefaultDeadlineSecond); err != nil {
+	if err := Version(logrus.StandardLogger(), addr, false, false, dur.Parse(dur.DefaultDeadline)); err != nil {
 		t.Error(err)
 	}
 }

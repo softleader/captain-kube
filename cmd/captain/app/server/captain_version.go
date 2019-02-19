@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/caplet"
+	"github.com/softleader/captain-kube/pkg/dur"
 	"github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/sio"
 )
@@ -28,8 +29,9 @@ func (s *CaptainServer) Version(req *captainkube_v2.VersionRequest, stream capta
 		return err
 	}
 
+	timeout := dur.Parse(req.GetTimeout())
 	endpoints.Each(func(e *caplet.Endpoint) {
-		if r, err := e.Version(req.GetFull(), req.GetTimeout()); err != nil {
+		if r, err := e.Version(req.GetFull(), timeout); err != nil {
 			out.Write([]byte(err.Error()))
 		} else {
 			msg := fmt.Sprintln("Caplet " + r.GetHostname() + ": " + r.GetVersion())

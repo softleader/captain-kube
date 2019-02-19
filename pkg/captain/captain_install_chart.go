@@ -4,13 +4,13 @@ import (
 	"context"
 	"fmt"
 	"github.com/sirupsen/logrus"
-	"github.com/softleader/captain-kube/pkg/dur"
 	"github.com/softleader/captain-kube/pkg/proto"
 	"google.golang.org/grpc"
 	"io"
+	"time"
 )
 
-func InstallChart(log *logrus.Logger, url string, req *captainkube_v2.InstallChartRequest, timeout int64) error {
+func InstallChart(log *logrus.Logger, url string, req *captainkube_v2.InstallChartRequest, timeout time.Duration) error {
 	log.Debugf("dialing %q with insecure", url)
 	conn, err := grpc.Dial(url, grpc.WithInsecure())
 	if err != nil {
@@ -18,9 +18,8 @@ func InstallChart(log *logrus.Logger, url string, req *captainkube_v2.InstallCha
 	}
 	defer conn.Close()
 	c := captainkube_v2.NewCaptainClient(conn)
-	deadline := dur.Deadline(timeout)
-	log.Debugf("setting context with timeout %v", deadline)
-	ctx, cancel := context.WithTimeout(context.Background(), deadline)
+	log.Debugf("setting context with timeout %v", timeout)
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 	stream, err := c.InstallChart(ctx, req)
 	if err != nil {

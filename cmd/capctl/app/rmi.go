@@ -103,7 +103,7 @@ func (c *rmiCmd) run() error {
 				Tag:  i.Tag,
 			})
 		}
-		return captain.Rmi(logrus.StandardLogger(), c.endpoint.String(), req, settings.Timeout)
+		return captain.Rmi(logrus.StandardLogger(), c.endpoint.String(), req, settings.TimeoutDuration())
 	}
 
 	return c.runOnClient()

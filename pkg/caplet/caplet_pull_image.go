@@ -4,22 +4,21 @@ import (
 	"context"
 	"fmt"
 	"github.com/sirupsen/logrus"
-	"github.com/softleader/captain-kube/pkg/dur"
 	"github.com/softleader/captain-kube/pkg/proto"
 	"google.golang.org/grpc"
 	"io"
+	"time"
 )
 
-func (e *Endpoint) PullImage(log *logrus.Logger, req *captainkube_v2.PullImageRequest, timeout int64) error {
+func (e *Endpoint) PullImage(log *logrus.Logger, req *captainkube_v2.PullImageRequest, timeout time.Duration) error {
 	conn, err := grpc.Dial(e.String(), grpc.WithInsecure())
 	if err != nil {
 		return fmt.Errorf("[%s] did not connect: %v", e.Target, err)
 	}
 	defer conn.Close()
 	c := captainkube_v2.NewCapletClient(conn)
-	deadline := dur.Deadline(timeout)
-	log.Debugf("setting context with timeout %v", deadline)
-	ctx, cancel := context.WithTimeout(context.Background(), deadline)
+	log.Debugf("setting context with timeout %v", timeout)
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 	stream, err := c.PullImage(ctx, req)
 	if err != nil {

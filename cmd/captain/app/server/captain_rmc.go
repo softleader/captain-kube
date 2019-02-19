@@ -3,6 +3,7 @@ package server
 import (
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/caplet"
+	"github.com/softleader/captain-kube/pkg/dur"
 	"github.com/softleader/captain-kube/pkg/helm/chart"
 	"github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/sio"
@@ -45,6 +46,7 @@ func (s *CaptainServer) Rmc(req *captainkube_v2.RmcRequest, stream captainkube_v
 	}
 	log.Debugf("%v template(s) loaded\n", len(tpls))
 	log.SetNoLock()
+	timeout := dur.Parse(req.GetTimeout())
 	endpoints.Each(func(e *caplet.Endpoint) {
 		if err := e.Rmi(log, newRmiRequest(
 			tpls,
@@ -53,7 +55,7 @@ func (s *CaptainServer) Rmc(req *captainkube_v2.RmcRequest, stream captainkube_v
 			req.GetVerbose(),
 			req.GetForce(),
 			req.GetDryRun()),
-			req.GetTimeout(),
+			timeout,
 		); err != nil {
 			log.Error(err)
 		}

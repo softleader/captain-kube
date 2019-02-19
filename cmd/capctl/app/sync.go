@@ -118,5 +118,5 @@ func (c *syncCmd) sync(path string) error {
 		req.Chart.Content = bytes
 	}
 
-	return captain.SyncChart(logrus.StandardLogger(), c.endpoint.String(), req, settings.Timeout)
+	return captain.SyncChart(logrus.StandardLogger(), c.endpoint.String(), req, settings.TimeoutDuration())
 }

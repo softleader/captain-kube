@@ -18,7 +18,7 @@ import "console_url.proto";
 
 message SyncChartRequest {
     Chart chart = 1;
-    int64 timeout = 2;
+    string timeout = 2;
     ReTag retag = 3;
     RegistryAuth registry_auth = 4;
     bool verbose = 5;
@@ -28,7 +28,7 @@ message SyncChartRequest {
 message InstallChartRequest {
     Chart chart = 1;
     Tiller tiller = 2;
-    int64 timeout = 3;
+    string timeout = 3;
     bool sync = 4;
     ReTag retag = 5;
     RegistryAuth registry_auth = 6;
@@ -40,7 +40,7 @@ message DeleteChartRequest {
     Tiller tiller = 1;
     string chart_name = 2;
     string chart_version = 3;
-    int64 timeout = 4;
+    string timeout = 4;
     bool verbose = 5;
 }
 

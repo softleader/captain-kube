@@ -12,7 +12,7 @@ import "image.proto";
 message RmiRequest {
     repeated Image images = 1;
     bool verbose = 3;
-    int64 timeout = 4;
+    string timeout = 4;
     bool color = 5;
     bool force = 6;
     bool dryRun = 7;

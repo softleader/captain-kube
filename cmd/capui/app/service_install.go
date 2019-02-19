@@ -8,6 +8,7 @@ import (
 	"github.com/softleader/captain-kube/pkg/captain"
 	"github.com/softleader/captain-kube/pkg/ctx"
 	"github.com/softleader/captain-kube/pkg/dockerd"
+	"github.com/softleader/captain-kube/pkg/dur"
 	"github.com/softleader/captain-kube/pkg/helm/chart"
 	"github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/sse"
@@ -27,7 +28,7 @@ type InstallRequest struct {
 	Registry       string   `form:"registry"`
 	Verbose        bool     `form:"verbose"`
 	Ctx            string   `form:"ctx"`
-	Timeout        int64    `form:"timeout"`
+	Timeout        string   `form:"timeout"`
 }
 
 type Install struct {
@@ -154,7 +155,7 @@ func (s *Install) install(log *logrus.Logger, activeCtx *ctx.Context, form *Inst
 		}
 	}
 
-	if err := captain.InstallChart(log, activeCtx.Endpoint.String(), &request, form.Timeout); err != nil {
+	if err := captain.InstallChart(log, activeCtx.Endpoint.String(), &request, dur.Parse(form.Timeout)); err != nil {
 		return fmt.Errorf("failed to call backend: %s", err)
 	}
 	return nil

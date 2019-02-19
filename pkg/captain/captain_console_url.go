@@ -4,12 +4,12 @@ import (
 	"context"
 	"fmt"
 	"github.com/sirupsen/logrus"
-	"github.com/softleader/captain-kube/pkg/dur"
 	"github.com/softleader/captain-kube/pkg/proto"
 	"google.golang.org/grpc"
+	"time"
 )
 
-func ConsoleURL(log *logrus.Logger, url string, req *captainkube_v2.ConsoleURLRequest, timeout int64) (*captainkube_v2.ConsoleURLResponse, error) {
+func ConsoleURL(log *logrus.Logger, url string, req *captainkube_v2.ConsoleURLRequest, timeout time.Duration) (*captainkube_v2.ConsoleURLResponse, error) {
 	log.Debugf("dialing %q with insecure", url)
 	conn, err := grpc.Dial(url, grpc.WithInsecure())
 	if err != nil {
@@ -17,9 +17,8 @@ func ConsoleURL(log *logrus.Logger, url string, req *captainkube_v2.ConsoleURLRe
 	}
 	defer conn.Close()
 	c := captainkube_v2.NewCaptainClient(conn)
-	deadline := dur.Deadline(timeout)
-	log.Debugf("setting context with timeout %v", deadline)
-	ctx, cancel := context.WithTimeout(context.Background(), deadline)
+	log.Debugf("setting context with timeout %v", timeout)
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 	resq, err := c.ConsoleURL(ctx, req)
 	if err != nil {

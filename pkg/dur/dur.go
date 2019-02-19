@@ -2,11 +2,12 @@ package dur
 
 import "time"
 
-var DefaultDeadlineSecond int64 = 1800
+var DefaultDeadline = "30m"
 
-func Deadline(timeout int64) time.Duration {
-	if timeout <= 0 {
-		timeout = DefaultDeadlineSecond
+func Parse(s string) time.Duration {
+	d, err := time.ParseDuration(s)
+	if err != nil {
+		d, _ = time.ParseDuration(DefaultDeadline)
 	}
-	return time.Duration(timeout) * time.Second
+	return d
 }

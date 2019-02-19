@@ -7,6 +7,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/captain"
 	"github.com/softleader/captain-kube/pkg/ctx"
+	"github.com/softleader/captain-kube/pkg/dur"
 	"github.com/softleader/captain-kube/pkg/sio"
 	"github.com/softleader/captain-kube/pkg/utils"
 	"net/http"
@@ -99,7 +100,7 @@ func (s *Contexts) SwitchContext(c *gin.Context) {
 func (s *Contexts) ListContextVersions(c *gin.Context) {
 	full := false
 	color := false
-	timeout := int64(5)
+	timeout := dur.DefaultDeadline
 	if q := c.Query("full"); len(q) != 0 {
 		full, _ = strconv.ParseBool(q)
 	}
@@ -107,9 +108,7 @@ func (s *Contexts) ListContextVersions(c *gin.Context) {
 		color, _ = strconv.ParseBool(q)
 	}
 	if q := c.Query("timeout"); len(q) != 0 {
-		if i, err := strconv.Atoi(q); err != nil {
-			timeout = int64(i)
-		}
+		timeout = q
 	}
 	contextsVersions := make(map[string][]string)
 	for context := range contexts {
@@ -122,7 +121,7 @@ func (s *Contexts) ListContextVersions(c *gin.Context) {
 		log.SetFormatter(&utils.PlainFormatter{})
 		if c, err := newContext(log, context); err != nil {
 			log.Println(err)
-		} else if err := captain.Version(log, c.Endpoint.String(), full, color, timeout); err != nil {
+		} else if err := captain.Version(log, c.Endpoint.String(), full, color, dur.Parse(timeout)); err != nil {
 			log.Println(err)
 		}
 		contextsVersions[context] = versions

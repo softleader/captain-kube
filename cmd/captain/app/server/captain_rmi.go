@@ -3,6 +3,7 @@ package server
 import (
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/caplet"
+	"github.com/softleader/captain-kube/pkg/dur"
 	"github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/sio"
 	"github.com/softleader/captain-kube/pkg/utils"
@@ -26,8 +27,9 @@ func (s *CaptainServer) Rmi(req *captainkube_v2.RmiRequest, stream captainkube_v
 	}
 
 	log.SetNoLock()
+	timeout := dur.Parse(req.GetTimeout())
 	endpoints.Each(func(e *caplet.Endpoint) {
-		if err := e.Rmi(log, req, req.GetTimeout()); err != nil {
+		if err := e.Rmi(log, req, timeout); err != nil {
 			log.Error(err)
 		}
 	})

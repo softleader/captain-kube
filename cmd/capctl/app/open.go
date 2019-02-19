@@ -43,7 +43,7 @@ func (c *openCmd) run() error {
 		&captainkube_v2.ConsoleURLRequest{
 			Host: c.endpoint.Host,
 		},
-		settings.Timeout)
+		settings.TimeoutDuration())
 	if err != nil {
 		return err
 	}

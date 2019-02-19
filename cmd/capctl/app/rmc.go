@@ -130,7 +130,7 @@ func (c *rmcCmd) run() error {
 			req.Chart.Content = bytes
 		}
 
-		if err := captain.Rmc(logrus.StandardLogger(), c.endpoint.String(), req, settings.Timeout); err != nil {
+		if err := captain.Rmc(logrus.StandardLogger(), c.endpoint.String(), req, settings.TimeoutDuration()); err != nil {
 			return err
 		}
 	}

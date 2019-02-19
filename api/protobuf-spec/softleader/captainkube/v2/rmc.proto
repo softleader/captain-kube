@@ -16,7 +16,7 @@ message RmcRequest {
     repeated string set = 3;
     string constraint = 4;
     bool verbose = 5;
-    int64 timeout = 6;
+    string timeout = 6;
     bool color = 7;
     bool force = 8;
     bool dryRun = 9;

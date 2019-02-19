@@ -37,7 +37,7 @@ func (c *pruneCmd) run() error {
 		return err
 	}
 	if err := c.endpoint.Validate(); err == nil {
-		return captain.Prune(logrus.StandardLogger(), c.endpoint.String(), settings.Verbose, settings.Color, settings.Timeout)
+		return captain.Prune(logrus.StandardLogger(), c.endpoint.String(), settings.Verbose, settings.Color, settings.TimeoutDuration())
 	}
 	return nil
 }

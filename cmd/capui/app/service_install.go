@@ -36,8 +36,9 @@ type Install struct {
 
 func (s *Install) View(c *gin.Context) {
 	c.HTML(http.StatusOK, "install.html", gin.H{
-		"config":  &s,
-		"context": &activeContext,
+		"requestURI": c.Request.RequestURI,
+		"config":     &s,
+		"context":    &activeContext,
 	})
 }
 

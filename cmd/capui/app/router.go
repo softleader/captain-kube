@@ -24,7 +24,8 @@ func NewCapUIServer(cmd *capUICmd) (r *gin.Engine) {
 	// index
 	r.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.html", gin.H{
-			"context": &activeContext,
+			"requestURI": c.Request.RequestURI,
+			"context":    &activeContext,
 		})
 	})
 

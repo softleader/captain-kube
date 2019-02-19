@@ -2,6 +2,7 @@ version: '3'
 services:
   capui:
     image: softleader/capui
+    restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     command: "--active-ctx choose-a-context"

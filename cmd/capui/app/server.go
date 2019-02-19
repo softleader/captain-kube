@@ -4,9 +4,6 @@ import (
 	"fmt"
 	"github.com/mattn/go-colorable"
 	"github.com/sirupsen/logrus"
-	"github.com/softleader/captain-kube/pkg/capui"
-	"github.com/softleader/captain-kube/pkg/ctx"
-	"github.com/softleader/captain-kube/pkg/env"
 	"github.com/softleader/captain-kube/pkg/release"
 	"github.com/spf13/cobra"
 	"os"
@@ -14,39 +11,16 @@ import (
 )
 
 type capUICmd struct {
-	Metadata         *release.Metadata
-	port             int
-	ActiveCtx        string
-	defaultPlatform  string
-	defaultNamespace string
-	BaseUrl          string
-}
-
-type DefaultValue struct {
-	Platform  string // 平台(Google/ICP)
-	Namespace string
-	*ctx.Context
-	ContextVersion []string // 平台上的 Captain-Kube 服務的版本
-}
-
-func (c *capUICmd) newDefaultValue() (*DefaultValue, error) {
-	if err := activateContext(logrus.StandardLogger(), c.ActiveCtx); err != nil {
-		return nil, err
-	}
-	return &DefaultValue{
-		Platform:       c.defaultPlatform,
-		Namespace:      c.defaultNamespace,
-		Context:        activeContext,
-		ContextVersion: activeContextVersion,
-	}, nil
+	Metadata  *release.Metadata
+	port      int
+	ActiveCtx string
+	BaseUrl   string
 }
 
 func NewCapUICommand(metadata *release.Metadata) (cmd *cobra.Command) {
 	var verbose bool
 	c := capUICmd{
-		Metadata:         metadata,
-		defaultPlatform:  env.Lookup(capui.EnvPlatform, capui.DefaultPlatform),
-		defaultNamespace: env.Lookup(capui.EnvNamespace, capui.DefaultNamespace),
+		Metadata: metadata,
 	}
 
 	cmd = &cobra.Command{
@@ -67,9 +41,7 @@ func NewCapUICommand(metadata *release.Metadata) (cmd *cobra.Command) {
 	f := cmd.Flags()
 	f.BoolVarP(&verbose, "verbose", "v", false, "enable verbose output")
 	f.IntVarP(&c.port, "port", "p", 8080, "port of web ui serve port")
-	f.StringVarP(&c.defaultPlatform, "platform", "k", c.defaultPlatform, "default value of k8s platform")
-	f.StringVarP(&c.defaultNamespace, "namespace", "n", c.defaultNamespace, "default value of the namespace of gcp, not available now")
-	f.StringVar(&c.ActiveCtx, "active-ctx", "", "active ctx")
+	f.StringVar(&c.ActiveCtx, "active-ctx", "", "active ctx on server startup")
 	f.StringVar(&c.BaseUrl, "base-url", "/", "specify base url, more details: https://www.w3schools.com/tags/tag_base.asp")
 
 	cmd.MarkFlagRequired("active-ctx")
@@ -79,6 +51,9 @@ func NewCapUICommand(metadata *release.Metadata) (cmd *cobra.Command) {
 
 func (c *capUICmd) run() error {
 	if err := initContext(os.Environ()); err != nil {
+		return err
+	}
+	if err := activateContext(logrus.StandardLogger(), c.ActiveCtx); err != nil {
 		return err
 	}
 	server := NewCapUIServer(c)

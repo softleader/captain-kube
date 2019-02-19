@@ -12,31 +12,6 @@
         <p>
         <form id="dataForm" action="install/">
             <div class="form-group">
-                <label for="platform">Platform</label>
-                <div class="form-check">
-                    <label class="form-check-label">
-                        <input class="form-check-input" type="radio" name="platform" value="helm"
-                               {{ if eq .defaultValue.Platform "helm" }}checked{{ end }}>
-                        Google Helm
-                    </label>
-                </div>
-                <div class="form-check">
-                    <label class="form-check-label">
-                        <input class="form-check-input" type="radio" name="platform" value="icp"
-                               {{ if eq .defaultValue.Platform "icp" }}checked{{ end }}>
-                        IBM Cloud Private
-                    </label>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="namespace">Namespace</label>
-                <input type="text" class="form-control" name="namespace" id="namespace"
-                       value="{{ .defaultValue.Namespace }}"
-                       {{ if ne .defaultValue.Platform "helm" }}disabled{{ end }}>
-            </div>
-
-            <div class="form-group">
                 <label for="chart">Chart</label>
                 <input type="file" class="form-control" name="files" required multiple>
             </div>
@@ -61,12 +36,12 @@
                 <label for="registry">Registry</label>
                 <div class="input-group">
                     <input type="text" class="form-control" name="sourceRegistry" id="sourceRegistry"
-                           value="{{ .defaultValue.ReTag.From }}" disabled required>
+                           value="{{ .context.ReTag.From }}" disabled required>
                     <div class="input-group-prepend">
                         <span class="input-group-text" id=""><i class="fas fa-angle-double-right"></i></span>
                     </div>
                     <input type="text" class="form-control" name="registry" id="registry"
-                           value="{{ .defaultValue.ReTag.To }}" disabled required>
+                           value="{{ .context.ReTag.To }}" disabled required>
                 </div>
             </div>
 
@@ -136,15 +111,6 @@
 <script>
 
     $(function () {
-        let $level = $("#level").slider();
-        $("#verbose").click(function () {
-            if (this.checked) {
-                $level.slider("enable");
-            } else {
-                $level.slider("disable");
-            }
-        });
-
         new ClipboardJS('.btn');
 
         $("form").submit(function (event) {
@@ -158,6 +124,7 @@
             $output.empty();
 
             let formData = new FormData($('#dataForm')[0]);
+            formData.append("ctx", $('#ctxList').find(":selected").attr("value"))
 
             $([document.documentElement, document.body]).animate({
                 scrollTop: $output.offset().top
@@ -182,10 +149,6 @@
             if ($('form button:submit').is(':disabled')) {
                 return "Are you sure you want to leave this page while install?";
             }
-        });
-
-        $("[name=platform]").on('click', () => {
-            $('#namespace').prop('disabled', $(this).val() !== "helm");
         });
 
         $("#tags-retag").on('click', () => {

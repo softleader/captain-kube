@@ -8,7 +8,6 @@ import (
 	"github.com/softleader/captain-kube/pkg/captain"
 	"github.com/softleader/captain-kube/pkg/ctx"
 	"github.com/softleader/captain-kube/pkg/sio"
-	"github.com/softleader/captain-kube/pkg/sse"
 	"github.com/softleader/captain-kube/pkg/utils"
 	"net/http"
 	"strconv"
@@ -16,18 +15,17 @@ import (
 )
 
 var (
-	prefix               = "CAPUI_CTX"
-	contexts             = make(map[string][]string)
-	activeContext *ctx.Context
-	activeContextVersion []string
+	prefix        = "CAPUI_CTX"
+	contexts      = make(map[string][]string)
+	activeContext *ctx.Context // for 頁面的 default value 呈現使用
 )
 
 type Contexts struct {
 	*capUICmd
 }
 
-func newActiveContext(log *logrus.Logger, activeCtx string) (*ctx.Context, error) {
-	target := strings.ToLower(activeCtx)
+func newContext(log *logrus.Logger, context string) (*ctx.Context, error) {
+	target := strings.ToLower(context)
 	args, found := contexts[target]
 	if !found {
 		return nil, ctx.ErrNoActiveContextPresent
@@ -40,7 +38,7 @@ func newActiveContext(log *logrus.Logger, activeCtx string) (*ctx.Context, error
 	err = c.ExpandEnv()
 	// do some validation check
 	if err := c.Endpoint.Validate(); err != nil {
-		return nil, fmt.Errorf("failed validating context %q: %s", activeCtx, err)
+		return nil, fmt.Errorf("failed validating context %q: %s", context, err)
 	}
 	// apply some default value
 	if te := strings.TrimSpace(c.HelmTiller.Endpoint); len(te) == 0 {
@@ -93,38 +91,56 @@ func (s *Contexts) SwitchContext(c *gin.Context) {
 		return
 	}
 	s.ActiveCtx = ctx
-
-	log := logrus.New() // 這個是這次請求要往前吐的 log
-	log.SetFormatter(&utils.PlainFormatter{})
-	log.SetOutput(sse.NewWriter(c))
-	if v, _ := strconv.ParseBool(c.Request.FormValue("verbose")); v {
-		log.SetLevel(logrus.DebugLevel)
-	}
-	if err := activateContext(log, s.ActiveCtx); err != nil {
-		log.Errorln("error activating context:", err)
-		logrus.Errorln("error activating context:", err)
+	if err := activateContext(logrus.StandardLogger(), s.ActiveCtx); err != nil {
+		c.Error(err)
 		return
 	}
-
 	c.Status(http.StatusOK)
 }
 
+func (s *Contexts) ListContextVersions(c *gin.Context) {
+	full := false
+	color := false
+	timeout := int64(5)
+	if q := c.Query("full"); len(q) != 0 {
+		full, _ = strconv.ParseBool(q)
+	}
+	if q := c.Query("color"); len(q) != 0 {
+		color, _ = strconv.ParseBool(q)
+	}
+	if q := c.Query("timeout"); len(q) != 0 {
+		if i, err := strconv.Atoi(q); err != nil {
+			timeout = int64(i)
+		}
+	}
+
+	contextsVersions := make(map[string][]string)
+
+	for context := range contexts {
+		var versions []string
+		log := logrus.New()
+		log.SetOutput(sio.NewStreamWriter(func(p []byte) error {
+			versions = append(versions, string(p))
+			return nil
+		}))
+		log.SetFormatter(&utils.PlainFormatter{})
+		if c, err := newContext(log, context); err != nil {
+			log.Println(err)
+		} else if err := captain.Version(log, c.Endpoint.String(), full, color, timeout); err != nil {
+			log.Println(err)
+		}
+		contextsVersions[context] = versions
+	}
+
+	c.JSON(http.StatusOK, contextsVersions)
+}
+
 func activateContext(log *logrus.Logger, context string) error {
-	log.Printf("activating default context: %s", context)
-	ac, err := newActiveContext(log, context)
+	log.Printf("activating context %s", context)
+	ac, err := newContext(log, context)
 	if err != nil {
 		return err
 	}
 	activeContext = ac
-	activeContextVersion = activeContextVersion[:0]
-	streamLog := logrus.New()
-	streamLog.SetOutput(sio.NewStreamWriter(func(p []byte) error {
-		activeContextVersion = append(activeContextVersion, string(p))
-		return nil
-	}))
-	streamLog.SetFormatter(&utils.PlainFormatter{})
-	if err := captain.Version(streamLog, ac.Endpoint.String(), false, false, 5); err != nil {
-		streamLog.Println(err)
-	}
 	return nil
 }

@@ -27,6 +27,8 @@ type InstallRequest struct {
 	SourceRegistry string   `form:"sourceRegistry"`
 	Registry       string   `form:"registry"`
 	Verbose        bool     `form:"verbose"`
+	Ctx            string   `form:"ctx"`
+	Timeout        int64    `form:"timeout"`
 }
 
 type Install struct {
@@ -34,14 +36,9 @@ type Install struct {
 }
 
 func (s *Install) View(c *gin.Context) {
-	dft, err := s.newDefaultValue()
-	if err != nil {
-		c.Error(err)
-		return
-	}
 	c.HTML(http.StatusOK, "install.html", gin.H{
-		"config":       &s,
-		"defaultValue": dft,
+		"config":  &s,
+		"context": &activeContext,
 	})
 }
 
@@ -67,19 +64,21 @@ func (s *Install) Chart(c *gin.Context) {
 		return
 	}
 
-	//activeCtx, err := newActiveContext(log, s.ActiveCtx)
-	//if err != nil {
-	//	log.Errorln(err)
-	//	logrus.Errorln(err)
-	//	return
-	//}
+	// 而頁面到送進來的過程中, global activeCtx 有可能改變
+	// 所以這邊必須以頁面的 ctx 為主
+	selectedCtx, err := newContext(log, form.Ctx)
+	if err != nil {
+		log.Errorln(err)
+		logrus.Errorln(err)
+		return
+	}
 
 	// ps. 在讀完request body後才可以開始response, 否則body會close
 	files := mForm.File["files"]
 	for _, file := range files {
 		filename := file.Filename
 		log.Println("Installing chart:", filename)
-		if err := s.install(log, activeContext, &form, file); err != nil {
+		if err := s.install(log, selectedCtx, &form, file); err != nil {
 			log.Errorln(err)
 			logrus.Errorln(err)
 		} else {

@@ -21,7 +21,6 @@ var (
 )
 
 type Contexts struct {
-	*capUICmd
 }
 
 func newContext(log *logrus.Logger, context string) (*ctx.Context, error) {
@@ -90,8 +89,7 @@ func (s *Contexts) SwitchContext(c *gin.Context) {
 		c.Error(fmt.Errorf("context %q not found", ctx))
 		return
 	}
-	s.ActiveCtx = ctx
-	if err := activateContext(logrus.StandardLogger(), s.ActiveCtx); err != nil {
+	if err := activateContext(logrus.StandardLogger(), ctx); err != nil {
 		c.Error(err)
 		return
 	}

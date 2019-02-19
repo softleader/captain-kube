@@ -24,7 +24,6 @@ func NewCapUIServer(cmd *capUICmd) (r *gin.Engine) {
 	// index
 	r.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.html", gin.H{
-			"config":  cmd,
 			"context": &activeContext,
 		})
 	})
@@ -40,9 +39,7 @@ func NewCapUIServer(cmd *capUICmd) (r *gin.Engine) {
 
 	contextsRoute := r.Group("/contexts")
 	{
-		ctxs := &Contexts{
-			cmd,
-		}
+		ctxs := &Contexts{}
 		contextsRoute.GET("/", ctxs.ListContext)
 		contextsRoute.PUT("/:ctx", ctxs.SwitchContext)
 		contextsRoute.GET("/versions", ctxs.ListContextVersions)

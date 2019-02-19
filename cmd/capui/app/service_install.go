@@ -8,7 +8,6 @@ import (
 	"github.com/softleader/captain-kube/pkg/captain"
 	"github.com/softleader/captain-kube/pkg/ctx"
 	"github.com/softleader/captain-kube/pkg/dockerd"
-	"github.com/softleader/captain-kube/pkg/dur"
 	"github.com/softleader/captain-kube/pkg/helm/chart"
 	"github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/sse"
@@ -154,7 +153,7 @@ func (s *Install) install(log *logrus.Logger, activeCtx *ctx.Context, form *Inst
 		}
 	}
 
-	if err := captain.InstallChart(log, activeCtx.Endpoint.String(), &request, dur.DefaultDeadlineSecond); err != nil {
+	if err := captain.InstallChart(log, activeCtx.Endpoint.String(), &request, form.Timeout); err != nil {
 		return fmt.Errorf("failed to call backend: %s", err)
 	}
 	return nil

@@ -113,9 +113,7 @@ func (s *Contexts) ListContextVersions(c *gin.Context) {
 			timeout = int64(i)
 		}
 	}
-
 	contextsVersions := make(map[string][]string)
-
 	for context := range contexts {
 		var versions []string
 		log := logrus.New()
@@ -131,7 +129,6 @@ func (s *Contexts) ListContextVersions(c *gin.Context) {
 		}
 		contextsVersions[context] = versions
 	}
-
 	c.JSON(http.StatusOK, contextsVersions)
 }
 

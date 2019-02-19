@@ -60,7 +60,7 @@ func newSyncCmd() *cobra.Command {
 	}
 
 	f := cmd.Flags()
-	f.BoolVar(&c.hex, "hex", false, "upload chart via hex string instead of bytes")
+	f.BoolVar(&c.hex, "hex", false, "convert and upload chart into hex string")
 	c.registryAuth.AddFlags(f)
 	c.retag.AddFlags(f)
 
@@ -110,8 +110,10 @@ func (c *syncCmd) sync(path string) error {
 
 	if c.hex {
 		req.Chart.ContentHex = hex.EncodeToString(bytes)
-		v, _ := json.Marshal(req)
-		logrus.Debugln(string(v)) // 如果是 hex string 印出來才有意義
+		if logrus.IsLevelEnabled(logrus.DebugLevel) {
+			v, _ := json.Marshal(req)
+			logrus.Println(string(v)) // 如果是 hex string 印出來才有意義
+		}
 	} else {
 		req.Chart.Content = bytes
 	}

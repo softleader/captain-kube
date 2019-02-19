@@ -96,7 +96,7 @@ func newInstallCmd() *cobra.Command {
 
 	f.BoolVarP(&c.pull, "pull", "p", c.pull, "pull images in Chart")
 	f.BoolVarP(&c.sync, "sync", "s", c.sync, "同步 image 到所有 node 上, 有 re-tag 則會同步 re-tag 之後的 image host")
-	f.BoolVar(&c.hex, "hex", false, "upload chart via hex string instead of bytes")
+	f.BoolVar(&c.hex, "hex", false, "convert and upload chart into hex string")
 
 	// f.StringVarP(&c.namespace, "namespace", "n", c.namespace, "specify the namespace of gcp, not available now")
 
@@ -160,8 +160,10 @@ func (c *installCmd) install(path string) error {
 	}
 	if c.hex {
 		request.Chart.ContentHex = hex.EncodeToString(bytes)
-		v, _ := json.Marshal(request)
-		logrus.Debugln(string(v)) // 如果是 hex string 印出來才有意義
+		if logrus.IsLevelEnabled(logrus.DebugLevel) {
+			v, _ := json.Marshal(request)
+			logrus.Println(string(v)) // 如果是 hex string 印出來才有意義
+		}
 	} else {
 		request.Chart.Content = bytes
 	}

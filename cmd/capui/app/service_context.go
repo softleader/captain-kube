@@ -18,7 +18,7 @@ import (
 var (
 	prefix               = "CAPUI_CTX"
 	contexts             = make(map[string][]string)
-	activeContext        *ctx.Context
+	activeContext *ctx.Context
 	activeContextVersion []string
 )
 

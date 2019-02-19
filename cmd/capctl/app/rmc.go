@@ -81,7 +81,7 @@ func newRmcCmd() *cobra.Command {
 	f.StringVarP(&c.constraint, "constraint", "c", "", "tag semver2 constraint, more details: https://devhints.io/semver")
 	f.BoolVar(&c.dryRun, "dry-run", false, `simulate an rmc "for real"`)
 	f.StringArrayVar(&c.set, "set", []string{}, "set values (can specify multiple or separate values with commas: key1=val1,key2=val2)")
-	f.BoolVar(&c.hex, "hex", false, "upload chart via hex string instead of bytes")
+	f.BoolVar(&c.hex, "hex", false, "convert and upload chart into hex string")
 	c.endpoint.AddFlags(f)
 	c.retag.AddFlags(f)
 
@@ -122,8 +122,10 @@ func (c *rmcCmd) run() error {
 
 		if c.hex {
 			req.Chart.ContentHex = hex.EncodeToString(bytes)
-			v, _ := json.Marshal(req)
-			logrus.Debugln(string(v)) // 如果是 hex string 印出來才有意義
+			if logrus.IsLevelEnabled(logrus.DebugLevel) {
+				v, _ := json.Marshal(req)
+				logrus.Println(string(v)) // 如果是 hex string 印出來才有意義
+			}
 		} else {
 			req.Chart.Content = bytes
 		}

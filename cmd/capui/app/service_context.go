@@ -118,7 +118,7 @@ func (s *Contexts) ListContextVersions(c *gin.Context) {
 		var versions []string
 		log := logrus.New()
 		log.SetOutput(sio.NewStreamWriter(func(p []byte) error {
-			versions = append(versions, string(p))
+			versions = append(versions, strings.TrimSuffix(string(p), fmt.Sprintln()))
 			return nil
 		}))
 		log.SetFormatter(&utils.PlainFormatter{})

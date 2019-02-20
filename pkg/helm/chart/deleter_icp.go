@@ -22,10 +22,7 @@ func (i *icpDeleter) Delete(log *logrus.Logger) error {
 	if err := loginBxPr(log, i.endpoint, i.username, i.password, i.account, i.skipSslValidation); err != nil {
 		return err
 	}
-	if err := deleteHelmChart(log, i.endpoint, i.chartName, i.chartVersion); err != nil {
-		return err
-	}
-	return nil
+	return deleteHelmChart(log, i.endpoint, i.chartName, i.chartVersion)
 }
 
 func deleteHelmChart(log *logrus.Logger, endpoint, chartName, chartVersion string) error {

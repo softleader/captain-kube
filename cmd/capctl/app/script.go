@@ -186,10 +186,7 @@ func (c *scriptCmd) runScript(log *logrus.Logger, path string) error {
 			request.Chart.Content = bytes
 		}
 
-		if err := captain.CallGenerateScript(log, c.endpoint.String(), &request, settings.TimeoutDuration()); err != nil {
-			return err
-		}
-		return nil
+		return captain.CallGenerateScript(log, c.endpoint.String(), &request, settings.TimeoutDuration())
 	}
 
 	return c.runScriptOnClient(log, abs)

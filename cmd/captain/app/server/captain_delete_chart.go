@@ -24,8 +24,5 @@ func (s *CaptainServer) DeleteChart(req *captainkube_v2.DeleteChartRequest, stre
 	if err != nil {
 		return err
 	}
-	if err := d.Delete(log); err != nil {
-		return err
-	}
-	return nil
+	return d.Delete(log)
 }

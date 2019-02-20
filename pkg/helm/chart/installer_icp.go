@@ -21,10 +21,7 @@ func (i *icpInstaller) Install(log *logrus.Logger) error {
 	if err := loginBxPr(log, i.endpoint, i.username, i.password, i.account, i.skipSslValidation); err != nil {
 		return err
 	}
-	if err := loadHelmChart(log, i.endpoint, i.chart); err != nil {
-		return err
-	}
-	return nil
+	return loadHelmChart(log, i.endpoint, i.chart)
 }
 
 func loadHelmChart(log *logrus.Logger, endpoint, chart string) error {

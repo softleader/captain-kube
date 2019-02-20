@@ -80,8 +80,5 @@ func (c *deleteCmd) run() error {
 		ChartName:    c.chartName,
 		ChartVersion: c.chartVersion,
 	}
-	if err := captain.CallDeleteChart(logrus.StandardLogger(), c.endpoint.String(), &request, settings.TimeoutDuration()); err != nil {
-		return err
-	}
-	return nil
+	return captain.CallDeleteChart(logrus.StandardLogger(), c.endpoint.String(), &request, settings.TimeoutDuration())
 }

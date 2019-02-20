@@ -192,9 +192,5 @@ func (c *installCmd) install(path string) error {
 		}
 	}
 
-	if err := captain.CallInstallChart(logrus.StandardLogger(), c.endpoint.String(), &request, settings.TimeoutDuration()); err != nil {
-		return err
-	}
-
-	return nil
+	return captain.CallInstallChart(logrus.StandardLogger(), c.endpoint.String(), &request, settings.TimeoutDuration())
 }

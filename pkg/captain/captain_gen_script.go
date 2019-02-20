@@ -10,7 +10,8 @@ import (
 	"time"
 )
 
-func GenerateScript(log *logrus.Logger, url string, req *captainkube_v2.GenerateScriptRequest, timeout time.Duration) error {
+// CallGenerateScript 呼叫 captain GenerateScript gRPC API
+func CallGenerateScript(log *logrus.Logger, url string, req *captainkube_v2.GenerateScriptRequest, timeout time.Duration) error {
 	log.Debugf("dialing %q with insecure", url)
 	conn, err := grpc.Dial(url, grpc.WithInsecure())
 	if err != nil {

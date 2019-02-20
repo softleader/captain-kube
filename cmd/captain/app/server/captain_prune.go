@@ -9,6 +9,7 @@ import (
 	"github.com/softleader/captain-kube/pkg/utils"
 )
 
+// Prune 呼叫所有 caplet 的 prune
 func (s *CaptainServer) Prune(req *captainkube_v2.PruneRequest, stream captainkube_v2.Captain_PruneServer) error {
 	log := logrus.New()
 	log.SetOutput(sio.NewStreamWriter(func(p []byte) error {
@@ -29,7 +30,7 @@ func (s *CaptainServer) Prune(req *captainkube_v2.PruneRequest, stream captainku
 	log.SetNoLock()
 	timeout := dur.Parse(req.GetTimeout())
 	endpoints.Each(func(e *caplet.Endpoint) {
-		if err := e.Prune(log, req, timeout); err != nil {
+		if err := e.CallPrune(log, req, timeout); err != nil {
 			log.Error(err)
 		}
 	})

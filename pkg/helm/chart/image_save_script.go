@@ -28,6 +28,7 @@ docker save -o ./{{ replace $image.Name ":" "_" -1 }}.tar {{ $image.String }}
 
 var saveTemplate = template.Must(template.New("").Funcs(templateFuncs).Parse(saveScript))
 
+// GenerateSaveScript 產生 docker save 指令
 func (t *Templates) GenerateSaveScript() ([]byte, error) {
 	data := make(map[string]interface{})
 	data["tpls"] = t

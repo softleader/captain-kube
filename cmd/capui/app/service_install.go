@@ -11,7 +11,7 @@ import (
 	"github.com/softleader/captain-kube/pkg/dur"
 	"github.com/softleader/captain-kube/pkg/helm/chart"
 	"github.com/softleader/captain-kube/pkg/proto"
-	"github.com/softleader/captain-kube/pkg/sse"
+	"github.com/softleader/captain-kube/pkg/sio"
 	"github.com/softleader/captain-kube/pkg/utils"
 	"github.com/softleader/captain-kube/pkg/utils/strutil"
 	"io"
@@ -20,6 +20,7 @@ import (
 	"strconv"
 )
 
+// InstallRequest 代表頁面送進來的 form request
 type InstallRequest struct {
 	Platform       string   `form:"platform"`
 	Namespace      string   `form:"namespace"`
@@ -31,10 +32,12 @@ type InstallRequest struct {
 	Timeout        string   `form:"timeout"`
 }
 
+// Install 定義了 route 的相關 call back function
 type Install struct {
 	*capUICmd
 }
 
+// View 轉到 install 頁面
 func (s *Install) View(c *gin.Context) {
 	c.HTML(http.StatusOK, "install.html", gin.H{
 		"requestURI": c.Request.RequestURI,
@@ -43,10 +46,11 @@ func (s *Install) View(c *gin.Context) {
 	})
 }
 
+// Chart 接收上傳的 install chart
 func (s *Install) Chart(c *gin.Context) {
 	log := logrus.New() // 這個是這次請求要往前吐的 log
 	log.SetFormatter(&utils.PlainFormatter{})
-	log.SetOutput(sse.NewWriter(c))
+	log.SetOutput(sio.NewSSEventWriter(c))
 	if v, _ := strconv.ParseBool(c.Request.FormValue("verbose")); v {
 		log.SetLevel(logrus.DebugLevel)
 	}
@@ -155,7 +159,7 @@ func (s *Install) install(log *logrus.Logger, activeCtx *ctx.Context, form *Inst
 		}
 	}
 
-	if err := captain.InstallChart(log, activeCtx.Endpoint.String(), &request, dur.Parse(form.Timeout)); err != nil {
+	if err := captain.CallInstallChart(log, activeCtx.Endpoint.String(), &request, dur.Parse(form.Timeout)); err != nil {
 		return fmt.Errorf("failed to call backend: %s", err)
 	}
 	return nil

@@ -10,7 +10,8 @@ import (
 	"time"
 )
 
-func Version(log *logrus.Logger, url string, full, color bool, timeout time.Duration) error {
+// CallVersion 呼叫 captain Version gRPC API
+func CallVersion(log *logrus.Logger, url string, full, color bool, timeout time.Duration) error {
 	log.Debugf("dialing %q with insecure", url)
 	conn, err := grpc.Dial(url, grpc.WithInsecure())
 	if err != nil {

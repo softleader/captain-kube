@@ -28,6 +28,7 @@ docker load -i ./{{ replace $image.Name ":" "_" -1 }}.tar
 
 var loadTemplate = template.Must(template.New("").Funcs(templateFuncs).Parse(loadScript))
 
+// GenerateLoadScript 產生 docker load 指令
 func (t *Templates) GenerateLoadScript() ([]byte, error) {
 	data := make(map[string]interface{})
 	data["tpls"] = t

@@ -52,7 +52,7 @@ func TestGenerateScript(t *testing.T) {
 
 	log := logrus.New()
 	log.SetFormatter(&utils.PlainFormatter{})
-	err = GenerateScript(log, fmt.Sprintf("%v:%v", endpoint, port), &captainkube_v2.GenerateScriptRequest{
+	err = CallGenerateScript(log, fmt.Sprintf("%v:%v", endpoint, port), &captainkube_v2.GenerateScriptRequest{
 		Chart: &captainkube_v2.Chart{
 			Content:  chart,
 			FileName: "foo-0.1.0.tgz",

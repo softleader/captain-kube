@@ -17,6 +17,7 @@ type icpDeleter struct {
 	chartVersion      string
 }
 
+// Delete 執行 ICP 的 helm chart delete
 func (i *icpDeleter) Delete(log *logrus.Logger) error {
 	if err := loginBxPr(log, i.endpoint, i.username, i.password, i.account, i.skipSslValidation); err != nil {
 		return err

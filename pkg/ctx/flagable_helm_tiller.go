@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/pflag"
 )
 
+// HelmTiller 封裝了 helm tiller 相關資訊
 type HelmTiller struct {
 	Endpoint          string // helm tiller 的 ip, 若沒改預設為 endpoint
 	Username          string // helm tiller 的使用者
@@ -25,6 +26,7 @@ func newHelmTillerFromEnv() (ht *HelmTiller) {
 	return
 }
 
+// AddFlags 加入 flags
 func (ht *HelmTiller) AddFlags(f *pflag.FlagSet) {
 	f.StringVar(&ht.Endpoint, "tiller", ht.Endpoint, "specify the endpoint of helm tiller, override $"+captain.EnvTillerEndpoint)
 	f.StringVar(&ht.Username, "tiller-user", ht.Username, "specify the username of helm tiller, override $"+captain.EnvTillerUsername)

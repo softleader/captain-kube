@@ -7,10 +7,12 @@ import (
 	"github.com/softleader/captain-kube/pkg/proto"
 )
 
+// Installer 定義了 install chart 到 helm chart 的介面
 type Installer interface {
 	Install(log *logrus.Logger) error
 }
 
+// NewInstaller 建立 Installer 物件
 func NewInstaller(log *logrus.Logger, k8s *kubectl.KubeVersion, tiller *captainkube_v2.Tiller, chart string) (Installer, error) {
 	if tiller.GetEndpoint() == "" {
 		return nil, fmt.Errorf("tiller endpoint is required")

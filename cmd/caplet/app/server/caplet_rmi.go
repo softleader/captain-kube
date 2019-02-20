@@ -9,6 +9,7 @@ import (
 	"github.com/softleader/captain-kube/pkg/utils"
 )
 
+// Rmi 執行 docker rmi
 func (s *CapletServer) Rmi(req *captainkube_v2.RmiRequest, stream captainkube_v2.Caplet_RmiServer) error {
 	log := logrus.New()
 	log.SetOutput(sio.NewStreamWriter(func(p []byte) error {

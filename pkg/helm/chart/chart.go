@@ -15,12 +15,15 @@ import (
 
 const templateDir = "t"
 
+// Templates 等於 chart/template
 type Templates map[string][]*Image
 
+// Size 回傳 Templates 數量
 func (t *Templates) Size() int {
 	return len(reflect.ValueOf(t).MapKeys())
 }
 
+// LoadArchiveBytes 從 chart 壓縮檔的 bytes 載入 template
 func LoadArchiveBytes(log *logrus.Logger, filename string, data []byte, set ...string) (tpls Templates, err error) {
 	tmp, err := ioutil.TempDir(os.TempDir(), "load-bytes-")
 	if err != nil {
@@ -34,6 +37,7 @@ func LoadArchiveBytes(log *logrus.Logger, filename string, data []byte, set ...s
 	return LoadArchive(log, archive, set...)
 }
 
+// LoadArchive 從 chart 壓縮檔的載入 template
 func LoadArchive(log *logrus.Logger, archivePath string, set ...string) (tpls Templates, err error) {
 	tmp, err := ioutil.TempDir(os.TempDir(), "load-archive-")
 	if err != nil {
@@ -70,6 +74,7 @@ func findFirstDir(path string) (string, error) {
 	return "", fmt.Errorf("no dir found in %q", path)
 }
 
+// LoadDir 從指定的 path 載入 template
 func LoadDir(log *logrus.Logger, chartPath string) (tpls Templates, err error) {
 	tpls = make(map[string][]*Image)
 	log.Debugf("loading helm template: %s", chartPath)
@@ -100,6 +105,7 @@ func image(path string, f os.FileInfo) ([]*Image, error) {
 	return i, nil
 }
 
+// TemplateYAML 定義了 template yaml 要讀取的格式
 type TemplateYAML struct {
 	Spec struct {
 		SpecTemplate struct {

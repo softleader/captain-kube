@@ -25,7 +25,8 @@ golint: gofmt
 ifndef HAS_GOLINT
 	go get -u golang.org/x/lint/golint
 endif
-	golint ./...
+	golint -set_exit_status ./cmd/...
+	golint -set_exit_status ./pkg/...
 
 .PHONY: protoc
 protoc:

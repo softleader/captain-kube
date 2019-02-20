@@ -26,11 +26,12 @@ var colors = []string{
 	// ansi.LightWhite,
 }
 
-// 什麼都不上色
+// Plain 代表什麼都不上色
 var Plain = func(b []byte) []byte {
 	return b
 }
 
+// Pick 隨機挑選 n 個顏色
 func Pick(n int) (c []func([]byte) []byte) {
 	shuffled := shuffle(colors)
 	d := len(shuffled)

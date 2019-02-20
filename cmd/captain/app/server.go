@@ -27,6 +27,7 @@ type captainCmd struct {
 	k8sVendor      string
 }
 
+// NewCaptainCommand 建立 Captain root command
 func NewCaptainCommand(metadata *release.Metadata) (cmd *cobra.Command) {
 	var verbose bool
 	c := captainCmd{

@@ -9,6 +9,7 @@ import (
 	"github.com/softleader/captain-kube/pkg/utils"
 )
 
+// Rmi 刪除 caplet 的 docker image
 func (s *CaptainServer) Rmi(req *captainkube_v2.RmiRequest, stream captainkube_v2.Captain_RmiServer) error {
 	log := logrus.New()
 	log.SetOutput(sio.NewStreamWriter(func(p []byte) error {
@@ -29,7 +30,7 @@ func (s *CaptainServer) Rmi(req *captainkube_v2.RmiRequest, stream captainkube_v
 	log.SetNoLock()
 	timeout := dur.Parse(req.GetTimeout())
 	endpoints.Each(func(e *caplet.Endpoint) {
-		if err := e.Rmi(log, req, timeout); err != nil {
+		if err := e.CallRmi(log, req, timeout); err != nil {
 			log.Error(err)
 		}
 	})

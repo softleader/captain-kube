@@ -7,6 +7,7 @@ import (
 	"net/http"
 )
 
+// NewCapUIServer 建立 capui server
 func NewCapUIServer(cmd *capUICmd) (r *gin.Engine) {
 	r = gin.Default()
 

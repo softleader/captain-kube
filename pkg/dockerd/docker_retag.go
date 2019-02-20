@@ -8,6 +8,7 @@ import (
 	"github.com/softleader/captain-kube/pkg/proto"
 )
 
+// ReTag 執行 docker tag 及 docker push
 func ReTag(log *logrus.Logger, source chart.Image, target chart.Image, registryAuth *captainkube_v2.RegistryAuth) error {
 	ctx := context.Background()
 
@@ -57,6 +58,7 @@ func ReTag(log *logrus.Logger, source chart.Image, target chart.Image, registryA
 	return nil
 }
 
+// ReTagFromTemplates re-tag template 中所有的 images
 func ReTagFromTemplates(log *logrus.Logger, tpls chart.Templates, retag *captainkube_v2.ReTag, auth *captainkube_v2.RegistryAuth) error {
 	for _, tpl := range tpls {
 		for _, image := range tpl {

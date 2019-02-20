@@ -8,6 +8,7 @@ import (
 	"time"
 )
 
+// Global 封裝了共用的資訊
 type Global struct {
 	Offline bool
 	Verbose bool
@@ -15,6 +16,7 @@ type Global struct {
 	Timeout string
 }
 
+// TimeoutDuration 將 Timeout 轉換成 time.Duration
 func (g *Global) TimeoutDuration() time.Duration {
 	return dur.Parse(g.Timeout)
 }
@@ -27,6 +29,7 @@ func newGlobalFromEnv() (g *Global) {
 	return
 }
 
+// AddFlags 加入 flags
 func (g *Global) AddFlags(f *pflag.FlagSet) {
 	f.BoolVar(&g.Offline, "offline", g.Offline, "work offline")
 	f.BoolVarP(&g.Verbose, "verbose", "v", g.Verbose, "enable verbose output")

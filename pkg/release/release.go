@@ -10,11 +10,13 @@ const (
 	unknown    = "unknown"
 )
 
+// Metadata 封裝了 release 資訊
 type Metadata struct {
 	GitVersion string
 	GitCommit  string
 }
 
+// NewMetadata 建立 Metadata
 func NewMetadata(version, commit string) (b *Metadata) {
 	b = &Metadata{
 		GitVersion: unreleased,
@@ -29,6 +31,7 @@ func NewMetadata(version, commit string) (b *Metadata) {
 	return
 }
 
+// String 回傳 release 資訊
 func (b *Metadata) String() string {
 	trunc := 7
 	if len := len(b.GitCommit); len < 7 {
@@ -37,6 +40,7 @@ func (b *Metadata) String() string {
 	return fmt.Sprintf("%s+%s", b.GitVersion, b.GitCommit[:trunc])
 }
 
+// FullString 回傳完整的 release 資訊
 func (b *Metadata) FullString() string {
 	return fmt.Sprintf("%#v", b)
 }

@@ -10,7 +10,8 @@ import (
 	"time"
 )
 
-func Prune(log *logrus.Logger, url string, verbose, color bool, timeout time.Duration) error {
+// CallPrune 呼叫 captain Prune gRPC API
+func CallPrune(log *logrus.Logger, url string, verbose, color bool, timeout time.Duration) error {
 	log.Debugf("dialing %q with insecure", url)
 	conn, err := grpc.Dial(url, grpc.WithInsecure())
 	if err != nil {

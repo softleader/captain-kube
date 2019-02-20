@@ -12,6 +12,7 @@ import (
 	"strings"
 )
 
+// GenerateScript 分析上傳 chart 中的 images, 產生其相關的 docker scripts
 func (s *CaptainServer) GenerateScript(req *captainkube_v2.GenerateScriptRequest, stream captainkube_v2.Captain_GenerateScriptServer) error {
 	log := logrus.New()
 	log.SetOutput(sio.NewStreamWriter(func(p []byte) error {

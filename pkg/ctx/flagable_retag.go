@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/pflag"
 )
 
+// ReTag 封裝了 re-tag 資訊
 type ReTag struct {
 	From string
 	To   string
@@ -19,6 +20,7 @@ func newReTagFromEnv() (rt *ReTag) {
 	return
 }
 
+// AddFlags 加入 flags
 func (rt *ReTag) AddFlags(f *pflag.FlagSet) {
 	f.StringVarP(&rt.From, "retag-from", "f", rt.From, "specify re-tagging image host from, override $"+capui.EnvReTagFrom)
 	f.StringVarP(&rt.To, "retag-to", "t", rt.To, "specify re-tagging image host to, override $"+capui.EnvReTagTo)

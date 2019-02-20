@@ -10,7 +10,8 @@ import (
 	"time"
 )
 
-func Rmi(log *logrus.Logger, url string, req *captainkube_v2.RmiRequest, timeout time.Duration) error {
+// CallRmi 呼叫 captain Rmi gRPC API
+func CallRmi(log *logrus.Logger, url string, req *captainkube_v2.RmiRequest, timeout time.Duration) error {
 	log.Debugf("dialing %q with insecure", url)
 	conn, err := grpc.Dial(url, grpc.WithInsecure())
 	if err != nil {

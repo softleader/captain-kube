@@ -7,6 +7,7 @@ import (
 	"time"
 )
 
+// NewKubeVersion 建立 KubeVersion 物件
 func NewKubeVersion(vendor string) *KubeVersion {
 	return &KubeVersion{
 		Server: Info{
@@ -34,10 +35,12 @@ type Info struct {
 	Platform     string    `yaml:"platform"`
 }
 
+// IsICP 回傳是否為 ICP vendor
 func (sv *Info) IsICP() bool {
 	return strings.Contains(sv.GitVersion, "icp")
 }
 
+// IsGCP 回傳是否為 GCP vendor
 func (sv *Info) IsGCP() bool {
 	// TODO 還不知道怎麼判斷, 寫死固定 return false
 	return false

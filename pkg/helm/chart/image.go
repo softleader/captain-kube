@@ -8,14 +8,17 @@ import (
 	"text/template"
 )
 
+// DefaultTag 預設的 tag
 const DefaultTag = "latest"
 
+// Image 封裝了 docker image 的相關資訊
 type Image struct {
 	Host string // e.g. hub.softleader.com.tw
 	Repo string // e.g. captain-kube
 	Tag  string // e.g. latest
 }
 
+// HostRepo 回傳 image 的 host/repot
 func (i *Image) HostRepo() string {
 	var buf bytes.Buffer
 	if i.Host != "" {
@@ -25,6 +28,7 @@ func (i *Image) HostRepo() string {
 	return buf.String()
 }
 
+// Name 回傳 image repo:tag
 func (i *Image) Name() string {
 	var buf bytes.Buffer
 	buf.WriteString(i.Repo)
@@ -34,6 +38,7 @@ func (i *Image) Name() string {
 	return buf.String()
 }
 
+// String 回傳 image 的完整名稱: host/repo:tag
 func (i *Image) String() string {
 	var buf bytes.Buffer
 	if i.Host != "" {
@@ -43,6 +48,7 @@ func (i *Image) String() string {
 	return buf.String()
 }
 
+// NewImage 建立 image 物件
 func NewImage(img string) (i *Image) {
 	var name string
 	i = &Image{}
@@ -61,6 +67,7 @@ func NewImage(img string) (i *Image) {
 	return
 }
 
+// ReTag 比對 image 的 host, 若符合則將 host 從 from 更換成 to
 func (i *Image) ReTag(from, to string) {
 	if from != "" && to != "" && i.Host == from {
 		i.Host = to
@@ -93,6 +100,7 @@ var templateFuncs = template.FuncMap{
 	"replace": strings.Replace,
 }
 
+// CheckTag 檢查 tag 是否符合傳入的 constraint
 func (i *Image) CheckTag(other string) (bool, error) {
 	c, err := semver.NewConstraint(other)
 	if err != nil {

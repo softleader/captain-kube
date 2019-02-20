@@ -7,6 +7,7 @@ import (
 	"github.com/softleader/captain-kube/pkg/helm/chart"
 )
 
+// Rmi 執行 docker rmi
 func Rmi(log *logrus.Logger, force, dryRun bool, images ...*chart.Image) error {
 	ctx := context.Background()
 

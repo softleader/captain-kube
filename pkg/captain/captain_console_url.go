@@ -9,7 +9,8 @@ import (
 	"time"
 )
 
-func ConsoleURL(log *logrus.Logger, url string, req *captainkube_v2.ConsoleURLRequest, timeout time.Duration) (*captainkube_v2.ConsoleURLResponse, error) {
+// CallConsoleURL 呼叫 captain ConsoleURL gRPC API
+func CallConsoleURL(log *logrus.Logger, url string, req *captainkube_v2.ConsoleURLRequest, timeout time.Duration) (*captainkube_v2.ConsoleURLResponse, error) {
 	log.Debugf("dialing %q with insecure", url)
 	conn, err := grpc.Dial(url, grpc.WithInsecure())
 	if err != nil {

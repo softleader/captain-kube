@@ -10,7 +10,8 @@ import (
 	"time"
 )
 
-func InstallChart(log *logrus.Logger, url string, req *captainkube_v2.InstallChartRequest, timeout time.Duration) error {
+// CallInstallChart 呼叫 captain InstallChart gRPC API
+func CallInstallChart(log *logrus.Logger, url string, req *captainkube_v2.InstallChartRequest, timeout time.Duration) error {
 	log.Debugf("dialing %q with insecure", url)
 	conn, err := grpc.Dial(url, grpc.WithInsecure())
 	if err != nil {

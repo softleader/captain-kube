@@ -21,6 +21,7 @@ var (
 	activeContext *ctx.Context // for 頁面的 default value 呈現使用
 )
 
+// Contexts 定義了 route 的相關 call back function
 type Contexts struct {
 }
 
@@ -71,6 +72,7 @@ func initContext(envs []string) error {
 	return nil
 }
 
+// ListContext 回傳所有 contexts
 func (s *Contexts) ListContext(c *gin.Context) {
 	var names []string
 	for k := range contexts {
@@ -79,6 +81,7 @@ func (s *Contexts) ListContext(c *gin.Context) {
 	c.JSON(http.StatusOK, names)
 }
 
+// SwitchContext 切換 context
 func (s *Contexts) SwitchContext(c *gin.Context) {
 	ctx := c.Param("ctx")
 	if ctx == "" {
@@ -97,6 +100,7 @@ func (s *Contexts) SwitchContext(c *gin.Context) {
 	c.Status(http.StatusOK)
 }
 
+// ListContextVersions 回傳所有 context 及其版本
 func (s *Contexts) ListContextVersions(c *gin.Context) {
 	full := false
 	color := false
@@ -121,7 +125,7 @@ func (s *Contexts) ListContextVersions(c *gin.Context) {
 		log.SetFormatter(&utils.PlainFormatter{})
 		if c, err := newContext(log, context); err != nil {
 			log.Println(err)
-		} else if err := captain.Version(log, c.Endpoint.String(), full, color, dur.Parse(timeout)); err != nil {
+		} else if err := captain.CallVersion(log, c.Endpoint.String(), full, color, dur.Parse(timeout)); err != nil {
 			log.Println(err)
 		}
 		contextsVersions[context] = versions

@@ -10,7 +10,8 @@ import (
 	"time"
 )
 
-func SyncChart(log *logrus.Logger, url string, req *captainkube_v2.SyncChartRequest, timeout time.Duration) error {
+// CallSyncChart 呼叫 captain SyncChart gRPC API
+func CallSyncChart(log *logrus.Logger, url string, req *captainkube_v2.SyncChartRequest, timeout time.Duration) error {
 	log.Debugf("dialing %q with insecure", url)
 	conn, err := grpc.Dial(url, grpc.WithInsecure())
 	if err != nil {

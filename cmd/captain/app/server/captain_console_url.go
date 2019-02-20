@@ -6,6 +6,7 @@ import (
 	"github.com/softleader/captain-kube/pkg/proto"
 )
 
+// ConsoleURL 回傳 kubernetes console 的 url
 func (s *CaptainServer) ConsoleURL(ctx context.Context, req *captainkube_v2.ConsoleURLRequest) (*captainkube_v2.ConsoleURLResponse, error) {
 	resp := &captainkube_v2.ConsoleURLResponse{
 		Vendor: s.K8s.Server.GitVersion,

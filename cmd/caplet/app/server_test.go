@@ -27,7 +27,7 @@ func TestPullImage(t *testing.T) {
 		Port:   port,
 	}
 
-	if err := ep.PullImage(log, req, 10); err != nil {
+	if err := ep.CallPullImage(log, req, 10); err != nil {
 		t.Error(err)
 	}
 

@@ -9,10 +9,11 @@ import (
 
 var ln = fmt.Sprintln()
 
-// 什麼都不 format 的 formatter
+// PlainFormatter 什麼都不 format 的 formatter
 type PlainFormatter struct {
 }
 
+// Format 格式化 log
 func (f *PlainFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 	var buf *bytes.Buffer
 	if entry.Buffer != nil {

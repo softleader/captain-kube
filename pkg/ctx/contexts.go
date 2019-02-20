@@ -14,21 +14,27 @@ import (
 )
 
 const (
-	ContextsFile   = "contexts.yaml"
+	// ContextsFile 儲存 context 的檔案名稱
+	ContextsFile = "contexts.yaml"
+	// EnvMountVolume key to specify root-dir to store ContextsFile
 	EnvMountVolume = "SL_PLUGIN_MOUNT"
 )
 
 var (
+	// ErrMountVolumeNotExist 代表沒有發現 root-dir
 	ErrMountVolumeNotExist = errors.New(`mount volume not found
 It looks like you are running the command outside slctl (https://github.com/softleader/slctl)
 Please set SL_PLUGIN_MOUNT variable to manually specify the location for the command to store data 
 For more details: https://github.com/softleader/slctl/wiki/Plugins-Guide#mount-volume`)
+	// ErrNoActiveContextPresent 代表當前沒有 active 的 context
 	ErrNoActiveContextPresent = errors.New("no active context present") // 代表當前沒有 active 的 context
+	// PlainContexts 代表一個空的 Contexts
 	PlainContexts             = new(Contexts)
 	contextNameRegexp         = regexp.MustCompile(`^(.|-)$`)
 	contextNameContainsRegexp = regexp.MustCompile(`(=|\s)+`)
 )
 
+// Contexts 是 Context 的集合
 type Contexts struct {
 	log      *logrus.Logger
 	path     string
@@ -37,6 +43,7 @@ type Contexts struct {
 	Previous string // 上一個
 }
 
+// GetSortedNames 回傳所有 context 並依照字母排序
 func (c *Contexts) GetSortedNames() (n []string) {
 	for ctx := range c.Contexts {
 		n = append(n, ctx)
@@ -45,6 +52,7 @@ func (c *Contexts) GetSortedNames() (n []string) {
 	return
 }
 
+// LoadContextsFromEnv 從 OS Env 中載入 Contexts
 func LoadContextsFromEnv(log *logrus.Logger) (*Contexts, error) {
 	mount, found := os.LookupEnv(EnvMountVolume)
 	if !found {
@@ -57,6 +65,7 @@ func LoadContextsFromEnv(log *logrus.Logger) (*Contexts, error) {
 	return LoadContexts(log, filepath.Join(mount, ContextsFile))
 }
 
+// LoadContexts 從指定 path 載入 Contexts
 func LoadContexts(log *logrus.Logger, path string) (*Contexts, error) {
 	log.Debugf("loading ctx from: %s\n", path)
 	ctx := &Contexts{
@@ -73,6 +82,7 @@ func LoadContexts(log *logrus.Logger, path string) (*Contexts, error) {
 	return ctx, json.Unmarshal(data, ctx)
 }
 
+// GetActiveExpandEnv 回傳 Active Context 並且 Merge OS Env
 func (c *Contexts) GetActiveExpandEnv() (*Context, error) {
 	if c.Active == "" {
 		return nil, ErrNoActiveContextPresent
@@ -88,6 +98,7 @@ func (c *Contexts) GetActiveExpandEnv() (*Context, error) {
 	return ctx, ctx.ExpandEnv()
 }
 
+// Add 新增 Context
 func (c *Contexts) Add(name string, args []string, force bool) error {
 	if contextNameRegexp.MatchString(name) {
 		return fmt.Errorf("context name must not match regexp: %s", contextNameRegexp.String())
@@ -113,6 +124,7 @@ func (c *Contexts) Add(name string, args []string, force bool) error {
 	return nil
 }
 
+// Rename 修改 Context 名稱
 func (c *Contexts) Rename(from, to string) error {
 	if from == "." {
 		from = c.Active
@@ -139,6 +151,7 @@ func (c *Contexts) Rename(from, to string) error {
 	return nil
 }
 
+// Delete 刪除 Context
 func (c *Contexts) Delete(names ...string) (err error) {
 	for _, name := range names {
 		if name == "." {
@@ -158,6 +171,7 @@ func (c *Contexts) Delete(names ...string) (err error) {
 	return
 }
 
+// Switch 切換 Active Context
 func (c *Contexts) Switch(name string) (err error) {
 	if name == "-" {
 		return c.switchToPrevious()
@@ -173,6 +187,7 @@ func (c *Contexts) Switch(name string) (err error) {
 	return
 }
 
+// SwitchOff 關閉 Context
 func (c *Contexts) SwitchOff() (err error) {
 	c.Previous = c.Active
 	c.Active = ""

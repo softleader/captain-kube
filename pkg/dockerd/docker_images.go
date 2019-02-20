@@ -9,6 +9,7 @@ import (
 	"strings"
 )
 
+// Images 執行 docker images 並依照傳入 image 過濾
 func Images(log *logrus.Logger, image string) ([]*chart.Image, error) {
 	log.Debugf("listing docker images of %q", image)
 
@@ -40,6 +41,7 @@ func Images(log *logrus.Logger, image string) ([]*chart.Image, error) {
 	return images, nil
 }
 
+// ImagesWithTagConstraint 執行 docker images 並依照傳入 image 過濾及 tag 條件過濾
 func ImagesWithTagConstraint(log *logrus.Logger, image, constraint string) ([]*chart.Image, error) {
 	list, err := Images(log, image)
 	if err != nil {

@@ -8,7 +8,8 @@ import (
 	"time"
 )
 
-func (e *Endpoint) Version(full bool, timeout time.Duration) (*captainkube_v2.VersionResponse, error) {
+// CallVersion 呼叫 caplet Version gRPC api
+func (e *Endpoint) CallVersion(full bool, timeout time.Duration) (*captainkube_v2.VersionResponse, error) {
 	conn, err := grpc.Dial(e.String(), grpc.WithInsecure())
 	if err != nil {
 		return nil, fmt.Errorf("[%s] did not connect: %v", e.Target, err)

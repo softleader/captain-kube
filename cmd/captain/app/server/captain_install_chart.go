@@ -13,6 +13,7 @@ import (
 	"path/filepath"
 )
 
+// InstallChart 將上傳的 chart install 到 helm tiller 上
 func (s *CaptainServer) InstallChart(req *captainkube_v2.InstallChartRequest, stream captainkube_v2.Captain_InstallChartServer) error {
 	logrus.Debugf("%+v", req)
 
@@ -61,7 +62,7 @@ func (s *CaptainServer) InstallChart(req *captainkube_v2.InstallChartRequest, st
 		log.SetNoLock()
 		timeout := dur.Parse(req.GetTimeout())
 		endpoints.Each(func(e *caplet.Endpoint) {
-			if err := e.PullImage(log, newPullImageRequest(tpls, req.GetRetag(), req.GetRegistryAuth()), timeout); err != nil {
+			if err := e.CallPullImage(log, newPullImageRequest(tpls, req.GetRetag(), req.GetRegistryAuth()), timeout); err != nil {
 				log.Error(err)
 			}
 		})

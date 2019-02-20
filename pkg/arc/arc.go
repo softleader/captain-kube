@@ -7,6 +7,7 @@ import (
 	"os"
 )
 
+// Extract 解壓縮
 func Extract(log *logrus.Logger, source, destination string) (err error) {
 	if err = ensureDirEmpty(destination); err != nil {
 		return

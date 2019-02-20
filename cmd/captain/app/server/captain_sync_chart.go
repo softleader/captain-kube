@@ -13,6 +13,7 @@ import (
 	"path/filepath"
 )
 
+// SyncChart 將 image 同步到所有 caplet 上, 以避免直接啟動 chart 時拉 images 到 timeout
 func (s *CaptainServer) SyncChart(req *captainkube_v2.SyncChartRequest, stream captainkube_v2.Captain_SyncChartServer) error {
 	log := logrus.New()
 	log.SetOutput(sio.NewStreamWriter(func(p []byte) error {
@@ -48,7 +49,7 @@ func (s *CaptainServer) SyncChart(req *captainkube_v2.SyncChartRequest, stream c
 	log.SetNoLock()
 	timeout := dur.Parse(req.GetTimeout())
 	endpoints.Each(func(e *caplet.Endpoint) {
-		if err := e.PullImage(log, newPullImageRequest(tpls, req.GetRetag(), req.GetRegistryAuth()), timeout); err != nil {
+		if err := e.CallPullImage(log, newPullImageRequest(tpls, req.GetRetag(), req.GetRegistryAuth()), timeout); err != nil {
 			log.Error(err)
 		}
 	})

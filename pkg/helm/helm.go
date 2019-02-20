@@ -8,6 +8,7 @@ import (
 	"strings"
 )
 
+// Template 執行 helm template
 func Template(log *logrus.Logger, chart, outputDir string, set ...string) (err error) {
 	if err = ensureDirExist(outputDir); err != nil {
 		return

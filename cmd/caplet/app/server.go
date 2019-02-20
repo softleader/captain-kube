@@ -21,6 +21,7 @@ type capletCmd struct {
 	port     int
 }
 
+// NewCapletCommand 建立 caplet root command
 func NewCapletCommand(metadata *release.Metadata) (cmd *cobra.Command) {
 	var verbose bool
 	c := &capletCmd{

@@ -10,7 +10,8 @@ import (
 	"time"
 )
 
-func DeleteChart(log *logrus.Logger, url string, req *captainkube_v2.DeleteChartRequest, timeout time.Duration) error {
+// CallDeleteChart 呼叫 captain DeleteChart gRPC API
+func CallDeleteChart(log *logrus.Logger, url string, req *captainkube_v2.DeleteChartRequest, timeout time.Duration) error {
 	log.Debugf("dialing %q with insecure", url)
 	conn, err := grpc.Dial(url, grpc.WithInsecure())
 	if err != nil {

@@ -29,6 +29,7 @@ docker tag {{ $from }}/{{ $image.Name }} {{ $image.Host }}/{{ $image.Name }} && 
 
 var retagTemplate = template.Must(template.New("").Parse(retagScript))
 
+// GenerateReTagScript 產生 docker tag 及 docker push 指令
 func (t *Templates) GenerateReTagScript(from, to string) ([]byte, error) {
 	retags := make(map[string][]*Image)
 	for src, images := range *t {

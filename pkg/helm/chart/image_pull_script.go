@@ -28,6 +28,7 @@ docker pull {{ $image.String }}
 
 var pullTemplate = template.Must(template.New("").Parse(pullScript))
 
+// GeneratePullScript 產生 docker pull 指令
 func (t *Templates) GeneratePullScript() ([]byte, error) {
 	data := make(map[string]interface{})
 	data["tpls"] = t

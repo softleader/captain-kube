@@ -5,6 +5,7 @@ import (
 	"reflect"
 )
 
+// Flaggable 代表可以被加入 flags
 type Flaggable interface {
 	AddFlags(f *pflag.FlagSet)
 }

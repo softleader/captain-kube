@@ -13,6 +13,7 @@ import (
 	"path/filepath"
 )
 
+// Rmc 將上傳的 chart 中的 images 從 caplet 的 docker 中刪除
 func (s *CaptainServer) Rmc(req *captainkube_v2.RmcRequest, stream captainkube_v2.Captain_RmcServer) error {
 	log := logrus.New()
 	log.SetOutput(sio.NewStreamWriter(func(p []byte) error {
@@ -48,7 +49,7 @@ func (s *CaptainServer) Rmc(req *captainkube_v2.RmcRequest, stream captainkube_v
 	log.SetNoLock()
 	timeout := dur.Parse(req.GetTimeout())
 	endpoints.Each(func(e *caplet.Endpoint) {
-		if err := e.Rmi(log, newRmiRequest(
+		if err := e.CallRmi(log, newRmiRequest(
 			tpls,
 			req.GetRetag(),
 			req.GetConstraint(),

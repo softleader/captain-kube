@@ -37,7 +37,7 @@ func newOpenCmd() *cobra.Command {
 }
 
 func (c *openCmd) run() error {
-	resp, err := captain.ConsoleURL(
+	resp, err := captain.CallConsoleURL(
 		logrus.StandardLogger(),
 		c.endpoint.String(),
 		&captainkube_v2.ConsoleURLRequest{

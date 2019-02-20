@@ -8,6 +8,7 @@ import (
 	"github.com/softleader/captain-kube/pkg/utils"
 )
 
+// Prune 執行 docker system prune
 func (s *CapletServer) Prune(req *captainkube_v2.PruneRequest, stream captainkube_v2.Caplet_PruneServer) error {
 	log := logrus.New()
 	log.SetOutput(sio.NewStreamWriter(func(p []byte) error {

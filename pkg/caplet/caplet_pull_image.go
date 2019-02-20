@@ -10,7 +10,8 @@ import (
 	"time"
 )
 
-func (e *Endpoint) PullImage(log *logrus.Logger, req *captainkube_v2.PullImageRequest, timeout time.Duration) error {
+// CallPullImage 呼叫 caplet PullImage gRPC api
+func (e *Endpoint) CallPullImage(log *logrus.Logger, req *captainkube_v2.PullImageRequest, timeout time.Duration) error {
 	conn, err := grpc.Dial(e.String(), grpc.WithInsecure())
 	if err != nil {
 		return fmt.Errorf("[%s] did not connect: %v", e.Target, err)

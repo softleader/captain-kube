@@ -8,6 +8,7 @@ import (
 	"github.com/softleader/captain-kube/pkg/proto"
 )
 
+// Pull 執行 docker pull
 func Pull(log *logrus.Logger, image chart.Image, registryAuth *captainkube_v2.RegistryAuth) error {
 	ctx := context.Background()
 
@@ -45,6 +46,7 @@ func Pull(log *logrus.Logger, image chart.Image, registryAuth *captainkube_v2.Re
 	return nil
 }
 
+// PullFromTemplates pull template 中所有的 image
 func PullFromTemplates(log *logrus.Logger, tpls chart.Templates, auth *captainkube_v2.RegistryAuth) error {
 	for _, tpl := range tpls {
 		for _, image := range tpl {

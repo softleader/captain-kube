@@ -14,9 +14,10 @@ type capUICmd struct {
 	Metadata  *release.Metadata
 	port      int
 	ActiveCtx string
-	BaseUrl   string
+	BaseURL   string
 }
 
+// NewCapUICommand 建立 capui root command
 func NewCapUICommand(metadata *release.Metadata) (cmd *cobra.Command) {
 	var verbose bool
 	c := capUICmd{
@@ -31,8 +32,8 @@ func NewCapUICommand(metadata *release.Metadata) (cmd *cobra.Command) {
 			if verbose {
 				logrus.SetLevel(logrus.DebugLevel)
 			}
-			if !strings.HasSuffix(c.BaseUrl, "/") {
-				c.BaseUrl += "/"
+			if !strings.HasSuffix(c.BaseURL, "/") {
+				c.BaseURL += "/"
 			}
 			return c.run()
 		},
@@ -42,7 +43,7 @@ func NewCapUICommand(metadata *release.Metadata) (cmd *cobra.Command) {
 	f.BoolVarP(&verbose, "verbose", "v", false, "enable verbose output")
 	f.IntVarP(&c.port, "port", "p", 8080, "port of web ui serve port")
 	f.StringVar(&c.ActiveCtx, "active-ctx", "", "active ctx on server startup")
-	f.StringVar(&c.BaseUrl, "base-url", "/", "specify base url, more details: https://www.w3schools.com/tags/tag_base.asp")
+	f.StringVar(&c.BaseURL, "base-url", "/", "specify base url, more details: https://www.w3schools.com/tags/tag_base.asp")
 
 	cmd.MarkFlagRequired("active-ctx")
 

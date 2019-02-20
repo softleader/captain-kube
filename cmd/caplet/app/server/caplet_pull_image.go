@@ -9,6 +9,7 @@ import (
 	"github.com/softleader/captain-kube/pkg/utils"
 )
 
+// PullImage 執行 docker pull
 func (s *CapletServer) PullImage(req *captainkube_v2.PullImageRequest, stream captainkube_v2.Caplet_PullImageServer) error {
 	log := logrus.New()
 	log.SetOutput(sio.NewStreamWriter(func(p []byte) error {

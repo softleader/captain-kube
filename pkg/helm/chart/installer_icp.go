@@ -16,6 +16,7 @@ type icpInstaller struct {
 	skipSslValidation bool
 }
 
+// Install 執行 ICP 的 helm chart install
 func (i *icpInstaller) Install(log *logrus.Logger) error {
 	if err := loginBxPr(log, i.endpoint, i.username, i.password, i.account, i.skipSslValidation); err != nil {
 		return err

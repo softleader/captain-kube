@@ -10,7 +10,8 @@ import (
 	"time"
 )
 
-func (e *Endpoint) Rmi(log *logrus.Logger, req *captainkube_v2.RmiRequest, timeout time.Duration) error {
+// CallRmi 呼叫 caplet Rmi gRPC api
+func (e *Endpoint) CallRmi(log *logrus.Logger, req *captainkube_v2.RmiRequest, timeout time.Duration) error {
 	conn, err := grpc.Dial(e.String(), grpc.WithInsecure())
 	if err != nil {
 		return fmt.Errorf("[%s] did not connect: %v", e.Target, err)

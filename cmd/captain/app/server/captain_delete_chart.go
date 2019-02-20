@@ -8,6 +8,7 @@ import (
 	"github.com/softleader/captain-kube/pkg/utils"
 )
 
+// DeleteChart 將上傳的 chart 從 helm tiller 中刪除
 func (s *CaptainServer) DeleteChart(req *captainkube_v2.DeleteChartRequest, stream captainkube_v2.Captain_DeleteChartServer) error {
 	log := logrus.New()
 	log.SetOutput(sio.NewStreamWriter(func(p []byte) error {

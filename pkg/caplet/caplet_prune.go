@@ -10,7 +10,8 @@ import (
 	"time"
 )
 
-func (e *Endpoint) Prune(log *logrus.Logger, req *captainkube_v2.PruneRequest, timeout time.Duration) error {
+// CallPrune 呼叫 caplet Prune gRPC api
+func (e *Endpoint) CallPrune(log *logrus.Logger, req *captainkube_v2.PruneRequest, timeout time.Duration) error {
 	conn, err := grpc.Dial(e.String(), grpc.WithInsecure())
 	if err != nil {
 		return fmt.Errorf("[%s] did not connect: %v", e.Target, err)

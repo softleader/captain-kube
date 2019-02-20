@@ -6,6 +6,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+// Prune 執行 docker system prune
 func Prune(log *logrus.Logger) error {
 	ctx := context.Background()
 	cli, err := docker.NewClientFromEnv()

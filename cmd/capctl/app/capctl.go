@@ -20,6 +20,7 @@ var (
 	name      = "capctl"
 )
 
+// NewRootCmd 建立 root command
 func NewRootCmd(args []string, m *release.Metadata) (*cobra.Command, error) {
 	if err := initContext(); err != nil {
 		return nil, err

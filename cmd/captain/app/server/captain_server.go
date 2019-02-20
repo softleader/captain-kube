@@ -12,8 +12,10 @@ import (
 	"net"
 )
 
+// ErrNonCapletDaemonFound 代表沒有找到任何的 caplet daemons
 var ErrNonCapletDaemonFound = fmt.Errorf("non caplet daemon found")
 
+// CaptainServer 封裝了 captain server 的資訊
 type CaptainServer struct {
 	Metadata  *release.Metadata
 	Hostname  string

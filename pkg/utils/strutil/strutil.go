@@ -5,6 +5,7 @@ import (
 	"strings"
 )
 
+// Contains 回傳 s 是否包含於 vs 中
 func Contains(vs []string, s string) bool {
 	for _, v := range vs {
 		if v == s {
@@ -14,6 +15,7 @@ func Contains(vs []string, s string) bool {
 	return false
 }
 
+// DiffNewLines 回傳 a 跟 b 不同樣的行數
 func DiffNewLines(a, b string) []string {
 	diff := difflib.UnifiedDiff{
 		A:       difflib.SplitLines(a),

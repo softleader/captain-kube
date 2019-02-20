@@ -12,6 +12,7 @@ import (
 	"path/filepath"
 )
 
+// Save 執行 docker save
 func Save(log *logrus.Logger, images []*chart.Image, output string, force bool) error {
 	expanded, err := homedir.Expand(output)
 	if err != nil {

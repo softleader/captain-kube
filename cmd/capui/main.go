@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/softleader/captain-kube/cmd/capui/app"
 	ver "github.com/softleader/captain-kube/pkg/release"
+	_ "go.uber.org/automaxprocs"
 	"os"
 )
 

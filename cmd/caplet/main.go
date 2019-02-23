@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/softleader/captain-kube/cmd/caplet/app"
 	ver "github.com/softleader/captain-kube/pkg/release"
+	// importing automaxprocs automatically adjusts GOMAXPROCS.
 	_ "go.uber.org/automaxprocs"
 	"os"
 )

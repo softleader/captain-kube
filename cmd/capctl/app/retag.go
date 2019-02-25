@@ -7,7 +7,7 @@ import (
 	"github.com/softleader/captain-kube/pkg/ctx"
 	"github.com/softleader/captain-kube/pkg/dockerd"
 	"github.com/softleader/captain-kube/pkg/helm/chart"
-	"github.com/softleader/captain-kube/pkg/proto"
+	pb "github.com/softleader/captain-kube/pkg/proto"
 	"github.com/spf13/cobra"
 	"path/filepath"
 )
@@ -78,10 +78,10 @@ func (c *retagCmd) reTag(path string) error {
 	if err != nil {
 		return err
 	}
-	return dockerd.ReTagFromTemplates(logrus.StandardLogger(), tpls, &captainkube_v2.ReTag{
+	return dockerd.ReTagFromTemplates(logrus.StandardLogger(), tpls, &pb.ReTag{
 		From: c.retag.From,
 		To:   c.retag.To,
-	}, &captainkube_v2.RegistryAuth{
+	}, &pb.RegistryAuth{
 		Username: c.registryAuth.Username,
 		Password: c.registryAuth.Password,
 	})

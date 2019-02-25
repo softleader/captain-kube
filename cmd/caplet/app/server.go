@@ -7,7 +7,7 @@ import (
 	"github.com/softleader/captain-kube/cmd/caplet/app/server"
 	"github.com/softleader/captain-kube/pkg/caplet"
 	"github.com/softleader/captain-kube/pkg/env"
-	"github.com/softleader/captain-kube/pkg/proto"
+	pb "github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/release"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
@@ -54,7 +54,7 @@ func (c *capletCmd) run() error {
 	}
 
 	s := grpc.NewServer()
-	captainkube_v2.RegisterCapletServer(s, server.NewCapletServer(c.metadata))
+	pb.RegisterCapletServer(s, server.NewCapletServer(c.metadata))
 	logrus.Printf("registered caplet server\n")
 	reflection.Register(s)
 

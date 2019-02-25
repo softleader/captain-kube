@@ -5,7 +5,7 @@ import (
 	"github.com/softleader/captain-kube/pkg/caplet"
 	"github.com/softleader/captain-kube/pkg/dur"
 	"github.com/softleader/captain-kube/pkg/helm/chart"
-	"github.com/softleader/captain-kube/pkg/proto"
+	pb "github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/sio"
 	"github.com/softleader/captain-kube/pkg/utils"
 	"io/ioutil"
@@ -14,10 +14,10 @@ import (
 )
 
 // SyncChart 將 image 同步到所有 caplet 上, 以避免直接啟動 chart 時拉 images 到 timeout
-func (s *CaptainServer) SyncChart(req *captainkube_v2.SyncChartRequest, stream captainkube_v2.Captain_SyncChartServer) error {
+func (s *CaptainServer) SyncChart(req *pb.SyncChartRequest, stream pb.Captain_SyncChartServer) error {
 	log := logrus.New()
 	log.SetOutput(sio.NewStreamWriter(func(p []byte) error {
-		return stream.Send(&captainkube_v2.ChunkMessage{
+		return stream.Send(&pb.ChunkMessage{
 			Msg: p,
 		})
 	}))

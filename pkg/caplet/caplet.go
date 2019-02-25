@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/softleader/captain-kube/pkg/color"
-	"github.com/softleader/captain-kube/pkg/proto"
+	pb "github.com/softleader/captain-kube/pkg/proto"
 	"sync"
 )
 
@@ -55,7 +55,7 @@ func (endpoints Endpoints) Each(consumer func(e *Endpoint)) {
 	wg.Wait()
 }
 
-func format(last, chunk *captainkube_v2.ChunkMessage) []byte {
+func format(last, chunk *pb.ChunkMessage) []byte {
 	msg := chunk.GetMsg()
 	if msg == nil || len(msg) == 0 {
 		return msg

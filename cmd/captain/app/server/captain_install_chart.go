@@ -5,7 +5,7 @@ import (
 	"github.com/softleader/captain-kube/pkg/caplet"
 	"github.com/softleader/captain-kube/pkg/dur"
 	"github.com/softleader/captain-kube/pkg/helm/chart"
-	"github.com/softleader/captain-kube/pkg/proto"
+	pb "github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/sio"
 	"github.com/softleader/captain-kube/pkg/utils"
 	"io/ioutil"
@@ -14,12 +14,12 @@ import (
 )
 
 // InstallChart 將上傳的 chart install 到 helm tiller 上
-func (s *CaptainServer) InstallChart(req *captainkube_v2.InstallChartRequest, stream captainkube_v2.Captain_InstallChartServer) error {
+func (s *CaptainServer) InstallChart(req *pb.InstallChartRequest, stream pb.Captain_InstallChartServer) error {
 	logrus.Debugf("%+v", req)
 
 	log := logrus.New()
 	log.SetOutput(sio.NewStreamWriter(func(p []byte) error {
-		return stream.Send(&captainkube_v2.ChunkMessage{
+		return stream.Send(&pb.ChunkMessage{
 			Msg: p,
 		})
 	}))

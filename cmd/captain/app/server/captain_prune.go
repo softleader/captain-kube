@@ -4,16 +4,16 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/caplet"
 	"github.com/softleader/captain-kube/pkg/dur"
-	"github.com/softleader/captain-kube/pkg/proto"
+	pb "github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/sio"
 	"github.com/softleader/captain-kube/pkg/utils"
 )
 
 // Prune 呼叫所有 caplet 的 prune
-func (s *CaptainServer) Prune(req *captainkube_v2.PruneRequest, stream captainkube_v2.Captain_PruneServer) error {
+func (s *CaptainServer) Prune(req *pb.PruneRequest, stream pb.Captain_PruneServer) error {
 	log := logrus.New()
 	log.SetOutput(sio.NewStreamWriter(func(p []byte) error {
-		return stream.Send(&captainkube_v2.ChunkMessage{
+		return stream.Send(&pb.ChunkMessage{
 			Msg: p,
 		})
 	}))

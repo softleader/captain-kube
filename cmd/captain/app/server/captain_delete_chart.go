@@ -3,16 +3,16 @@ package server
 import (
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/helm/chart"
-	"github.com/softleader/captain-kube/pkg/proto"
+	pb "github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/sio"
 	"github.com/softleader/captain-kube/pkg/utils"
 )
 
 // DeleteChart 將上傳的 chart 從 helm tiller 中刪除
-func (s *CaptainServer) DeleteChart(req *captainkube_v2.DeleteChartRequest, stream captainkube_v2.Captain_DeleteChartServer) error {
+func (s *CaptainServer) DeleteChart(req *pb.DeleteChartRequest, stream pb.Captain_DeleteChartServer) error {
 	log := logrus.New()
 	log.SetOutput(sio.NewStreamWriter(func(p []byte) error {
-		return stream.Send(&captainkube_v2.ChunkMessage{
+		return stream.Send(&pb.ChunkMessage{
 			Msg: p,
 		})
 	}))

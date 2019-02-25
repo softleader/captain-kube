@@ -3,7 +3,7 @@ package app
 import (
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/caplet"
-	"github.com/softleader/captain-kube/pkg/proto"
+	pb "github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/utils/tcp"
 	"testing"
 )
@@ -16,8 +16,8 @@ func TestPullImage(t *testing.T) {
 	}
 
 	log := logrus.New()
-	req := &captainkube_v2.PullImageRequest{}
-	req.Images = append(req.Images, &captainkube_v2.Image{
+	req := &pb.PullImageRequest{}
+	req.Images = append(req.Images, &pb.Image{
 		Host: "softleader",
 		Repo: "helm",
 	})

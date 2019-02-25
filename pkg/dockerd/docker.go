@@ -4,10 +4,10 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"github.com/fsouza/go-dockerclient"
-	"github.com/softleader/captain-kube/pkg/proto"
+	pb "github.com/softleader/captain-kube/pkg/proto"
 )
 
-func encode(ra *captainkube_v2.RegistryAuth) (string, error) {
+func encode(ra *pb.RegistryAuth) (string, error) {
 	b, err := json.Marshal(ra)
 	if err != nil {
 		return "", nil

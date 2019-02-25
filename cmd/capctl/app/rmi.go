@@ -7,7 +7,7 @@ import (
 	"github.com/softleader/captain-kube/pkg/ctx"
 	"github.com/softleader/captain-kube/pkg/dockerd"
 	"github.com/softleader/captain-kube/pkg/helm/chart"
-	"github.com/softleader/captain-kube/pkg/proto"
+	pb "github.com/softleader/captain-kube/pkg/proto"
 	"github.com/spf13/cobra"
 )
 
@@ -89,7 +89,7 @@ func (c *rmiCmd) run() error {
 	}
 
 	if c.endpoint.Specified() {
-		req := &captainkube_v2.RmiRequest{
+		req := &pb.RmiRequest{
 			Timeout: settings.Timeout,
 			DryRun:  c.dryRun,
 			Force:   c.force,
@@ -97,7 +97,7 @@ func (c *rmiCmd) run() error {
 			Verbose: settings.Verbose,
 		}
 		for _, i := range c.images {
-			req.Images = append(req.Images, &captainkube_v2.Image{
+			req.Images = append(req.Images, &pb.Image{
 				Host: i.Host,
 				Repo: i.Repo,
 				Tag:  i.Tag,

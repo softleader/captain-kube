@@ -3,16 +3,16 @@ package server
 import (
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/dockerd"
-	"github.com/softleader/captain-kube/pkg/proto"
+	pb "github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/sio"
 	"github.com/softleader/captain-kube/pkg/utils"
 )
 
 // Prune 執行 docker system prune
-func (s *CapletServer) Prune(req *captainkube_v2.PruneRequest, stream captainkube_v2.Caplet_PruneServer) error {
+func (s *CapletServer) Prune(req *pb.PruneRequest, stream pb.Caplet_PruneServer) error {
 	log := logrus.New()
 	log.SetOutput(sio.NewStreamWriter(func(p []byte) error {
-		return stream.Send(&captainkube_v2.ChunkMessage{
+		return stream.Send(&pb.ChunkMessage{
 			Hostname: s.hostname,
 			Msg:      p,
 		})

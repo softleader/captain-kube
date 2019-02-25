@@ -11,7 +11,7 @@ import (
 	"github.com/softleader/captain-kube/pkg/captain"
 	"github.com/softleader/captain-kube/pkg/ctx"
 	"github.com/softleader/captain-kube/pkg/helm/chart"
-	"github.com/softleader/captain-kube/pkg/proto"
+	pb "github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/utils"
 	"github.com/softleader/captain-kube/pkg/utils/strutil"
 	"github.com/spf13/cobra"
@@ -162,13 +162,13 @@ func (c *scriptCmd) runScript(log *logrus.Logger, path string) error {
 		if err != nil {
 			return err
 		}
-		request := captainkube_v2.GenerateScriptRequest{
-			Chart: &captainkube_v2.Chart{
+		request := pb.GenerateScriptRequest{
+			Chart: &pb.Chart{
 				FileName: filepath.Base(abs),
 				FileSize: int64(len(bytes)),
 			},
 			Pull: c.pull,
-			Retag: &captainkube_v2.ReTag{
+			Retag: &pb.ReTag{
 				From: c.retag.From,
 				To:   c.retag.To,
 			},

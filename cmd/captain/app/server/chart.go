@@ -3,11 +3,11 @@ package server
 import (
 	"encoding/hex"
 	"fmt"
-	"github.com/softleader/captain-kube/pkg/proto"
+	pb "github.com/softleader/captain-kube/pkg/proto"
 	"io/ioutil"
 )
 
-func saveChart(chart *captainkube_v2.Chart, path string) error {
+func saveChart(chart *pb.Chart, path string) error {
 	body := chart.GetContent()
 	if len(body) == 0 {
 		hexadecimal := chart.GetContentHex()

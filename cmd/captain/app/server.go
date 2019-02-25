@@ -9,7 +9,7 @@ import (
 	"github.com/softleader/captain-kube/pkg/captain"
 	"github.com/softleader/captain-kube/pkg/env"
 	"github.com/softleader/captain-kube/pkg/kubectl"
-	"github.com/softleader/captain-kube/pkg/proto"
+	pb "github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/release"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
@@ -81,7 +81,7 @@ func (c *captainCmd) run() error {
 		logrus.Printf("detected k8s vendor: %s", srv.K8s.Server.GitVersion)
 	}
 	s := grpc.NewServer()
-	captainkube_v2.RegisterCaptainServer(s, srv)
+	pb.RegisterCaptainServer(s, srv)
 	reflection.Register(s)
 	logrus.Printf("listening and serving GRPC on %v", lis.Addr().String())
 	return s.Serve(lis)

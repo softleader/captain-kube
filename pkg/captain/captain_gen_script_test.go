@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/dur"
-	"github.com/softleader/captain-kube/pkg/proto"
+	pb "github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/utils"
 	"github.com/softleader/captain-kube/pkg/utils/command"
 	"github.com/softleader/captain-kube/pkg/utils/tcp"
@@ -52,13 +52,13 @@ func TestGenerateScript(t *testing.T) {
 
 	log := logrus.New()
 	log.SetFormatter(&utils.PlainFormatter{})
-	err = CallGenerateScript(log, fmt.Sprintf("%v:%v", endpoint, port), &captainkube_v2.GenerateScriptRequest{
-		Chart: &captainkube_v2.Chart{
+	err = CallGenerateScript(log, fmt.Sprintf("%v:%v", endpoint, port), &pb.GenerateScriptRequest{
+		Chart: &pb.Chart{
 			Content:  chart,
 			FileName: "foo-0.1.0.tgz",
 		},
 		Pull:    true,
-		Retag:   &captainkube_v2.ReTag{},
+		Retag:   &pb.ReTag{},
 		Save:    true,
 		Load:    true,
 		Verbose: true,

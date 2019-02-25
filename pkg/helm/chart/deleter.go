@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/kubectl"
-	"github.com/softleader/captain-kube/pkg/proto"
+	pb "github.com/softleader/captain-kube/pkg/proto"
 )
 
 // Deleter 定義了從 helm tiller 中刪除 chart 的介面
@@ -13,7 +13,7 @@ type Deleter interface {
 }
 
 // NewDeleter 建立 Deleter
-func NewDeleter(k8s *kubectl.KubeVersion, tiller *captainkube_v2.Tiller, chartName, chartVersion string) (Deleter, error) {
+func NewDeleter(k8s *kubectl.KubeVersion, tiller *pb.Tiller, chartName, chartVersion string) (Deleter, error) {
 	if k8s.Server.IsICP() {
 		return &icpDeleter{
 			endpoint:          tiller.GetEndpoint(),

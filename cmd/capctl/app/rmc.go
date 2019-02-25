@@ -7,7 +7,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/captain"
 	"github.com/softleader/captain-kube/pkg/ctx"
-	"github.com/softleader/captain-kube/pkg/proto"
+	pb "github.com/softleader/captain-kube/pkg/proto"
 	"github.com/spf13/cobra"
 	"io/ioutil"
 	"path/filepath"
@@ -107,14 +107,14 @@ func (c *rmcCmd) run() error {
 			return err
 		}
 
-		req := &captainkube_v2.RmcRequest{
+		req := &pb.RmcRequest{
 			Timeout:    settings.Timeout,
 			DryRun:     c.dryRun,
 			Force:      c.force,
 			Color:      settings.Color,
 			Verbose:    settings.Verbose,
 			Constraint: c.constraint,
-			Chart: &captainkube_v2.Chart{
+			Chart: &pb.Chart{
 				FileName: filepath.Base(abs),
 				FileSize: int64(len(bytes)),
 			},

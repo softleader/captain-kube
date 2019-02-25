@@ -5,11 +5,11 @@ import (
 	"github.com/fsouza/go-dockerclient"
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/helm/chart"
-	"github.com/softleader/captain-kube/pkg/proto"
+	pb "github.com/softleader/captain-kube/pkg/proto"
 )
 
 // Pull 執行 docker pull
-func Pull(log *logrus.Logger, image chart.Image, registryAuth *captainkube_v2.RegistryAuth) error {
+func Pull(log *logrus.Logger, image chart.Image, registryAuth *pb.RegistryAuth) error {
 	ctx := context.Background()
 
 	// Use DOCKER_HOST to set the url to the docker server.
@@ -47,7 +47,7 @@ func Pull(log *logrus.Logger, image chart.Image, registryAuth *captainkube_v2.Re
 }
 
 // PullFromTemplates pull template 中所有的 image
-func PullFromTemplates(log *logrus.Logger, tpls chart.Templates, auth *captainkube_v2.RegistryAuth) error {
+func PullFromTemplates(log *logrus.Logger, tpls chart.Templates, auth *pb.RegistryAuth) error {
 	for _, tpl := range tpls {
 		for _, image := range tpl {
 			log.Debugf("pulling image %q", image.String())

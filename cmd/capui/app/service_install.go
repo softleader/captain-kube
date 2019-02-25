@@ -10,7 +10,7 @@ import (
 	"github.com/softleader/captain-kube/pkg/dockerd"
 	"github.com/softleader/captain-kube/pkg/dur"
 	"github.com/softleader/captain-kube/pkg/helm/chart"
-	"github.com/softleader/captain-kube/pkg/proto"
+	pb "github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/sio"
 	"github.com/softleader/captain-kube/pkg/utils"
 	"github.com/softleader/captain-kube/pkg/utils/strutil"
@@ -110,23 +110,23 @@ func (s *Install) install(log *logrus.Logger, activeCtx *ctx.Context, form *Inst
 	log.Debugf("received chart size: %v", read)
 
 	// prepare rquest
-	request := captainkube_v2.InstallChartRequest{
+	request := pb.InstallChartRequest{
 		Verbose: form.Verbose,
-		Chart: &captainkube_v2.Chart{
+		Chart: &pb.Chart{
 			FileName: fileHeader.Filename,
 			Content:  buf.Bytes(),
 			FileSize: fileHeader.Size,
 		},
 		Sync: strutil.Contains(form.Tags, "s"),
-		Retag: &captainkube_v2.ReTag{
+		Retag: &pb.ReTag{
 			From: form.SourceRegistry,
 			To:   form.Registry,
 		},
-		RegistryAuth: &captainkube_v2.RegistryAuth{
+		RegistryAuth: &pb.RegistryAuth{
 			Username: activeCtx.RegistryAuth.Username,
 			Password: activeCtx.RegistryAuth.Password,
 		},
-		Tiller: &captainkube_v2.Tiller{
+		Tiller: &pb.Tiller{
 			Endpoint:          activeCtx.HelmTiller.Endpoint,
 			Username:          activeCtx.HelmTiller.Username,
 			Password:          activeCtx.HelmTiller.Password,

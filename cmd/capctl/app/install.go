@@ -10,7 +10,7 @@ import (
 	"github.com/softleader/captain-kube/pkg/ctx"
 	"github.com/softleader/captain-kube/pkg/dockerd"
 	"github.com/softleader/captain-kube/pkg/helm/chart"
-	"github.com/softleader/captain-kube/pkg/proto"
+	pb "github.com/softleader/captain-kube/pkg/proto"
 	"github.com/spf13/cobra"
 	"io/ioutil"
 	"path/filepath"
@@ -133,27 +133,27 @@ func (c *installCmd) install(path string) error {
 		return err
 	}
 
-	request := captainkube_v2.InstallChartRequest{
+	request := pb.InstallChartRequest{
 		Color:   settings.Color,
 		Timeout: settings.Timeout,
 		Verbose: settings.Verbose,
-		Chart: &captainkube_v2.Chart{
+		Chart: &pb.Chart{
 			FileName: filepath.Base(abs),
 			FileSize: int64(len(bytes)),
 		},
 		Sync: c.sync,
-		Retag: &captainkube_v2.ReTag{
+		Retag: &pb.ReTag{
 			From: c.retag.From,
 			To:   c.retag.To,
 		},
-		Tiller: &captainkube_v2.Tiller{
+		Tiller: &pb.Tiller{
 			Endpoint:          c.helmTiller.Endpoint,
 			Username:          c.helmTiller.Username,
 			Password:          c.helmTiller.Password,
 			Account:           c.helmTiller.Account,
 			SkipSslValidation: c.helmTiller.SkipSslValidation,
 		},
-		RegistryAuth: &captainkube_v2.RegistryAuth{
+		RegistryAuth: &pb.RegistryAuth{
 			Username: c.registryAuth.Username,
 			Password: c.registryAuth.Password,
 		},

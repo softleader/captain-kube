@@ -4,16 +4,16 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/dockerd"
 	"github.com/softleader/captain-kube/pkg/helm/chart"
-	"github.com/softleader/captain-kube/pkg/proto"
+	pb "github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/sio"
 	"github.com/softleader/captain-kube/pkg/utils"
 )
 
 // PullImage 執行 docker pull
-func (s *CapletServer) PullImage(req *captainkube_v2.PullImageRequest, stream captainkube_v2.Caplet_PullImageServer) error {
+func (s *CapletServer) PullImage(req *pb.PullImageRequest, stream pb.Caplet_PullImageServer) error {
 	log := logrus.New()
 	log.SetOutput(sio.NewStreamWriter(func(p []byte) error {
-		return stream.Send(&captainkube_v2.ChunkMessage{
+		return stream.Send(&pb.ChunkMessage{
 			Hostname: s.hostname,
 			Msg:      p,
 		})
@@ -30,7 +30,7 @@ func (s *CapletServer) PullImage(req *captainkube_v2.PullImageRequest, stream ca
 	return nil
 }
 
-func pull(log *logrus.Logger, image *captainkube_v2.Image, auth *captainkube_v2.RegistryAuth) error {
+func pull(log *logrus.Logger, image *pb.Image, auth *pb.RegistryAuth) error {
 	if tag := image.GetTag(); len(tag) == 0 {
 		image.Tag = chart.DefaultTag
 	}

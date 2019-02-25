@@ -2,12 +2,12 @@ package server
 
 import (
 	"context"
-	"github.com/softleader/captain-kube/pkg/proto"
+	pb "github.com/softleader/captain-kube/pkg/proto"
 )
 
 // Version 回傳 caplet 的版本
-func (s *CapletServer) Version(ctx context.Context, req *captainkube_v2.VersionRequest) (resp *captainkube_v2.VersionResponse, err error) {
-	resp = &captainkube_v2.VersionResponse{
+func (s *CapletServer) Version(ctx context.Context, req *pb.VersionRequest) (resp *pb.VersionResponse, err error) {
+	resp = &pb.VersionResponse{
 		Hostname: s.hostname,
 	}
 	if req.GetFull() {

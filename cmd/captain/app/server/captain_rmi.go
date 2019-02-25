@@ -4,16 +4,16 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/caplet"
 	"github.com/softleader/captain-kube/pkg/dur"
-	"github.com/softleader/captain-kube/pkg/proto"
+	pb "github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/sio"
 	"github.com/softleader/captain-kube/pkg/utils"
 )
 
 // Rmi 刪除 caplet 的 docker image
-func (s *CaptainServer) Rmi(req *captainkube_v2.RmiRequest, stream captainkube_v2.Captain_RmiServer) error {
+func (s *CaptainServer) Rmi(req *pb.RmiRequest, stream pb.Captain_RmiServer) error {
 	log := logrus.New()
 	log.SetOutput(sio.NewStreamWriter(func(p []byte) error {
-		return stream.Send(&captainkube_v2.ChunkMessage{
+		return stream.Send(&pb.ChunkMessage{
 			Msg: p,
 		})
 	}))

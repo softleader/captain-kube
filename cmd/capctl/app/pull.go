@@ -7,7 +7,7 @@ import (
 	"github.com/softleader/captain-kube/pkg/ctx"
 	"github.com/softleader/captain-kube/pkg/dockerd"
 	"github.com/softleader/captain-kube/pkg/helm/chart"
-	"github.com/softleader/captain-kube/pkg/proto"
+	pb "github.com/softleader/captain-kube/pkg/proto"
 	"github.com/spf13/cobra"
 	"path/filepath"
 )
@@ -79,7 +79,7 @@ func (c *pullCmd) pull(path string) error {
 	if err != nil {
 		return err
 	}
-	return dockerd.PullFromTemplates(logrus.StandardLogger(), tpls, &captainkube_v2.RegistryAuth{
+	return dockerd.PullFromTemplates(logrus.StandardLogger(), tpls, &pb.RegistryAuth{
 		Username: c.registryAuth.Username,
 		Password: c.registryAuth.Password,
 	})

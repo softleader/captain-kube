@@ -4,7 +4,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/captain"
 	"github.com/softleader/captain-kube/pkg/ctx"
-	"github.com/softleader/captain-kube/pkg/proto"
+	pb "github.com/softleader/captain-kube/pkg/proto"
 	"github.com/spf13/cobra"
 	"strings"
 )
@@ -67,10 +67,10 @@ func newDeleteCmd() *cobra.Command {
 }
 
 func (c *deleteCmd) run() error {
-	request := captainkube_v2.DeleteChartRequest{
+	request := pb.DeleteChartRequest{
 		Timeout: settings.Timeout,
 		Verbose: settings.Verbose,
-		Tiller: &captainkube_v2.Tiller{
+		Tiller: &pb.Tiller{
 			Endpoint:          c.helmTiller.Endpoint,
 			Username:          c.helmTiller.Username,
 			Password:          c.helmTiller.Password,

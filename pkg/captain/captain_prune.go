@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/sirupsen/logrus"
-	"github.com/softleader/captain-kube/pkg/proto"
+	pb "github.com/softleader/captain-kube/pkg/proto"
 	"google.golang.org/grpc"
 	"io"
 	"time"
@@ -18,11 +18,11 @@ func CallPrune(log *logrus.Logger, url string, verbose, color bool, timeout time
 		return fmt.Errorf("did not connect: %v", err)
 	}
 	defer conn.Close()
-	c := captainkube_v2.NewCaptainClient(conn)
+	c := pb.NewCaptainClient(conn)
 	log.Debugf("setting context with timeout %v", timeout)
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
-	req := &captainkube_v2.PruneRequest{
+	req := &pb.PruneRequest{
 		Verbose: verbose,
 		Timeout: timeout.String(),
 		Color:   color,

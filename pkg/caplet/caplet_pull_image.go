@@ -4,20 +4,20 @@ import (
 	"context"
 	"fmt"
 	"github.com/sirupsen/logrus"
-	"github.com/softleader/captain-kube/pkg/proto"
+	pb "github.com/softleader/captain-kube/pkg/proto"
 	"google.golang.org/grpc"
 	"io"
 	"time"
 )
 
 // CallPullImage 呼叫 caplet PullImage gRPC api
-func (e *Endpoint) CallPullImage(log *logrus.Logger, req *captainkube_v2.PullImageRequest, timeout time.Duration) error {
+func (e *Endpoint) CallPullImage(log *logrus.Logger, req *pb.PullImageRequest, timeout time.Duration) error {
 	conn, err := grpc.Dial(e.String(), grpc.WithInsecure())
 	if err != nil {
 		return fmt.Errorf("[%s] did not connect: %v", e.Target, err)
 	}
 	defer conn.Close()
-	c := captainkube_v2.NewCapletClient(conn)
+	c := pb.NewCapletClient(conn)
 	log.Debugf("setting context with timeout %v", timeout)
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
@@ -25,7 +25,7 @@ func (e *Endpoint) CallPullImage(log *logrus.Logger, req *captainkube_v2.PullIma
 	if err != nil {
 		return fmt.Errorf("[%s] %v.PullImage(%v) = _, %v", e.Target, c, req, err)
 	}
-	var last *captainkube_v2.ChunkMessage
+	var last *pb.ChunkMessage
 	for {
 		recv, err := stream.Recv()
 		if err == io.EOF {

@@ -4,21 +4,21 @@ import (
 	"context"
 	"fmt"
 	"github.com/sirupsen/logrus"
-	"github.com/softleader/captain-kube/pkg/proto"
+	pb "github.com/softleader/captain-kube/pkg/proto"
 	"google.golang.org/grpc"
 	"io"
 	"time"
 )
 
 // CallInstallChart 呼叫 captain InstallChart gRPC API
-func CallInstallChart(log *logrus.Logger, url string, req *captainkube_v2.InstallChartRequest, timeout time.Duration) error {
+func CallInstallChart(log *logrus.Logger, url string, req *pb.InstallChartRequest, timeout time.Duration) error {
 	log.Debugf("dialing %q with insecure", url)
 	conn, err := grpc.Dial(url, grpc.WithInsecure())
 	if err != nil {
 		return fmt.Errorf("did not connect: %v", err)
 	}
 	defer conn.Close()
-	c := captainkube_v2.NewCaptainClient(conn)
+	c := pb.NewCaptainClient(conn)
 	log.Debugf("setting context with timeout %v", timeout)
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()

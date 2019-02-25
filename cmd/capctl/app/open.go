@@ -5,7 +5,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/captain"
 	"github.com/softleader/captain-kube/pkg/ctx"
-	"github.com/softleader/captain-kube/pkg/proto"
+	pb "github.com/softleader/captain-kube/pkg/proto"
 	"github.com/spf13/cobra"
 )
 
@@ -40,7 +40,7 @@ func (c *openCmd) run() error {
 	resp, err := captain.CallConsoleURL(
 		logrus.StandardLogger(),
 		c.endpoint.String(),
-		&captainkube_v2.ConsoleURLRequest{
+		&pb.ConsoleURLRequest{
 			Host: c.endpoint.Host,
 		},
 		settings.TimeoutDuration())

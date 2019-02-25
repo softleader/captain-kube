@@ -3,7 +3,7 @@ package server
 import (
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/helm/chart"
-	"github.com/softleader/captain-kube/pkg/proto"
+	pb "github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/sio"
 	"github.com/softleader/captain-kube/pkg/utils"
 	"io/ioutil"
@@ -13,10 +13,10 @@ import (
 )
 
 // GenerateScript 分析上傳 chart 中的 images, 產生其相關的 docker scripts
-func (s *CaptainServer) GenerateScript(req *captainkube_v2.GenerateScriptRequest, stream captainkube_v2.Captain_GenerateScriptServer) error {
+func (s *CaptainServer) GenerateScript(req *pb.GenerateScriptRequest, stream pb.Captain_GenerateScriptServer) error {
 	log := logrus.New()
 	log.SetOutput(sio.NewStreamWriter(func(p []byte) error {
-		return stream.Send(&captainkube_v2.ChunkMessage{
+		return stream.Send(&pb.ChunkMessage{
 			Msg: p,
 		})
 	}))

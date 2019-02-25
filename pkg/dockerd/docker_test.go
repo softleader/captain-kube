@@ -3,13 +3,13 @@ package dockerd
 import (
 	"context"
 	"github.com/fsouza/go-dockerclient"
-	"github.com/softleader/captain-kube/pkg/proto"
+	pb "github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/utils/tcp"
 	"testing"
 )
 
 func TestEncode(t *testing.T) {
-	auth := captainkube_v2.RegistryAuth{
+	auth := pb.RegistryAuth{
 		Username:         "a",
 		Password:         "b",
 		XXX_unrecognized: []byte("c"),

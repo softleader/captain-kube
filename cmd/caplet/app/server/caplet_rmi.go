@@ -4,16 +4,16 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/softleader/captain-kube/pkg/dockerd"
 	"github.com/softleader/captain-kube/pkg/helm/chart"
-	"github.com/softleader/captain-kube/pkg/proto"
+	pb "github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/sio"
 	"github.com/softleader/captain-kube/pkg/utils"
 )
 
 // Rmi 執行 docker rmi
-func (s *CapletServer) Rmi(req *captainkube_v2.RmiRequest, stream captainkube_v2.Caplet_RmiServer) error {
+func (s *CapletServer) Rmi(req *pb.RmiRequest, stream pb.Caplet_RmiServer) error {
 	log := logrus.New()
 	log.SetOutput(sio.NewStreamWriter(func(p []byte) error {
-		return stream.Send(&captainkube_v2.ChunkMessage{
+		return stream.Send(&pb.ChunkMessage{
 			Hostname: s.hostname,
 			Msg:      p,
 		})

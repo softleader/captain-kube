@@ -3,12 +3,12 @@ package server
 import (
 	"context"
 	"fmt"
-	"github.com/softleader/captain-kube/pkg/proto"
+	pb "github.com/softleader/captain-kube/pkg/proto"
 )
 
 // ConsoleURL 回傳 kubernetes console 的 url
-func (s *CaptainServer) ConsoleURL(ctx context.Context, req *captainkube_v2.ConsoleURLRequest) (*captainkube_v2.ConsoleURLResponse, error) {
-	resp := &captainkube_v2.ConsoleURLResponse{
+func (s *CaptainServer) ConsoleURL(ctx context.Context, req *pb.ConsoleURLRequest) (*pb.ConsoleURLResponse, error) {
+	resp := &pb.ConsoleURLResponse{
 		Vendor: s.K8s.Server.GitVersion,
 	}
 	if s.K8s.Server.IsICP() {

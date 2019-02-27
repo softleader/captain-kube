@@ -1,21 +1,21 @@
 captain:
   image: softleader/captain
   tag: latest
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
   kubeletPath: /var/lib/kubelet
   port: 30051
 
 caplet:
   image: softleader/caplet
   tag: latest
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
   port: 50051
 
 capui:
   enabled: false
   image: softleader/capui
   tag: latest
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
   context: "--endpoint changeit --retag-to changeit --retag-from hub.softleader.com.tw "
   ingress:
     path: /captain-kube

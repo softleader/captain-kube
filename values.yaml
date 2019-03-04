@@ -1,3 +1,12 @@
+capui:
+  enabled: false
+  image: softleader/capui
+  tag: latest
+  pullPolicy: IfNotPresent
+  context: "--endpoint changeit --retag-to changeit --retag-from hub.softleader.com.tw "
+  ingress:
+    path: /captain-kube
+
 captain:
   image: softleader/captain
   tag: latest
@@ -10,12 +19,3 @@ caplet:
   tag: latest
   pullPolicy: IfNotPresent
   port: 50051
-
-capui:
-  enabled: false
-  image: softleader/capui
-  tag: latest
-  pullPolicy: IfNotPresent
-  context: "--endpoint changeit --retag-to changeit --retag-from hub.softleader.com.tw "
-  ingress:
-    path: /captain-kube

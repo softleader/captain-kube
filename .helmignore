@@ -23,6 +23,7 @@ logo/
 .tgz
 vendor/
 
+*.tar
 *.tgz
 _dist
 _build

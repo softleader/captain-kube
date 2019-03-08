@@ -61,6 +61,7 @@ func newSyncCmd() *cobra.Command {
 
 	f := cmd.Flags()
 	f.BoolVar(&c.hex, "hex", false, "convert and upload chart into hex string")
+	c.endpoint.AddFlags(f)
 	c.registryAuth.AddFlags(f)
 	c.retag.AddFlags(f)
 

@@ -99,7 +99,7 @@ func (s *Install) install(log *logrus.Logger, activeCtx *ctx.Context, form *Inst
 	if err != nil {
 		return fmt.Errorf("failed to open file stream: %s", err)
 	}
-
+	defer file.Close()
 	log.Debugf("received form: %+v", form)
 
 	buf := bytes.NewBuffer(nil)

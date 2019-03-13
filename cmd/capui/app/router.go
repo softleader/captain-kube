@@ -40,6 +40,15 @@ func NewCapUIServer(cmd *capUICmd) (r *gin.Engine) {
 		installRoute.POST("/", install.Chart)
 	}
 
+	cleanUpRoute := r.Group("/cleanup")
+	{
+		cleanup := &CleanUp{
+			cmd,
+		}
+		cleanUpRoute.GET("/", cleanup.View)
+		cleanUpRoute.POST("/", cleanup.Clean)
+	}
+
 	contextsRoute := r.Group("/contexts")
 	{
 		ctxs := &Contexts{}

@@ -26,10 +26,6 @@ const (
 	$ {{.}} rmc CHART... -e CAPTAIN_ENDPOINT -c ^	
 	$ {{.}} rmc CHART... -e CAPTAIN_ENDPOINT -c ~
 
-傳入 '--retag-from' 及 '--retag-to' 可以刪除 retag 後的 image
-
-	$ {{.}} rmc CHART... -e CAPTAIN_ENDPOINT -f hub.softleader.com.tw -t client-registry:5000
-
 如果需要在 rmc 前修改 values.yaml 中任何參數, 可以傳入 '--set key1=val1,key2=val2'
 
 	$ {{.}} rmc CHART... -e CAPTAIN_ENDPOINT --set ingress.enabled=true
@@ -50,7 +46,6 @@ type rmcCmd struct {
 	charts     []string
 	constraint string
 	endpoint   *ctx.Endpoint // captain 的 endpoint ip
-	retag      *ctx.ReTag
 	dryRun     bool
 	set        []string
 }
@@ -58,7 +53,6 @@ type rmcCmd struct {
 func newRmcCmd() *cobra.Command {
 	c := rmcCmd{
 		endpoint: activeCtx.Endpoint,
-		retag:    activeCtx.ReTag,
 	}
 
 	cmd := &cobra.Command{
@@ -83,7 +77,6 @@ func newRmcCmd() *cobra.Command {
 	f.StringArrayVar(&c.set, "set", []string{}, "set values (can specify multiple or separate values with commas: key1=val1,key2=val2)")
 	f.BoolVar(&c.hex, "hex", false, "convert and upload chart into hex string")
 	c.endpoint.AddFlags(f)
-	c.retag.AddFlags(f)
 
 	return cmd
 }

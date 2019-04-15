@@ -31,13 +31,13 @@ func NewCapUIServer(cmd *capUICmd) (r *gin.Engine) {
 		})
 	})
 
-	installRoute := r.Group("/install")
+	chartsRoute := r.Group("/charts")
 	{
-		install := &Install{
+		charts := &Charts{
 			cmd,
 		}
-		installRoute.GET("/", install.View)
-		installRoute.POST("/", install.Chart)
+		chartsRoute.GET("/", charts.View)
+		chartsRoute.POST("/", charts.Install)
 	}
 
 	cleanUpRoute := r.Group("/cleanup")

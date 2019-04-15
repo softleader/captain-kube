@@ -32,22 +32,22 @@ type InstallRequest struct {
 	Timeout        string   `form:"timeout"`
 }
 
-// Install 定義了 route 的相關 call back function
-type Install struct {
+// Chart 定義了 route 的相關 call back function
+type Charts struct {
 	*capUICmd
 }
 
-// View 轉到 install 頁面
-func (s *Install) View(c *gin.Context) {
-	c.HTML(http.StatusOK, "install.html", gin.H{
+// View 轉到 charts 頁面
+func (cs *Charts) View(c *gin.Context) {
+	c.HTML(http.StatusOK, "charts.html", gin.H{
 		"requestURI": c.Request.RequestURI,
-		"config":     &s,
+		"config":     &cs,
 		"context":    &activeContext,
 	})
 }
 
-// Chart 接收上傳的 install chart
-func (s *Install) Chart(c *gin.Context) {
+// Chart 接收上傳的 chart
+func (cs *Charts) Install(c *gin.Context) {
 	log := logrus.New() // 這個是這次請求要往前吐的 log
 	log.SetFormatter(&utils.PlainFormatter{})
 	log.SetOutput(sio.NewSSEventWriter(c))
@@ -83,18 +83,18 @@ func (s *Install) Chart(c *gin.Context) {
 	for _, file := range files {
 		filename := file.Filename
 		log.Println("Installing chart:", filename)
-		if err := s.install(log, selectedCtx, &form, file); err != nil {
+		if err := cs.install(log, selectedCtx, &form, file); err != nil {
 			log.Errorln(err)
 			logrus.Errorln(err)
 		} else {
-			log.Println("Successfully installed chart:", filename)
+			log.Println("Successfully handled chart:", filename)
 		}
 		log.Println("")
 	}
 
 }
 
-func (s *Install) install(log *logrus.Logger, activeCtx *ctx.Context, form *InstallRequest, fileHeader *multipart.FileHeader) error {
+func (cs *Charts) install(log *logrus.Logger, activeCtx *ctx.Context, form *InstallRequest, fileHeader *multipart.FileHeader) error {
 	file, err := fileHeader.Open()
 	if err != nil {
 		return fmt.Errorf("failed to open file stream: %s", err)
@@ -109,58 +109,79 @@ func (s *Install) install(log *logrus.Logger, activeCtx *ctx.Context, form *Inst
 	}
 	log.Debugf("received chart size: %v", read)
 
-	// prepare rquest
-	request := pb.InstallChartRequest{
-		Verbose: form.Verbose,
-		Chart: &pb.Chart{
-			FileName: fileHeader.Filename,
-			Content:  buf.Bytes(),
-			FileSize: fileHeader.Size,
-		},
-		Sync: strutil.Contains(form.Tags, "s"),
-		Retag: &pb.ReTag{
-			From: form.SourceRegistry,
-			To:   form.Registry,
-		},
-		RegistryAuth: &pb.RegistryAuth{
-			Username: activeCtx.RegistryAuth.Username,
-			Password: activeCtx.RegistryAuth.Password,
-		},
-		Tiller: &pb.Tiller{
-			Endpoint:          activeCtx.HelmTiller.Endpoint,
-			Username:          activeCtx.HelmTiller.Username,
-			Password:          activeCtx.HelmTiller.Password,
-			Account:           activeCtx.HelmTiller.Account,
-			SkipSslValidation: activeCtx.HelmTiller.SkipSslValidation,
-		},
+	// prepare request
+	c := &pb.Chart{
+		FileName: fileHeader.Filename,
+		Content:  buf.Bytes(),
+		FileSize: fileHeader.Size,
+	}
+	rt := &pb.ReTag{
+		From: form.SourceRegistry,
+		To:   form.Registry,
+	}
+	ra := &pb.RegistryAuth{
+		Username: activeCtx.RegistryAuth.Username,
+		Password: activeCtx.RegistryAuth.Password,
 	}
 
 	var tpls chart.Templates
 
 	if strutil.Contains(form.Tags, "p") {
 		if tpls == nil {
-			if tpls, err = chart.LoadArchiveBytes(logrus.StandardLogger(), request.Chart.FileName, request.Chart.Content); err != nil {
+			if tpls, err = chart.LoadArchiveBytes(logrus.StandardLogger(), c.FileName, c.Content); err != nil {
 				return err
 			}
 		}
-		if err := dockerd.PullFromTemplates(logrus.StandardLogger(), tpls, request.RegistryAuth); err != nil {
+		if err := dockerd.PullFromTemplates(logrus.StandardLogger(), tpls, ra); err != nil {
 			return err
 		}
 	}
 
-	if len(request.Retag.From) > 0 && len(request.Retag.To) > 0 {
-		if tpls == nil {
-			if tpls, err = chart.LoadArchiveBytes(logrus.StandardLogger(), request.Chart.FileName, request.Chart.Content); err != nil {
+	if strutil.Contains(form.Tags, "r") {
+		if len(rt.From) > 0 && len(rt.To) > 0 {
+			if tpls == nil {
+				if tpls, err = chart.LoadArchiveBytes(logrus.StandardLogger(), c.FileName, c.Content); err != nil {
+					return err
+				}
+			}
+			if err := dockerd.ReTagFromTemplates(logrus.StandardLogger(), tpls, rt, ra); err != nil {
 				return err
 			}
-		}
-		if err := dockerd.ReTagFromTemplates(logrus.StandardLogger(), tpls, request.Retag, request.RegistryAuth); err != nil {
-			return err
+		} else {
+			return fmt.Errorf("requires both 'retag-from' and 'retag-to' fields to tag and push images")
 		}
 	}
 
-	if err := captain.CallInstallChart(log, activeCtx.Endpoint.String(), &request, dur.Parse(form.Timeout)); err != nil {
-		return fmt.Errorf("failed to call backend: %s", err)
+	if strutil.Contains(form.Tags, "i") {
+		req := &pb.InstallChartRequest{
+			Verbose:      form.Verbose,
+			Chart:        c,
+			Timeout:      form.Timeout,
+			Sync:         strutil.Contains(form.Tags, "s"),
+			Retag:        rt,
+			RegistryAuth: ra,
+			Tiller: &pb.Tiller{
+				Endpoint:          activeCtx.HelmTiller.Endpoint,
+				Username:          activeCtx.HelmTiller.Username,
+				Password:          activeCtx.HelmTiller.Password,
+				Account:           activeCtx.HelmTiller.Account,
+				SkipSslValidation: activeCtx.HelmTiller.SkipSslValidation,
+			},
+		}
+		if err := captain.CallInstallChart(log, activeCtx.Endpoint.String(), req, dur.Parse(form.Timeout)); err != nil {
+			return fmt.Errorf("failed to call backend: %s", err)
+		}
+	} else if strutil.Contains(form.Tags, "s") {
+		req := &pb.SyncChartRequest{
+			Verbose:      form.Verbose,
+			Chart:        c,
+			Timeout:      form.Timeout,
+			Retag:        rt,
+			RegistryAuth: ra,
+		}
+		if err := captain.CallSyncChart(log, activeCtx.Endpoint.String(), req, dur.Parse(form.Timeout)); err != nil {
+			return fmt.Errorf("failed to call backend: %s", err)
+		}
 	}
 	return nil
 }

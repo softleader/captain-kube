@@ -32,7 +32,7 @@ type InstallRequest struct {
 	Timeout        string   `form:"timeout"`
 }
 
-// Chart 定義了 route 的相關 call back function
+// Charts 定義了 route 的相關 call back function
 type Charts struct {
 	*capUICmd
 }
@@ -46,7 +46,7 @@ func (cs *Charts) View(c *gin.Context) {
 	})
 }
 
-// Chart 接收上傳的 chart
+// Install 接收上傳的 chart
 func (cs *Charts) Install(c *gin.Context) {
 	log := logrus.New() // 這個是這次請求要往前吐的 log
 	log.SetFormatter(&utils.PlainFormatter{})

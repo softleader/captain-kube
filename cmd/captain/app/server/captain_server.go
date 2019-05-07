@@ -9,6 +9,7 @@ import (
 	"github.com/softleader/captain-kube/pkg/kubectl"
 	pb "github.com/softleader/captain-kube/pkg/proto"
 	"github.com/softleader/captain-kube/pkg/release"
+	"github.com/softleader/captain-kube/pkg/utils/tcp"
 	"net"
 )
 
@@ -35,11 +36,16 @@ func (s *CaptainServer) lookupCaplet(log *logrus.Logger, colored bool) (endpoint
 			return
 		}
 	}
-	if len(hosts) == 0 {
-		return nil, ErrNonCapletDaemonFound
-	}
 	for _, host := range hosts {
+		// make a quick test to check the endpoint is available
+		if !tcp.IsReachable(host, s.Port, 1) {
+			log.Debugf("skipping unreachable caplet: %s:%v", host, s.Port)
+			continue
+		}
 		endpoints = append(endpoints, caplet.NewEndpoint(host, s.Port))
+	}
+	if len(endpoints) == 0 {
+		return nil, ErrNonCapletDaemonFound
 	}
 	if colored {
 		for i, color := range color.Pick(len(endpoints)) {

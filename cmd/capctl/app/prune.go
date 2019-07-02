@@ -34,7 +34,7 @@ func newPruneCmd() *cobra.Command {
 
 func (c *pruneCmd) run() error {
 	if err := dockerd.Prune(logrus.StandardLogger()); err != nil {
-		return err
+		logrus.Errorln("something went wrong when cleaning up docker daemon", err)
 	}
 	if err := c.endpoint.Validate(); err == nil {
 		return captain.CallPrune(logrus.StandardLogger(), c.endpoint.String(), settings.Verbose, settings.Color, settings.TimeoutDuration())

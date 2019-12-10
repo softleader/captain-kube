@@ -3,7 +3,7 @@ package chart
 import (
 	"bytes"
 	"fmt"
-	"github.com/Masterminds/semver"
+	"github.com/blang/semver"
 	"strings"
 	"text/template"
 )
@@ -102,13 +102,13 @@ var templateFuncs = template.FuncMap{
 
 // CheckTag 檢查 tag 是否符合傳入的 constraint
 func (i *Image) CheckTag(other string) (bool, error) {
-	c, err := semver.NewConstraint(other)
+	r, err := semver.ParseRange(other)
 	if err != nil {
 		return false, err
 	}
-	v, err := semver.NewVersion(i.Tag)
+	v, err := semver.Parse(i.Tag)
 	if err != nil {
 		return false, err
 	}
-	return c.Check(v), nil
+	return r(v), nil
 }

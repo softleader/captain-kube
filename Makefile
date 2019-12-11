@@ -83,7 +83,7 @@ dist-capctl:	##	# Package Capctl to tarball
 	make dist --file ./cmd/$(CAPCTL)/Makefile VERSION=$(VERSION) COMMIT=$(COMMIT)
 
 .PHONY: ship
-ship: dist ship-captain ship-capui ship-capctl	##	# Ship all docker images
+ship: dist ship-captain ship-capui ship-caplet	##	# Ship all docker images
 
 .PHONY: ship-captain
 ship-captain:	##	# Ship Captain docker image
@@ -93,12 +93,12 @@ ship-captain:	##	# Ship Captain docker image
 ship-capui:	##	# Ship CapUI docker image
 	make ship --file ./cmd/$(CAPUI)/Makefile VERSION=$(VERSION) COMMIT=$(COMMIT) REGISTRY=$(REGISTRY)
 
-.PHONY: dist-capctl
-ship-capctl:	##	# Ship Capctl docker image
-	make ship --file ./cmd/$(CAPCTL)/Makefile VERSION=$(VERSION) COMMIT=$(COMMIT)
+.PHONY: dist-caplet
+ship-caplet:	##	# Ship Caplet docker image
+	make ship --file ./cmd/$(CAPLET)/Makefile VERSION=$(VERSION) COMMIT=$(COMMIT)
 
 .PHONY: bootstrap
-bootstrap:	##	# Fetch requires go modules
+bootstrap:	##	# Fetch required go modules
 	go mod download
 
 .PHONY: clean

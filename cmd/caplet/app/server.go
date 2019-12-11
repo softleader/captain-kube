@@ -60,7 +60,7 @@ func (c *capletCmd) run() error {
 	logrus.Printf("registered caplet server\n")
 
 	healthpb.RegisterHealthServer(s, health.NewServer())
-	logrus.Printf("registered health probe\n")
+	logrus.Printf("registered health server\n")
 
 	reflection.Register(s)
 	logrus.Printf("listening and serving GRPC on %v\n", lis.Addr().String())

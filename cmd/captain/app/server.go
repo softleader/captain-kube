@@ -87,7 +87,7 @@ func (c *captainCmd) run() error {
 	logrus.Printf("registered captain server\n")
 
 	healthpb.RegisterHealthServer(s, health.NewServer())
-	logrus.Printf("registered health probe\n")
+	logrus.Printf("registered health server\n")
 
 	reflection.Register(s)
 	logrus.Printf("listening and serving GRPC on %v", lis.Addr().String())

@@ -22,6 +22,14 @@ spec:
         - name: {{ template "captain-kube.captain" . }}
           image: "{{ .Values.captain.image }}:{{ .Values.captain.tag }}"
           imagePullPolicy: {{ .Values.captain.pullPolicy }}
+          readinessProbe:
+            exec:
+              command: ["/bin/grpc_health_probe", "-addr=:{{ .Values.captain.port }}"]
+            initialDelaySeconds: 5
+          livenessProbe:
+            exec:
+              command: ["/bin/grpc_health_probe", "-addr=:{{ .Values.captain.port }}"]
+            initialDelaySeconds: 10
           envFrom:
             - configMapRef:
                 name: {{ template "captain-kube.config" . }}

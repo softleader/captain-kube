@@ -26,6 +26,14 @@ spec:
         - name: {{ template "captain-kube.caplet" . }}
           image: "{{ .Values.caplet.image }}:{{ .Values.caplet.tag }}"
           imagePullPolicy: {{ .Values.caplet.pullPolicy }}
+          readinessProbe:
+            exec:
+              command: ["/bin/grpc_health_probe", "-addr=:{{ .Values.caplet.port }}"]
+            initialDelaySeconds: 5
+          livenessProbe:
+            exec:
+              command: ["/bin/grpc_health_probe", "-addr=:{{ .Values.caplet.port }}"]
+            initialDelaySeconds: 10
           volumeMounts:
             - mountPath: "/var/run/docker.sock"
               name: docker-socket-{{ .Release.Namespace }}

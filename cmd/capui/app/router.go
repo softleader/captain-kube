@@ -1,6 +1,7 @@
 package app
 
 import (
+	healthcheck "github.com/RaMin0/gin-health-check"
 	"github.com/gin-gonic/gin"
 	"github.com/softleader/captain-kube/pkg/utils/strutil"
 	"html/template"
@@ -10,6 +11,8 @@ import (
 // NewCapUIServer 建立 capui server
 func NewCapUIServer(cmd *capUICmd) (r *gin.Engine) {
 	r = gin.Default()
+
+	r.Use(healthcheck.Default()) // for health probe
 
 	r.SetFuncMap(template.FuncMap{
 		"Contains": strutil.Contains,

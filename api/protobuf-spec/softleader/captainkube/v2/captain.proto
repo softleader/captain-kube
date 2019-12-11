@@ -55,22 +55,13 @@ message GenerateScriptRequest {
 }
 
 service Captain {
-    rpc SyncChart (SyncChartRequest) returns (stream ChunkMessage) {
-    }
-    rpc InstallChart (InstallChartRequest) returns (stream ChunkMessage) {
-    }
-    rpc DeleteChart (DeleteChartRequest) returns (stream ChunkMessage) {
-    }
-    rpc GenerateScript (GenerateScriptRequest) returns (stream ChunkMessage) {
-    }
-    rpc Prune (PruneRequest) returns (stream ChunkMessage) {
-    }
-    rpc Version (VersionRequest) returns (stream ChunkMessage) {
-    }
-    rpc ConsoleURL (ConsoleURLRequest) returns (ConsoleURLResponse) {
-    }
-    rpc Rmc (RmcRequest) returns (stream ChunkMessage) {
-    }
-    rpc Rmi (RmiRequest) returns (stream ChunkMessage) {
-    }
+    rpc SyncChart (SyncChartRequest) returns (stream ChunkMessage);
+    rpc InstallChart (InstallChartRequest) returns (stream ChunkMessage);
+    rpc DeleteChart (DeleteChartRequest) returns (stream ChunkMessage);
+    rpc GenerateScript (GenerateScriptRequest) returns (stream ChunkMessage);
+    rpc Prune (PruneRequest) returns (stream ChunkMessage);
+    rpc Version (VersionRequest) returns (stream ChunkMessage);
+    rpc ConsoleURL (ConsoleURLRequest) returns (ConsoleURLResponse);
+    rpc Rmc (RmcRequest) returns (stream ChunkMessage);
+    rpc Rmi (RmiRequest) returns (stream ChunkMessage);
 }

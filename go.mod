@@ -4,6 +4,7 @@ module github.com/softleader/captain-kube
 
 require (
 	github.com/BurntSushi/toml v0.3.1 // indirect
+	github.com/RaMin0/gin-health-check v0.0.0-20180807004848-a677317b3f01
 	github.com/alecthomas/gometalinter v2.0.12+incompatible // indirect
 	github.com/alecthomas/units v0.0.0-20151022065526-2efee857e7cf // indirect
 	github.com/blang/semver v3.5.1+incompatible

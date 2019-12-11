@@ -21,12 +21,8 @@ message PullImageRequest {
 }
 
 service Caplet {
-    rpc PullImage (PullImageRequest) returns (stream ChunkMessage) {
-    }
-    rpc Prune (PruneRequest) returns (stream ChunkMessage) {
-    }
-    rpc Version (VersionRequest) returns (VersionResponse) {
-    }
-    rpc Rmi (RmiRequest) returns (stream ChunkMessage) {
-    }
+    rpc PullImage (PullImageRequest) returns (stream ChunkMessage);
+    rpc Prune (PruneRequest) returns (stream ChunkMessage);
+    rpc Version (VersionRequest) returns (VersionResponse);
+    rpc Rmi (RmiRequest) returns (stream ChunkMessage);
 }

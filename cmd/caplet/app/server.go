@@ -11,6 +11,8 @@ import (
 	"github.com/softleader/captain-kube/pkg/release"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/health"
+	healthpb "google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/reflection"
 	"net"
 )
@@ -56,8 +58,11 @@ func (c *capletCmd) run() error {
 	s := grpc.NewServer()
 	pb.RegisterCapletServer(s, server.NewCapletServer(c.metadata))
 	logrus.Printf("registered caplet server\n")
-	reflection.Register(s)
 
+	healthpb.RegisterHealthServer(s, health.NewServer())
+	logrus.Printf("registered health probe\n")
+
+	reflection.Register(s)
 	logrus.Printf("listening and serving GRPC on %v\n", lis.Addr().String())
 	return s.Serve(lis)
 }

@@ -9,6 +9,8 @@ github.com/Microsoft/go-winio v0.4.11 h1:zoIOcVf0xPN1tnMVbTtEdI+P8OofVk3NObnwOQ6
 github.com/Microsoft/go-winio v0.4.11/go.mod h1:VhR8bwka0BXejwEJY73c50VrPtXAaKcyvVC4A4RozmA=
 github.com/Nvveen/Gotty v0.0.0-20120604004816-cd527374f1e5 h1:TngWCqHvy9oXAN6lEVMRuU21PR1EtLVZJmdB18Gu3Rw=
 github.com/Nvveen/Gotty v0.0.0-20120604004816-cd527374f1e5/go.mod h1:lmUJ/7eu/Q8D7ML55dXQrVaamCz2vxCfdQBasLZfHKk=
+github.com/RaMin0/gin-health-check v0.0.0-20180807004848-a677317b3f01 h1:GHwYgY6lZR2QKIuYH5k8DFK4e2h2oEEOtyI9E6qrpII=
+github.com/RaMin0/gin-health-check v0.0.0-20180807004848-a677317b3f01/go.mod h1:vZ/F780spvlix7Qg0/17Uj0SayI+CqtybQHtPEV9RTE=
 github.com/alecthomas/gometalinter v2.0.11+incompatible/go.mod h1:qfIpQGGz3d+NmgyPBqv+LSh50emm1pt72EtcX2vKYQk=
 github.com/alecthomas/gometalinter v2.0.12+incompatible h1:RBUbc8pKtqRoVCymENDl7cpWS9Ht5XNnwwk0cKjpteI=
 github.com/alecthomas/gometalinter v2.0.12+incompatible/go.mod h1:qfIpQGGz3d+NmgyPBqv+LSh50emm1pt72EtcX2vKYQk=

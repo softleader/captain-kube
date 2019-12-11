@@ -11,17 +11,20 @@ CAPCTL = capctl
 protobuf = api/protobuf-spec/softleader/captainkube/v2
 proto_dst = pkg/proto
 
+.PHONY: help
+help:	##	# Show this help.
+	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//'
 
 .PHONY: test
-test: golint
+test: golint	##	# Run test
 	go test ./... -v
 
 .PHONY: gofmt
-gofmt:
+gofmt:	##	# Format source code
 	gofmt -s -w .
 
 .PHONY: golint
-golint: gofmt
+golint: gofmt	##	# Run linter for source code
 ifndef HAS_GOLINT
 	go get -u golang.org/x/lint/golint
 endif
@@ -29,7 +32,7 @@ endif
 	golint -set_exit_status ./pkg/...
 
 .PHONY: protoc
-protoc:
+protoc:	##	# Parse proto files and generate output
 	protoc -I $(protobuf) --go_out=plugins=grpc:$(proto_dst) $(protobuf)/caplet.proto
 	protoc -I $(protobuf) --go_out=plugins=grpc:$(proto_dst) $(protobuf)/captain.proto
 	protoc -I $(protobuf) --go_out=plugins=grpc:$(proto_dst) $(protobuf)/chart.proto
@@ -42,47 +45,62 @@ protoc:
 	protoc -I $(protobuf) --go_out=plugins=grpc:$(proto_dst) $(protobuf)/rmc.proto
 
 .PHONY: build
-build: clean bootstrap build-caplet build-captain build-capui build-capctl
+build: clean bootstrap build-caplet build-captain build-capui build-capctl	##	# Build all binaries
 
 .PHONY: build-caplet
-build-caplet:
+build-caplet:	##	# Build Caplet binary
 	make build --file ./cmd/$(CAPLET)/Makefile VERSION=$(VERSION) COMMIT=$(COMMIT) REGISTRY=$(REGISTRY)
 
 .PHONY: build-captain
-build-captain:
+build-captain:	##	# Build Captain binary
 	make build --file ./cmd/$(CAPLET)/Makefile VERSION=$(VERSION) COMMIT=$(COMMIT) REGISTRY=$(REGISTRY)
 
 .PHONY: build-capui
-build-capui:
+build-capui:	##	# Build CapUI binary
 	make build --file ./cmd/$(CAPUI)/Makefile VERSION=$(VERSION) COMMIT=$(COMMIT) REGISTRY=$(REGISTRY)
 
 .PHONY: build-capctl
-build-capctl:
+build-capctl:	##	# Build Capctl binary
 	make build --file ./cmd/$(CAPCTL)/Makefile VERSION=$(VERSION) COMMIT=$(COMMIT)
 
 .PHONY: dist
-dist: dist-caplet dist-captain dist-capui dist-capctl
+dist: dist-caplet dist-captain dist-capui dist-capctl	##	# Package all binaries
 
 .PHONY: dist-caplet
-dist-caplet:
+dist-caplet:	##	# Package Caplet to docker image
 	make dist --file ./cmd/$(CAPLET)/Makefile VERSION=$(VERSION) COMMIT=$(COMMIT) REGISTRY=$(REGISTRY)
 
 .PHONY: dist-captain
-dist-captain:
+dist-captain:	##	# Package Captain to docker image
 	make dist --file ./cmd/$(CAPTAIN)/Makefile VERSION=$(VERSION) COMMIT=$(COMMIT) REGISTRY=$(REGISTRY)
 
 .PHONY: dist-capui
-dist-capui:
+dist-capui:	##	# Package CapUI to docker image
 	make dist --file ./cmd/$(CAPUI)/Makefile VERSION=$(VERSION) COMMIT=$(COMMIT) REGISTRY=$(REGISTRY)
 
 .PHONY: dist-capctl
-dist-capctl:
+dist-capctl:	##	# Package Capctl to tarball
 	make dist --file ./cmd/$(CAPCTL)/Makefile VERSION=$(VERSION) COMMIT=$(COMMIT)
 
+.PHONY: ship
+ship: dist ship-captain ship-capui ship-capctl	##	# Ship all docker images
+
+.PHONY: ship-captain
+ship-captain:	##	# Ship Captain docker image
+	make ship --file ./cmd/$(CAPTAIN)/Makefile VERSION=$(VERSION) COMMIT=$(COMMIT) REGISTRY=$(REGISTRY)
+
+.PHONY: ship-capui
+ship-capui:	##	# Ship CapUI docker image
+	make ship --file ./cmd/$(CAPUI)/Makefile VERSION=$(VERSION) COMMIT=$(COMMIT) REGISTRY=$(REGISTRY)
+
+.PHONY: dist-capctl
+ship-capctl:	##	# Ship Capctl docker image
+	make ship --file ./cmd/$(CAPCTL)/Makefile VERSION=$(VERSION) COMMIT=$(COMMIT)
+
 .PHONY: bootstrap
-bootstrap:
+bootstrap:	##	# Fetch requires go modules
 	go mod download
 
 .PHONY: clean
-clean:
+clean:	##	# Clean temporary folders
 	rm -rf _*

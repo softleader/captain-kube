@@ -23,4 +23,8 @@ endif
 	cp ./cmd/$(BINARY)/Dockerfile $(DIST)
 	cp ./build/icp-linux-amd64.tgz $(DIST)
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o $(DIST)/$(BINARY) -ldflags $(LDFLAGS) -a -tags netgo ./cmd/$(BINARY)
-	docker build -t $(REGISTRY)/$(BINARY) $(DIST) && docker push $(REGISTRY)/$(BINARY)
+	docker build -t $(REGISTRY)/$(BINARY) $(DIST)
+
+.PHONY: ship
+ship:
+	 docker push $(REGISTRY)/$(BINARY)

@@ -8,7 +8,7 @@ BINARY = capui
 
 .PHONY: build
 build:
-	mkdir $(BUILD)
+	mkdir -p $(BUILD)
 	go build -o $(BUILD)/$(BINARY) ./cmd/$(BINARY)
 
 .PHONY: dist

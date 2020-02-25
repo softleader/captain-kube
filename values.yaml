@@ -1,7 +1,7 @@
 capui:
   enabled: false
   image: softleader/capui
-  tag: latest
+  tag: 2.8.1
   pullPolicy: IfNotPresent
   context: "--endpoint changeit --retag-to changeit --retag-from hub.softleader.com.tw "
   ingress:
@@ -9,13 +9,13 @@ capui:
 
 captain:
   image: softleader/captain
-  tag: latest
+  tag: 2.8.1
   pullPolicy: IfNotPresent
   kubeletPath: /var/lib/kubelet
   port: 30051
 
 caplet:
   image: softleader/caplet
-  tag: latest
+  tag: 2.8.1
   pullPolicy: IfNotPresent
   port: 50051

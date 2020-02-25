@@ -18,6 +18,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 // InstallRequest 代表頁面送進來的 form request
@@ -30,6 +31,7 @@ type InstallRequest struct {
 	Verbose        bool     `form:"verbose"`
 	Ctx            string   `form:"ctx"`
 	Timeout        string   `form:"timeout"`
+	Set            string   `form:"set"`
 }
 
 // Charts 定義了 route 的相關 call back function
@@ -128,7 +130,7 @@ func (cs *Charts) install(log *logrus.Logger, activeCtx *ctx.Context, form *Inst
 
 	if strutil.Contains(form.Tags, "p") {
 		if tpls == nil {
-			if tpls, err = chart.LoadArchiveBytes(logrus.StandardLogger(), c.FileName, c.Content); err != nil {
+			if tpls, err = chart.LoadArchiveBytes(logrus.StandardLogger(), c.FileName, c.Content, strings.Split(form.Set, ",")...); err != nil {
 				return err
 			}
 		}
@@ -140,7 +142,7 @@ func (cs *Charts) install(log *logrus.Logger, activeCtx *ctx.Context, form *Inst
 	if strutil.Contains(form.Tags, "r") {
 		if len(rt.From) > 0 && len(rt.To) > 0 {
 			if tpls == nil {
-				if tpls, err = chart.LoadArchiveBytes(logrus.StandardLogger(), c.FileName, c.Content); err != nil {
+				if tpls, err = chart.LoadArchiveBytes(logrus.StandardLogger(), c.FileName, c.Content, strings.Split(form.Set, ",")...); err != nil {
 					return err
 				}
 			}

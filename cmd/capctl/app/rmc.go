@@ -47,12 +47,13 @@ type rmcCmd struct {
 	constraint string
 	endpoint   *ctx.Endpoint // captain 的 endpoint ip
 	dryRun     bool
-	set        []string
+	helmChart  *ctx.HelmChart
 }
 
 func newRmcCmd() *cobra.Command {
 	c := rmcCmd{
-		endpoint: activeCtx.Endpoint,
+		endpoint:  activeCtx.Endpoint,
+		helmChart: activeCtx.HelmChart,
 	}
 
 	cmd := &cobra.Command{
@@ -74,9 +75,9 @@ func newRmcCmd() *cobra.Command {
 	f.BoolVar(&c.force, "force", false, "force removal of the image")
 	f.StringVarP(&c.constraint, "constraint", "c", "", "tag semver2 constraint, more details: https://devhints.io/semver")
 	f.BoolVar(&c.dryRun, "dry-run", false, `simulate an rmc "for real"`)
-	f.StringArrayVar(&c.set, "set", []string{}, "set values (can specify multiple or separate values with commas: key1=val1,key2=val2)")
 	f.BoolVar(&c.hex, "hex", false, "convert and upload chart into hex string")
 	c.endpoint.AddFlags(f)
+	c.helmChart.AddFlags(f)
 
 	return cmd
 }
@@ -102,6 +103,7 @@ func (c *rmcCmd) run() error {
 
 		req := &pb.RmcRequest{
 			Timeout:    settings.Timeout,
+			Set:        c.helmChart.Set,
 			DryRun:     c.dryRun,
 			Force:      c.force,
 			Color:      settings.Color,

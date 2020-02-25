@@ -35,6 +35,7 @@ type syncCmd struct {
 	registryAuth *ctx.RegistryAuth // docker registry auth
 	retag        *ctx.ReTag
 	endpoint     *ctx.Endpoint // captain 的 endpoint ip
+	helmChart    *ctx.HelmChart
 }
 
 func newSyncCmd() *cobra.Command {
@@ -42,6 +43,7 @@ func newSyncCmd() *cobra.Command {
 		registryAuth: activeCtx.RegistryAuth,
 		retag:        activeCtx.ReTag,
 		endpoint:     activeCtx.Endpoint,
+		helmChart:    activeCtx.HelmChart,
 	}
 
 	cmd := &cobra.Command{
@@ -64,6 +66,7 @@ func newSyncCmd() *cobra.Command {
 	c.endpoint.AddFlags(f)
 	c.registryAuth.AddFlags(f)
 	c.retag.AddFlags(f)
+	c.helmChart.AddFlags(f)
 
 	return cmd
 }
@@ -107,6 +110,7 @@ func (c *syncCmd) sync(path string) error {
 			From: c.retag.From,
 			To:   c.retag.To,
 		},
+		Set: c.helmChart.Set,
 	}
 
 	if c.hex {

@@ -23,6 +23,7 @@ message SyncChartRequest {
     RegistryAuth registry_auth = 4;
     bool verbose = 5;
     bool color = 6;
+    repeated string set = 7;
 }
 
 message InstallChartRequest {
@@ -34,6 +35,7 @@ message InstallChartRequest {
     RegistryAuth registry_auth = 6;
     bool verbose = 7;
     bool color = 8;
+    repeated string set = 9;
 }
 
 message DeleteChartRequest {

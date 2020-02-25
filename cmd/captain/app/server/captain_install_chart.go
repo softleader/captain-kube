@@ -48,24 +48,24 @@ func (s *CaptainServer) InstallChart(req *pb.InstallChartRequest, stream pb.Capt
 		return err
 	}
 
-	if req.GetSync() {
-		log.Printf("Syncing images to all kubernetes worker nodes..")
-		endpoints, err := s.lookupCaplet(log, req.GetColor())
-		if err != nil {
-			return err
-		}
-		tpls, err := chart.LoadArchive(log, chartPath)
-		if err != nil {
-			return err
-		}
-		log.Debugf("%v template(s) loaded\n", len(tpls))
-		log.SetNoLock()
-		timeout := dur.Parse(req.GetTimeout())
-		endpoints.Each(func(e *caplet.Endpoint) {
-			if err := e.CallPullImage(log, newPullImageRequest(tpls, req.GetRetag(), req.GetRegistryAuth()), timeout); err != nil {
-				log.Error(err)
+		if req.GetSync() {
+			log.Printf("Syncing images to all kubernetes worker nodes..")
+			endpoints, err := s.lookupCaplet(log, req.GetColor())
+			if err != nil {
+				return err
 			}
-		})
+			tpls, err := chart.LoadArchive(log, chartPath, req.Set...)
+			if err != nil {
+				return err
+			}
+			log.Debugf("%v template(s) loaded\n", len(tpls))
+			log.SetNoLock()
+			timeout := dur.Parse(req.GetTimeout())
+			endpoints.Each(func(e *caplet.Endpoint) {
+				if err := e.CallPullImage(log, newPullImageRequest(tpls, req.GetRetag(), req.GetRegistryAuth()), timeout); err != nil {
+					log.Error(err)
+				}
+			})
 	}
 	return nil
 }

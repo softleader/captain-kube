@@ -41,7 +41,7 @@ func (s *CaptainServer) SyncChart(req *pb.SyncChartRequest, stream pb.Captain_Sy
 	if err != nil {
 		return err
 	}
-	tpls, err := chart.LoadArchive(log, chartPath)
+	tpls, err := chart.LoadArchive(log, chartPath, req.GetSet()...)
 	if err != nil {
 		return err
 	}

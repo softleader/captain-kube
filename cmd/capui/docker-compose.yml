@@ -1,7 +1,7 @@
 version: '3'
 services:
   capui:
-    image: softleader/capui
+    image: softleader/capui:{changeit}
     restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock

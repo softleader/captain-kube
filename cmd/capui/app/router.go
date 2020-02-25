@@ -6,6 +6,7 @@ import (
 	"github.com/softleader/captain-kube/pkg/utils/strutil"
 	"html/template"
 	"net/http"
+	"strings"
 )
 
 // NewCapUIServer 建立 capui server
@@ -19,6 +20,7 @@ func NewCapUIServer(cmd *capUICmd) (r *gin.Engine) {
 		"NotContains": func(vs []string, s string) bool {
 			return !strutil.Contains(vs, s)
 		},
+		"Join": strings.Join,
 	})
 
 	// static and template

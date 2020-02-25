@@ -53,7 +53,7 @@ func initContext(envs []string) error {
 		if strings.HasPrefix(env, prefix) {
 			s := strings.Split(env, "=")
 			key := s[0][len(prefix)+1:]
-			args := strings.Split(s[1], " ")
+			args := strings.Split(strings.Join(s[1:], "="), " ")
 			// to make sure args are alright
 			_, err := ctx.NewContext(args...)
 			if err != nil {

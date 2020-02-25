@@ -32,7 +32,7 @@
                 <div class="input-group">
                     <input type="text" class="form-control" aria-describedby="constraintHelp" name="constraint" id="constraint" value="<" required>
                 </div>
-                <small id="constraintHelp" class="form-text text-muted">supports <code>"<", "=", "<=", "^", "~"</code>, more details: <a href="https://devhints.io/semver">https://devhints.io/semver</a></small>
+                <small id="constraintHelp" class="form-text text-muted">Supports <code>"<", "=", "<=", "^", "~"</code>. For more details, refer to: <a href="https://devhints.io/semver">https://devhints.io/semver</a></small>
             </div>
 
             <div class="form-group">
@@ -40,7 +40,7 @@
                 <div class="input-group">
                     <input type="text" class="form-control" aria-describedby="setHelp" name="set" id="set" {{ if ne .context.ReTag.To ""}}value="registry.hostname={{.context.ReTag.To}}"{{ end }}>
                 </div>
-                <small id="setHelp" class="form-text text-muted">set values to override <code>values.yaml</code>, can separate values with commas: <code>key1=path1,key2=path2</code></small>
+                <small id="setHelp" class="form-text text-muted">Set values to overwrite <code>values.yaml</code> during cleaning up, values can be separated with commas: <code>a=b,c=d</code></small>
             </div>
 
             <div class="form-group">
@@ -59,13 +59,13 @@
                         Dry Run
                     </label>
                 </div>
-                <small id="dryRunHelp" class="form-text text-muted">simulate "for real", will not affect the real world</small>
+                <small id="dryRunHelp" class="form-text text-muted">Simulate "for real", will not affect the real world</small>
             </div>
 
             <div class="form-group">
                 <label for="registry">Timeout</label>
                 <input type="text" class="form-control" aria-describedby="timeoutHelp" name="timeout" id="timeout" value="{{ .context.Global.Timeout }}" required>
-                <small id="timeoutHelp" class="form-text text-muted">supports units are <code>"ms", "s", "m", "h"</code></small>
+                <small id="timeoutHelp" class="form-text text-muted">Supports units are <code>"ms", "s", "m", "h"</code></small>
             </div>
 
             <div class="form-group">

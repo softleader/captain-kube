@@ -61,6 +61,7 @@ type installCmd struct {
 	registryAuth *ctx.RegistryAuth // docker registry auth
 	helmTiller   *ctx.HelmTiller   // helm tiller
 	endpoint     *ctx.Endpoint     // captain 的 endpoint ip
+	helmChart    *ctx.HelmChart
 }
 
 func newInstallCmd() *cobra.Command {
@@ -70,6 +71,7 @@ func newInstallCmd() *cobra.Command {
 		endpoint:     activeCtx.Endpoint,
 		registryAuth: activeCtx.RegistryAuth,
 		helmTiller:   activeCtx.HelmTiller,
+		helmChart:    activeCtx.HelmChart,
 	}
 
 	cmd := &cobra.Command{
@@ -104,6 +106,7 @@ func newInstallCmd() *cobra.Command {
 	c.endpoint.AddFlags(f)
 	c.registryAuth.AddFlags(f)
 	c.helmTiller.AddFlags(f)
+	c.helmChart.AddFlags(f)
 
 	return cmd
 }
@@ -134,6 +137,7 @@ func (c *installCmd) install(path string) error {
 	}
 
 	request := pb.InstallChartRequest{
+		Set:     c.helmChart.Set,
 		Color:   settings.Color,
 		Timeout: settings.Timeout,
 		Verbose: settings.Verbose,
@@ -172,7 +176,7 @@ func (c *installCmd) install(path string) error {
 
 	if c.pull {
 		if tpls == nil {
-			if tpls, err = chart.LoadArchive(logrus.StandardLogger(), abs); err != nil {
+			if tpls, err = chart.LoadArchive(logrus.StandardLogger(), abs, c.helmChart.Set...); err != nil {
 				return err
 			}
 		}
@@ -183,7 +187,7 @@ func (c *installCmd) install(path string) error {
 
 	if len(c.retag.From) > 0 && len(c.retag.To) > 0 {
 		if tpls == nil {
-			if tpls, err = chart.LoadArchive(logrus.StandardLogger(), abs); err != nil {
+			if tpls, err = chart.LoadArchive(logrus.StandardLogger(), abs, c.helmChart.Set...); err != nil {
 				return err
 			}
 		}

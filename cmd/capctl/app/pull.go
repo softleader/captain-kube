@@ -30,12 +30,13 @@ const (
 type pullCmd struct {
 	charts       []string
 	registryAuth *ctx.RegistryAuth // docker registry auth
-	set          []string
+	helmChart    *ctx.HelmChart
 }
 
 func newPullCmd() *cobra.Command {
 	c := pullCmd{
 		registryAuth: activeCtx.RegistryAuth,
+		helmChart:    activeCtx.HelmChart,
 	}
 
 	cmd := &cobra.Command{
@@ -51,8 +52,8 @@ func newPullCmd() *cobra.Command {
 	}
 
 	f := cmd.Flags()
-	f.StringArrayVar(&c.set, "set", []string{}, "set values (can specify multiple or separate values with commas: key1=val1,key2=val2)")
 	c.registryAuth.AddFlags(f)
+	c.helmChart.AddFlags(f)
 
 	return cmd
 }
@@ -75,7 +76,7 @@ func (c *pullCmd) pull(path string) error {
 	if err != nil {
 		return err
 	}
-	tpls, err := chart.LoadArchive(logrus.StandardLogger(), abs, c.set...)
+	tpls, err := chart.LoadArchive(logrus.StandardLogger(), abs, c.helmChart.Set...)
 	if err != nil {
 		return err
 	}

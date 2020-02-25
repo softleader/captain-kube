@@ -63,11 +63,11 @@ type scriptCmd struct {
 	diff bool
 
 	charts []string
-	set    []string
 
 	retag        *ctx.ReTag
 	endpoint     *ctx.Endpoint // captain 的 endpoint ip
 	registryAuth *ctx.RegistryAuth
+	helmChart    *ctx.HelmChart
 }
 
 func newScriptCmd() *cobra.Command {
@@ -75,6 +75,7 @@ func newScriptCmd() *cobra.Command {
 		endpoint:     activeCtx.Endpoint,
 		registryAuth: activeCtx.RegistryAuth,
 		retag:        activeCtx.ReTag,
+		helmChart:    activeCtx.HelmChart,
 	}
 
 	cmd := &cobra.Command{
@@ -90,7 +91,6 @@ func newScriptCmd() *cobra.Command {
 	}
 
 	f := cmd.Flags()
-	f.StringArrayVar(&c.set, "set", []string{}, "set values (can specify multiple or separate values with commas: key1=val1,key2=val2)")
 	f.BoolVarP(&c.pull, "pull-script", "p", c.pull, "generate pull images script")
 	f.BoolVarP(&c.rt, "re-tag-script", "r", c.rt, "generate re-tag images script")
 	f.BoolVarP(&c.save, "save-script", "s", c.save, "generate save images script")
@@ -101,6 +101,7 @@ func newScriptCmd() *cobra.Command {
 	c.endpoint.AddFlags(f)
 	c.registryAuth.AddFlags(f)
 	c.retag.AddFlags(f)
+	c.helmChart.AddFlags(f)
 
 	return cmd
 }
@@ -193,7 +194,7 @@ func (c *scriptCmd) runScript(log *logrus.Logger, path string) error {
 }
 
 func (c *scriptCmd) runScriptOnClient(log *logrus.Logger, path string) error {
-	tpls, err := chart.LoadArchive(log, path, c.set...)
+	tpls, err := chart.LoadArchive(log, path, c.helmChart.Set...)
 	if err != nil {
 		return err
 	}

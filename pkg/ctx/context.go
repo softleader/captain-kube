@@ -11,6 +11,7 @@ type Context struct {
 	Global       *Global
 	Endpoint     *Endpoint
 	HelmTiller   *HelmTiller
+	HelmChart    *HelmChart
 	RegistryAuth *RegistryAuth
 	ReTag        *ReTag
 }
@@ -21,6 +22,7 @@ func NewContextFromEnv() (c *Context) {
 		Global:       newGlobalFromEnv(),
 		Endpoint:     newEndpointFromEnv(),
 		HelmTiller:   newHelmTillerFromEnv(),
+		HelmChart:    newHelmChartFromEnv(),
 		RegistryAuth: newRegistryAuthFromEnv(),
 		ReTag:        newReTagFromEnv(),
 	}
@@ -54,6 +56,7 @@ func NewContext(args ...string) (*Context, error) {
 		Global:       &Global{},
 		Endpoint:     &Endpoint{},
 		HelmTiller:   &HelmTiller{},
+		HelmChart:    &HelmChart{},
 		RegistryAuth: &RegistryAuth{},
 		ReTag:        &ReTag{},
 	}

@@ -27,14 +27,17 @@ const (
 
 type retagCmd struct {
 	charts       []string
+	set          []string
 	registryAuth *ctx.RegistryAuth // docker registry auth
 	retag        *ctx.ReTag
+	helmChart    *ctx.HelmChart
 }
 
 func newReTagCmd() *cobra.Command {
 	c := retagCmd{
 		registryAuth: activeCtx.RegistryAuth,
 		retag:        activeCtx.ReTag,
+		helmChart:    activeCtx.HelmChart,
 	}
 
 	cmd := &cobra.Command{
@@ -52,6 +55,7 @@ func newReTagCmd() *cobra.Command {
 	f := cmd.Flags()
 	c.registryAuth.AddFlags(f)
 	c.retag.AddFlags(f)
+	c.helmChart.AddFlags(f)
 
 	return cmd
 }
@@ -74,7 +78,7 @@ func (c *retagCmd) reTag(path string) error {
 	if err != nil {
 		return err
 	}
-	tpls, err := chart.LoadArchive(logrus.StandardLogger(), abs)
+	tpls, err := chart.LoadArchive(logrus.StandardLogger(), abs, c.helmChart.Set...)
 	if err != nil {
 		return err
 	}

@@ -35,6 +35,7 @@ func FlagsString() (string, error) {
 		Global:       &Global{},
 		Endpoint:     &Endpoint{},
 		HelmTiller:   &HelmTiller{},
+		HelmChart:    &HelmChart{},
 		RegistryAuth: &RegistryAuth{},
 		ReTag:        &ReTag{},
 	}

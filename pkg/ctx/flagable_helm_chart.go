@@ -21,6 +21,6 @@ func newHelmChartFromEnv() (c *HelmChart) {
 
 // AddFlags 加入 flags
 func (c *HelmChart) AddFlags(f *pflag.FlagSet) {
-	f.StringArrayVar(&c.Set, "set", []string{}, "set & overwrite values to rendered templates, will not be affected the original Chart file (.tgz) (can specify multiple or separate values with commas: key1=val1,key2=val2)")
+	f.StringArrayVar(&c.Set, "set", c.Set, "set & overwrite values to rendered templates, will not be affected the original Chart file (.tgz) (can specify multiple or separate values with commas: key1=val1,key2=val2)")
 	return
 }

@@ -38,7 +38,6 @@ func (s *CleanUp) View(c *gin.Context) {
 	c.HTML(http.StatusOK, "cleanup.html", gin.H{
 		"requestURI": c.Request.RequestURI,
 		"config":     &s,
-		"context":    &activeContext,
 	})
 }
 

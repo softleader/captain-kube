@@ -14,23 +14,21 @@
             <li class="nav-item {{ if eq .requestURI (print "/" $link) }}active{{ end }}">
                 <a class="nav-link" href="{{ $link }}">Home</a>
             </li>
+            {{ $link = "contexts/"}}
+            <li class="nav-item {{ if HasPrefix .requestURI (print "/" $link) }}active{{ end }}">
+                <a class="nav-link" href="{{ $link }}">Contexts</a>
+            </li>
             {{ $link = "charts/"}}
-            <li class="nav-item {{ if eq .requestURI (print "/" $link) }}active{{ end }}">
+            <li class="nav-item {{ if HasPrefix .requestURI (print "/" $link) }}active{{ end }}">
                 <a class="nav-link" href="{{ $link }}">Charts</a>
             </li>
             {{ $link = "cleanup/"}}
-            <li class="nav-item {{ if eq .requestURI (print "/" $link) }}active{{ end }}">
+            <li class="nav-item {{ if HasPrefix (print "/" $link) .requestURI  }}active{{ end }}">
                 <a class="nav-link" href="{{ $link }}">CleanUp</a>
             </li>
         </ul>
-        <form class="form-inline my-2 my-lg-0">
-            <div class="input-group mr-sm-2">
-                <div class="input-group-prepend">
-                    <div class="input-group-text">Context@</div>
-                </div>
-                <select class="custom-select" id="ctxList">
-                </select>
-            </div>
-        </form>
     </div>
+    <span class="navbar-text">
+      Context @ {{.config.Context.Name}}
+    </span>
 </nav>

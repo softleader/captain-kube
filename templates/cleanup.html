@@ -9,7 +9,6 @@
 
 <main role="main">
     <div class="container">
-        <p>
         <form id="dataForm" action="cleanup/">
             <div class="form-group">
                 <div class="form-check">
@@ -38,9 +37,9 @@
             <div class="form-group">
                 <label for="constraint">Set Values</label>
                 <div class="input-group">
-                    <input type="text" class="form-control" aria-describedby="setHelp" name="set" id="set" {{ if ne .context.ReTag.To ""}}value="registry.hostname={{.context.ReTag.To}}"{{ end }}>
+                    <input type="text" class="form-control" aria-describedby="setHelp" name="set" id="set" {{ if ne .config.Context.ReTag.To ""}}value="registry.hostname={{.config.Context.ReTag.To}}"{{ end }}>
                 </div>
-                <small id="setHelp" class="form-text text-muted">Set values to overwrite <code>values.yaml</code> during cleaning up, values can be separated with commas: <code>a=b,c=d</code></small>
+                <small id="setHelp" class="form-text text-muted">Set values to overwrite <code>values.yaml</code> during cleaning up, values can be separated with commas: <code>a=b,c.d=e</code></small>
             </div>
 
             <div class="form-group">
@@ -64,7 +63,7 @@
 
             <div class="form-group">
                 <label for="registry">Timeout</label>
-                <input type="text" class="form-control" aria-describedby="timeoutHelp" name="timeout" id="timeout" value="{{ .context.Global.Timeout }}" required>
+                <input type="text" class="form-control" aria-describedby="timeoutHelp" name="timeout" id="timeout" value="{{ .config.Context.Global.Timeout }}" required>
                 <small id="timeoutHelp" class="form-text text-muted">Supports units are <code>"ms", "s", "m", "h"</code></small>
             </div>
 
@@ -89,9 +88,7 @@
                     <i class="fa fa-terminal text-muted" aria-hidden="true"></i>
                 </div>
             </div>
-            <p>
             <pre id="output" class="text-light console-output-font"></pre>
-            </p>
             <div class="row flex-nowrap justify-content-between align-items-center">
                 <div class="col-4 pt-1"></div>
                 <div class="col-4 text-center"></div>

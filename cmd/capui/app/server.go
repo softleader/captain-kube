@@ -11,10 +11,11 @@ import (
 )
 
 type capUICmd struct {
-	Metadata  *release.Metadata
-	port      int
-	ActiveCtx string
-	BaseURL   string
+	Metadata   *release.Metadata
+	port       int
+	StartupCtx string         // 啟動 server 的 context
+	Context    *ActiveContext // 當前啟動的 context
+	BaseURL    string
 }
 
 // NewCapUICommand 建立 capui root command
@@ -42,7 +43,7 @@ func NewCapUICommand(metadata *release.Metadata) (cmd *cobra.Command) {
 	f := cmd.Flags()
 	f.BoolVarP(&verbose, "verbose", "v", false, "enable verbose output")
 	f.IntVarP(&c.port, "port", "p", 8080, "port of web ui serve port")
-	f.StringVar(&c.ActiveCtx, "active-ctx", "", "active ctx on server startup")
+	f.StringVar(&c.StartupCtx, "active-ctx", "", "active ctx on server startup")
 	f.StringVar(&c.BaseURL, "base-url", "/", "specify base url, more details: https://www.w3schools.com/tags/tag_base.asp")
 
 	cmd.MarkFlagRequired("active-ctx")
@@ -50,12 +51,12 @@ func NewCapUICommand(metadata *release.Metadata) (cmd *cobra.Command) {
 	return
 }
 
-func (c *capUICmd) run() error {
-	if err := initContext(os.Environ()); err != nil {
-		return err
+func (c *capUICmd) run() (err error) {
+	if err = initContext(os.Environ()); err != nil {
+		return
 	}
-	if err := activateContext(logrus.StandardLogger(), c.ActiveCtx); err != nil {
-		return err
+	if c.Context, err = activateContext(logrus.StandardLogger(), c.StartupCtx); err != nil {
+		return
 	}
 	server := NewCapUIServer(c)
 	addr := fmt.Sprintf(":%v", c.port)

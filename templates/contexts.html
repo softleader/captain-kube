@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<base href="{{.config.BaseURL}}">
+{{ template "tmp_head.html" }}
+</head>
+
+<body>
+{{ template "tmp_navi.html" . }}
+
+<main role="main">
+    <div class="container">
+        {{ range .info }}
+        <div class="card mb-3 {{if .Active}}border-success{{end}}">
+            <div class="card-header">{{.Name}}</div>
+            <div class="card-body">
+                <p class="card-text"><code>{{.Args}}</code></p>
+                <a href="contexts?ctx={{.Name}}" class="btn btn-outline-secondary {{ if .Active }}disabled{{else}}stretched-link{{end}}">Activate</a>
+            </div>
+        </div>
+        {{ end }}
+    </div>
+</main>
+
+<footer class="text-muted">
+    <div class="container">
+        <p class="float-right">
+            <a href="#" class="text-muted"><i class="fas fa-angle-double-up fa-2x"></i></a>
+        </p>
+        <p><a href="https://github.com/softleader" class="text-muted"><i class="fab fa-github"></i></a> <a
+                href="https://www.facebook.com/softleader" class="text-muted"><i class="fab fa-facebook"></i></a></p>
+        <p>Copyright © 2018 <a href="https://www.softleader.com.tw" class="text-muted">SoftLeader Technology Crop</a>.
+            All rights reserved.</p>
+    </div>
+</footer>
+
+{{ template "tmp_script.html" . }}
+<script src="static/clipboard.min.js"></script>
+<script src="static/bootstrap-slider.min.js"></script>
+
+</body>
+</html>

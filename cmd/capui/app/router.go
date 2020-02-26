@@ -21,6 +21,7 @@ func NewCapUIServer(cmd *capUICmd) (r *gin.Engine) {
 			return !strutil.Contains(vs, s)
 		},
 		"Join": strings.Join,
+		"HasPrefix": strings.HasPrefix,
 	})
 
 	// static and template
@@ -32,7 +33,6 @@ func NewCapUIServer(cmd *capUICmd) (r *gin.Engine) {
 		c.HTML(http.StatusOK, "index.html", gin.H{
 			"requestURI": c.Request.RequestURI,
 			"config":     &cmd,
-			"context":    &activeContext,
 		})
 	})
 
@@ -56,9 +56,10 @@ func NewCapUIServer(cmd *capUICmd) (r *gin.Engine) {
 
 	contextsRoute := r.Group("/contexts")
 	{
-		ctxs := &Contexts{}
+		ctxs := &Contexts{
+			cmd,
+		}
 		contextsRoute.GET("/", ctxs.ListContext)
-		contextsRoute.PUT("/:ctx", ctxs.SwitchContext)
 		contextsRoute.GET("/versions", ctxs.ListContextVersions)
 	}
 

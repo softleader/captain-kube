@@ -44,7 +44,6 @@ func (cs *Charts) View(c *gin.Context) {
 	c.HTML(http.StatusOK, "charts.html", gin.H{
 		"requestURI": c.Request.RequestURI,
 		"config":     &cs,
-		"context":    &activeContext,
 	})
 }
 

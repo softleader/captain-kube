@@ -22,7 +22,6 @@ type CleanUpRequest struct {
 	Set        string `form:"set"`
 	Verbose    bool   `form:"verbose"`
 	Force      bool   `form:"force"`
-	Ctx        string `form:"ctx"`
 	Timeout    string `form:"timeout"`
 	DryRun     bool   `form:"dryRun"`
 	Constraint string `form:"constraint"`
@@ -57,11 +56,6 @@ func (s *CleanUp) Clean(c *gin.Context) {
 		return
 	}
 
-	// 當頁面沒指定 ctx 時, 就用當前 global 的吧
-	if len(form.Ctx) == 0 {
-		form.Ctx = s.Context.Name
-	}
-
 	mForm, err := c.MultipartForm()
 	if err != nil {
 		log.Errorln("loading form files error:", err)
@@ -69,15 +63,8 @@ func (s *CleanUp) Clean(c *gin.Context) {
 		return
 	}
 
-	selectedCtx, err := newContext(log, form.Ctx)
-	if err != nil {
-		log.Errorln(err)
-		logrus.Errorln(err)
-		return
-	}
-
 	if form.Prune {
-		if err := captain.CallPrune(log, selectedCtx.Endpoint.String(), form.Verbose, false, dur.Parse(form.Timeout)); err != nil {
+		if err := captain.CallPrune(log, s.Context.Endpoint.String(), form.Verbose, false, dur.Parse(form.Timeout)); err != nil {
 			log.Errorln(err)
 			logrus.Errorln(err)
 			return
@@ -92,7 +79,7 @@ func (s *CleanUp) Clean(c *gin.Context) {
 		// ps. 在讀完request body後才可以開始response, 否則body會close
 		files := mForm.File["files"]
 		for _, file := range files {
-			if err := s.rmc(log, selectedCtx, &form, file); err != nil {
+			if err := s.rmc(log, s.Context.Context, &form, file); err != nil {
 				log.Errorln(err)
 				logrus.Errorln(err)
 				return

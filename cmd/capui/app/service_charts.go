@@ -29,7 +29,6 @@ type InstallRequest struct {
 	SourceRegistry string   `form:"sourceRegistry"`
 	Registry       string   `form:"registry"`
 	Verbose        bool     `form:"verbose"`
-	Ctx            string   `form:"ctx"`
 	Timeout        string   `form:"timeout"`
 	Set            string   `form:"set"`
 }
@@ -63,22 +62,10 @@ func (cs *Charts) Install(c *gin.Context) {
 		return
 	}
 
-	// 當頁面沒指定 ctx 時, 就用當前 global 的吧
-	if len(form.Ctx) == 0 {
-		form.Ctx = cs.Context.Name
-	}
-
 	mForm, err := c.MultipartForm()
 	if err != nil {
 		log.Errorln("loading form files error:", err)
 		logrus.Errorln("loading form files error:", err)
-		return
-	}
-
-	selectedCtx, err := newContext(log, form.Ctx)
-	if err != nil {
-		log.Errorln(err)
-		logrus.Errorln(err)
 		return
 	}
 
@@ -87,7 +74,7 @@ func (cs *Charts) Install(c *gin.Context) {
 	for _, file := range files {
 		filename := file.Filename
 		log.Println("Installing chart:", filename)
-		if err := cs.install(log, selectedCtx, &form, file); err != nil {
+		if err := cs.install(log, cs.Context.Context, &form, file); err != nil {
 			log.Errorln(err)
 			logrus.Errorln(err)
 		} else {

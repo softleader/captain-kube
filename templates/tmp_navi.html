@@ -23,7 +23,7 @@
                 <a class="nav-link" href="{{ $link }}">Charts</a>
             </li>
             {{ $link = "cleanup/"}}
-            <li class="nav-item {{ if HasPrefix (print "/" $link) .requestURI  }}active{{ end }}">
+            <li class="nav-item {{ if HasPrefix .requestURI (print "/" $link) }}active{{ end }}">
                 <a class="nav-link" href="{{ $link }}">CleanUp</a>
             </li>
         </ul>

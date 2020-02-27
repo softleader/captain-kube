@@ -95,10 +95,10 @@ release: release-caplet release-captain release-capui dist-capctl ## Dist and Sh
 release-caplet: dist-caplet ship-caplet ## Dist and Ship Caplet docker image
 
 .PHONE: release-captain
-release-captain: dist-caplet ship-captain  ## Dist and Ship Captain docker image
+release-captain: dist-captain ship-captain  ## Dist and Ship Captain docker image
 
 .PHONE: release-capui
-release-capui: dist-caplet ship-capui ## Dist and Ship CapUI docker image
+release-capui: dist-capui ship-capui ## Dist and Ship CapUI docker image
 
 .PHONY: bootstrap
 bootstrap: ## Fetch required go modules

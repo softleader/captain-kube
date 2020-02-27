@@ -57,6 +57,11 @@ func (s *CleanUp) Clean(c *gin.Context) {
 		return
 	}
 
+	// 當頁面沒指定 ctx 時, 就用當前 global 的吧
+	if len(form.Ctx) == 0 {
+		form.Ctx = s.Context.Name
+	}
+
 	mForm, err := c.MultipartForm()
 	if err != nil {
 		log.Errorln("loading form files error:", err)
@@ -64,8 +69,6 @@ func (s *CleanUp) Clean(c *gin.Context) {
 		return
 	}
 
-	// 而頁面到送進來的過程中, global activeCtx 有可能改變
-	// 所以這邊必須以頁面的 ctx 為主
 	selectedCtx, err := newContext(log, form.Ctx)
 	if err != nil {
 		log.Errorln(err)

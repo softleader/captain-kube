@@ -1,13 +1,19 @@
-version: '3'
+version: '3.4'
 services:
   capui:
-    image: softleader/capui:{changeit}
+    image: softleader/capui:{changeit}ENV_GIN_MODE
     restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    command: "--active-ctx choose-a-context"
+    command: "--active-ctx {changeit}"
     environment:
-      - CAPUI_CTX_named-a-context=--endpoint changeit --retag-to changeit --retag-from hub.softleader.com.tw
-      - CAPUI_CTX_another-context=...
+      - ENV_GIN_MODE=release
+      - CAPUI_CTX_{changeit}=--endpoint {changeit} --retag-to {changeit} --retag-from hub.softleader.com.tw
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "127.0.0.1:8080", "-H", "X-Health-Check: 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
     ports:
       - 8080:8080

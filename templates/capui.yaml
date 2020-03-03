@@ -47,6 +47,9 @@ spec:
           volumeMounts:
             - mountPath: "/var/run/docker.sock"
               name: docker-socket-{{ .Release.Namespace }}
+          env:
+            - name: ENV_GIN_MODE
+              value: release
           envFrom:
             - configMapRef:
                 name: {{ template "captain-kube.config" . }}

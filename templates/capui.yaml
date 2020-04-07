@@ -33,7 +33,7 @@ spec:
               port: 8080
               httpHeaders:
               - name: X-Health-Check
-                value: 1
+                value: "1"
             initialDelaySeconds: 5
           livenessProbe:
             httpGet:
@@ -41,7 +41,7 @@ spec:
               port: 8080
               httpHeaders:
                 - name: X-Health-Check
-                  value: 1
+                  value: "1"
             initialDelaySeconds: 10
           args: ["--base-url", {{ .Values.capui.ingress.path | quote }}, "--active-ctx", "default"]
           volumeMounts:

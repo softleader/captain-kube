@@ -42,12 +42,8 @@ require (
 	github.com/ugorji/go/codec v0.0.0-20181209151446-772ced7fd4c2 // indirect
 	github.com/ulikunitz/xz v0.5.5 // indirect
 	github.com/xi2/xz v0.0.0-20171230120015-48954b6210f8 // indirect
-	golang.org/x/crypto v0.0.0-20181203042331-505ab145d0a9 // indirect
+	golang.org/x/crypto v0.1.0 // indirect
 	golang.org/x/lint v0.0.0-20181217174547-8f45f776aaf1 // indirect
-	golang.org/x/net v0.0.0-20181220203305-927f97764cc3 // indirect
-	golang.org/x/sync v0.0.0-20181221193216-37e7f081c4d4 // indirect
-	golang.org/x/sys v0.0.0-20190102155601-82a175fd1598 // indirect
-	golang.org/x/tools v0.0.0-20190102213336-ca9055ed7d04 // indirect
 	google.golang.org/grpc v1.17.0
 	gopkg.in/alecthomas/kingpin.v3-unstable v3.0.0-20180810215634-df19058c872c // indirect
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
